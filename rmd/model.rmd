@@ -1,0 +1,245 @@
+---
+title: Stan code for the seedling survival model
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+In this case study I will demonstrate how seedling survival models are implemented with Stan using a simple example. Basically you can apply the same code to your seedling data. This example has reduced numbers of samples and parameters than what we are trying to do but it still takes a relatively long time to run.
+
+# Model overview
+
+Survival (*s*) of an individual seedling *i*, of species *j*, in plot *l*, in census *t* is model as:
+
+$$
+S_{ijlt} \sim Bernoulli(p_{jlt})
+$$
+
+$$
+logit(p_{jlt}) = \boldsymbol{\beta_{j}} \cdot \boldsymbol{X} + \phi_l + \tau_t
+$$
+
+where $\boldsymbol{\beta_{j}} = \left[\beta_{0j}, \beta_{1j}, \ldots, \beta_{kj} \right]$ is the vectors of coefficients at the species-level; *k* is the number of predictors for an individual seedling; $\boldsymbol{X} = \left[X_{0}, X_{1}, \ldots, X_{k} \right]$ is the predictors for an individual seedling; $\phi_l$ is a random effect for seedling plot, where $\phi_l \sim \mathcal{N}(0,\sigma_{\phi})$; and $\tau_t$ is a random effect for census, where $\phi_l \sim \mathcal{N}(0,\sigma_{\phi})$ (Note that $\cdot$ denotes dot product).
+
+In the species-level regression, the vector of coefficients ($\beta_{0-k}$) of each species j can be assumed have a multivariate normal distribution (MVN);
+
+$$
+\boldsymbol{\beta_j} \sim  \mathcal{MVN}(\gamma_{n0} + \gamma_{n1} \cdot WP_j, \bf {\Sigma_{\beta}})
+$$
+
+where $\gamma_{n0-1}$ are the vectors of coefficients; $WP_j$ is the water potential for species *j*; and $\bf \Sigma_{\beta}$ is the covariance matrix.
+
+The covariance matrix $\bf \Sigma_{\beta}$ can be decomposed as ${\bf \Sigma} = {\rm diag}({\bf \sigma}){\bf \Omega}{\rm diag}({\bf \sigma}) = {\rm diag}({\bf \sigma}){\bf LL}\prime {\rm diag}({\bf \sigma})$ using a Cholesky decomposition (See [Alvarez et al. 2014](https://arxiv.org/abs/1408.4050), [Katabuchi et al. 2017](https://www.biorxiv.org/content/10.1101/116855v1.abstract) and [this post](https://stla.github.io/stlapblog/posts/stanlkjprior.html)). See the model code below for the priors.
+
+
+```{r}
+writeLines(readLines("model.stan"))
+```
+
+
+# Dummy data
+
+We generate dummy data with 20 species, 100 seedlings per species, 10 plots and 5 censuses. In total we have 2000 seedlings.
+
+```{r}
+n_sp <- 20
+sp_name <- paste0("sp", LETTERS[1:n_sp])
+n_para <- 5
+n_tree <- 100
+n_plot <- 10
+n_census <- 5
+n_sample <- n_sp * n_tree
+```
+
+
+```{r}
+set.seed(12345)
+library(tidyverse)
+
+WP <- rnorm(n_sp, 0, 1) %>% round(3)
+WP_dat <- tibble(sp = 1:n_sp, WP)
+U <- cbind(Intercept = 1, WP)
+rownames(U) <- sp_name
+U
+```
+U is the species level predictor.
+
+```{r}
+gamma0 <- rnorm(n_para, 0, 1) %>% round(3)
+gamma1 <- c(0, 0.8, -0.4, 0, 0)
+gamma <- rbind(gamma0, gamma1)
+
+colnames(gamma) <-  c("Intercept",
+                 "CONS",
+                 "HETS",
+                 "CONBA",
+                 "HETBA")
+
+u_gamma <- U %*% gamma
+rownames(u_gamma) <- sp_name
+colnames(u_gamma) <- c("Intercept",
+                 "CONS",
+                 "HETS",
+                 "CONBA",
+                 "HETBA")
+
+#u_gamma %>% round(3)
+
+## not using MVN for simplicity
+R <- matrix(rnorm(n_para * n_sp, 0, 0.2), ncol = n_para)
+beta <- u_gamma + R
+
+sigma_phi <- 0.1
+sigma_tau <- 0.2
+
+phi <- rnorm(n_plot, 0, sigma_phi)
+tau <- rnorm(n_census, 0, sigma_tau)
+
+```
+
+Some paratemers include:
+
+
+- $\bf \gamma$
+
+```{r, echo = F}
+gamma %>% t
+```
+
+
+- $\sigma_\phi$ = 0.1
+- $\sigma_\tau$ = 0.2
+- $\sigma$ in $\bf \Sigma$ = 0.2 and $\rho$ = 0
+- $\bf \beta$ =
+
+```{r, echo = F}
+beta %>% round(3)
+```
+
+In this example, we only have 5 variables for the individual predictor, but we could add more effects (e.g., soil, season and rainfall).
+
+```{r}
+
+#plot(u_gamma, beta)
+suv_mat <- matrix(numeric(n_sp * n_tree), nrow = n_sp)
+X <- NULL
+for (sp in 1:n_sp) {
+  X0 <- matrix(rnorm(n_para * n_tree, 0, 1), nrow = n_para)
+  X0[1,] <- 1
+  suv_mat[sp, ] <- beta[sp, ] %*% X0
+  X <- cbind(X, X0)
+}
+
+rownames(suv_mat) <- sp_name
+
+p0 <- suv_mat %>%
+  t %>%
+  as.numeric
+
+plot <- sample(1:n_plot, n_sample, replace = T)
+census <- sample(1:n_census, n_sample, replace = T)
+
+p00 <- p0 + phi[plot] + tau[census]
+
+logistic <- function(z) {
+  1 / (1 + exp(-z))
+}
+
+p <- logistic(p00)
+suv <- rbinom(n_sample, 1, p)
+
+dat <- tibble(suv, p = p %>% round(3), p00 = p00 %>% round(3)) %>%
+ mutate(plot = plot) %>%
+ mutate(census = census) %>%
+ mutate(sp = rep(1:n_sp, each = n_tree)) %>%
+ full_join(., WP_dat, by = "sp")
+
+DT::datatable(dat)
+
+```
+
+A generated survival data set looks like this.
+
+```{r}
+
+hist_dat <- tibble(S = suv,
+                   p = p,
+                   `logistic(p)` = p00) %>%
+  gather(dat, val, 1:3)
+
+ggplot(hist_dat, aes(x = val)) +
+  geom_histogram() +
+  facet_wrap(~ dat, scale = "free")
+
+```
+
+# Model
+
+We then use the Stan to fit the data.
+
+```{r, cache=TRUE, comment=NA}
+library(rstan)
+rstan::rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores()) # Run on multiple cores
+
+list_dat <- list(N = nrow(dat),
+                 J = n_sp,
+                 K = n_para,
+                 S = n_plot,
+                 T = n_census,
+                 L = 2,
+                 suv = suv,
+                 plot = plot,
+                 census = census,
+                 sp = dat$sp,
+                 x = t(X),
+                 u = U)
+
+fit <- stan(file = "model.stan",
+            data = list_dat,
+            iter = 2000,
+            warmup = 1000,
+            thin = 1,
+            chains =  4,
+            refresh = 500,
+            control = list(adapt_delta = 0.9, max_treedepth = 20))
+
+```
+
+The resulting estimates well recovered the original values (e.g., $\bf \gamma$, $\sigma_{\tau}$ and $\sigma_{\phi}$) `r emo::ji("beer")`
+
+
+
+```{r}
+print(fit, pars = c("gamma", "sigma_phi", "sigma_tau"))
+```
+
+```{r}
+gamma %>% t
+```
+
+- $\sigma_\phi$ = 0.1
+- $\sigma_\tau$ = 0.2
+
+# Computing Environment
+
+```{r}
+writeLines(readLines(file.path(Sys.getenv("HOME"), ".R/Makevars")))
+devtools::session_info("rstan")
+```
