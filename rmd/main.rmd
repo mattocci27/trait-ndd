@@ -1,0 +1,212 @@
+---
+title: Seedling survival analysis
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+# Deps
+
+```{r}
+library(tidyverse)
+library(rstan)
+library(rstanarm)
+library(bayesplot)
+options(mc.cores = parallel::detectCores())
+```
+
+# Data
+
+```{r data}
+seedling_all <- read_csv("../data/seedling_for_drought.csv")
+wp <- read_csv("../data/wp.csv")
+
+colnames(seedling_all)
+colnames(wp)
+
+tmp10 <- seedling_all %>% 
+  group_by(sp) %>%
+  summarize(n = n()) %>%
+  filter(n >= 10)
+
+# 10
+seedling <- right_join(seedling_all, tmp10, by = "sp") 
+
+seedling_wp <- seedling[seedling$sp%in%wp$Species,]
+shared_wp <- wp[wp$Species%in%seedling$sp,]
+
+seedling$sp %>% unique %>% length
+seedling_wp$sp %>% unique %>% length
+
+nrow(seedling_all)
+nrow(seedling)
+nrow(seedling_wp)
+
+length(unique(seedling_all$sp))
+length(unique(seedling$sp))
+length(unique(seedling_wp$sp))
+```
+
+# Model
+
+```{r cat_model}
+writeLines(readLines("../model/model.stan"))
+```
+
+# Dry season
+
+```{r Dry_data, results="hide"}
+seedling_wpd <- seedling_wp %>%
+  filter(season == "dry")
+
+Xd <- cbind(rep(1, nrow(seedling_wpd)),
+           seedling_wpd[,c("S_scon",
+                           "S_acon",
+                           "S_ahet",
+                           "S_shet",
+                           "S_soilpc1",
+                           "S_soilpc2",
+                           "S_soilpc3",
+                           "S_log_h1")])
+
+colnames(Xd)[1] <- "Int"
+
+
+shared_wpd2 <- shared_wp %>%
+  filter(Species %in% seedling_wpd$sp)
+
+dim(Xd)
+
+Ud <- cbind(rep(1,length(unique(seedling_wpd$sp))),
+           shared_wpd2$avg_spwp)
+
+Ud[, 2] <- scale(Ud[,2])
+
+dim(Ud)
+
+n_sp_d <- length(unique(seedling_wpd$sp))
+n_para_d <- ncol(Xd)
+n_plot_d <- length(unique(seedling_wpd$quadrat))
+n_census_d <- length(unique(seedling_wpd$census))
+list_dat_d <- list(N = nrow(seedling_wpd),
+                 J = n_sp_d,
+                 K = n_para_d,
+                 S = n_plot_d,
+                 T = n_census_d,
+                 L = ncol(Ud),
+                 suv = seedling_wpd$surv,
+                 plot = seedling_wpd$quadrat %>%
+                   as.character %>% as.factor %>% as.integer,
+                 census = seedling_wpd$census %>%
+                   as.character %>% as.factor %>% as.integer,
+                 sp = seedling_wpd$sp %>%
+                   as.character %>% as.factor %>% as.integer,
+                 x = Xd %>% as.matrix,
+                # x = t(X),
+                 u = Ud)
+str(list_dat_d)
+```
+
+```{r Dry_stan, results="hide"}
+fit_dry <- stan(file = "../model/model.stan",
+            data = list_dat_d,
+            verbose = TRUE,
+            iter = 2,
+            warmup = 1,
+            thin = 1,
+            chains =  1,
+            refresh = 200,
+            control = list(adapt_delta = 0.9, max_treedepth = 20))
+
+```
+
+```{r Dry_stan2}
+print(fit_dry, pars = c("gamma", "sigma_phi", "sigma_tau"))
+
+save.image("../data/dry.rda")
+```
+
+
+# All seasons
+
+Skipped for now.
+
+```{r All_model, eval=F}
+
+
+############################### year level
+X <- cbind(rep(1, nrow(seedling_wp)),
+           seedling_wp[,c("S_scon", 
+                          "S_acon",
+                          "S_ahet",
+                          "S_shet",
+                          "S_soilpc1",
+                          "S_soilpc2",
+                          "S_soilpc3",
+                          "S_log_h1")])
+
+
+#plot(S_scon ~ S_acon, seedling_wpd, log = "xy")
+
+colnames(X)[1] <- "Int"
+dim(X)
+
+U <- cbind(rep(1,length(unique(seedling_wp$sp))),
+           shared_wp$avg_spwp)
+
+U[, 2] <- scale(U[,2])
+
+dim(U)
+
+n_sp <- length(unique(seedling_wp$sp))
+n_para <- ncol(X)
+n_plot <- length(unique(seedling_wp$quadrat))
+n_census <- length(unique(seedling_wp$census))
+
+list_dat <- list(N = nrow(seedling_wp),
+                 J = n_sp,
+                 K = n_para,
+                 S = n_plot,
+                 T = n_census,
+                 L = ncol(U),
+                 suv = seedling_wp$surv,
+                 plot = seedling_wp$quadrat %>%
+                   as.character %>% as.factor %>% as.integer,
+                 census = seedling_wp$census %>%
+                   as.character %>% as.factor %>% as.integer,
+                 sp = seedling_wp$sp %>%
+                   as.character %>% as.factor %>% as.integer,
+                 x = X %>% as.matrix,
+                # x = t(X),
+                 u = U)
+str(list_dat)
+
+
+#fit3 <- stan(file = "model.stan",
+#            data = list_dat,
+#            verbose = TRUE,
+#            iter = 2000,
+#            warmup = 1000,
+#            thin = 1,
+#            chains =  4,
+#            refresh = 200,
+#            control = list(adapt_delta = 0.9, max_treedepth = 20))
+#print(fit3, pars = c("gamma", "sigma_phi", "sigma_tau"))
+```
+

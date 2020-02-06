@@ -44,4 +44,16 @@ model {
   tau ~ normal(0, sigma_tau);
   suv ~ bernoulli_logit(p);
 }
-
+ 
+generated quantities {
+  vector[N] log_lik;
+  vector[N] p;
+  row_vector[K] u_gamma[J];
+  // transformed parameters
+  for (j in 1:J)
+    u_gamma[j] = u[j] * gamma;
+  for (n in 1:N) {
+    p[n] = x[n] * beta[sp[n]] + phi[plot[n]] + tau[census[n]];
+    log_lik[n] = bernoulli_logit_lpmf(suv[n] | p[n]);
+  }
+ }
