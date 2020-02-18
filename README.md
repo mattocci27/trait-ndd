@@ -22,7 +22,7 @@ Then, go to http://xxx.xxx.xx.xx:8787/ or localhost:8787/ in your browser.
 To see if the model can be compiled:
 
 ```{bash}
-sh ./run_test.sh
+sh ./test_stan.sh
 ```
 
 To run the model:
