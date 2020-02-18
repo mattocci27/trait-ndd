@@ -16,7 +16,9 @@ n_thin <- as.numeric(argv[3])
 n_chains <- as.numeric(argv[4])
 a_delta <- as.numeric(argv[5])
 n_ab <- as.numeric(argv[6])
+dry <- as.character(argv[7])
 
+print(paste("Model for ", dry, "season"))
 print(paste("n_iter =", n_iter))
 print(paste("n_warm =", n_warm))
 print(paste("n_thin =", n_thin))
@@ -55,12 +57,17 @@ length(unique(seedling_wp$sp))
 
 # Model
 
-writeLines(readLines("./model/model.stan"))
+writeLines(readLines("./model/model_ind.stan"))
 
-# Dry season
+# Dry or wet season
 
-seedling_wpd <- seedling_wp %>%
-  filter(season == "dry")
+if (dry == "dry") {
+  seedling_wpd <- seedling_wp %>%
+    filter(season == "dry")
+} else {
+  seedling_wpd <- seedling_wp %>%
+    filter(season != "dry")
+}
 
 Xd <- cbind(rep(1, nrow(seedling_wpd)),
             seedling_wpd[,c("S_scon",
@@ -73,7 +80,6 @@ Xd <- cbind(rep(1, nrow(seedling_wpd)),
                             "S_log_h1")])
 
 colnames(Xd)[1] <- "Int"
-
 
 shared_wpd2 <- shared_wp %>%
   filter(Species %in% seedling_wpd$sp)
@@ -109,7 +115,7 @@ list_dat_d <- list(N = nrow(seedling_wpd),
                    u = Ud)
 str(list_dat_d)
 
-fit_dry <- stan(file = "./model/model.stan",
+fit_dry <- stan(file = "./model/model_ind.stan",
                 data = list_dat_d,
                 verbose = TRUE,
                 iter = n_iter,
@@ -119,10 +125,9 @@ fit_dry <- stan(file = "./model/model.stan",
                 refresh = 200,
                 control = list(adapt_delta = a_delta, max_treedepth = 20))
 
+print(fit_dry, pars = c("gamma", "sigma"))
 
-print(fit_dry, pars = c("gamma", "sigma_phi", "sigma_tau"))
-
-save_name <- str_c("./data/dry_spab_", n_ab, ".rda")
+save_name <- str_c("./data/", dry, "_spab_", n_ab, ".rda")
 
 save.image(save_name)
 
