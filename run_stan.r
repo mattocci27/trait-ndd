@@ -97,11 +97,13 @@ n_sp_d <- length(unique(seedling_wpd$sp))
 n_para_d <- ncol(Xd)
 n_plot_d <- length(unique(seedling_wpd$quadrat))
 n_census_d <- length(unique(seedling_wpd$census))
+n_tag_d <- length(unique(seedling_wpd$tag))
 list_dat_d <- list(N = nrow(seedling_wpd),
                    J = n_sp_d,
                    K = n_para_d,
                    S = n_plot_d,
                    T = n_census_d,
+                   M = n_tag_d,
                    L = ncol(Ud),
                    suv = seedling_wpd$surv,
                    plot = seedling_wpd$quadrat %>%
@@ -109,6 +111,8 @@ list_dat_d <- list(N = nrow(seedling_wpd),
                    census = seedling_wpd$census %>%
                      as.character %>% as.factor %>% as.integer,
                    sp = seedling_wpd$sp %>%
+                     as.character %>% as.factor %>% as.integer,
+                   tag = seedling_wpd$tag %>%
                      as.character %>% as.factor %>% as.integer,
                    x = Xd %>% as.matrix,
                    # x = t(X),
