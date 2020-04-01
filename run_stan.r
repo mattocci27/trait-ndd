@@ -3,7 +3,7 @@ rm(list = ls())
 # Deps
 library(tidyverse)
 library(rstan)
-library(rstanarm)
+#library(rstanarm)
 library(bayesplot)
 options(mc.cores = parallel::detectCores())
 
@@ -69,14 +69,44 @@ if (dry == "dry") {
     filter(season != "dry")
 }
 
+##  Use Detto et al. 2019 Ecology letters -----------------------------
+
+x1 <- seedling_wpd$acon
+x2 <- seedling_wpd$ahet
+y <- seedling_wpd$surv
+lik <- numeric(100)
+for (i in 1:100) {
+  d1 <- x1^(i/100)
+  d2 <- x2^(i/100)
+  fm1 <- glm(y ~ scale(d1) + scale(d2), family=binomial)
+  lik[i] <- logLik(fm1)
+}
+
+#plot(1:100, lik, type = "l")
+cc <- which(lik == max(lik)) / 100
+print(str_c("use c = ", cc, " as a scaling parameter for distance effect"))
+
+seedling_wpd <- seedling_wpd %>%
+  mutate(SC_ahet = as.numeric(scale(ahet^cc))) %>%
+  mutate(SC_acon = as.numeric(scale(acon^cc)))
+
+# -------------------------------------------------------------------------
+
+#Xd <- cbind(rep(1, nrow(seedling_wpd)),
+#            seedling_wpd[,c("S_scon",
+#                            "SC_acon",
+#                            "S_shet",
+#                            "SC_ahet",
+#                            "S_soilpc1",
+#                            "S_soilpc2",
+#                            "S_soilpc3",
+#                            "S_log_h1")])
+
 Xd <- cbind(rep(1, nrow(seedling_wpd)),
             seedling_wpd[,c("S_scon",
-                            "S_acon",
-                            "S_ahet",
+                            "SC_acon",
                             "S_shet",
-                            "S_soilpc1",
-                            "S_soilpc2",
-                            "S_soilpc3",
+                            "SC_ahet",
                             "S_log_h1")])
 
 colnames(Xd)[1] <- "Int"

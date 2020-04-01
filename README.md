@@ -11,7 +11,7 @@ cd seedling_stan
 ## Docker
 
 ```{bash}
-sudo pull mattocci/rstan
+sudo docker pull mattocci/rstan
 sudo docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=<your_password> mattocci/r-debian
 ```
 
