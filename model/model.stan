@@ -18,8 +18,7 @@ parameters{
   vector[K] beta[J];
   vector[S] phi;
   vector[T] tau;
-  real<lower=0> sigma_phi;
-  real<lower=0> sigma_tau;
+  vector<lower=0>[2] sigma;
   vector<lower=0>[K] L_sigma;
   cholesky_factor_corr[K] L_Omega;
 }
@@ -28,8 +27,7 @@ model {
   vector[N] p;
   row_vector[K] u_gamma[J];
   // priors
-  sigma_phi ~ cauchy(0, 5);
-  sigma_tau ~ cauchy(0, 5);
+  sigma ~ cauchy(0, 5);
   L_Omega ~ lkj_corr_cholesky(2); // uniform of L_Omega * L_Omega'
   L_sigma ~ cauchy(0, 5);
   to_vector(gamma) ~ normal(0, 5);
@@ -40,8 +38,8 @@ model {
     p[n] = x[n] * beta[sp[n]] + phi[plot[n]] + tau[census[n]];
   // model
   beta ~ multi_normal_cholesky(u_gamma, diag_pre_multiply(L_sigma, L_Omega));
-  phi ~ normal(0, sigma_phi);
-  tau ~ normal(0, sigma_tau);
+  phi ~ normal(0, sigma[1]);
+  tau ~ normal(0, sigma[2]);
   suv ~ bernoulli_logit(p);
 }
  
