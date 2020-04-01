@@ -28,10 +28,11 @@ print(paste("minimum sp abund =", n_ab))
 
 # Data
 seedling_all <- read_csv("./data/seedling_for_drought.csv")
-wp <- read_csv("./data/wp.csv")
+#wp <- read_csv("./data/wp.csv")
+tlp <- read_csv("./data/tlp.csv")
 
 colnames(seedling_all)
-colnames(wp)
+colnames(tlp)
 
 tmp10 <- seedling_all %>% 
   group_by(sp) %>%
@@ -41,19 +42,20 @@ tmp10 <- seedling_all %>%
 # 10
 seedling <- right_join(seedling_all, tmp10, by = "sp") 
 
-seedling_wp <- seedling[seedling$sp%in%wp$Species,]
-shared_wp <- wp[wp$Species%in%seedling$sp,]
+seedling_tlp <- seedling[seedling$sp%in%tlp$Species,]
+shared_tlp <- tlp[tlp$Species%in%seedling$sp,]
 
 seedling$sp %>% unique %>% length
-seedling_wp$sp %>% unique %>% length
+seedling_tlp$sp %>% unique %>% length
 
 nrow(seedling_all)
 nrow(seedling)
-nrow(seedling_wp)
+nrow(seedling_tlp)
 
 length(unique(seedling_all$sp))
 length(unique(seedling$sp))
-length(unique(seedling_wp$sp))
+length(unique(seedling_tlp$sp))
+length(unique(shared_tlp$Species))
 
 # Model
 
@@ -62,18 +64,18 @@ writeLines(readLines("./model/model.stan"))
 # Dry or wet season
 
 if (dry == "dry") {
-  seedling_wpd <- seedling_wp %>%
+  seedling_tlpd <- seedling_tlp %>%
     filter(season == "dry")
 } else {
-  seedling_wpd <- seedling_wp %>%
+  seedling_tlpd <- seedling_tlp %>%
     filter(season != "dry")
 }
 
 ##  Use Detto et al. 2019 Ecology letters -----------------------------
 
-x1 <- seedling_wpd$acon
-x2 <- seedling_wpd$ahet
-y <- seedling_wpd$surv
+x1 <- seedling_tlpd$acon
+x2 <- seedling_tlpd$ahet
+y <- seedling_tlpd$surv
 lik <- numeric(100)
 for (i in 1:100) {
   d1 <- x1^(i/100)
@@ -86,7 +88,7 @@ for (i in 1:100) {
 cc <- which(lik == max(lik)) / 100
 print(str_c("use c = ", cc, " as a scaling parameter for distance effect"))
 
-seedling_wpd <- seedling_wpd %>%
+seedling_tlpd <- seedling_tlpd %>%
   mutate(SC_ahet = as.numeric(scale(ahet^cc))) %>%
   mutate(SC_acon = as.numeric(scale(acon^cc)))
 
@@ -102,8 +104,8 @@ seedling_wpd <- seedling_wpd %>%
 #                            "S_soilpc3",
 #                            "S_log_h1")])
 
-Xd <- cbind(rep(1, nrow(seedling_wpd)),
-            seedling_wpd[,c("S_scon",
+Xd <- cbind(rep(1, nrow(seedling_tlpd)),
+            seedling_tlpd[,c("S_scon",
                             "SC_acon",
                             "S_shet",
                             "SC_ahet",
@@ -111,38 +113,38 @@ Xd <- cbind(rep(1, nrow(seedling_wpd)),
 
 colnames(Xd)[1] <- "Int"
 
-shared_wpd2 <- shared_wp %>%
-  filter(Species %in% seedling_wpd$sp)
+shared_tlpd2 <- shared_tlp %>%
+  filter(Species %in% seedling_tlpd$sp)
 
 dim(Xd)
 
-Ud <- cbind(rep(1,length(unique(seedling_wpd$sp))),
-            shared_wpd2$avg_spwp)
+Ud <- cbind(rep(1,length(unique(seedling_tlpd$sp))),
+            shared_tlpd2$tlp)
 
 Ud[, 2] <- scale(Ud[,2])
 
 dim(Ud)
 
-n_sp_d <- length(unique(seedling_wpd$sp))
+n_sp_d <- length(unique(seedling_tlpd$sp))
 n_para_d <- ncol(Xd)
-n_plot_d <- length(unique(seedling_wpd$quadrat))
-n_census_d <- length(unique(seedling_wpd$census))
-n_tag_d <- length(unique(seedling_wpd$tag))
-list_dat_d <- list(N = nrow(seedling_wpd),
+n_plot_d <- length(unique(seedling_tlpd$quadrat))
+n_census_d <- length(unique(seedling_tlpd$census))
+n_tag_d <- length(unique(seedling_tlpd$tag))
+list_dat_d <- list(N = nrow(seedling_tlpd),
                    J = n_sp_d,
                    K = n_para_d,
                    S = n_plot_d,
                    T = n_census_d,
                    M = n_tag_d,
                    L = ncol(Ud),
-                   suv = seedling_wpd$surv,
-                   plot = seedling_wpd$quadrat %>%
+                   suv = seedling_tlpd$surv,
+                   plot = seedling_tlpd$quadrat %>%
                      as.character %>% as.factor %>% as.integer,
-                   census = seedling_wpd$census %>%
+                   census = seedling_tlpd$census %>%
                      as.character %>% as.factor %>% as.integer,
-                   sp = seedling_wpd$sp %>%
+                   sp = seedling_tlpd$sp %>%
                      as.character %>% as.factor %>% as.integer,
-                   tag = seedling_wpd$tag %>%
+                   tag = seedling_tlpd$tag %>%
                      as.character %>% as.factor %>% as.integer,
                    x = Xd %>% as.matrix,
                    # x = t(X),
