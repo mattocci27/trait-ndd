@@ -57,7 +57,7 @@ length(unique(seedling_wp$sp))
 
 # Model
 
-writeLines(readLines("./model/model_ind.stan"))
+writeLines(readLines("./model/model.stan"))
 
 # Dry or wet season
 
@@ -149,7 +149,7 @@ list_dat_d <- list(N = nrow(seedling_wpd),
                    u = Ud)
 str(list_dat_d)
 
-fit_dry <- stan(file = "./model/model_ind.stan",
+fit <- stan(file = "./model/model.stan",
                 data = list_dat_d,
                 verbose = TRUE,
                 iter = n_iter,
@@ -159,7 +159,7 @@ fit_dry <- stan(file = "./model/model_ind.stan",
                 refresh = 200,
                 control = list(adapt_delta = a_delta, max_treedepth = 20))
 
-print(fit_dry, pars = c("gamma", "sigma"))
+print(fit, pars = c("gamma", "sigma", "lp__"))
 
 save_name <- str_c("./data/", dry, "_spab_", n_ab, ".rda")
 
