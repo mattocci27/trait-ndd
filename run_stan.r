@@ -1,7 +1,7 @@
 rm(list = ls())
 
 # Deps
-library(tidyverse)
+library(tdyverse)
 library(rstan)
 #library(rstanarm)
 library(bayesplot)
@@ -10,14 +10,18 @@ options(mc.cores = parallel::detectCores())
 set.seed(123)
 
 argv <- commandArgs(trailingOnly = TRUE)
-n_iter <- as.numeric(argv[1])
-n_warm <- as.numeric(argv[2])
-n_thin <- as.numeric(argv[3])
-n_chains <- as.numeric(argv[4])
-a_delta <- as.numeric(argv[5])
-n_ab <- as.numeric(argv[6])
-dry <- as.character(argv[7])
+model_name <- as.character(argv[1])
+n_iter <- as.numeric(argv[2])
+n_warm <- as.numeric(argv[3])
+n_thin <- as.numeric(argv[4])
+n_chains <- as.numeric(argv[5])
+a_delta <- as.numeric(argv[6])
+n_ab <- as.numeric(argv[7])
+dry <- as.character(argv[8])
 
+model_path <- str_c("./model/", model_name, ".stan")
+
+print(paste("Model ", model_name))
 print(paste("Model for ", dry, "season"))
 print(paste("n_iter =", n_iter))
 print(paste("n_warm =", n_warm))
@@ -59,7 +63,7 @@ length(unique(shared_tlp$Species))
 
 # Model
 
-writeLines(readLines("./model/model.stan"))
+writeLines(readLines(model_path))
 
 # Dry or wet season
 
@@ -106,10 +110,10 @@ seedling_tlpd <- seedling_tlpd %>%
 
 Xd <- cbind(rep(1, nrow(seedling_tlpd)),
             seedling_tlpd[,c("S_scon",
-                            "SC_acon",
-                            "S_shet",
-                            "SC_ahet",
-                            "S_log_h1")])
+                             "SC_acon",
+                             "S_shet",
+                             "SC_ahet",
+                             "S_log_h1")])
 
 colnames(Xd)[1] <- "Int"
 
@@ -151,19 +155,20 @@ list_dat_d <- list(N = nrow(seedling_tlpd),
                    u = Ud)
 str(list_dat_d)
 
-fit <- stan(file = "./model/model.stan",
-                data = list_dat_d,
-                verbose = TRUE,
-                iter = n_iter,
-                warmup = n_warm,
-                thin = n_thin,
-                chains =  n_chains,
-                refresh = 200,
-                control = list(adapt_delta = a_delta, max_treedepth = 20))
+fit <- stan(file = model_path,
+            data = list_dat_d,
+            verbose = TRUE,
+            iter = n_iter,
+            warmup = n_warm,
+            thin = n_thin,
+            chains =  n_chains,
+            refresh = 200,
+            control = list(adapt_delta = a_delta, max_treedepth = 20))
 
-print(fit, pars = c("gamma", "sigma", "lp__"))
+print(fit, pars = c("gamma", "sigma", "L_sigma", "lp__"))
 
-save_name <- str_c("./data/", dry, "_spab_", n_ab, ".rda")
+save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, ".rda")
+print(save_name)
 
 save.image(save_name)
 
