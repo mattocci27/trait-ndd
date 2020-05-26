@@ -12,7 +12,7 @@ cd seedling_stan
 
 ```{bash}
 sudo docker pull mattocci/rstan
-sudo docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=<your_password> mattocci/r-debian
+sudo docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=<your_password> mattocci/rstan
 ```
 
 Then, go to http://xxx.xxx.xx.xx:8787/ or localhost:8787/ in your browser.

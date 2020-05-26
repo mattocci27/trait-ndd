@@ -1,7 +1,7 @@
 rm(list = ls())
 
 # Deps
-library(tdyverse)
+library(tidyverse)
 library(rstan)
 #library(rstanarm)
 library(bayesplot)
