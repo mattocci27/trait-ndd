@@ -30,9 +30,9 @@ model {
   vector[N] p;
   row_vector[K] u_gamma[J];
   // priors
-  sigma ~ cauchy(0, 5);
+  sigma ~ cauchy(0, 2.5);
   L_Omega ~ lkj_corr_cholesky(2); // uniform of L_Omega * L_Omega'
-  L_sigma ~ cauchy(0, 5);
+  L_sigma ~ cauchy(0, 2.5);
   to_vector(gamma) ~ normal(0, 5);
   // transformed parameters
   for (j in 1:J)

@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  stan:
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    container_name: seedling-stan
+    image: mattocci/rstan:3.6.3
+    user: rstudio
+    volumes:
+      - .:/home/rstudio/seedling-stan

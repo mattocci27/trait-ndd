@@ -27,9 +27,9 @@ sudo docker load < mattocci_rstan_3.6.3.tar
 
 sudo docker pull mattocci/rstan
 sudo docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=mogemoge --name rstudio mattocci/rstan
-sudo docker run -it --rm -v $(pwd):/home/rstudio --name rstudio mattocci/rstan /bin/bash 
 
-docker run -it --rm -v $(pwd):/home/rstudio/seedling_stan -u rstudio mattocci/rstan /bin/bash 
+docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/rstan:3.6.3 /bin/bash 
+
 
 #sudo docker run -it -v $(pwd):/home/rstudio/seedling_stan -u rstudio mattocci/rstan R
 
