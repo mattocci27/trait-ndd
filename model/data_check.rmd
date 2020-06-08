@@ -1,0 +1,47 @@
+---
+title: Data check
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, data}
+library(tidyverse)
+library(GGally)
+
+seedling_all <- read_csv("../data/seedling_for_drought.csv")
+wp <- read_csv("../data/wp.csv")
+
+colnames(seedling_all)
+colnames(wp)
+
+tmp10 <- seedling_all %>% 
+  group_by(sp) %>%
+  summarize(n = n()) %>%
+  filter(n >= 10)
+```
+
+```{r cov}
+
+seedling_all %>%
+  dplyr::select(S_scon, S_acon, S_ahet, S_shet) %>%
+  ggpairs(.)
+
+
+```

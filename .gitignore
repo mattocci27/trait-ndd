@@ -8,6 +8,9 @@ core
 .cache/
 .rstudio/
 log/*.log
+*_cache
+*_files
+nohup.out
 
 
 # History files

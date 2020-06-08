@@ -26,7 +26,10 @@ cd seedling_stan
 sudo docker load < mattocci_rstan_3.6.3.tar
 
 sudo docker pull mattocci/rstan
-sudo docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=mogemoge --name rstudio mattocci/rstan
+
+docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=mogemoge --name rstudio mattocci/rstan:3.6.3
+
+docker run -p 8787:8787 -v $(pwd):/home/rstudio/seedling-stan -e PASSWORD=mogemoge mattocci/myenv:3.6.3
 
 docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/rstan:3.6.3 /bin/bash 
 
