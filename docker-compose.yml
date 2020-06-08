@@ -2,11 +2,15 @@ version: '3'
 
 services:
   stan:
-    command: /bin/bash
     stdin_open: true
     tty: true
     container_name: seedling-stan
-    image: mattocci/rstan:3.6.3
+    image: mattocci/myenv:3.6.3
+    #image: rocker/verse:3.6.3
     user: rstudio
+    environment: 
+      - PASSWORD=test
     volumes:
       - .:/home/rstudio/seedling-stan
+    ports:
+      - 8787:8787

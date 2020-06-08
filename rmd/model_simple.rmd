@@ -32,7 +32,7 @@ S_{ijlt} \sim Bernoulli(p_{jlt})
 $$
 
 $$
-logit(p_{jlt}) = \boldsymbol{\beta_{j}} \cdot \boldsymbol{X} + \phi_l + \tau_t
+logit(p_{jlt}) = \boldsymbol{\beta_{j}} \cdot \boldsymbol{X}
 $$
 
 where $\boldsymbol{\beta_{j}} = \left[\beta_{0j}, \beta_{1j}, \ldots, \beta_{kj} \right]$ is the vectors of coefficients at the species-level; *k* is the number of predictors for an individual seedling; $\boldsymbol{X} = \left[X_{0}, X_{1}, \ldots, X_{k} \right]$ is the predictors for an individual seedling; $\phi_l$ is a random effect for seedling plot, where $\phi_l \sim \mathcal{N}(0,\sigma_{\phi})$; and $\tau_t$ is a random effect for census, where $\phi_l \sim \mathcal{N}(0,\sigma_{\phi})$ (Note that $\cdot$ denotes dot product).
@@ -48,8 +48,8 @@ where $\gamma_{n0-1}$ are the vectors of coefficients; $WP_j$ is the water poten
 The covariance matrix $\bf \Sigma_{\beta}$ can be decomposed as ${\bf \Sigma} = {\rm diag}({\bf \sigma}){\bf \Omega}{\rm diag}({\bf \sigma}) = {\rm diag}({\bf \sigma}){\bf LL}\prime {\rm diag}({\bf \sigma})$ using a Cholesky decomposition (See [Alvarez et al. 2014](https://arxiv.org/abs/1408.4050), [Katabuchi et al. 2017](https://www.biorxiv.org/content/10.1101/116855v1.abstract) and [this post](https://stla.github.io/stlapblog/posts/stanlkjprior.html)). See the model code below for the priors.
 
 
-```{r}
-writeLines(readLines("../model/model.stan"))
+```{r,eval = T}
+writeLines(readLines("../model/model_simple.stan"))
 ```
 
 
@@ -58,8 +58,6 @@ writeLines(readLines("../model/model.stan"))
 We generate dummy data with 20 species, 100 seedlings per species, 10 plots and 5 censuses. In total we have 2000 seedlings.
 
 ```{r}
-library(tidyverse)
-library(mvtnorm)
 n_sp <- 20
 sp_name <- paste0("sp", LETTERS[1:n_sp])
 n_para <- 5
@@ -72,10 +70,13 @@ n_sample <- n_sp * n_tree
 
 ```{r}
 set.seed(12345)
+library(tidyverse)
+library(mvtnorm)
 
 WP <- rnorm(n_sp, 0, 1) %>% round(3)
 WP_dat <- tibble(sp = 1:n_sp, WP)
-U <- cbind(Intercept = 1, WP)
+U <- cbind(Intercept = rnorm(n_sp, 1, 0.3) %>% round(3),
+           WP)
 rownames(U) <- sp_name
 U
 ```
@@ -107,6 +108,7 @@ v2 <- rnorm(n_sp, v1, sig_vec[2])
 v3 <- rnorm(n_sp, v2, sig_vec[3])
 v4 <- rnorm(n_sp, -v3, sig_vec[4])
 v5 <- rnorm(n_sp, v4, sig_vec[5])
+
 
 rmat <- cbind(v1, v2, v3, v4, v5) 
 #create means for each column
@@ -168,7 +170,8 @@ p0 <- suv_mat %>%
 plot <- sample(1:n_plot, n_sample, replace = T)
 census <- sample(1:n_census, n_sample, replace = T)
 
-p00 <- p0 + phi[plot] + tau[census]
+#p00 <- p0 + phi[plot] + tau[census]
+p00 <- p0
 
 logistic <- function(z) {
   1 / (1 + exp(-z))
@@ -206,7 +209,7 @@ ggplot(hist_dat, aes(x = val)) +
 
 We then use the Stan to fit the data.
 
-```{r, cache=TRUE, comment=NA}
+```{r, cache=TRUE}
 library(rstan)
 rstan::rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores()) # Run on multiple cores
@@ -224,7 +227,7 @@ list_dat <- list(N = nrow(dat),
                  x = t(X),
                  u = U)
 
-fit <- stan(file = "../model/model.stan",
+fit <- stan(file = "../model/model_simple.stan",
             data = list_dat,
             iter = 5000,
             warmup = 4000,
@@ -238,21 +241,21 @@ fit <- stan(file = "../model/model.stan",
 The resulting estimates well recovered the original values (e.g., $\bf \gamma$, $\sigma_{\tau}$ and $\sigma_{\phi}$).
 
 
+
 ```{r}
-print(fit, pars = c("gamma", "phi", "tau"))
-#print(fit, pars = c("gamma"))
+print(fit, pars = c("gamma"))
 ```
 
 ```{r}
 gamma %>% t
+#save.image("./data/test.rda")
 ```
 
 - $\sigma_\phi$ = 0.1
 - $\sigma_\tau$ = 0.2
 
-
 ```{r, eval=TRUE}
-save.image("../data/model.rda")
+save.image("../data/model_simple.rda")
 ```
 
 # Diagnostic
@@ -268,7 +271,8 @@ head(np_cp)
 color_scheme_set("darkgray")
 mcmc_pairs(fit, np = np_cp, pars = c("gamma[1,1]",
                                      "gamma[1,2]",
-                                     "phi[1]", "tau[1]"),
+                                     "gamma[2,2]"
+                                     ),
            off_diag_args = list(size = 0.75))
 ```
 
