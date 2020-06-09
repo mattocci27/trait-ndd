@@ -153,7 +153,7 @@ In this example, we only have 5 variables for the individual predictor, but we c
 suv_mat <- matrix(numeric(n_sp * n_tree), nrow = n_sp)
 X <- NULL
 for (sp in 1:n_sp) {
-  X0 <- matrix(rnorm(n_para * n_tree, 0, 1), nrow = n_para)
+  X0 <- matrix(rnorm(n_para * n_tree, 0, 0.2), nrow = n_para)
   X0[1,] <- 1
   suv_mat[sp, ] <- beta[sp, ] %*% X0
   X <- cbind(X, X0)
