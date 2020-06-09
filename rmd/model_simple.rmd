@@ -58,10 +58,11 @@ writeLines(readLines("../model/model_simple.stan"))
 We generate dummy data with 20 species, 100 seedlings per species, 10 plots and 5 censuses. In total we have 2000 seedlings.
 
 ```{r}
-n_sp <- 20
-sp_name <- paste0("sp", LETTERS[1:n_sp])
+n_sp <- 30
+#sp_name <- paste0("sp", LETTERS[1:n_sp])
+sp_name <- paste0("sp", 1:n_sp)
 n_para <- 5
-n_tree <- 100
+n_tree <- 50
 n_plot <- 10
 n_census <- 5
 n_sample <- n_sp * n_tree
@@ -155,7 +156,7 @@ In this example, we only have 5 variables for the individual predictor, but we c
 suv_mat <- matrix(numeric(n_sp * n_tree), nrow = n_sp)
 X <- NULL
 for (sp in 1:n_sp) {
-  X0 <- matrix(rnorm(n_para * n_tree, 0, 1), nrow = n_para)
+  X0 <- matrix(rnorm(n_para * n_tree, 0, 0.2), nrow = n_para)
   X0[1,] <- 1
   suv_mat[sp, ] <- beta[sp, ] %*% X0
   X <- cbind(X, X0)
@@ -229,11 +230,11 @@ list_dat <- list(N = nrow(dat),
 
 fit <- stan(file = "../model/model_simple.stan",
             data = list_dat,
-            iter = 5000,
-            warmup = 4000,
+            iter = 2000,
+            warmup = 1000,
             thin = 1,
             chains =  4,
-            refresh = 2000,
+            refresh = 200,
             control = list(adapt_delta = 0.99, max_treedepth = 20))
 
 ```
@@ -243,7 +244,7 @@ The resulting estimates well recovered the original values (e.g., $\bf \gamma$, 
 
 
 ```{r}
-print(fit, pars = c("gamma"))
+print(fit, pars = c("gamma", "Omega", "lp__"))
 ```
 
 ```{r}
@@ -265,16 +266,25 @@ library(bayesplot)
 
 np_cp <- nuts_params(fit)
 head(np_cp)
+
+color_scheme_set("blue")
+div_style <- scatter_style_np(div_color = "green", div_shape = 4, div_size = 4)
+mcmc_pairs(fit, np = np_cp, 
+           pars = c("gamma[1,1]",
+                    "gamma[1,2]",
+                    "lp__"
+                    ),
+           off_diag_args = list(size = 0.75, alpha = 0.5))
+
+mcmc_scatter(fit, np = np_cp, 
+             alpha = 0.5,
+             pars = c("gamma[1,1]",
+                      "L_sigma[1]"
+                      ),
+             np_style = div_style)
+
 ```
 
-```{r}
-color_scheme_set("darkgray")
-mcmc_pairs(fit, np = np_cp, pars = c("gamma[1,1]",
-                                     "gamma[1,2]",
-                                     "gamma[2,2]"
-                                     ),
-           off_diag_args = list(size = 0.75))
-```
 
 # Computing Environment
 

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   stan:
-    stdin_open: true
+    network_mode: host
     tty: true
     container_name: seedling-stan
     image: mattocci/myenv:3.6.3
@@ -10,7 +10,9 @@ services:
     user: rstudio
     environment: 
       - PASSWORD=test
+      - DISPLAY=$DISPLAY
     volumes:
+      - $HOME/.Xauthority:/home/rstudio/.Xauthority
       - .:/home/rstudio/seedling-stan
     ports:
       - 8787:8787
