@@ -5,8 +5,11 @@ services:
     network_mode: host
     tty: true
     container_name: seedling-stan
+    #build:
+    #  context: .
+    #  dockerfile: ./docker/Dockerfile
+      #image: seedling-stan
     image: mattocci/myenv:3.6.3
-    #image: rocker/verse:3.6.3
     user: rstudio
     environment: 
       - PASSWORD=test

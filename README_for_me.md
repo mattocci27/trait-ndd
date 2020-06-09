@@ -42,6 +42,18 @@ $0.1664 ~ 1.18 RMB / h
 
 Then, go to http://xxx.xxx.xx.xx:8787/ or localhost:8787/ in your browser.
 
+## Docker X11
+
+```
+SOCK=/tmp/.X11-unix
+XAUTH=$HOME/.Xauthority
+xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+chmod 777 $XAUTH
+
+docker-compose run stan /bin/bash
+
+```
+
 
 ## Local terminal or terminal inside the docker.
 
@@ -111,4 +123,6 @@ mcmc_trace(fit, pars = c("gamma[2,1]", "gamma[2,2]","gamma[2,3]", "gamma[2,4]","
 - 8615.59 seconds on n2s4
 - wp on cons adulut has negative effect
 - I will try model without ind again 
+
+
 
