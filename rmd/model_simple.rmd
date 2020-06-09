@@ -58,11 +58,11 @@ writeLines(readLines("../model/model_simple.stan"))
 We generate dummy data with 20 species, 100 seedlings per species, 10 plots and 5 censuses. In total we have 2000 seedlings.
 
 ```{r}
-n_sp <- 30
+n_sp <- 20
 #sp_name <- paste0("sp", LETTERS[1:n_sp])
 sp_name <- paste0("sp", 1:n_sp)
 n_para <- 5
-n_tree <- 50
+n_tree <- 100
 n_plot <- 10
 n_census <- 5
 n_sample <- n_sp * n_tree
@@ -85,7 +85,7 @@ U is the species level predictor.
 
 ```{r}
 gamma0 <- rnorm(n_para, 0, 1) %>% round(3)
-gamma1 <- c(0, 0.8, -0.4, 0, 0)
+gamma1 <- c(1.2, -0.2, -0.4, 0.8, 0.4)
 gamma <- rbind(gamma0, gamma1)
 
 colnames(gamma) <-  c("Intercept",
