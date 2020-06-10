@@ -61,7 +61,8 @@ We generate dummy data with 20 species, 100 seedlings per species, 10 plots and 
 n_sp <- 20
 #sp_name <- paste0("sp", LETTERS[1:n_sp])
 sp_name <- paste0("sp", 1:n_sp)
-n_para <- 5
+#n_para <- 5
+n_para <- 3
 n_tree <- 100
 n_plot <- 10
 n_census <- 5
@@ -76,7 +77,8 @@ library(mvtnorm)
 
 WP <- rnorm(n_sp, 0, 1) %>% round(3)
 WP_dat <- tibble(sp = 1:n_sp, WP)
-U <- cbind(Intercept = rnorm(n_sp, 1, 0.3) %>% round(3),
+#U <- cbind(Intercept = rnorm(n_sp, 1, 0.3) %>% round(3),
+U <- cbind(Intercept = 1,
            WP)
 rownames(U) <- sp_name
 U
@@ -84,26 +86,29 @@ U
 U is the species level predictor.
 
 ```{r}
-gamma0 <- rnorm(n_para, 0, 1) %>% round(3)
-gamma1 <- c(1.2, -0.2, -0.4, 0.8, 0.4)
+gamma0 <- c(1.2, -0.4, 0.4, -0.8, 0.8)
+gamma1 <- c(0, -0.4, -0.6, 0, 0)
+
+gamma0 <- c(1.2, -0.4, 0.4)
+gamma1 <- c(0, -0.4, -0.6)
 gamma <- rbind(gamma0, gamma1)
 
 colnames(gamma) <-  c("Intercept",
                  "CONS",
-                 "HETS",
-                 "CONBA",
-                 "HETBA")
+                 "HETS")
+                 #"CONBA",
+                 #"HETBA")
 
 u_gamma <- U %*% gamma
 rownames(u_gamma) <- sp_name
 colnames(u_gamma) <- c("Intercept",
                  "CONS",
-                 "HETS",
-                 "CONBA",
-                 "HETBA")
+                 "HETS")
+                 #"CONBA",
+                 #"HETBA")
 
 #u_gamma %>% round(3)
-sig_vec <- runif(n_para, 0, 0.2)
+sig_vec <- runif(n_para, 0, 0.1)
 v1 <- rnorm(n_sp, 0, sig_vec[1])
 v2 <- rnorm(n_sp, v1, sig_vec[2])
 v3 <- rnorm(n_sp, v2, sig_vec[3])
@@ -111,10 +116,11 @@ v4 <- rnorm(n_sp, -v3, sig_vec[4])
 v5 <- rnorm(n_sp, v4, sig_vec[5])
 
 
-rmat <- cbind(v1, v2, v3, v4, v5) 
+#rmat <- cbind(v1, v2, v3, v4, v5)
+rmat <- cbind(v1, v2, v3)
 #create means for each column
 r_mean <- matrix(data = 1, nrow = nrow(rmat)) %*% apply(rmat, 2, mean)
- 
+
 #creates a difference matrix
 dmat <- rmat - r_mean
 cmat <- (nrow(rmat)-1)^-1 * t(dmat) %*% dmat
@@ -229,13 +235,13 @@ list_dat <- list(N = nrow(dat),
                  u = U)
 
 fit <- stan(file = "../model/model_simple.stan",
-            data = list_dat,
-            iter = 2000,
-            warmup = 1000,
-            thin = 1,
-            chains =  4,
-            refresh = 200,
-            control = list(adapt_delta = 0.99, max_treedepth = 20))
+              data = list_dat,
+          iter = 2000,
+          warmup = 1000,
+          thin = 1,
+          chains =  4,
+          refresh = 200,
+          control = list(adapt_delta = 0.99, max_treedepth = 20))
 
 ```
 
@@ -269,17 +275,17 @@ head(np_cp)
 
 color_scheme_set("blue")
 div_style <- scatter_style_np(div_color = "green", div_shape = 4, div_size = 4)
-mcmc_pairs(fit, np = np_cp, 
+mcmc_pairs(fit, np = np_cp,
            pars = c("gamma[1,1]",
                     "gamma[1,2]",
                     "lp__"
                     ),
            off_diag_args = list(size = 0.75, alpha = 0.5))
 
-mcmc_scatter(fit, np = np_cp, 
+mcmc_scatter(fit, np = np_cp,
              alpha = 0.5,
              pars = c("gamma[1,1]",
-                      "L_sigma[1]"
+                      "Omege[1,1]"
                       ),
              np_style = div_style)
 

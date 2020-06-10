@@ -6,7 +6,7 @@ data{
   int<lower=1> S; // number of site
   int<lower=1> T; // number of census
   matrix[N, K] x; // tree-level predictor
-  row_vector[L] u[J]; // sp-level predictor
+  matrix[J, L] u; // sp-level predictor
   int<lower=0,upper=1> suv[N]; // 1 or 0
   int<lower=1,upper=J> sp[N]; // integer
   int<lower=1,upper=S> plot[N]; // integer
@@ -14,34 +14,43 @@ data{
 }
 
 parameters{
+  matrix[K, J] z;
+  vector[S] phi_raw;
+  vector[T] chi_raw;
   matrix[L, K] gamma;
-  vector[K] beta[J];
-  vector[S] phi;
-  vector[T] tau;
-  vector<lower=0>[2] sigma;
-  vector<lower=0>[K] L_sigma;
   cholesky_factor_corr[K] L_Omega;
+  vector<lower=0,upper=pi()/2>[K] tau_unif;
+  vector<lower=0,upper=pi()/2>[2] sig_unif;
+}
+
+transformed parameters{
+  matrix[J, K] beta;
+  vector<lower=0>[K] tau;
+  vector<lower=0>[2] sig;
+  vector[S] phi;
+  vector[T] chi;
+  for (k in 1:K) tau[k] = 2.5 * tan(tau_unif[k]); // implies tau ~ cauchy(0, 2.5)
+  for (i in 1:2) sig[i] = 2.5 * tan(sig_unif[i]); // implies sig ~ cauchy(0, 2.5)
+  beta = u * gamma + (diag_pre_multiply(tau,L_Omega) * z)';
+  phi = phi_raw * sig[1];
+  chi = chi_raw * sig[2];
 }
 
 model {
-  vector[N] p;
-  row_vector[K] u_gamma[J];
   // Hyper-priors
-  sigma ~ cauchy(0, 2.5);
+  to_vector(z) ~ std_normal();
+  to_vector(phi_raw) ~ std_normal();
+  to_vector(chi_raw) ~ std_normal();
   L_Omega ~ lkj_corr_cholesky(2); // uniform of L_Omega * L_Omega'
-  L_sigma ~ cauchy(0, 2.5);
-  // transformed parameters
-  for (j in 1:J)
-    u_gamma[j] = u[j] * gamma;
-  for (n in 1:N)
-    p[n] = x[n] * beta[sp[n]] + phi[plot[n]] + tau[census[n]];
   // Priors
-  to_vector(gamma) ~ normal(0, 2.5);
-  beta ~ multi_normal_cholesky(u_gamma, diag_pre_multiply(L_sigma, L_Omega));
-  phi ~ normal(0, sigma[1]);
-  tau ~ normal(0, sigma[2]);
+  to_vector(gamma) ~ normal(0, 5);
   // Likelihood
-  suv ~ bernoulli_logit(p);
+  suv ~ bernoulli_logit(rows_dot_product(beta[sp] , x) + phi[plot] + chi[census]);
+}
+
+generated quantities {
+  corr_matrix[K] Omega;
+  Omega = multiply_lower_tri_self_transpose(L_Omega);
 }
  
 //generated quantities {

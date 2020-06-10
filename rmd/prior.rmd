@@ -1,0 +1,49 @@
+---
+title: Prior
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+# cauchy
+
+```{r}
+
+library(tidyverse)
+library(rstan)
+
+expose_stan_functions("../model/lkj.stan")
+
+```
+
+```{r}
+
+N <- 1000
+sig <- 2.5
+y1 <- sapply(1:N, function(x) cauchy__rng(0, sig))
+
+y2 <- sig * tan(runif(N, 0, pi/2))
+
+tibble(y1, y2) %>%
+  pivot_longer(1:2, names_to = "model", values_to  = "val") %>%
+  ggplot(., aes(val, col = model)) +
+  geom_freqpoly(bins = 100)
+
+
+```
