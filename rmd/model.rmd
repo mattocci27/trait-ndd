@@ -82,8 +82,9 @@ U
 U is the species level predictor.
 
 ```{r}
-gamma0 <- rnorm(n_para, 0, 1) %>% round(3)
-gamma1 <- c(0, 0.8, -0.4, 0, 0)
+
+gamma0 <- c(1.2, -0.4, 0.4, -0.8, 0.8)
+gamma1 <- c(0, -0.4, -0.6, 0, 0)
 gamma <- rbind(gamma0, gamma1)
 
 colnames(gamma) <-  c("Intercept",
@@ -118,7 +119,7 @@ cmat <- (nrow(rmat)-1)^-1 * t(dmat) %*% dmat
 
 beta <- u_gamma + rmvnorm(n_sp, rep(0, n_para), sigma = cmat)
 
-sigma_phi <- 0.1
+sigma_phi <- 0.3
 sigma_tau <- 0.2
 
 phi <- rnorm(n_plot, 0, sigma_phi)
@@ -131,7 +132,7 @@ Some paratemers include:
 
 - $\bf \gamma$
 
-```{r, echo = F}
+```{r, echo = T}
 gamma %>% t
 ```
 
@@ -141,7 +142,7 @@ gamma %>% t
 - $\sigma$ in $\bf \Sigma$ = 0.2 and $\rho$ = 0
 - $\bf \beta$ =
 
-```{r, echo = F}
+```{r, echo = T}
 beta %>% round(3)
 ```
 
@@ -226,12 +227,12 @@ list_dat <- list(N = nrow(dat),
 
 fit <- stan(file = "../model/model.stan",
             data = list_dat,
-            iter = 5000,
-            warmup = 4000,
+            iter = 1000,
+            warmup = 500,
             thin = 1,
             chains =  4,
-            refresh = 2000,
-            control = list(adapt_delta = 0.99, max_treedepth = 20))
+            refresh = 1000,
+            control = list(adapt_delta = 0.95, max_treedepth = 20))
 
 ```
 
@@ -239,8 +240,7 @@ The resulting estimates well recovered the original values (e.g., $\bf \gamma$, 
 
 
 ```{r}
-print(fit, pars = c("gamma", "phi", "tau"))
-#print(fit, pars = c("gamma"))
+print(fit, pars = c("gamma", "phi", "chi", "sig"))
 ```
 
 ```{r}
@@ -265,7 +265,7 @@ head(np_cp)
 ```
 
 ```{r}
-color_scheme_set("darkgray")
+color_scheme_set("brightblue")
 mcmc_pairs(fit, np = np_cp, pars = c("gamma[1,1]",
                                      "gamma[1,2]",
                                      "phi[1]", "tau[1]"),
