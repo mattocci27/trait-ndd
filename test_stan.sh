@@ -1,7 +1,7 @@
 #!/bin/bash
 SPAB=50
 DRY=dry
-MODEL=model_census_fix
+MODEL=model_ind
 echo "Model for ${DRY} season. Min. species abundance = ${SPAB}"
 echo "Run ${MODEL}.stan"
 
