@@ -18,11 +18,13 @@ n_chains <- as.numeric(argv[5])
 a_delta <- as.numeric(argv[6])
 n_ab <- as.numeric(argv[7])
 dry <- as.character(argv[8])
+ng_data <- as.character(argv[9])
 
 model_path <- str_c("./model/", model_name, ".stan")
 
 print(paste("Model ", model_name))
 print(paste("Model for ", dry, "season"))
+print(paste("Use", ng_data))
 print(paste("n_iter =", n_iter))
 print(paste("n_warm =", n_warm))
 print(paste("n_thin =", n_thin))
@@ -98,22 +100,28 @@ seedling_tlpd <- seedling_tlpd %>%
 
 # -------------------------------------------------------------------------
 
-#Xd <- cbind(rep(1, nrow(seedling_wpd)),
-#            seedling_wpd[,c("S_scon",
-#                            "SC_acon",
-#                            "S_shet",
-#                            "SC_ahet",
-#                            "S_soilpc1",
-#                            "S_soilpc2",
-#                            "S_soilpc3",
-#                            "S_log_h1")])
 
-Xd <- cbind(rep(1, nrow(seedling_tlpd)),
-            seedling_tlpd[,c("S_scon",
-                             "SC_acon",
-                             "S_shet",
-                             "SC_ahet",
-                             "S_log_h1")])
+if (ng_data == "full") {
+  Xd <- cbind(rep(1, nrow(seedling_tlpd)),
+              seedling_tlpd[,c("S_scon",
+                               "SC_acon",
+                               "S_shet",
+                               "SC_ahet",
+                               "S_log_h1")])
+} else if (ng_data == "seedling") {
+  Xd <- cbind(rep(1, nrow(seedling_tlpd)),
+              seedling_tlpd[,c("S_scon",
+                               "S_shet",
+                               "S_log_h1")])
+} else if (ng_data == "adult") {
+  Xd <- cbind(rep(1, nrow(seedling_tlpd)),
+              seedling_tlpd[,c("SC_acon",
+                               "SC_ahet",
+                               "S_log_h1")])
+}
+
+
+
 
 colnames(Xd)[1] <- "Int"
 
@@ -166,7 +174,7 @@ fit <- stan(file = model_path,
 
 print(fit, pars = c("gamma", "sig", "Omega", "lp__"))
 
-save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, ".rda")
+save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, "_", ng_data, ".rda")
 print(save_name)
 
 save.image(save_name)
