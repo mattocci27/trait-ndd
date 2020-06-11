@@ -26,187 +26,88 @@ rm(list = ls())
 ```{r}
 library(tidyverse)
 library(rstan)
-library(rstanarm)
+library(coefplot)
 library(bayesplot)
 options(mc.cores = parallel::detectCores())
 ```
 
-# Data
-
-```{r data}
-seedling_all <- read_csv("../data/seedling_for_drought.csv")
-wp <- read_csv("../data/wp.csv")
-
-colnames(seedling_all)
-colnames(wp)
-
-tmp10 <- seedling_all %>% 
-  group_by(sp) %>%
-  summarize(n = n()) %>%
-  filter(n >= 10)
-
-# 10
-seedling <- right_join(seedling_all, tmp10, by = "sp") 
-
-seedling_wp <- seedling[seedling$sp%in%wp$Species,]
-shared_wp <- wp[wp$Species%in%seedling$sp,]
-
-seedling$sp %>% unique %>% length
-seedling_wp$sp %>% unique %>% length
-
-nrow(seedling_all)
-nrow(seedling)
-nrow(seedling_wp)
-
-length(unique(seedling_all$sp))
-length(unique(seedling$sp))
-length(unique(seedling_wp$sp))
-```
-
 # Model
 
-```{r cat_model}
-writeLines(readLines("../model/model.stan"))
+```{r,eval = T}
+writeLines(readLines("../model/model_ind.stan"))
 ```
 
-# Dry season
+# Load result
 
-```{r Dry_data, results="hide"}
-seedling_wpd <- seedling_wp %>%
-  filter(season == "dry")
-
-Xd <- cbind(rep(1, nrow(seedling_wpd)),
-           seedling_wpd[,c("S_scon",
-                           "S_acon",
-                           "S_ahet",
-                           "S_shet",
-                           "S_soilpc1",
-                           "S_soilpc2",
-                           "S_soilpc3",
-                           "S_log_h1")])
-
-colnames(Xd)[1] <- "Int"
-
-
-shared_wpd2 <- shared_wp %>%
-  filter(Species %in% seedling_wpd$sp)
-
-dim(Xd)
-
-Ud <- cbind(rep(1,length(unique(seedling_wpd$sp))),
-           shared_wpd2$avg_spwp)
-
-Ud[, 2] <- scale(Ud[,2])
-
-dim(Ud)
-
-n_sp_d <- length(unique(seedling_wpd$sp))
-n_para_d <- ncol(Xd)
-n_plot_d <- length(unique(seedling_wpd$quadrat))
-n_census_d <- length(unique(seedling_wpd$census))
-list_dat_d <- list(N = nrow(seedling_wpd),
-                 J = n_sp_d,
-                 K = n_para_d,
-                 S = n_plot_d,
-                 T = n_census_d,
-                 L = ncol(Ud),
-                 suv = seedling_wpd$surv,
-                 plot = seedling_wpd$quadrat %>%
-                   as.character %>% as.factor %>% as.integer,
-                 census = seedling_wpd$census %>%
-                   as.character %>% as.factor %>% as.integer,
-                 sp = seedling_wpd$sp %>%
-                   as.character %>% as.factor %>% as.integer,
-                 x = Xd %>% as.matrix,
-                # x = t(X),
-                 u = Ud)
-str(list_dat_d)
+```{r}
+load("../data2/dry_spab_50_model_ind.rda")
 ```
 
-```{r Dry_stan, results="hide"}
-fit_dry <- stan(file = "../model/model.stan",
-            data = list_dat_d,
-            verbose = TRUE,
-            iter = 2,
-            warmup = 1,
-            thin = 1,
-            chains =  1,
-            refresh = 200,
-            control = list(adapt_delta = 0.9, max_treedepth = 20))
-
+```{r}
+print(fit, pars = c("gamma", "Omega", "lp__"))
 ```
 
-```{r Dry_stan2}
-print(fit_dry, pars = c("gamma", "sigma_phi", "sigma_tau"))
+# Coefplot for Dry seasons
 
-save.image("../data/dry.rda")
+```{r}
+
+post <- as.data.frame(fit)
+
+gammas <- str_c("gamma[",rep(1:2, each = 5), ",", 2:6,"]")
+post_gamma <- post[, gammas]
+
+par_names <- c(
+  "SCON", 
+  "ACON", 
+  "SHET", 
+  "AHET", 
+  "Height",
+  "WP on SCON", 
+  "WP on ACON", 
+  "WP on SHET", 
+  "WP on AHET",
+  "WP on Height"
+)
+
+colnames(post_gamma) <- par_names
+
+mcmc_intervals(
+  post_gamma,
+ # pars = gammas,
+  prob = 0,
+  prob_outer = 0.95,
+  point_est = "median"
+) +
+  xlab("Effects on seedling survival") +
+  theme(
+    axis.text = element_text(family = "sans"),
+    axis.title = element_text(family = "sans"))
+
+beta3 <- str_c("beta[", 1:n_sp_d, ",3]")
+beta3 <- as.tibble(post[, beta3]) 
+colnames(beta3) <- str_c("sp", 1:n_sp_d)
+
+beta3_dat <- beta3 %>%
+  gather(., "sp", "post")
+
+beta3_dat2 <- beta3_dat %>%
+  group_by(sp) %>%
+  summarize(
+    med = median(post),
+    upr = quantile(post, 0.975),
+    low = quantile(post, 0.0275)
+  ) %>%
+  ungroup()
+
+WP_dat <- tibble(
+  sp = str_c("sp", 1:n_sp_d),
+  WP = list_dat_d$u[,2])
+
+beta3_dat3 <- full_join(beta3_dat2, WP_dat, by = "sp")
+
+ggplot(beta3_dat3, aes(x = WP)) +
+  geom_point(aes(y = med)) +
+  geom_point(aes(y = upr), col = "red") +
+  geom_point(aes(y = low), col = "red")
+
 ```
-
-
-# All seasons
-
-Skipped for now.
-
-```{r All_model, eval=F}
-
-
-############################### year level
-X <- cbind(rep(1, nrow(seedling_wp)),
-           seedling_wp[,c("S_scon", 
-                          "S_acon",
-                          "S_ahet",
-                          "S_shet",
-                          "S_soilpc1",
-                          "S_soilpc2",
-                          "S_soilpc3",
-                          "S_log_h1")])
-
-
-#plot(S_scon ~ S_acon, seedling_wpd, log = "xy")
-
-colnames(X)[1] <- "Int"
-dim(X)
-
-U <- cbind(rep(1,length(unique(seedling_wp$sp))),
-           shared_wp$avg_spwp)
-
-U[, 2] <- scale(U[,2])
-
-dim(U)
-
-n_sp <- length(unique(seedling_wp$sp))
-n_para <- ncol(X)
-n_plot <- length(unique(seedling_wp$quadrat))
-n_census <- length(unique(seedling_wp$census))
-
-list_dat <- list(N = nrow(seedling_wp),
-                 J = n_sp,
-                 K = n_para,
-                 S = n_plot,
-                 T = n_census,
-                 L = ncol(U),
-                 suv = seedling_wp$surv,
-                 plot = seedling_wp$quadrat %>%
-                   as.character %>% as.factor %>% as.integer,
-                 census = seedling_wp$census %>%
-                   as.character %>% as.factor %>% as.integer,
-                 sp = seedling_wp$sp %>%
-                   as.character %>% as.factor %>% as.integer,
-                 x = X %>% as.matrix,
-                # x = t(X),
-                 u = U)
-str(list_dat)
-
-
-#fit3 <- stan(file = "model.stan",
-#            data = list_dat,
-#            verbose = TRUE,
-#            iter = 2000,
-#            warmup = 1000,
-#            thin = 1,
-#            chains =  4,
-#            refresh = 200,
-#            control = list(adapt_delta = 0.9, max_treedepth = 20))
-#print(fit3, pars = c("gamma", "sigma_phi", "sigma_tau"))
-```
-
