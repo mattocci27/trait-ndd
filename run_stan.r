@@ -151,7 +151,6 @@ list_dat_d <- list(N = nrow(seedling_tlpd),
                    tag = seedling_tlpd$tag %>%
                      as.character %>% as.factor %>% as.integer,
                    x = Xd %>% as.matrix,
-                   # x = t(X),
                    u = Ud)
 str(list_dat_d)
 
@@ -165,7 +164,7 @@ fit <- stan(file = model_path,
             refresh = 200,
             control = list(adapt_delta = a_delta, max_treedepth = 20))
 
-print(fit, pars = c("gamma", "sigma", "L_sigma", "lp__"))
+print(fit, pars = c("gamma", "sig", "Omega", "lp__"))
 
 save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, ".rda")
 print(save_name)
