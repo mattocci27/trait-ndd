@@ -19,7 +19,6 @@ a_delta <- as.numeric(argv[6])
 n_ab <- as.numeric(argv[7])
 dry <- as.character(argv[8])
 ng_data <- as.character(argv[9])
-trait_data <- as.character(argv[10])
 
 model_path <- str_c("./model/", model_name, ".stan")
 
@@ -39,14 +38,16 @@ seedling_all <- read_csv("./data/seedling_for_drought.csv")
 tlp <- read_csv("./data/tlp.csv")
 trait <- read_csv("./data/BB_SeedlingTrait.csv")
 
-
 # trait
+
 trait2 <- trait %>%
-  #dplyr::select(-Species) %>%
+  dplyr::select(-Species) %>%
   mutate(logLA = log(LA)) %>%
   mutate(logSLA = log(SLA)) %>%
   mutate(logLT = log(LT)) %>%
-  dplyr::select(-LA, -SLA, -LT)
+  dplyr::select(-LA, -SLA, -LT) %>%
+  scale
+
 
 colnames(seedling_all)
 colnames(tlp)
@@ -59,42 +60,20 @@ tmp10 <- seedling_all %>%
 # 10
 seedling <- right_join(seedling_all, tmp10, by = "sp") 
 
-full_dat <- full_join(seedling, trait, by = c("sp" = "Species"))
+seedling_tlp <- seedling[seedling$sp%in%tlp$Species,]
+shared_tlp <- tlp[tlp$Species%in%seedling$sp,]
 
-if (trait_data == "C13") {
-  trait_select <- "C13"
-  
-} else {
-  trait_select <- "SLA"
-}
+seedling$sp %>% unique %>% length
+seedling_tlp$sp %>% unique %>% length
 
-sp_name <- full_dat %>%
-  dplyr::select(sp, {{trait_select}}, surv) %>%
-  na.omit() %>%
-  select(sp) %>%
-  unique %>%
-  unlist
+nrow(seedling_all)
+nrow(seedling)
+nrow(seedling_tlp)
 
-names(sp_name) <- NULL
-
-seedling_tlp <- seedling %>%
-    filter(sp %in% sp_name)
-
-trait3 <- trait2 %>%
-  filter(Species %in% sp_name) %>%
-  arrange(Species)
-
-trait4 <- trait3 %>%
-  filter(Species %in% sp_name) %>%
-  arrange(Species) %>%
-  dplyr::select(-Species) %>%
-  scale %>%
-  as_tibble %>%
-  mutate(Species = trait3$Species)
-
-dim(trait3)
-dim(trait4)
-
+length(unique(seedling_all$sp))
+length(unique(seedling$sp))
+length(unique(seedling_tlp$sp))
+length(unique(shared_tlp$Species))
 
 # Model
 
@@ -155,55 +134,26 @@ if (ng_data == "full") {
 
 
 
+
 colnames(Xd)[1] <- "Int"
 
-trait5 <- trait4 %>%
+shared_tlpd2 <- shared_tlp %>%
   filter(Species %in% seedling_tlpd$sp)
 
 dim(Xd)
 
-intercept <- rep(1, length(unique(trait5$Species)))
+Ud <- cbind(rep(1,length(unique(seedling_tlpd$sp))),
+            shared_tlpd2$tlp)
 
-if (trait_data == "C13") {
-  print("Sp-level: 1 + StemD + logSLA + C13")
-  Ud <- cbind(
-    intercept,
-    trait5$StemD,
-    trait5$logSLA,
-    trait5$C13)
-} else if (trait_data == "WP") {
-  print("Sp-level: 1 + WP")
-  Ud <- cbind(
-    intercept,
-    trait5$TLP)
-} else if (trait_data == "LT") {
-  print("Sp-level: 1 + StemD + logSLA + logLT")
-  Ud <- cbind(
-    intercept,
-    trait5$StemD,
-    trait5$logSLA,
-    trait5$logLT)
-} else if (trait_data == "PCA") {
-  print("Sp-level: 1 + PC1 + PC2")
-  trait_pca <- prcomp(
-    trait5 %>% 
-    dplyr::select(-Species),
-    scale = TRUE, center = TRUE)
+Ud[, 2] <- scale(Ud[,2])
 
-  Ud <- cbind(
-    intercept,
-    trait_pca$x[,1],
-    trait_pca$x[,2])
-}
-
-
+dim(Ud)
 
 n_sp_d <- length(unique(seedling_tlpd$sp))
 n_para_d <- ncol(Xd)
 n_plot_d <- length(unique(seedling_tlpd$quadrat))
 n_census_d <- length(unique(seedling_tlpd$census))
 n_tag_d <- length(unique(seedling_tlpd$tag))
-
 list_dat_d <- list(N = nrow(seedling_tlpd),
                    J = n_sp_d,
                    K = n_para_d,
@@ -222,12 +172,7 @@ list_dat_d <- list(N = nrow(seedling_tlpd),
                      as.character %>% as.factor %>% as.integer,
                    x = Xd %>% as.matrix,
                    u = Ud)
-
-print(str_c("n_sp = J =", n_sp_d))
-print(str_c("n_para = K = ", n_para_d))
-print(str_c("n_plot = S = ", n_plot_d))
-print(str_c("n_census = T = ", n_census_d))
-print(str_c("n_tag = M = ", n_tag_d))
+str(list_dat_d)
 
 fit <- stan(file = model_path,
             data = list_dat_d,
@@ -241,7 +186,7 @@ fit <- stan(file = model_path,
 
 print(fit, pars = c("gamma", "sig", "lp__"))
 
-save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, "_", ng_data, "_", trait_data, ".rda")
+save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, "_", ng_data, ".rda")
 print(save_name)
 
 save.image(save_name)

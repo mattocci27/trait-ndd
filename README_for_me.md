@@ -45,6 +45,7 @@ Then, go to http://xxx.xxx.xx.xx:8787/ or localhost:8787/ in your browser.
 ## Docker X11
 
 ```
+
 SOCK=/tmp/.X11-unix
 XAUTH=$HOME/.Xauthority
 xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
