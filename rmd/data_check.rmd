@@ -193,3 +193,4 @@ qplot(data= trait2, x = logLT, y = C13)
 
 - Species with C13 values
   - 1 + StemD + logSLA + C13
+
