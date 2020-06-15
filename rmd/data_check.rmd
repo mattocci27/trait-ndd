@@ -114,6 +114,28 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
 
 ```
 
+without C13
+
+```{r}
+
+
+trait_pca <- prcomp(trait2 %>% 
+                    dplyr::select(-C13) %>%
+                    na.omit, scale = TRUE, center = TRUE)
+
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
+                col.var = "black", 
+                geom = "text",
+                alpha.ind = 0.4, 
+                geom.ind = "point",
+                addEllipses = FALSE,
+                label = "var",
+                mean.point = FALSE,
+                repel = TRUE   # Avoid text overlapping
+                ) 
+
+
+```
 
 ```{r}
 
@@ -162,9 +184,12 @@ qplot(data= trait2, x = logLT, y = C13)
 ```
 
 
-# Model options
+# Species-level model options
 
-- TLP
-- StemD + logSLA + logLT
-- StemD + logSLA + C13
-- PC1 + PC2
+- All species
+  - 1 + TLP
+  - 1 + StemD + logSLA + logLT
+  - 1 + PC1 + PC2
+
+- Species with C13 values
+  - 1 + StemD + logSLA + C13
