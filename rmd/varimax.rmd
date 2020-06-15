@@ -1,0 +1,53 @@
+*Varimax rotation*
+
+```{r}
+
+trait3 <- trait2 %>% 
+  dplyr::select(StemD, logSLA, C13) %>%
+  na.omit
+
+trait_pca <- prcomp(trait3,
+                  scale = TRUE, center = TRUE)
+
+
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
+                col.var = "black", 
+                geom = "text",
+                alpha.ind = 0.4, 
+                geom.ind = "point",
+                addEllipses = FALSE,
+                label = "var",
+                mean.point = FALSE,
+                repel = TRUE   # Avoid text overlapping
+                ) +
+      theme_light()
+
+ncomp <- ncol(trait3)
+rawLoadings     <- trait_pca$rotation[,1:ncomp] %*% diag(trait_pca$sdev, ncomp, ncomp)
+rotatedLoadings <- varimax(rawLoadings)$loadings
+invLoadings     <- t(pracma::pinv(rotatedLoadings))
+scores          <- scale(trait3) %*% invLoadings
+
+dat_r <- scores %>%
+  as_tibble
+colnames(dat_r)[1:ncomp] <- str_c("PC", 1:ncomp)
+
+dat_r2 <- rotatedLoadings[1:ncomp, 1:ncomp] %>%
+  as_tibble %>%
+  mutate(trait = rownames(trait_pca$rotation))
+
+colnames(dat_r2)[1:ncomp] <- str_c("PC", 1:ncomp)
+
+ggplot(dat_r2, aes(x = PC1*2, y = PC2*2)) +
+  geom_point(data = dat_r, aes(x = PC1, y = PC2), alpha= 0.5) +
+  ggrepel::geom_text_repel(aes(label = trait))  +
+  geom_segment(aes(x = 0, y = 0, xend = PC1*2*0.95, yend = PC2*2*0.95), 
+               arrow = arrow(length=unit(0.2,"cm")), alpha =0.75) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  xlab("PC1 (23.5 %)") +
+  ylab("PC2 (10.4 %)") +
+  theme_light()
+
+
+`
