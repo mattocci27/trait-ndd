@@ -19,3 +19,15 @@ services:
       - .:/home/rstudio/seedling-stan
     ports:
       - 8787:8787
+  pca:
+    network_mode: host
+    tty: true
+    container_name: pca
+    image: 210.72.93.156:5000/mattocci/ppca:3.6.3
+    user: rstudio
+    environment: 
+      - PASSWORD=test
+      - DISPLAY=$DISPLAY
+    volumes:
+      - $HOME/.Xauthority:/home/rstudio/.Xauthority
+      - .:/home/rstudio/seedling-stan

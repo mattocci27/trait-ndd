@@ -21,27 +21,150 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, data}
+```{r, data, message=FALSE}
 library(tidyverse)
 library(GGally)
+library(tictoc)
+theme_set(theme_light())
 
 seedling_all <- read_csv("../data/seedling_for_drought.csv")
-wp <- read_csv("../data/wp.csv")
 
-colnames(seedling_all)
-colnames(wp)
+trait <- read_csv("../data/BB_SeedlingTrait.csv")
 
-tmp10 <- seedling_all %>% 
-  group_by(sp) %>%
-  summarize(n = n()) %>%
-  filter(n >= 10)
+
 ```
 
-```{r cov}
+# Covariance
+
+## Demography
+
+```{r demo-cov, cache=TRUE, message=FALSE, warning=FALSE}
+
 
 seedling_all %>%
   dplyr::select(S_scon, S_acon, S_ahet, S_shet) %>%
   ggpairs(.)
 
+```
+
+## Traits
+
+### Pair plot
+
+```{r trait-cov, cache=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=12}
+
+trait2 <- trait %>%
+  filter(Species != "C42") %>%
+  dplyr::select(-Species) %>%
+  mutate(logLA = log(LA)) %>%
+  mutate(logSLA = log(SLA)) %>%
+  mutate(logLT = log(LT)) %>%
+  dplyr::select(-LA, -SLA, -LT) 
+
+tic()
+ggpairs(trait2)
+toc()
 
 ```
+
+### PCA
+
+*Original PCA*
+
+```{r}
+library(FactoMineR)
+library(factoextra)
+
+trait_pca <- prcomp(trait2 %>% 
+                    na.omit, scale = TRUE, center = TRUE)
+
+df <- facto_summarize(trait_pca, element = "var", 
+                     result = c("coord", "contrib", "cos2"), axes = c(1,2))
+colnames(df)[2:3] <-  c("x", "y")
+
+# need this to calc scale
+pca_ind <- get_pca_ind(trait_pca)
+ind <- data.frame(pca_ind$coord[, c(1,2), drop=FALSE], stringsAsFactors = TRUE)
+colnames(ind)<- c("x", "y")
+
+# rescale variable coordinates
+r <- min(
+(max(ind[,"x"])-min(ind[,"x"])/(max(df[,"x"])-min(df[,"x"]))),
+(max(ind[,"y"])-min(ind[,"y"])/(max(df[,"y"])-min(df[,"y"])))
+)
+
+```
+
+- `labels = FALSE`
+- `mean.point = FALSE`
+
+```{r}
+
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
+                col.var = "black", 
+                geom = "text",
+                alpha.ind = 0.4, 
+                geom.ind = "point",
+                addEllipses = FALSE,
+                label = "var",
+                mean.point = FALSE,
+                repel = TRUE   # Avoid text overlapping
+                ) 
+
+
+```
+
+
+```{r}
+
+trait3 <- trait2 %>% 
+  dplyr::select(StemD, logSLA, C13) %>%
+  na.omit
+
+trait_pca <- prcomp(trait3,
+                  scale = TRUE, center = TRUE)
+
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
+                col.var = "black", 
+                geom = "text",
+                alpha.ind = 0.4, 
+                geom.ind = "point",
+                addEllipses = FALSE,
+                label = "var",
+                mean.point = FALSE,
+                repel = TRUE   # Avoid text overlapping
+                ) 
+```
+
+```{r}
+
+trait3 <- trait2 %>% 
+  dplyr::select(StemD, logSLA, logLT) %>%
+  na.omit
+
+trait_pca <- prcomp(trait3,
+                  scale = TRUE, center = TRUE)
+
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
+                col.var = "black", 
+                geom = "text",
+                alpha.ind = 0.4, 
+                geom.ind = "point",
+                addEllipses = FALSE,
+                label = "var",
+                mean.point = FALSE,
+                repel = TRUE   # Avoid text overlapping
+                ) 
+```
+
+```{r}
+qplot(data= trait2, x = logLT, y = C13)
+```
+
+
+# Model options
+
+- TLP
+- StemD + logSLA + logLT
+- StemD + logSLA + C13
+- PC1 + PC2
