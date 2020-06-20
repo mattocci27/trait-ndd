@@ -31,8 +31,12 @@ docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=mogemoge --name r
 
 docker run -p 8787:8787 -v $(pwd):/home/rstudio/seedling-stan -e PASSWORD=mogemoge mattocci/myenv:3.6.3
 
-docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/rstan:3.6.3 /bin/bash 
+docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/rstan:3.6.3 /bin/bash
 
+
+F85hPRItkcsaQ7lR6AHK
+
+docker run --rm -v $(pwd):/home/rstudio/seedling-stan -p 8787:8787 -e PASSWORD=F85hPRItkcsaQ7lR6AHK mattocci/myenv:3.6.3
 
 #sudo docker run -it -v $(pwd):/home/rstudio/seedling_stan -u rstudio mattocci/rstan R
 
@@ -123,7 +127,7 @@ mcmc_trace(fit, pars = c("gamma[2,1]", "gamma[2,2]","gamma[2,3]", "gamma[2,4]","
     - `sigma[3]`` and `lp__` showed 1.1 < Rhat <1.2
 - 8615.59 seconds on n2s4
 - wp on cons adulut has negative effect
-- I will try model without ind again 
+- I will try model without ind again
 
 
 

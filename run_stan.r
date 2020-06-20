@@ -51,19 +51,19 @@ trait2 <- trait %>%
 colnames(seedling_all)
 colnames(tlp)
 
-tmp10 <- seedling_all %>% 
+tmp10 <- seedling_all %>%
   group_by(sp) %>%
   summarize(n = n()) %>%
   filter(n >= n_ab)
 
 # 10
-seedling <- right_join(seedling_all, tmp10, by = "sp") 
+seedling <- right_join(seedling_all, tmp10, by = "sp")
 
 full_dat <- full_join(seedling, trait, by = c("sp" = "Species"))
 
 if (trait_data == "C13") {
   trait_select <- "C13"
-  
+
 } else {
   trait_select <- "SLA"
 }
@@ -185,10 +185,11 @@ if (trait_data == "C13") {
     trait5$logLT)
 } else if (trait_data == "PCA") {
   print("Sp-level: 1 + PC1 + PC2")
+
   trait_pca <- prcomp(
-    trait5 %>% 
-    dplyr::select(-Species),
-    scale = TRUE, center = TRUE)
+    trait_pca <- trait5 %>%
+      dplyr::select(-Species, -C13),
+      scale = TRUE, center = TRUE)
 
   Ud <- cbind(
     intercept,
