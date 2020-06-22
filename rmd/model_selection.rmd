@@ -1,0 +1,67 @@
+---
+title: Model selection
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+```{r, message=FALSE}
+library(tidyverse)
+library(tictoc)
+library(rstan)
+library(bayesplot)
+options(mc.cores = parallel::detectCores())
+```
+
+```{r}
+setwd("~/seedling-stan")
+files <- list.files("data")
+
+files2 <- files %>%
+  str_subset("gq") %>%
+  str_subset("full")
+
+tic()
+elpd_loo <- numeric(length(files2))
+elpd <- list()
+for (n in 1:length(files2)) {
+  file_name <- str_c("~/seedling-stan/data/", files2[n])
+  file_name
+  load(file_name)
+  elpd[[n]] <- loo(fit)
+  elpd_loo[n] <- elpd[[n]]$estimates[1,1]
+}
+toc()
+
+```
+
+
+```{r}
+
+tab <- tibble(
+    file = files2,
+    elpd = elpd_loo %>% round(1)) %>%
+    mutate(season = str_split(files2, "_") %>% sapply(., "[[", 1)) %>%
+    mutate(data = str_split(files2, "_") %>% sapply(., "[[", 7)) %>%
+    mutate(trait = str_split(files2, "\\.", simplify = TRUE)[,1] %>%
+        str_split(., "_") %>% sapply(., "[[", 8))
+
+DT::datatable(tab)
+
+```
