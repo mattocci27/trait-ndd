@@ -123,6 +123,8 @@ trait_pca <- prcomp(trait2 %>%
                     dplyr::select(-C13) %>%
                     na.omit, scale = TRUE, center = TRUE)
 
+summary(trait_pca)
+
 fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
                 col.var = "black", 
                 geom = "text",
@@ -189,7 +191,8 @@ qplot(data= trait2, x = logLT, y = C13)
 - All species
   - 1 + TLP
   - 1 + StemD + logSLA + logLT
-  - 1 + PC1 + PC2
+  - 1 + PC1 + PC2 + PC3
+  - 1 + PC1 + PC2 + PC3 + PC4
 
 - Species with C13 values
   - 1 + StemD + logSLA + C13
