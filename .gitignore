@@ -13,7 +13,6 @@ log/*.log
 nohup.out
 .DS_Store
 
-
 # History files
 .Rhistory
 .Rapp.history
