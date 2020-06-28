@@ -20,12 +20,14 @@ n_ab <- as.numeric(argv[7])
 dry <- as.character(argv[8])
 ng_data <- as.character(argv[9])
 trait_data <- as.character(argv[10])
+hab <- as.character(argv[11])
 
 model_path <- str_c("./model/", model_name, ".stan")
 
 print(paste("Model ", model_name))
 print(paste("Model for ", dry, "season"))
 print(paste("Use", ng_data))
+print(paste("Habitat =", hab))
 print(paste("n_iter =", n_iter))
 print(paste("n_warm =", n_warm))
 print(paste("n_thin =", n_thin))
@@ -34,10 +36,28 @@ print(paste("adapt_delta =", a_delta))
 print(paste("minimum sp abund =", n_ab))
 
 # Data
-seedling_all <- read_csv("./data/seedling_for_drought.csv")
-#wp <- read_csv("./data/wp.csv")
-tlp <- read_csv("./data/tlp.csv")
-trait <- read_csv("./data/BB_SeedlingTrait.csv")
+seedling_all <- read_csv("./data/seedling_for_drought.csv") %>%
+  dplyr::select(!starts_with("PC")) %>%
+  mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
+  mutate(sp =
+    case_when(
+      str_length(tmp) == 1 ~ str_c("C00", tmp),
+      str_length(tmp) == 2 ~ str_c("C0", tmp),
+      str_length(tmp) > 2 ~ str_c("C", tmp)
+  )) 
+
+hab_dat <- read_csv("./data/habitat150.csv")
+
+trait <- read_csv("./data/BB_SeedlingTrait.csv") %>%
+  rename(sp = Species) %>%
+  mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
+  mutate(sp =
+    case_when(
+      str_length(tmp) == 1 ~ str_c("C00", tmp),
+      str_length(tmp) == 2 ~ str_c("C0", tmp),
+      str_length(tmp) > 2 ~ str_c("C", tmp)
+  )) %>%
+  dplyr::select(-tmp)
 
 
 # trait
@@ -48,73 +68,143 @@ trait2 <- trait %>%
   mutate(logLT = log(LT)) %>%
   dplyr::select(-LA, -SLA, -LT)
 
-colnames(seedling_all)
-colnames(tlp)
-
 tmp10 <- seedling_all %>%
   group_by(sp) %>%
   summarize(n = n()) %>%
   filter(n >= n_ab)
 
-# 10
-seedling <- right_join(seedling_all, tmp10, by = "sp")
+# seedling data for abundance >= n_ab
+seedling <- right_join(seedling_all, tmp10, by = "sp") %>%
+  full_join(., hab_dat, by = "qua")
 
-full_dat <- full_join(seedling, trait, by = c("sp" = "Species"))
+# seedling + trait
+full_dat <- full_join(seedling, trait, by = "sp")
 
-if (trait_data == "C13") {
-  trait_select <- "C13"
-
-} else {
-  trait_select <- "SLA"
-}
-
+# sp list
 sp_name <- full_dat %>%
-  dplyr::select(sp, {{trait_select}}, surv) %>%
+  dplyr::select(sp, surv, SLA) %>%
   na.omit() %>%
   select(sp) %>%
   unique %>%
   unlist
 
-names(sp_name) <- NULL
-
-seedling_tlp <- seedling %>%
-    filter(sp %in% sp_name)
-
+# drop species from trait data
 trait3 <- trait2 %>%
-  filter(Species %in% sp_name) %>%
-  arrange(Species)
+  filter(sp %in% sp_name)
 
-trait4 <- trait3 %>%
-  filter(Species %in% sp_name) %>%
-  arrange(Species) %>%
-  dplyr::select(-Species) %>%
+trait_na_omit <- na.omit(trait3)
+
+pca_res <- prcomp(
+  trait_na_omit %>%
+  dplyr::select(-sp),
+  scale = TRUE, center = TRUE)
+
+trait_pca <- bind_cols(trait_na_omit, 
+          pca_res$x[,1:(ncol(trait_na_omit) - 2)] %>% as_tibble) %>%
+  dplyr::select(sp, starts_with("PC"))
+
+trait4 <- full_join(trait3, trait_pca, by = "sp")
+
+# full trait with scaled values 
+# still need to adjust sp number according to seedling data
+trait5 <- trait4 %>%
+  dplyr::select(!starts_with("PC")) %>%
+  dplyr::select(-sp) %>%
   scale %>%
   as_tibble %>%
-  mutate(Species = trait3$Species)
+  bind_cols(., trait4 %>%
+  dplyr::select(starts_with("PC"), sp))
 
-dim(trait3)
-dim(trait4)
+# seedling data with traits for analysis
+seedling_dat <- seedling %>%
+  filter(habit3 == {{hab}} & season == {{dry}})
+# different trait sets
+if (trait_data == "C13") {
+  print("Sp-level: 1 + StemD + logSLA + C13")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, StemD, logSLA, C13) %>%
+    na.omit
+} else if (trait_data == "WP") {
+  print("Sp-level: 1 + WP + logSLA + logLT")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, StemD, TLP, logSLA) %>%
+    na.omit
+} else if (trait_data == "LT") {
+  print("Sp-level: 1 + StemD + logSLA + logLT")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, StemD, logSLA, logLT) %>%
+    na.omit
+} else if (trait_data == "PCA2") {
+  print("Sp-level: 1 + PC1 + PC2")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, PC1, PC2) %>%
+    na.omit
+} else if (trait_data == "PCA3") {
+  print("Sp-level: 1 + PC1 + PC2 + PC3")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, PC1, PC2, PC3) %>%
+    na.omit
+} else if (trait_data == "PCA4") {
+  print("Sp-level: 1 + PC1 + PC2 + PC3 + PC4")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, PC1, PC2, PC3, PC4) %>%
+    na.omit
+} else if (trait_data == "C13-only") {
+  print("Sp-level: 1 + C13")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, C13) %>%
+    na.omit
+} else if (trait_data == "WP-only") {
+  print("Sp-level: 1 + WP")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, TLP) %>%
+    na.omit
+} else if (trait_data == "LT-only") {
+  print("Sp-level: 1 + logLT")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, logLT) %>%
+    na.omit
+} else if (trait_data == "StemD-only") {
+  print("Sp-level: 1 + StemD")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, StemD) %>%
+    na.omit
+}
 
+# tweak sp list for trait and seedling data
+trait_sp <- trait6$sp %>% unique
+seedling_sp <- seedling_dat$sp %>% unique
+sp_c0 <- c(trait_sp, seedling_sp)
+sp_c <- sp_c0[duplicated(sp_c0)] %>% unique
+
+trait_dat <- trait6 %>%
+  filter(sp %in% sp_c) 
+
+seedling_dat2 <- seedling_dat %>%
+  filter(sp %in% sp_c) 
+
+str_c("sp number in seedling data: ", 
+  seedling_dat2$sp %>% unique %>% length) %>% print
+str_c("sp number in trait data: ", 
+  trait_dat$sp %>% unique %>% length) %>% print
+
+# sp-level matrix for the model
+
+Ud <- cbind(
+  intercept = rep(1, length(trait_dat$sp)),
+  trait_dat %>%
+    dplyr::select(-sp) %>%
+    as.matrix)
 
 # Model
 
 writeLines(readLines(model_path))
 
-# Dry or wet season
-
-if (dry == "dry") {
-  seedling_tlpd <- seedling_tlp %>%
-    filter(season == "dry")
-} else {
-  seedling_tlpd <- seedling_tlp %>%
-    filter(season != "dry")
-}
-
 ##  Use Detto et al. 2019 Ecology letters -----------------------------
 
-x1 <- seedling_tlpd$acon
-x2 <- seedling_tlpd$ahet
-y <- seedling_tlpd$surv
+x1 <- seedling_dat2$acon
+x2 <- seedling_dat2$ahet
+y <- seedling_dat2$surv
 lik <- numeric(100)
 for (i in 1:100) {
   d1 <- x1^(i/100)
@@ -127,99 +217,55 @@ for (i in 1:100) {
 cc <- which(lik == max(lik)) / 100
 print(str_c("use c = ", cc, " as a scaling parameter for distance effect"))
 
-seedling_tlpd <- seedling_tlpd %>%
+seedling_dat2 <- seedling_dat2 %>%
   mutate(SC_ahet = as.numeric(scale(ahet^cc))) %>%
   mutate(SC_acon = as.numeric(scale(acon^cc)))
 
 # -------------------------------------------------------------------------
 
-
 if (ng_data == "full") {
-  Xd <- cbind(rep(1, nrow(seedling_tlpd)),
-              seedling_tlpd[,c("S_scon",
+  Xd <- cbind(rep(1, nrow(seedling_dat2)),
+              seedling_dat2[,c("S_scon",
                                "SC_acon",
                                "S_shet",
                                "SC_ahet",
                                "S_log_h1")])
 } else if (ng_data == "seedling") {
-  Xd <- cbind(rep(1, nrow(seedling_tlpd)),
-              seedling_tlpd[,c("S_scon",
+  Xd <- cbind(rep(1, nrow(seedling_dat2)),
+              seedling_dat2[,c("S_scon",
                                "S_shet",
                                "S_log_h1")])
 } else if (ng_data == "adult") {
-  Xd <- cbind(rep(1, nrow(seedling_tlpd)),
-              seedling_tlpd[,c("SC_acon",
+  Xd <- cbind(rep(1, nrow(seedling_dat2)),
+              seedling_dat2[,c("SC_acon",
                                "SC_ahet",
                                "S_log_h1")])
 }
 
-
-
 colnames(Xd)[1] <- "Int"
 
-trait5 <- trait4 %>%
-  filter(Species %in% seedling_tlpd$sp)
 
-dim(Xd)
-
-intercept <- rep(1, length(unique(trait5$Species)))
-
-if (trait_data == "C13") {
-  print("Sp-level: 1 + StemD + logSLA + C13")
-  Ud <- cbind(
-    intercept,
-    trait5$StemD,
-    trait5$logSLA,
-    trait5$C13)
-} else if (trait_data == "WP") {
-  print("Sp-level: 1 + WP")
-  Ud <- cbind(
-    intercept,
-    trait5$TLP)
-} else if (trait_data == "LT") {
-  print("Sp-level: 1 + StemD + logSLA + logLT")
-  Ud <- cbind(
-    intercept,
-    trait5$StemD,
-    trait5$logSLA,
-    trait5$logLT)
-} else if (trait_data == "PCA") {
-  print("Sp-level: 1 + PC1 + PC2")
-
-  trait_pca <- prcomp(
-    trait_pca <- trait5 %>%
-      dplyr::select(-Species, -C13),
-      scale = TRUE, center = TRUE)
-
-  Ud <- cbind(
-    intercept,
-    trait_pca$x[,1],
-    trait_pca$x[,2])
-}
-
-
-
-n_sp_d <- length(unique(seedling_tlpd$sp))
+n_sp_d <- length(unique(seedling_dat2$sp))
 n_para_d <- ncol(Xd)
-n_plot_d <- length(unique(seedling_tlpd$quadrat))
-n_census_d <- length(unique(seedling_tlpd$census))
-n_tag_d <- length(unique(seedling_tlpd$tag))
+n_plot_d <- length(unique(seedling_dat2$quadrat))
+n_census_d <- length(unique(seedling_dat2$census))
+n_tag_d <- length(unique(seedling_dat2$tag))
 
-list_dat_d <- list(N = nrow(seedling_tlpd),
+list_dat_d <- list(N = nrow(seedling_dat2),
                    J = n_sp_d,
                    K = n_para_d,
                    S = n_plot_d,
                    T = n_census_d,
                    M = n_tag_d,
                    L = ncol(Ud),
-                   suv = seedling_tlpd$surv,
-                   plot = seedling_tlpd$quadrat %>%
+                   suv = seedling_dat2$surv,
+                   plot = seedling_dat2$quadrat %>%
                      as.character %>% as.factor %>% as.integer,
-                   census = seedling_tlpd$census %>%
+                   census = seedling_dat2$census %>%
                      as.character %>% as.factor %>% as.integer,
-                   sp = seedling_tlpd$sp %>%
+                   sp = seedling_dat2$sp %>%
                      as.character %>% as.factor %>% as.integer,
-                   tag = seedling_tlpd$tag %>%
+                   tag = seedling_dat2$tag %>%
                      as.character %>% as.factor %>% as.integer,
                    x = Xd %>% as.matrix,
                    u = Ud)
