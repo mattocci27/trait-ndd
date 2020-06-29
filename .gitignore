@@ -14,7 +14,6 @@ nohup.out
 .DS_Store
 *.sif
 
-
 # History files
 .Rhistory
 .Rapp.history
