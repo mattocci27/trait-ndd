@@ -1,0 +1,117 @@
+---
+title: Multicollinearity
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(tidyverse)
+library(mvtnorm)
+library(GGally)
+library(rstan)
+rstan::rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+# Data
+
+```{r}
+
+set.seed(123)
+N <- 100
+sig <- rep(1, 3)
+rho12 <- 0.95
+rho23 <- 0
+rho13 <- 0
+S <- matrix(
+            c(sig[1]^2, rho12*sig[1]*sig[2], rho13*sig[1]*sig[3],
+              rho12*sig[1]*sig[2], sig[2]^2, rho23*sig[2]*sig[3],
+              rho13*sig[1]*sig[3], rho23*sig[2]*sig[3], sig[3]^2),
+              ncol = 3
+)
+
+X <- rmvnorm(N, c(0, 0, 0), S) %>%
+  as_tibble
+colnames(X) <- str_c("x", 1:3)
+
+#X$x2 <- rnorm(N, X$x1, 0.3)
+
+beta <- c(1, 0, 0.8, 0.8)
+sig2 <- 0.3
+
+y <- rnorm(N, beta[1] + beta[2] * X$x1 + beta[3] * X$x2 + beta[4] * X$x3, sig2)
+
+dat <- tibble(y = y, X)
+
+ggpairs(dat)
+
+```
+
+# ML
+
+```{r}
+
+fitML <- lm(y ~ x1 + x2 + x3, dat)
+
+summary(fitML)
+
+```
+
+# Bayes
+
+```{r}
+
+list_dat <-
+  list(
+  N = N,
+  y = y,
+  X = cbind(intercept = 1, X)
+  )
+
+```
+
+```{stan, output.var="lm"}
+data {
+  int<lower=0> N;
+  vector[N] y;
+  matrix[N, 4] X;
+}
+parameters{
+  vector[4] beta;
+  real<lower=0> sigma;
+}
+model {
+  vector[N] mu;
+  mu = X * beta;
+  y ~ normal(mu, sigma);
+  sigma ~ cauchy(0, 2.5);
+}
+```
+
+```{r}
+fit_stan <- rstan::sampling(lm, 
+                     data = list_dat)
+```
+
+```{r}
+fit_stan
+```

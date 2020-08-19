@@ -50,6 +50,8 @@ hab_dat <- read_csv("./data/habitat150.csv")
 
 trait <- read_csv("./data/BB_SeedlingTrait.csv") %>%
   rename(sp = Species) %>%
+  # remove species starting with Sn
+  filter(str_detect(sp, "^C")) %>%
   mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
   mutate(sp =
     case_when(
