@@ -1,0 +1,86 @@
+---
+title:  Species list
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+```{r}
+
+# Data
+seedling_all <- read_csv("../data/seedling_for_drought.csv") %>%
+  dplyr::select(!starts_with("PC")) %>%
+  mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
+  mutate(sp =
+    case_when(
+      str_length(tmp) == 1 ~ str_c("C00", tmp),
+      str_length(tmp) == 2 ~ str_c("C0", tmp),
+      str_length(tmp) > 2 ~ str_c("C", tmp)
+  )) 
+
+trait <- read_csv("../data/BB_SeedlingTrait.csv") %>%
+  mutate(sp = Species) %>%
+  mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
+  mutate(sp =
+    case_when(
+      str_length(tmp) == 1 ~ str_c("C00", tmp),
+      str_length(tmp) == 2 ~ str_c("C0", tmp),
+      str_length(tmp) > 2 ~ str_c("C", tmp)
+  )) %>%
+  dplyr::select(-tmp)
+
+full_dat <- full_join(seedling_all, trait, by = "sp")
+
+```
+
+# All species 
+
+```{r}
+
+# tweak sp list for trait and seedling data
+trait_sp <- trait$sp %>% unique
+seedling_sp <- seedling_all$sp %>% unique
+sp_c0 <- c(trait_sp, seedling_sp)
+sp_c <- sp_c0[duplicated(sp_c0)] %>% unique
+
+sp_ab <- seedling_all %>%
+  group_by(sp) %>%
+  summarize(abundance = n())
+
+trait_dat <- trait %>%
+  full_join(., sp_ab) %>%　
+  filter(sp %in% sp_c) 
+seedling_dat2 <- seedling_all  %>%
+  filter(sp %in% sp_c) 
+
+str_c("sp number in seedling data: ", 
+  seedling_dat2$sp %>% unique %>% length) %>% print
+str_c("sp number in trait data: ", 
+  trait_dat$sp %>% unique %>% length) %>% print
+
+DT::datatable(trait_dat)
+write_csv(trait_dat, "../data/sp_list_full.csv")
+
+```
+
+

@@ -17,6 +17,7 @@ nohup.out
 # History files
 .Rhistory
 .Rapp.history
+.radian_history
 
 # Session Data files
 .RData

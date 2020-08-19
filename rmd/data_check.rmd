@@ -31,6 +31,10 @@ seedling_all <- read_csv("../data/seedling_for_drought.csv")
 
 trait <- read_csv("../data/BB_SeedlingTrait.csv")
 
+trait <- trait %>% 
+  select(-Cname) %>%
+  rename(StemD = WD)
+
 
 ```
 
@@ -95,6 +99,10 @@ r <- min(
 
 ```
 
+```{r}
+summary(trait_pca)
+```
+
 - `labels = FALSE`
 - `mean.point = FALSE`
 
@@ -114,20 +122,11 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
 
 ```
 
-without C13
-
 ```{r}
-
-
-trait_pca <- prcomp(trait2 %>% 
-                    dplyr::select(-C13) %>%
-                    na.omit, scale = TRUE, center = TRUE)
-
-summary(trait_pca)
-
 fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
                 col.var = "black", 
                 geom = "text",
+                axes = c(1, 3),
                 alpha.ind = 0.4, 
                 geom.ind = "point",
                 addEllipses = FALSE,
@@ -135,22 +134,13 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 mean.point = FALSE,
                 repel = TRUE   # Avoid text overlapping
                 ) 
-
-
 ```
 
 ```{r}
-
-trait3 <- trait2 %>% 
-  dplyr::select(StemD, logSLA, C13) %>%
-  na.omit
-
-trait_pca <- prcomp(trait3,
-                  scale = TRUE, center = TRUE)
-
 fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
                 col.var = "black", 
                 geom = "text",
+                axes = c(2, 3),
                 alpha.ind = 0.4, 
                 geom.ind = "point",
                 addEllipses = FALSE,
@@ -181,19 +171,17 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 ) 
 ```
 
-```{r}
-qplot(data= trait2, x = logLT, y = C13)
+```{r, eval = TRUE}
+qplot(data= trait2, x = logLA, y = tlp)
 ```
-
 
 # Species-level model options
 
-- All species
-  - 1 + TLP
-  - 1 + StemD + logSLA + logLT
-  - 1 + PC1 + PC2 + PC3
-  - 1 + PC1 + PC2 + PC3 + PC4
+Collinearity will be fine except for stem density and SDMC. We will check the
+following models.
 
-- Species with C13 values
-  - 1 + StemD + logSLA + C13
-
+All species
+  - Full
+  - removing StemD from the full model
+  - removing SDMC from the full model
+  - Intercept + PC1 + PC2 + PC3
