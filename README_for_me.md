@@ -31,7 +31,7 @@ docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=mogemoge --name r
 
 docker run -p 8787:8787 -v $(pwd):/home/rstudio/seedling-stan -e PASSWORD=mogemoge mattocci/myenv:3.6.3
 
-docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/rstan:3.6.3 /bin/bash
+docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/myenv:3.6.3 /bin/bash
 
 
 F85hPRItkcsaQ7lR6AHK
@@ -57,6 +57,12 @@ chmod 777 $XAUTH
 
 docker-compose run stan /bin/bash
 
+```
+
+## Singularlity
+
+```
+singularity exec ../dockerfiles/singularity/rstan_4.0.2.sif sh/model_ind.sh
 ```
 
 

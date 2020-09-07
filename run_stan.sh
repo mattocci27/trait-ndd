@@ -1,6 +1,6 @@
 #!/bin/bash
 for SPAB in 1 10 20
-  do 
+  do
   for DRY in dry wet
   do
   echo "Model for ${DRY} season. Min. species abundance = ${SPAB}"

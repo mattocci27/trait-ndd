@@ -44,12 +44,13 @@ seedling_all <- read_csv("./data/seedling_for_drought.csv") %>%
       str_length(tmp) == 1 ~ str_c("C00", tmp),
       str_length(tmp) == 2 ~ str_c("C0", tmp),
       str_length(tmp) > 2 ~ str_c("C", tmp)
-  )) 
+  ))
 
 hab_dat <- read_csv("./data/habitat150.csv")
 
 trait <- read_csv("./data/BB_SeedlingTrait.csv") %>%
   rename(sp = Species) %>%
+  dplyr::select(-Cname) %>%
   # remove species starting with Sn
   filter(str_detect(sp, "^C")) %>%
   mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
@@ -101,13 +102,13 @@ pca_res <- prcomp(
   dplyr::select(-sp),
   scale = TRUE, center = TRUE)
 
-trait_pca <- bind_cols(trait_na_omit, 
+trait_pca <- bind_cols(trait_na_omit,
           pca_res$x[,1:(ncol(trait_na_omit) - 2)] %>% as_tibble) %>%
   dplyr::select(sp, starts_with("PC"))
 
 trait4 <- full_join(trait3, trait_pca, by = "sp")
 
-# full trait with scaled values 
+# full trait with scaled values
 # still need to adjust sp number according to seedling data
 trait5 <- trait4 %>%
   dplyr::select(!starts_with("PC")) %>%
@@ -121,55 +122,37 @@ trait5 <- trait4 %>%
 seedling_dat <- seedling %>%
   filter(habit3 == {{hab}} & season == {{dry}})
 # different trait sets
-if (trait_data == "C13") {
-  print("Sp-level: 1 + StemD + logSLA + C13")
+
+# trait data
+#- Full
+#- except for StemD
+#- except for SDMC
+#- use PC1-3
+#- use PC1-2
+
+if (trait_data == "Full") {
+  print("Sp-level: 1 + all the traits")
   trait6 <- trait5 %>%
-    dplyr::select(sp, StemD, logSLA, C13) %>%
     na.omit
-} else if (trait_data == "WP") {
-  print("Sp-level: 1 + WP + logSLA + logLT")
+} else if (trait_data == "StemD") {
+  print("Sp-level: except for StemD")
   trait6 <- trait5 %>%
-    dplyr::select(sp, StemD, TLP, logSLA) %>%
+    dplyr::select(-StemD) %>%
     na.omit
-} else if (trait_data == "LT") {
-  print("Sp-level: 1 + StemD + logSLA + logLT")
+} else if (trait_data == "SDMC") {
+  print("Sp-level: except for SDMC")
   trait6 <- trait5 %>%
-    dplyr::select(sp, StemD, logSLA, logLT) %>%
+    dplyr::select(-SDMC) %>%
     na.omit
-} else if (trait_data == "PCA2") {
-  print("Sp-level: 1 + PC1 + PC2")
+} else if (trait_data == "PC2") {
+  print("Sp-level: 1 + PC1 + PCA2")
   trait6 <- trait5 %>%
-    dplyr::select(sp, PC1, PC2) %>%
+    dplyr::select(sp, PCA1, PCA2) %>%
     na.omit
-} else if (trait_data == "PCA3") {
-  print("Sp-level: 1 + PC1 + PC2 + PC3")
+} else if (trait_data == "PC3") {
+  print("Sp-level: 1 + PC1 + PCA2 + PCA3")
   trait6 <- trait5 %>%
-    dplyr::select(sp, PC1, PC2, PC3) %>%
-    na.omit
-} else if (trait_data == "PCA4") {
-  print("Sp-level: 1 + PC1 + PC2 + PC3 + PC4")
-  trait6 <- trait5 %>%
-    dplyr::select(sp, PC1, PC2, PC3, PC4) %>%
-    na.omit
-} else if (trait_data == "C13-only") {
-  print("Sp-level: 1 + C13")
-  trait6 <- trait5 %>%
-    dplyr::select(sp, C13) %>%
-    na.omit
-} else if (trait_data == "WP-only") {
-  print("Sp-level: 1 + WP")
-  trait6 <- trait5 %>%
-    dplyr::select(sp, TLP) %>%
-    na.omit
-} else if (trait_data == "LT-only") {
-  print("Sp-level: 1 + logLT")
-  trait6 <- trait5 %>%
-    dplyr::select(sp, logLT) %>%
-    na.omit
-} else if (trait_data == "StemD-only") {
-  print("Sp-level: 1 + StemD")
-  trait6 <- trait5 %>%
-    dplyr::select(sp, StemD) %>%
+    dplyr::select(sp, PCA1, PCA2, PCA3) %>%
     na.omit
 }
 
@@ -180,14 +163,14 @@ sp_c0 <- c(trait_sp, seedling_sp)
 sp_c <- sp_c0[duplicated(sp_c0)] %>% unique
 
 trait_dat <- trait6 %>%
-  filter(sp %in% sp_c) 
+  filter(sp %in% sp_c)
 
 seedling_dat2 <- seedling_dat %>%
-  filter(sp %in% sp_c) 
+  filter(sp %in% sp_c)
 
-str_c("sp number in seedling data: ", 
+str_c("sp number in seedling data: ",
   seedling_dat2$sp %>% unique %>% length) %>% print
-str_c("sp number in trait data: ", 
+str_c("sp number in trait data: ",
   trait_dat$sp %>% unique %>% length) %>% print
 
 # sp-level matrix for the model
