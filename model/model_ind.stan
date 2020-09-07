@@ -55,7 +55,11 @@ model {
 }
 
 generated quantities {
+  vector[N] log_lik;
+  vector[N] p;
   corr_matrix[K] Omega;
   Omega = multiply_lower_tri_self_transpose(L_Omega);
+  for (n in 1:N) {
+    log_lik[n] = bernoulli_logit_lpmf(suv[n] | dot_product(beta[sp[n],] , x[n,]) + phi[plot[n]] + xi[census[n]] + psi[tag[n]]);
+  }
 }
- 
