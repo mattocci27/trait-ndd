@@ -111,8 +111,9 @@ mcmc_trace(fit, pars = c("gamma[2,1]", "gamma[2,2]","gamma[2,3]", "gamma[2,4]","
 
 ## log
 
-20200510
+20200909
 
+- sh/model_ind.sh (for each habita)
 
 20200402
 - dry, min abund 30, cc - tlp
