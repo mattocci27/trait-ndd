@@ -4,7 +4,7 @@ MODEL=model_ind
 NEIGHBOR=full
 for DRY in dry rainy
 do
-  for TRAIT in Full SDMC StemD PC2 PC3
+  for TRAIT in Full SDMC WD PC2 PC3
   do
     #for HAB in valley ridge slope all
     for HAB in valley ridge slope
