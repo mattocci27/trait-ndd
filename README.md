@@ -1,45 +1,93 @@
-# seedling_stan
+# seedling-stan
 
-Clone this repository.
+Research project code for seedling survival analyses using Stan.
+
+## Clone this repository
 
 ```{bash}
 git clone git@github.com:mattocci27/seedling_stan.git
 cd seedling_stan
 ```
 
+## Singularlity
 
-## Docker
+To run MCMC
 
-```{bash}
-sudo docker pull mattocci/rstan
-sudo docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=<your_password> mattocci/rstan
+```
+singularity shell ../dockerfiles/singularity/rstan_4.0.2.sif
+# in singularity shell
+sh sh/model_ind.sh
 ```
 
-Then, go to http://xxx.xxx.xx.xx:8787/ or localhost:8787/ in your browser.
+or 
 
-
-## Local terminal or terminal inside the docker.
-
-To see if the model can be compiled:
-
-```{bash}
-sh ./test_stan.sh
+```
+singularity exec ../dockerfiles/singularity/rstan_4.0.2.sif sh/model_ind.sh
 ```
 
-To run the model:
+
+## Docker (not recommended)
+
+It's not recommended for running MCMC on docker but it's convenient for checking html
+files on the server.
 
 ```{bash}
-sh ./run_stan.sh
+docker pull mattocci/rstan:4.0.2
+
+docker run --rm -v $(pwd):/home/rstudio/seedling-stan \ 
+  -p 8787:8787 \
+  -e PASSWORD=< your_password > \
+  mattocci/rstan:4.0.2
 ```
 
-## Code
+or 
 
-- model_ind.stan
-    - added function to calculate likelihood at each MCMC step
-    - added random intercept for each tag
-- `run_stan.r`
-    - r code to run `model_ind.stan`.
-    - this code works manually if you comment out [L12](https://github.com/mattocci27/seedling_stan/blob/2d065e240222943a0abc6b68df3839e6fa3eaef4/run_stan.r#L12) and specify [L13-18](https://github.com/mattocci27/seedling_stan/blob/2d065e240222943a0abc6b68df3839e6fa3eaef4/run_stan.r#L13-L18).
-- `run_stan.sh` and `run_test.sh`
-    - shell scrip to run `run_stan.r`.
-    - logs will be stored in `/log/` and rda files will be stored in `/data`
+```{bash}
+docker pull mattocci/myenv:4.0.2
+
+docker run --rm -v $(pwd):/home/rstudio/seedling-stan \ 
+  -p 8787:8787 \
+  -e PASSWORD=< your_password > \
+  mattocci/myenv:4.0.2
+```
+
+Then, go to http://210.72.93.96:8787/:8787/ or localhost:8787/ in your browser.
+
+## Log
+
+20200909
+
+- started running sh/model_ind.sh for the following combinations
+  - 2 seasons
+  - 5 traits combinations (1. all traits, 2. except for SDMC, 3. except for WD, 4. use PC1 and PC2, 5. use PC1, PC2, PC3)
+  - 3 habitats (valley, ridge, slope)
+- we may need to run models for all habitat together later 
+
+2020 July-Augst
+
+- New models with this form `tau[k] = 2.5 * tan(tau_unif[k])` worked
+- Waiting for new tlp values
+
+20200402
+- dry, min abund 30, cc - tlp
+  - tlp on height has positive effect
+  - 4599.68 seconds on n2s4
+  - Rhat for  `lp__` is 1.13 and L_sigma[5] (ahet) is 1.103
+  - will use 50 again
+
+- dry, min abund 50, cc - tlp
+  - tlp on height has positive effect
+  - 5975.35 seconds on n2s4
+  - convergence for L_sigma[4-5] (ahet and acon) still looks bad
+
+
+20200401
+
+- dry, min abund 50, cc, ind effect
+    - `sigma[3]`` and `lp__` showed 1.1 < Rhat <1.2
+- 8615.59 seconds on n2s4
+- wp on cons adulut has negative effect
+- I will try model without ind again
+
+
+
