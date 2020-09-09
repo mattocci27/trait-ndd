@@ -120,12 +120,17 @@ trait5 <- trait4 %>%
 
 # seedling data with traits for analysis
 seedling_dat <- seedling %>%
-  filter(habit3 == {{hab}} & season == {{dry}})
-# different trait sets
+  filter(season == {{dry}})
 
+if (hab == "valley" | hab == "ridge" | hab == "slope") {
+  seedling_dat <- seedling_dat %>%
+    filter(habit3 == {{hab}})
+}
+
+# different trait sets
 # trait data
 #- Full
-#- except for StemD
+#- except for WD
 #- except for SDMC
 #- use PC1-3
 #- use PC1-2
@@ -134,10 +139,10 @@ if (trait_data == "Full") {
   print("Sp-level: 1 + all the traits")
   trait6 <- trait5 %>%
     na.omit
-} else if (trait_data == "StemD") {
-  print("Sp-level: except for StemD")
+} else if (trait_data == "WD") {
+  print("Sp-level: except for WD")
   trait6 <- trait5 %>%
-    dplyr::select(-StemD) %>%
+    dplyr::select(-WD) %>%
     na.omit
 } else if (trait_data == "SDMC") {
   print("Sp-level: except for SDMC")
@@ -145,14 +150,14 @@ if (trait_data == "Full") {
     dplyr::select(-SDMC) %>%
     na.omit
 } else if (trait_data == "PC2") {
-  print("Sp-level: 1 + PC1 + PCA2")
+  print("Sp-level: 1 + PC1 + PC2")
   trait6 <- trait5 %>%
-    dplyr::select(sp, PCA1, PCA2) %>%
+    dplyr::select(sp, PC1, PC2) %>%
     na.omit
 } else if (trait_data == "PC3") {
-  print("Sp-level: 1 + PC1 + PCA2 + PCA3")
+  print("Sp-level: 1 + PC1 + PC2 + PC3")
   trait6 <- trait5 %>%
-    dplyr::select(sp, PCA1, PCA2, PCA3) %>%
+    dplyr::select(sp, PC1, PC2, PC3) %>%
     na.omit
 }
 
@@ -273,7 +278,7 @@ fit <- stan(file = model_path,
 
 print(fit, pars = c("gamma", "sig", "lp__"))
 
-save_name <- str_c("./data/", dry, "_spab_", n_ab, "_", model_name, "_", ng_data, "_", trait_data, ".rda")
+save_name <- str_c("./rda/", dry, "_spab_", n_ab, "_", model_name, "_", ng_data, "_", trait_data, "_", hab, ".rda")
 print(save_name)
 
 save.image(save_name)
