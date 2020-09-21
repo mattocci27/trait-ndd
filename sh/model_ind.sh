@@ -2,12 +2,12 @@
 SPAB=50
 MODEL=model_ind
 NEIGHBOR=full
-for DRY in dry rainy
+for HAB in valley ridge slope
 do
   for TRAIT in Full SDMC WD PC2 PC3
   do
     #for HAB in valley ridge slope all
-    for HAB in valley ridge slope
+    for DRY in dry rainy
     do
       echo "Model for ${DRY} season. Min. species abundance = ${SPAB}"
       echo "Run ${MODEL}.stan"
@@ -16,10 +16,10 @@ do
       echo "Habitat: ${HAB}"
       export SPAB DRY MODEL NEIGHBOR HAB TRAIT
         # n_iter n_warm n_thin n_chain adapt_delta n_ab season
-     nohup R --vanilla --slave --args ${MODEL} 2000 1000 1 4 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_stan.r > ./log/${DRY}_stan_${SPAB}_${MODEL}_${NEIGHBOR}_${TRAIT}_${HAB}.log &
-    #  nohup R --vanilla --slave --args ${MODEL} 2 1 1 1 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_stan.r > ./log/${DRY}_stan_${SPAB}_${MODEL}_${NEIGHBOR}_${TRAIT}_${HAB}.log &
+     #nohup R --vanilla --slave --args ${MODEL} 2000 1000 1 4 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_stan.r > ./log/${DRY}_stan_${SPAB}_${MODEL}_${NEIGHBOR}_${TRAIT}_${HAB}.log &
+      nohup R --vanilla --slave --args ${MODEL} 2 1 1 1 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_stan.r > ./log/${DRY}_stan_${SPAB}_${MODEL}_${NEIGHBOR}_${TRAIT}_${HAB}.log &
       sleep 1 # pause to be kind to the scheduler
-      wait
+      #wait
     done
     wait
   done

@@ -55,6 +55,10 @@ Then, go to http://210.72.93.96:8787/:8787/ or localhost:8787/ in your browser.
 
 ## Log
 
+20200921
+- fixed erros in `run_sran.r` 
+- now using 8 cores
+
 20200909
 
 - started running sh/model_ind.sh for the following combinations
