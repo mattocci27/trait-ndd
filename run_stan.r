@@ -138,15 +138,18 @@ if (hab == "valley" | hab == "ridge" | hab == "slope") {
 if (trait_data == "Full") {
   print("Sp-level: 1 + all the traits")
   trait6 <- trait5 %>%
+    dplyr::select(!starts_with("PC")) %>%
     na.omit
 } else if (trait_data == "WD") {
   print("Sp-level: except for WD")
   trait6 <- trait5 %>%
+    dplyr::select(!starts_with("PC")) %>%
     dplyr::select(-WD) %>%
     na.omit
 } else if (trait_data == "SDMC") {
   print("Sp-level: except for SDMC")
   trait6 <- trait5 %>%
+    dplyr::select(!starts_with("PC")) %>%
     dplyr::select(-SDMC) %>%
     na.omit
 } else if (trait_data == "PC2") {

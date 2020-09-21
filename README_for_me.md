@@ -36,7 +36,7 @@ docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/myenv:3.6.3 /bin
 
 F85hPRItkcsaQ7lR6AHK
 
-docker run --rm -v $(pwd):/home/rstudio/seedling-stan -p 8787:8787 -e PASSWORD=F85hPRItkcsaQ7lR6AHK mattocci/myenv:3.6.3
+docker run --rm -v $(pwd):/home/rstudio/seedling-stan -p 8787:8787 -e PASSWORD=F85hPRItkcsaQ7lR6AHK mattocci/myenv:4.0.2
 
 #sudo docker run -it -v $(pwd):/home/rstudio/seedling_stan -u rstudio mattocci/rstan R
 
@@ -62,7 +62,9 @@ docker-compose run stan /bin/bash
 ## Singularlity
 
 ```
-singularity exec ../dockerfiles/singularity/rstan_4.0.2.sif sh/model_ind.sh
+singularity exec ../r-containers/rstan_4.0.2.sif sh/model_ind.sh
+
+singularity shell ../r-containers/myenv_4.0.2.sif 
 ```
 
 
