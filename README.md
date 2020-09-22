@@ -49,6 +49,7 @@ docker run --rm -v $(pwd):/home/rstudio/seedling-stan \
   -p 8787:8787 \
   -e PASSWORD=< your_password > \
   mattocci/myenv:4.0.2
+
 ```
 
 Then, go to http://210.72.93.96:8787/:8787/ or localhost:8787/ in your browser.

@@ -125,9 +125,6 @@ mcmc_intervals2 <- function(data,
 #setwd("~/seedling-stan")
 files <- list.files("rda")
 
-#files2 <- files %>%
-#  str_subset("gq")
-
 ```
 
 ```{r, message=FALSE}
@@ -137,20 +134,12 @@ for (n in 1:length(files)) {
   file_name
   load(file_name)
 
-  # need to update here
-  for TRAIT in Full SDMC WD PC2 PC3
-  if (str_detect(file_name, "Full w")) {
-    tr_name <- c("Int", "StemD", "logSLA", "logLT")
-  } else if (str_detect(file_name, "SDMC")) {
-    tr_name <- c("Int", "StemD", "logSLA", "logC13")
-  } else if (str_detect(file_name, "WD")) {
-    tr_name <- c("Int", "PC1", "PC2")
-  } else if (str_detect(file_name, "PC2")) {
-    tr_name <- c("Int", "WD")
-  } else if (str_detect(file_name, "PC3")) {
-    tr_name <- c("Int", "WP")
-  }
+  tmp_name <- trait6 %>%
+    select(-sp) %>%
+    names 
 
+  tr_name <- c("Int", tmp_name)
+ 
   title <- str_c(dry, "-", ng_data, " model:", trait_data )
 
   x_name <- names(Xd)
@@ -161,7 +150,6 @@ for (n in 1:length(files)) {
     rep(x_name, each = length(tr_name)))
 
   gamma_name
-
 
   fig_dat <- mcmc_intervals_data(
     fit,

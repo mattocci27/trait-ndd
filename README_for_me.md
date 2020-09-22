@@ -29,6 +29,7 @@ sudo docker pull mattocci/rstan
 
 docker run -d -p 8787:8787 -v $(pwd):/home/rstudio -e PASSWORD=mogemoge --name rstudio mattocci/rstan:3.6.3
 
+
 docker run -p 8787:8787 -v $(pwd):/home/rstudio/seedling-stan -e PASSWORD=mogemoge mattocci/myenv:3.6.3
 
 docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/myenv:3.6.3 /bin/bash
@@ -37,6 +38,8 @@ docker run -it --rm -v $(pwd):/home/rstudio -u rstudio mattocci/myenv:3.6.3 /bin
 F85hPRItkcsaQ7lR6AHK
 
 docker run --rm -v $(pwd):/home/rstudio/seedling-stan -p 8787:8787 -e PASSWORD=F85hPRItkcsaQ7lR6AHK mattocci/myenv:4.0.2
+
+docker run --rm -v $(pwd):/home/rstudio/seedling-stan -p 59000:8787 -e PASSWORD=F85hPRItkcsaQ7lR6AHK mattocci/myenv:4.0.2
 
 #sudo docker run -it -v $(pwd):/home/rstudio/seedling_stan -u rstudio mattocci/rstan R
 
