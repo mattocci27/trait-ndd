@@ -56,7 +56,6 @@ model {
 
 generated quantities {
   vector[N] log_lik;
-  vector[N] p;
   corr_matrix[K] Omega;
   Omega = multiply_lower_tri_self_transpose(L_Omega);
   for (n in 1:N) {
