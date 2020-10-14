@@ -1,4 +1,3 @@
-
 ---
 title: Coef-plot
 author: Masatoshi Katabuchi
@@ -123,14 +122,16 @@ mcmc_intervals2 <- function(data,
 ```{r, message=FALSE}
 
 #setwd("~/seedling-stan")
-files <- list.files("rda")
+files <- list.files("../rda")
 
 ```
 
 ```{r, message=FALSE}
 
+#N <- 2
 for (n in 1:length(files)) {
-  file_name <- str_c("./rda/", files[n])
+#for (n in 1:N) {
+  file_name <- str_c("../rda/", files[n])
   file_name
   load(file_name)
 
@@ -140,7 +141,7 @@ for (n in 1:length(files)) {
 
   tr_name <- c("Int", tmp_name)
  
-  title <- str_c(dry, "-", ng_data, " model:", trait_data )
+  title <- str_c(dry, "-", hab, "-", trait_data)
 
   x_name <- names(Xd)
 
@@ -148,8 +149,6 @@ for (n in 1:length(files)) {
     rep(tr_name, length(x_name)),
     rep("-", length(tr_name) * length(x_name)),
     rep(x_name, each = length(tr_name)))
-
-  gamma_name
 
   fig_dat <- mcmc_intervals_data(
     fit,

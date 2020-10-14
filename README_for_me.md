@@ -43,6 +43,10 @@ docker run --rm -v $(pwd):/home/rstudio/seedling-stan -p 59000:8787 -e PASSWORD=
 
 #sudo docker run -it -v $(pwd):/home/rstudio/seedling_stan -u rstudio mattocci/rstan R
 
+
+docker run -p 8787:8787 -v $(pwd):/home/rstudio/seedling-stan -e PASSWORD=mogemoge mattocci/myenv:3.6.3
+
+
 4cpu 16GB
 $0.1664 ~ 1.18 RMB / h
 ```

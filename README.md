@@ -11,7 +11,7 @@ cd seedling_stan
 
 ## Singularlity
 
-To run MCMC
+### To run MCMC
 
 ```
 singularity shell ../dockerfiles/singularity/rstan_4.0.2.sif
@@ -24,6 +24,14 @@ or
 ```
 singularity exec ../dockerfiles/singularity/rstan_4.0.2.sif sh/model_ind.sh
 ```
+
+### Figure
+
+```
+
+```
+
+
 
 
 ## Docker (not recommended)
@@ -55,6 +63,9 @@ docker run --rm -v $(pwd):/home/rstudio/seedling-stan \
 Then, go to http://210.72.93.96:8787/:8787/ or localhost:8787/ in your browser.
 
 ## Log
+
+20201013
+- fixed erros in `model_ind_qq.stan` 
 
 20200921
 - fixed erros in `run_sran.r` 
