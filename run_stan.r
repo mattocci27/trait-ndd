@@ -162,6 +162,11 @@ if (trait_data == "Full") {
   trait6 <- trait5 %>%
     dplyr::select(sp, PC1, PC2, PC3) %>%
     na.omit
+} else if (trait_data == "SLA_WD_TLP") {
+  print("Sp-level: 1 + SLA + WD + TLP")
+  trait6 <- trait5 %>%
+    dplyr::select(sp, logSLA, WD, tlp) %>%
+    na.omit
 }
 
 # tweak sp list for trait and seedling data
