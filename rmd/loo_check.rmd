@@ -1,0 +1,88 @@
+---
+title: loo
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+```{r, message=FALSE}
+library(tidyverse)
+library(rstan)
+library(bayesplot)
+```
+
+
+
+```
+
+```{r, message=FALSE}
+
+#setwd("~/seedling-stan")
+files <- list.files("../rda")
+#files <- files[1:15]
+
+```
+
+
+# loo
+
+Smaller loo (approximate leave-one-out cross-validation) indicates better models in terms of predictive accuracy.
+
+```{r, message=FALSE, eval=TRUE}
+
+n_samp <- NULL
+#N <- 2
+res_loo <- NULL
+for (n in 1:length(files)) {
+#for (n in 1:N) {
+  file_name <- str_c("../rda/", files[n])
+  file_name
+  load(file_name)
+  tmp <- loo(fit)$estimates[3, 1]
+  res_loo <- rbind(res_loo,
+        c(file_name = files[n], 
+          season = dry,
+          hab = hab,
+          trait = trait_data,
+          n_samp = list_dat_d$N, 
+          looic = tmp))
+  rm(fit)
+}
+
+dat <- res_loo %>% 
+  as_tibble %>%
+  mutate(n_samp = as.numeric(n_samp)) %>%
+  mutate(looic = as.numeric(looic))
+
+dat %>%
+  mutate(looic = round(looic, 2)) %>%
+  filter(str_detect(file_name, "dry")) %>%
+  DT::datatable(.)
+```
+
+Table for dry season.
+
+```{r, message=FALSE, eval=TRUE}
+dat %>%
+  mutate(looic = round(looic, 2)) %>%
+  filter(str_detect(file_name, "rainy")) %>%
+  DT::datatable(.)
+```
+
+Table for wet season.
