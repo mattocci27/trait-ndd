@@ -123,11 +123,67 @@ mcmc_intervals2 <- function(data,
 
 #setwd("~/seedling-stan")
 files <- list.files("../rda")
+#files <- files[1:15]
 
 ```
 
-```{r, message=FALSE}
 
+# loo
+
+```{r, message=FALSE, eval=FALSE}
+
+n_samp <- NULL
+#N <- 2
+for (n in 1:length(files)) {
+#for (n in 1:N) {
+  file_name <- str_c("../rda/", files[n])
+  file_name
+  load(file_name)
+  assign(files[n], fit)
+  n_samp[n] <- list_dat_d$N
+}
+
+dat <- tibble(fit = files) %>%
+# head(2) %>%
+ mutate(N = n_samp) %>%
+ mutate(elpd_list = map(fit, ~ loo(get(.)))) %>%
+ mutate(looic = map_dbl(elpd_list, ~ .$estimates[3, 1]))
+
+rm(list = ls()[ls() %>% str_detect("\\.rda$")])
+
+DT::datatable(dat)
+
+```
+
+# diagnostic
+
+- skip
+
+```{r, eval=FALSE}
+color_scheme_set("mix-brightblue-gray")
+check_trace <- function(x) {
+  np_cp <- nuts_params(fit)
+  mcmc_trace(fit,
+             pars = c("lp__"),
+             regex_pars = "gamma",
+             np = np_cp) 
+
+  ggtitle(obs_files[x])
+  }
+}
+p <- 2  %>%
+  map(check_trace)
+p %>%
+  walk(print)
+```
+
+# coef-plot
+
+season-habitat-trait_data
+
+```{r, message=FALSE, fig.height=10}
+
+files <- list.files("../rda")
 #N <- 2
 for (n in 1:length(files)) {
 #for (n in 1:N) {
@@ -178,8 +234,6 @@ for (n in 1:length(files)) {
   print(p)
 
 }
-
-
 
 ```
 
