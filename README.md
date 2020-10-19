@@ -25,6 +25,10 @@ or
 singularity exec ../dockerfiles/singularity/rstan_4.0.2.sif sh/model_ind.sh
 ```
 
+```
+singularity exec ../dockerfiles/singularity/rstan_4.0.2.sif sh/model_ind_all_hab.sh
+```
+
 ### Figure
 
 ```
