@@ -123,69 +123,37 @@ mcmc_intervals2 <- function(data,
 
 #setwd("~/seedling-stan")
 files <- list.files("../rda")
-
-files <- files[str_detect(files,"SLA")]
-
 #files <- files[1:15]
 
 ```
 
+
 # loo
 
-Smaller loo (approximate leave-one-out cross-validation) indicates better models in terms of predictive accuracy.
+```{r, message=FALSE, eval=FALSE}
 
-```{r, message=FALSE, eval=TRUE}
+n_samp <- NULL
+#N <- 2
+for (n in 1:length(files)) {
+#for (n in 1:N) {
+  file_name <- str_c("../rda/", files[n])
+  file_name
+  load(file_name)
+  assign(files[n], fit)
+  n_samp[n] <- list_dat_d$N
+}
 
-d <- read_csv("../loo.csv") %>%
-  mutate(loo = round(loo, 2)) 
+dat <- tibble(fit = files) %>%
+# head(2) %>%
+ mutate(N = n_samp) %>%
+ mutate(elpd_list = map(fit, ~ loo(get(.)))) %>%
+ mutate(looic = map_dbl(elpd_list, ~ .$estimates[3, 1]))
+
+rm(list = ls()[ls() %>% str_detect("\\.rda$")])
+
+DT::datatable(dat)
+
 ```
-
-## Table for dry season.
-
-All the models
-
-```{r}
-d %>%
-  filter(str_detect(file, "dry")) %>%
-  DT::datatable(.)
-```
-
-Best models
-
-```{r}
-tmp <- d %>%
-  filter(str_detect(file, "dry")) %>%
-  arrange(loo) %>%
-  arrange(hab) %>%
-  slice(seq(1, 24, by = 6))
-
-tmp %>%
-  DT::datatable(.)
-```
-
-## Table for wet season.
-
-All the models
-
-```{r}
-d %>%
-  filter(str_detect(file, "rainy")) %>%
-  DT::datatable(.)
-```
-
-Best models
-
-```{r}
-tmp2 <- d %>%
-  filter(str_detect(file, "rainy")) %>%
-  arrange(loo) %>%
-  arrange(hab) %>%
-  slice(seq(1, 24, by = 6)) 
-
-tmp2 %>%
-  DT::datatable(.)
-```
-
 
 # diagnostic
 
@@ -215,7 +183,7 @@ season-habitat-trait_data
 
 ```{r, message=FALSE, fig.height=10}
 
-#files <- list.files("../rda")
+files <- list.files("../rda")
 #N <- 2
 for (n in 1:length(files)) {
 #for (n in 1:N) {
