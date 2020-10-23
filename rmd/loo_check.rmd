@@ -23,22 +23,7 @@ rm(list = ls())
 
 ```{r, message=FALSE}
 library(tidyverse)
-library(rstan)
-library(bayesplot)
 ```
-
-
-
-```
-
-```{r, message=FALSE}
-
-#setwd("~/seedling-stan")
-files <- list.files("../rda")
-#files <- files[1:15]
-
-```
-
 
 # loo
 
@@ -46,43 +31,53 @@ Smaller loo (approximate leave-one-out cross-validation) indicates better models
 
 ```{r, message=FALSE, eval=TRUE}
 
-n_samp <- NULL
-#N <- 2
-res_loo <- NULL
-for (n in 1:length(files)) {
-#for (n in 1:N) {
-  file_name <- str_c("../rda/", files[n])
-  file_name
-  load(file_name)
-  tmp <- loo(fit)$estimates[3, 1]
-  res_loo <- rbind(res_loo,
-        c(file_name = files[n], 
-          season = dry,
-          hab = hab,
-          trait = trait_data,
-          n_samp = list_dat_d$N, 
-          looic = tmp))
-  rm(fit)
-}
+d <- read_csv("../loo.csv") %>%
+  mutate(loo = round(loo, 2)) 
+```
 
-dat <- res_loo %>% 
-  as_tibble %>%
-  mutate(n_samp = as.numeric(n_samp)) %>%
-  mutate(looic = as.numeric(looic))
+## Table for dry season.
 
-dat %>%
-  mutate(looic = round(looic, 2)) %>%
-  filter(str_detect(file_name, "dry")) %>%
+All the models
+
+```{r}
+d %>%
+  filter(str_detect(file, "dry")) %>%
   DT::datatable(.)
 ```
 
-Table for dry season.
+Best models
 
-```{r, message=FALSE, eval=TRUE}
-dat %>%
-  mutate(looic = round(looic, 2)) %>%
-  filter(str_detect(file_name, "rainy")) %>%
+```{r}
+tmp <- d %>%
+  filter(str_detect(file, "dry")) %>%
+  arrange(loo) %>%
+  arrange(hab) %>%
+  slice(seq(1, 24, by = 6))
+
+tmp %>%
   DT::datatable(.)
 ```
 
-Table for wet season.
+## Table for wet season.
+
+All the models
+
+```{r}
+d %>%
+  filter(str_detect(file, "rainy")) %>%
+  DT::datatable(.)
+```
+
+Best models
+
+```{r}
+tmp2 <- d %>%
+  filter(str_detect(file, "rainy")) %>%
+  arrange(loo) %>%
+  arrange(hab) %>%
+  slice(seq(1, 24, by = 6)) 
+
+tmp2 %>%
+  DT::datatable(.)
+```
+
