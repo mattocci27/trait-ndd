@@ -27,16 +27,30 @@ library(GGally)
 library(tictoc)
 theme_set(theme_light())
 
-seedling_all <- read_csv("../data/seedling_for_drought.csv")
+#seedling_all <- read_csv("../data/seedling_for_drought.csv")
+seedling_all <- read_csv("../data/seedlingmatrix.csv") 
+seedling_all  <- seedling_all %>%
+  mutate(S_CONS = scale(CONS) %>% as.numeric) %>%
+  mutate(S_CONA = scale(CONA) %>% as.numeric) %>%
+  mutate(S_HETS = scale(HETS) %>% as.numeric) %>%
+  mutate(S_HETA = scale(HETA) %>% as.numeric)
 
-trait <- read_csv("../data/BB_SeedlingTrait.csv")
+#trait <- read_csv("../data/BB_SeedlingTrait.csv")
+trait <- read_csv("../data/trait SPcode.csv")
 
-trait <- trait %>% 
-  select(-Cname) %>%
-  rename(StemD = WD)
-
+#trait <- trait %>% 
+#  rename(StemD = WD)
 
 ```
+
+missing values in the trait data.
+
+```{r}
+
+is.na(trait) %>% apply(., 2, sum)
+
+```
+
 
 # Covariance
 
@@ -44,26 +58,49 @@ trait <- trait %>%
 
 ```{r demo-cov, cache=TRUE, message=FALSE, warning=FALSE}
 
-
 seedling_all %>%
-  dplyr::select(S_scon, S_acon, S_ahet, S_shet) %>%
+  dplyr::select(S_CONS, S_CONA, S_HETS, S_HETA) %>%
   ggpairs(.)
 
 ```
 
 ## Traits
 
+### Distributions
+
+```{r}
+trait %>% 
+  filter(SLA > 1000)
+```
+
+```{r}
+trait %>% 
+  pivot_longer(LDMC:tlp) %>%
+  ggplot(., aes(value)) +
+  geom_histogram() +
+  facet_wrap(~ name, scales = "free")
+
+trait %>% 
+  pivot_longer(LDMC:tlp) %>%
+  filter(value > 0) %>%
+  ggplot(., aes(value)) +
+  geom_histogram() +
+  facet_wrap(~ name, scales = "free") +
+  scale_x_log10()
+```
+
 ### Pair plot
 
 ```{r trait-cov, cache=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=12}
 
 trait2 <- trait %>%
-  filter(Species != "C42") %>%
-  dplyr::select(-Species) %>%
+#  filter(SPcode != "C42") %>%
+  dplyr::select(-SPcode) %>%
   mutate(logLA = log(LA)) %>%
   mutate(logSLA = log(SLA)) %>%
   mutate(logLT = log(LT)) %>%
-  dplyr::select(-LA, -SLA, -LT) 
+  mutate(logN = log(N)) %>%
+  dplyr::select(-LA, -SLA, -LT, -N) 
 
 tic()
 ggpairs(trait2)
@@ -153,7 +190,7 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
 ```{r}
 
 trait3 <- trait2 %>% 
-  dplyr::select(StemD, logSLA, logLT) %>%
+  dplyr::select(WD, logSLA, logLT) %>%
   na.omit
 
 trait_pca <- prcomp(trait3,
