@@ -229,28 +229,29 @@ cc <- which(lik == max(lik)) / 100
 print(str_c("use c = ", cc, " as a scaling parameter for the distance effect"))
 
 seedling_dat2 <- seedling_dat2 |>
-  mutate(HETA_scaled = as.numeric(scale(HETA_scaled^cc))) |>
-  mutate(CONA_scaled = as.numeric(scale(CONA_scaled^cc)))
+  mutate(HETA_scaled_c = as.numeric(scale(HETA_scaled^cc))) |>
+  mutate(CONA_scaled_c = as.numeric(scale(CONA_scaled^cc)))
 
 # -------------------------------------------------------------------------
 
 if (ng_data == "full") {
   Xd <- cbind(rep(1, nrow(seedling_dat2)),
-              seedling_dat2[,c("S_CONS",
-                               "SC_CONA",
-                               "S_HETS",
-                               "SC_HETA",
-                               "S_log_h1")])
+              seedling_dat2[,c("CONS_scaled",
+                               "CONA_scaled_c",
+                               "HETS_scaled",
+                               "HETA_scaled_c",
+                               "logH_scaled")])
 } else if (ng_data == "seedling") {
   Xd <- cbind(rep(1, nrow(seedling_dat2)),
-              seedling_dat2[,c("S_CONS",
-                               "S_HETS",
-                               "S_log_h1")])
+              seedling_dat2[,c("CONS_scaled",
+                               "HETS_scaled",
+                               "logH_scaled")])
 } else if (ng_data == "adult") {
   Xd <- cbind(rep(1, nrow(seedling_dat2)),
-              seedling_dat2[,c("SC_CONA",
-                               "SC_HETA",
-                               "S_log_h1")])
+              seedling_dat2[,c(
+                               "CONA_scaled_c",
+                               "HETA_scaled_c",
+                               "logH_scaled")])
 }
 
 colnames(Xd)[1] <- "Int"
@@ -270,14 +271,14 @@ list_dat_d <- list(N = nrow(seedling_dat2),
                    L = ncol(Ud),
                    suv = seedling_dat2$survive,
                    plot = seedling_dat2$quadrat |>
-                     as.character |> as.factor |> as.integer,
+                     as.character() |> as.factor() |> as.integer(),
                    census = seedling_dat2$census |>
-                     as.character |> as.factor |> as.integer,
+                     as.character() |> as.factor() |> as.integer(),
                    sp = seedling_dat2$sp |>
-                     as.character |> as.factor |> as.integer,
+                     as.character() |> as.factor() |> as.integer(),
                    tag = seedling_dat2$tag |>
-                     as.character |> as.factor |> as.integer,
-                   x = Xd |> as.matrix,
+                     as.character() |> as.factor() |> as.integer(),
+                   x = Xd |> as.matrix(),
                    u = Ud)
 
 print(str_c("n_sp = J =", n_sp_d))
@@ -286,7 +287,9 @@ print(str_c("n_plot = S = ", n_plot_d))
 print(str_c("n_census = T = ", n_census_d))
 print(str_c("n_tag = M = ", n_tag_d))
 
-fit <- stan(file = model_path,
+model <- stan_model(model_path) 
+
+fit <- sampling(model,
             data = list_dat_d,
             verbose = TRUE,
             iter = n_iter,
