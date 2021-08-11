@@ -36,7 +36,7 @@ print(paste("adapt_delta =", a_delta))
 print(paste("minimum sp abund =", n_ab))
 
 # Data
-seedling_all <- read_csv("./data/seedling_for_drought.csv") %>%
+seedling_all0 <- read_csv("./data/seedling_for_drought.csv") %>%
   dplyr::select(!starts_with("PC")) %>%
   mutate(tmp = str_match(sp, "C([0-9]+)")[,2]) %>%
   mutate(sp =
@@ -46,9 +46,20 @@ seedling_all <- read_csv("./data/seedling_for_drought.csv") %>%
       str_length(tmp) > 2 ~ str_c("C", tmp)
   ))
 
+# Data
+seedling_all <- read_csv("./data/seedlingmatrix.csv") %>%
+  dplyr::select(!starts_with("PC")) %>%
+  mutate(tmp = str_match(SPcode, "BBSP([0-9]+)")[,2]) %>%
+  mutate(sp =
+    case_when(
+      str_length(tmp) == 1 ~ str_c("BBSP00", tmp),
+      str_length(tmp) == 2 ~ str_c("BBSP0", tmp),
+      str_length(tmp) > 2 ~ str_c("BBSP", tmp)
+  ))
+
 hab_dat <- read_csv("./data/habitat150.csv")
 
-trait <- read_csv("./data/BB_SeedlingTrait.csv") %>%
+trait0 <- read_csv("./data/BB_SeedlingTrait.csv") %>%
   rename(sp = Species) %>%
   dplyr::select(-Cname) %>%
   # remove species starting with Sn
@@ -59,6 +70,20 @@ trait <- read_csv("./data/BB_SeedlingTrait.csv") %>%
       str_length(tmp) == 1 ~ str_c("C00", tmp),
       str_length(tmp) == 2 ~ str_c("C0", tmp),
       str_length(tmp) > 2 ~ str_c("C", tmp)
+  )) %>%
+  dplyr::select(-tmp)
+
+trait <- read_csv("./data/trait SPcode.csv") %>%
+  rename(sp = SPcode) %>%
+  #dplyr::select(-Cname) %>%
+  # remove species starting with Sn
+  filter(str_detect(sp, "^BBSP")) %>%
+  mutate(tmp = str_match(sp, "BBSP([0-9]+)")[,2]) %>%
+  mutate(sp =
+    case_when(
+      str_length(tmp) == 1 ~ str_c("BBSP00", tmp),
+      str_length(tmp) == 2 ~ str_c("BBSP0", tmp),
+      str_length(tmp) > 2 ~ str_c("BBSP", tmp)
   )) %>%
   dplyr::select(-tmp)
 
