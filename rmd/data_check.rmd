@@ -21,19 +21,24 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, data, message=FALSE}
+```{r, data, include=FALSE}
 library(tidyverse)
 library(GGally)
 library(tictoc)
+library(FactoMineR)
+#install.packages("factoextra")
+library(factoextra)
 theme_set(theme_light())
 
-seedling_all <- read_csv("../data/seedling_for_drought.csv")
+#seedling_all <- read_csv("../data/seedling_for_drought.csv")
+seedling_all <- read_csv("../data/seedlingmatrix.csv")
 
-trait <- read_csv("../data/BB_SeedlingTrait.csv")
+#trait0 <- read_csv("./data/BB_SeedlingTrait.csv")
+trait <- read_csv("../data/trait SPcode.csv")
 
-trait <- trait %>% 
-  select(-Cname) %>%
-  rename(StemD = WD)
+#trait <- trait %>% 
+#  select(-Cname) %>%
+#  rename(StemD = WD)
 
 
 ```
@@ -43,32 +48,52 @@ trait <- trait %>%
 ## Demography
 
 ```{r demo-cov, cache=TRUE, message=FALSE, warning=FALSE}
-
-
 seedling_all %>%
-  dplyr::select(S_scon, S_acon, S_ahet, S_shet) %>%
+  dplyr::select(CONS, CONA, HETS, HETA) %>%
   ggpairs(.)
-
 ```
 
 ## Traits
 
-### Pair plot
+### Missing data
 
-```{r trait-cov, cache=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=12}
+```{r}
+is.na(trait) %>%
+  apply(., 2, sum)
+```
 
+### Histogram
+
+```{r}
+trait %>%
+  pivot_longer(LDMC:tlp) %>%
+  ggplot(., aes(x = value)) +
+  geom_histogram() +
+  facet_wrap(~ name, scale = "free")
+```
+
+```{r}
 trait2 <- trait %>%
-  filter(Species != "C42") %>%
-  dplyr::select(-Species) %>%
   mutate(logLA = log(LA)) %>%
   mutate(logSLA = log(SLA)) %>%
   mutate(logLT = log(LT)) %>%
-  dplyr::select(-LA, -SLA, -LT) 
+  dplyr::select(-LA, -SLA, -LT)
 
+trait2 %>%
+  pivot_longer(LDMC:logLT) %>%
+  ggplot(., aes(x = value)) +
+  geom_histogram() +
+  facet_wrap(~ name, scale = "free")
+```
+
+### Pair plot
+
+```{r trait-cov, cache=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=12}
 tic()
-ggpairs(trait2)
+trait2 %>%
+  dplyr::select(-SPcode) %>%
+  ggpairs(trait2)
 toc()
-
 ```
 
 ### PCA
@@ -76,10 +101,9 @@ toc()
 *Original PCA*
 
 ```{r}
-library(FactoMineR)
-library(factoextra)
 
 trait_pca <- prcomp(trait2 %>% 
+                    dplyr::select(-SPcode) %>%
                     na.omit, scale = TRUE, center = TRUE)
 
 df <- facto_summarize(trait_pca, element = "var", 
@@ -153,13 +177,13 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
 ```{r}
 
 trait3 <- trait2 %>% 
-  dplyr::select(StemD, logSLA, logLT) %>%
+  dplyr::select(WD, logSLA, logLT) %>%
   na.omit
 
-trait_pca <- prcomp(trait3,
+trait_pca2 <- prcomp(trait3,
                   scale = TRUE, center = TRUE)
 
-fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
+fviz_pca_biplot(trait_pca2, axes.linetype = "dotted", 
                 col.var = "black", 
                 geom = "text",
                 alpha.ind = 0.4, 
@@ -181,7 +205,8 @@ Collinearity will be fine except for stem density and SDMC. We will check the
 following models.
 
 All species
-  - Full
-  - removing StemD from the full model
-  - removing SDMC from the full model
-  - Intercept + PC1 + PC2 + PC3
+
+- Full
+- removing StemD from the full model
+- Intercept + PC1 + PC2 + PC3 (66%)
+
