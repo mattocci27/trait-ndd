@@ -5,7 +5,7 @@ NEIGHBOR=full
 for HAB in valley ridge slope
 #for HAB in valley
 do
-  for TRAIT in Full SDMC WD PC2 PC3
+  for TRAIT in Full WD PCA
   #for TRAIT in PC2
   do
     #for HAB in valley ridge slope all
