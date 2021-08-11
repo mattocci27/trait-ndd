@@ -40,8 +40,16 @@ trait <- read_csv("../data/trait SPcode.csv")
 #  select(-Cname) %>%
 #  rename(StemD = WD)
 
+```
+
+missing values in the trait data.
+
+```{r}
+
+is.na(trait) %>% apply(., 2, sum)
 
 ```
+
 
 # Covariance
 
