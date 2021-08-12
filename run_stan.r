@@ -23,7 +23,7 @@ trait_data <- as.character(argv[10])
 hab <- as.character(argv[11])
 
 
-#model_name <- "model_ind"
+#model_name <- "model_inter"
 #n_iter <- 10
 #n_warm <- 5
 #n_thin <- 1
@@ -320,6 +320,7 @@ fit <- sampling(model,
             thin = n_thin,
             chains =  n_chains,
             refresh = 200,
+            seed = 123,
             control = list(adapt_delta = a_delta, max_treedepth = 20))
 
 print(fit, pars = c("gamma", "sig", "lp__"))
