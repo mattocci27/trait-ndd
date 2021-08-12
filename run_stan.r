@@ -23,17 +23,17 @@ trait_data <- as.character(argv[10])
 hab <- as.character(argv[11])
 
 
-model_name <- "model_ind"
-n_iter <- 10
-n_warm <- 5
-n_thin <- 1
-n_chains <- 1
-a_delta <-  0.8
-n_ab <- 50
-dry <- "dry"
-ng_data <- "full" 
-trait_data <- "Full"
-hab <- "ridge"
+#model_name <- "model_ind"
+#n_iter <- 10
+#n_warm <- 5
+#n_thin <- 1
+#n_chains <- 1
+#a_delta <-  0.8
+#n_ab <- 50
+#dry <- "dry"
+#ng_data <- "full" 
+#trait_data <- "Full"
+#hab <- "ridge"
 
 model_path <- str_c("./model/", model_name, ".stan")
 
@@ -223,34 +223,57 @@ for (i in 1:100) {
   lik[i] <- logLik(fm1)
 }
 
-plot(seq(0.01, 1, length = 100), lik, type = "l")
+#plot(seq(0.01, 1, length = 100), lik, type = "l")
 
 cc <- which(lik == max(lik)) / 100
 print(str_c("use c = ", cc, " as a scaling parameter for the distance effect"))
 
 seedling_dat2 <- seedling_dat2 |>
-  mutate(HETA_scaled_c = as.numeric(scale(HETA_scaled^cc))) |>
-  mutate(CONA_scaled_c = as.numeric(scale(CONA_scaled^cc)))
+  mutate(HETA_scaled_c = as.numeric(scale(HETA^cc))) |>
+  mutate(CONA_scaled_c = as.numeric(scale(CONA^cc))) |>
+  mutate(rain_scaled = as.numeric(scale(Rainfall))) |>
+  mutate(HETA_rain = HETA_scaled_c * rain_scaled) |>
+  mutate(HETS_rain = HETS_scaled * rain_scaled) |>
+  mutate(CONA_rain = CONA_scaled_c * rain_scaled) |>
+  mutate(CONS_rain = CONS_scaled * rain_scaled) 
 
 # -------------------------------------------------------------------------
 
+
 if (ng_data == "full") {
+  #Xd <- cbind(rep(1, nrow(seedling_dat2)),
+  #            seedling_dat2[,c("CONS_scaled",
+  #                             "CONA_scaled_c",
+  #                             "HETS_scaled",
+  #                             "HETA_scaled_c",
+  #                             "logH_scaled")])
   Xd <- cbind(rep(1, nrow(seedling_dat2)),
               seedling_dat2[,c("CONS_scaled",
                                "CONA_scaled_c",
                                "HETS_scaled",
                                "HETA_scaled_c",
+                               "rain_scaled",
+                               "CONS_rain",
+                               "CONA_rain",
+                               "HETS_rain",
+                               "HETA_rain",
                                "logH_scaled")])
 } else if (ng_data == "seedling") {
   Xd <- cbind(rep(1, nrow(seedling_dat2)),
               seedling_dat2[,c("CONS_scaled",
                                "HETS_scaled",
+                               "rain_scaled",
+                               "CONS_rain",
+                               "HETS_rain",
                                "logH_scaled")])
 } else if (ng_data == "adult") {
   Xd <- cbind(rep(1, nrow(seedling_dat2)),
               seedling_dat2[,c(
                                "CONA_scaled_c",
                                "HETA_scaled_c",
+                               "rain_scaled",
+                               "CONA_rain",
+                               "HETA_rain",
                                "logH_scaled")])
 }
 
