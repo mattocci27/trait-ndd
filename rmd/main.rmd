@@ -18,7 +18,7 @@ output:
 ---
 
 ```{r, echo = F}
-rm(list = ls())
+#rm(list = ls())
 ```
 
 # Deps
@@ -26,7 +26,7 @@ rm(list = ls())
 ```{r}
 library(tidyverse)
 library(rstan)
-library(coefplot)
+#library(coefplot)
 library(bayesplot)
 options(mc.cores = parallel::detectCores())
 ```
@@ -34,45 +34,50 @@ options(mc.cores = parallel::detectCores())
 # Model
 
 ```{r,eval = T}
-writeLines(readLines("../model/model_ind.stan"))
+writeLines(readLines("../model/model_inter.stan"))
 ```
 
-# Load result
+# Dry season
+
+## Load result
 
 ```{r}
-load("../data2/dry_spab_50_model_ind.rda")
+load("../rda/dry_spab_50_model_inter_full_WD_all.rda")
+fit_dry <- fit
 ```
 
-```{r}
+```{r, eval=FALSE}
 print(fit, pars = c("gamma", "Omega", "lp__"))
 ```
 
-# Coefplot for Dry seasons
+## Coefplot for Dry seasons
 
 ```{r}
 
-post <- as.data.frame(fit)
+post <- as.data.frame(fit_dry)
 
-gammas <- str_c("gamma[",rep(1:2, each = 5), ",", 2:6,"]")
+gammas <- str_c("gamma[",rep(1:12, each = 11), ",", 1:11,"]")
 post_gamma <- post[, gammas]
 
-par_names <- c(
-  "SCON", 
-  "ACON", 
-  "SHET", 
-  "AHET", 
-  "Height",
-  "WP on SCON", 
-  "WP on ACON", 
-  "WP on SHET", 
-  "WP on AHET",
-  "WP on Height"
-)
+par_name <- expand.grid(colnames(Ud), colnames(Xd)) |>
+  as_tibble() |>
+  mutate(gammas) |>
+  mutate(par_name = paste(Var1, "on", Var2))
 
-colnames(post_gamma) <- par_names
+colnames(post_gamma) <- par_name$par_name
+
+upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
+lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
+
+tmp <- upper * lower
+tmp2 <- tmp[tmp > 0]
+names(tmp2)
+
+post_gamma2 <- post_gamma |>
+  dplyr::select(names(tmp2))
 
 mcmc_intervals(
-  post_gamma,
+  post_gamma2,
  # pars = gammas,
   prob = 0,
   prob_outer = 0.95,
@@ -82,7 +87,9 @@ mcmc_intervals(
   theme(
     axis.text = element_text(family = "sans"),
     axis.title = element_text(family = "sans"))
+```
 
+```{r, eval=FALSE}
 beta3 <- str_c("beta[", 1:n_sp_d, ",3]")
 beta3 <- as.tibble(post[, beta3]) 
 colnames(beta3) <- str_c("sp", 1:n_sp_d)
@@ -109,5 +116,51 @@ ggplot(beta3_dat3, aes(x = WP)) +
   geom_point(aes(y = med)) +
   geom_point(aes(y = upr), col = "red") +
   geom_point(aes(y = low), col = "red")
+```
 
+# Wet seasons
+
+## Load result
+
+```{r}
+load("../rda/rainy_spab_50_model_inter_full_WD_all.rda")
+fit_wet <- fit
+```
+
+## Coefplot for Wet seasons
+
+```{r}
+post <- as.data.frame(fit_wet)
+
+gammas <- str_c("gamma[",rep(1:12, each = 11), ",", 1:11,"]")
+post_gamma <- post[, gammas]
+
+par_name <- expand.grid(colnames(Ud), colnames(Xd)) |>
+  as_tibble() |>
+  mutate(gammas) |>
+  mutate(par_name = paste(Var1, "on", Var2))
+
+colnames(post_gamma) <- par_name$par_name
+
+upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
+lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
+
+tmp <- upper * lower
+tmp2 <- tmp[tmp > 0]
+names(tmp2)
+
+post_gamma2 <- post_gamma |>
+  dplyr::select(names(tmp2))
+
+mcmc_intervals(
+  post_gamma2,
+ # pars = gammas,
+  prob = 0,
+  prob_outer = 0.95,
+  point_est = "median"
+) +
+  xlab("Effects on seedling survival") +
+  theme(
+    axis.text = element_text(family = "sans"),
+    axis.title = element_text(family = "sans"))
 ```
