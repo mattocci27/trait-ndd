@@ -85,7 +85,6 @@ tb <- bind_cols(parameters = colnames(Xd), m)
 tb |>
   kable(format = "html") |>
   kable_styling()
-
 ```
 
 # Wet
@@ -97,7 +96,7 @@ load("../rda/dry_spab_50_model_inter_full_WD_Full.rda")
 ```{r post, include=FALSE, cache.lazy=FALSE}
 ```
 
-```{r table, include=FALSE}
+```{r table}
 ```
 
 
