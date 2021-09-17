@@ -59,3 +59,5 @@ vignettes/*.pdf
 .vagrant
 
 *.docx
+
+rmd/components/

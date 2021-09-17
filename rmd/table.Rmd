@@ -1,0 +1,109 @@
+---
+title: Summary table
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+basename <- "seedling-stan"
+opts_chunk$set(fig.path = paste0("components/figure/", basename, "-"),
+               cache.path = paste0("components/cache/", basename, "/"))
+knitr::opts_chunk$set(echo=TRUE,
+                      cache=TRUE,
+                      warning=FALSE,
+                      message=FALSE)
+```
+
+
+# Deps
+
+```{r}
+library(tidyverse)
+library(rstan)
+#library(coefplot)
+library(bayesplot)
+library(kableExtra)
+options(mc.cores = parallel::detectCores())
+```
+
+# Model
+
+```{r,eval = T}
+writeLines(readLines("../model/model_inter.stan"))
+```
+
+# Dry
+
+```{r}
+load("../rda/dry_spab_50_model_inter_full_WD_Full.rda")
+```
+
+```{r mcmc, cache.lazy = FALSE}
+post <- as.data.frame(fit)
+gammas <- str_c("gamma[",rep(1:12, each = 11), ",", 1:11,"]")
+post_gamma <- post[, gammas]
+```
+
+```{r table}
+mean_ <- apply(post_gamma, 2, mean)  |> round(3)
+sd_ <- apply(post_gamma, 2, sd)  |> round(3)
+upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
+lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
+
+m0 <- paste0(mean_, " (", sd_, ")")
+m <- matrix(m0, ncol = 12, nrow = 11)
+colnames(m) <- colnames(Ud)
+
+sig <- matrix(upper * lower, ncol = 12, nrow = 11)
+
+for (i in 1:nrow(m)) {
+  for (j in 1:ncol(m)) {
+    if (sig[i, j] > 0) {
+      m[i, j] <- paste0("**", m[i, j], "**")
+    }
+  }
+}
+
+
+tb <- bind_cols(parameters = colnames(Xd), m)
+
+tb |>
+  kable(format = "html") |>
+  kable_styling()
+
+```
+
+# Wet
+
+```{r}
+load("../rda/dry_spab_50_model_inter_full_WD_Full.rda")
+```
+
+```{r post, include=FALSE, cache.lazy=FALSE}
+```
+
+```{r table, include=FALSE}
+```
+
+
+# Computing Environment
+
+```{r}
+devtools::session_info()
+```
+

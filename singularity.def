@@ -1,5 +1,5 @@
 BootStrap: docker
-From: mattocci/myenv:4.1.0
+From: mattocci/myenv:4.1.1
 
 
 %apprun R
@@ -17,4 +17,5 @@ From: mattocci/myenv:4.1.0
     install2.r -n -4 --skipinstalled --error \
     --deps TRUE \
         patchwork \
-        RColorBrewer
+        RColorBrewer \
+        httpgd
