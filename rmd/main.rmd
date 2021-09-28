@@ -53,10 +53,10 @@ WD_coef <- function(i) {
   post <- as.data.frame(fit)
   gammas <- str_c("gamma[",rep(1:12, each = 11), ",", 1:11,"]")
   post_gamma <- post[, gammas]
-  par_name <- expand.grid(colnames(Ud), colnames(Xd)) |>
+  par_name <- expand.grid(colnames(Xd), colnames(Ud)) |>
     as_tibble() |>
     mutate(gammas) |>
-    mutate(par_name = paste(Var1, "on", Var2))
+    mutate(par_name = paste(Var2, "on", Var1))
 
   colnames(post_gamma) <- par_name$par_name
 
@@ -68,7 +68,7 @@ WD_coef <- function(i) {
 
   post_gamma2 <- post_gamma |>
     dplyr::select(names(tmp2))
- 
+
   if (length(tmp2) != 0 ) {
     p <- mcmc_intervals(
       post_gamma2,
@@ -96,10 +96,10 @@ PCA_coef <- function(i) {
   post <- as.data.frame(fit)
   gammas <- str_c("gamma[",rep(1:4, each = 11), ",", 1:11,"]")
   post_gamma <- post[, gammas]
-  par_name <- expand.grid(colnames(Ud), colnames(Xd)) |>
+  par_name <- expand.grid(colnames(Xd), colnames(Ud)) |>
     as_tibble() |>
     mutate(gammas) |>
-    mutate(par_name = paste(Var1, "on", Var2))
+    mutate(par_name = paste(Var2, "on", Var1))
 
   colnames(post_gamma) <- par_name$par_name
 
