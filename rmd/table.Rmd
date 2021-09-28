@@ -24,7 +24,8 @@ basename <- "seedling-stan"
 opts_chunk$set(fig.path = paste0("components/figure/", basename, "-"),
                cache.path = paste0("components/cache/", basename, "/"))
 knitr::opts_chunk$set(echo=TRUE,
-                      cache=TRUE,
+                      #cache.lazy=FALSE,
+                      cache=FALSE,
                       warning=FALSE,
                       message=FALSE)
 ```
@@ -53,52 +54,117 @@ writeLines(readLines("../model/model_inter.stan"))
 load("../rda/dry_spab_50_model_inter_full_WD_Full.rda")
 ```
 
-```{r mcmc, cache.lazy = FALSE}
-post <- as.data.frame(fit)
-gammas <- str_c("gamma[",rep(1:12, each = 11), ",", 1:11,"]")
-post_gamma <- post[, gammas]
+```{r beta}
+
+get_beta <- \(fit) {
+  post <- as.data.frame(fit)
+  tmp <- names(post)
+  beta_name <- tmp[str_detect(tmp, "beta")]
+  post[, beta_name]
+}
+
+post_beta <- get_beta(fit)
+
+```
+
+Posterior means of $\beta$ for each species.
+
+```{r beta-hist}
+
+mean_ <- apply(post_beta, 2, mean)
+beta_dat <- tibble(beta = mean_,
+  para = rep(colnames(Xd), each = list_dat_d$J))
+
+beta_dat |>
+  ggplot(aes(beta )) +
+  geom_histogram(bins = 10) +
+  geom_vline(xintercept = 0, lty = 2) +
+  facet_wrap(~ para, scale = "free") +
+  theme_bw()
+
+```
+
+```{r mcmc}
+
+get_gamma <- \(fit) {
+  post <- as.data.frame(fit)
+  gammas <- str_c("gamma[",rep(1:12, each = 11), ",", 1:11,"]")
+  post[, gammas]
+}
+
+post_gamma <- get_gamma(fit)
+
+#matrix(gammas, ncol = 12, nrow = 11)
+
 ```
 
 ```{r table}
-mean_ <- apply(post_gamma, 2, mean)  |> round(3)
-sd_ <- apply(post_gamma, 2, sd)  |> round(3)
-upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
-lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
 
-m0 <- paste0(mean_, " (", sd_, ")")
-m <- matrix(m0, ncol = 12, nrow = 11)
-colnames(m) <- colnames(Ud)
+tb_fun <- \(post_gamma) {
+  mean_ <- apply(post_gamma, 2, mean)  |> round(3)
+  sd_ <- apply(post_gamma, 2, sd)  |> round(3)
+  upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
+  lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
 
-sig <- matrix(upper * lower, ncol = 12, nrow = 11)
+  m0 <- paste0(mean_, " (", sd_, ")")
+  m <- matrix(m0, ncol = 12, nrow = 11)
+  colnames(m) <- colnames(Ud)
 
-for (i in 1:nrow(m)) {
-  for (j in 1:ncol(m)) {
-    if (sig[i, j] > 0) {
-      m[i, j] <- paste0("**", m[i, j], "**")
+  sig <- matrix(upper * lower, ncol = 12, nrow = 11)
+
+  for (i in 1:nrow(m)) {
+    for (j in 1:ncol(m)) {
+      if (sig[i, j] > 0) {
+        m[i, j] <- paste0("**", m[i, j], "**")
+      }
     }
   }
+  tb <- bind_cols(parameters = colnames(Xd), m)
+  tb
 }
 
-
-tb <- bind_cols(parameters = colnames(Xd), m)
-
-tb |>
+tb_fun(post_gamma) |>
   kable(format = "html") |>
   kable_styling()
+
 ```
 
 # Wet
 
 ```{r}
-load("../rda/dry_spab_50_model_inter_full_WD_Full.rda")
+load("../rda/rainy_spab_50_model_inter_full_WD_Full.rda")
+fit_wet <- fit
 ```
 
-```{r post, include=FALSE, cache.lazy=FALSE}
+```{r beta-wet}
+post_beta2 <- get_beta(fit_wet)
 ```
 
-```{r table}
+```{r beta-hist-wet}
+
+mean_ <- apply(post_beta2, 2, mean)
+beta_dat <- tibble(beta = mean_,
+  para = rep(colnames(Xd), each = list_dat_d$J))
+
+beta_dat |>
+  ggplot(aes(beta )) +
+  geom_histogram(bins = 10) +
+  geom_vline(xintercept = 0, lty = 2) +
+  facet_wrap(~ para, scale = "free") +
+  theme_bw()
+
 ```
 
+
+```{r mcmc-wet}
+post_gamma2 <- get_gamma(fit_wet)
+```
+
+```{r table-wet}
+tb_fun(post_gamma2) |>
+  kable(format = "html") |>
+  kable_styling()
+```
 
 # Computing Environment
 
