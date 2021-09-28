@@ -2,6 +2,23 @@
 
 Clone this repository.
 
+
+build docker
+
+```
+docker build --add-host="api.github.com:140.82.113.6" -t mattocci/cmdstanr .
+```
+
+build sing
+
+```
+sudo SINGULARITY_NOHTTPS=true singularity build gpu_stan.sif gpu_stan.def
+
+singularity exec --nv gpu_stan.sif bash sh/test.sh
+
+```
+
+
 ```{bash}
 
 kr pair
@@ -71,7 +88,7 @@ docker-compose run stan /bin/bash
 ```
 singularity exec ../r-containers/rstan_4.0.2.sif sh/model_ind.sh
 
-singularity shell ../r-containers/myenv_4.0.2.sif 
+singularity shell ../r-containers/myenv_4.0.2.sif
 ```
 
 
