@@ -312,11 +312,9 @@ model <- cmdstan_model(model_path,
 
 #fit_cl <- mod_cl$sample(data = mdata, chains = 4, parallel_chains = 4,
 #                        opencl_ids = c(0, 0), refresh = 500)
-fit <- model$sample(model,
-            data = list_dat_d,
+fit <- model$sample(data = list_dat_d,
             iter_sampling = n_iter,
             iter_warmup = n_warm,
-	    init = 2,
             thin = n_thin,
             chains =  n_chains,
             parallel_chains =  n_chains,

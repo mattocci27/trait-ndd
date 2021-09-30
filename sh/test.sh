@@ -13,6 +13,6 @@ echo "Use ${TRAIT} for sp-level"
 echo "Habitat: ${HAB}"
 export SPAB DRY MODEL NEIGHBOR HAB TRAIT
   # n_iter n_warm n_thin n_chain adapt_delta n_ab season
-nohup R --vanilla --slave --args ${MODEL} 2 1 1 1 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_cmdstan.r > ./log/test.log &
-#nohup R --vanilla --slave --args ${MODEL} 4000 2000 1 4 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_cmdstan.r > ./log/test.log &
+#nohup R --vanilla --slave --args ${MODEL} 2 1 1 1 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_cmdstan.r > ./log/test.log &
+nohup R --vanilla --slave --args ${MODEL} 2000 2000 1 4 0.95 ${SPAB} ${DRY} ${NEIGHBOR} ${TRAIT} ${HAB}< run_cmdstan.r > ./log/test.log &
 wait
