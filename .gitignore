@@ -7,7 +7,6 @@ core
 .bash_history
 .cache/
 .rstudio/
-log/*.log
 *_cache
 *_files
 nohup.out
@@ -63,3 +62,5 @@ vignettes/*.pdf
 rmd/components/
 
 model/model_inter_opencl*
+
+test.Rda
