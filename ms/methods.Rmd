@@ -1,0 +1,120 @@
+---
+geometry: margin=1in
+link-citations: yes
+csl: templates/american-journal-of-botany.csl
+bibliography: Seedling.bib
+fontsize: 12pt
+#font-famliy: "ebgaramond"
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+  - \usepackage{lineno}
+  - \linenumbers
+output:
+  html_document:
+    toc: FALSE
+  pdf_document:
+    keep_md: false
+    fig_caption: yes
+    keep_tex: yes
+    toc: no
+    number_sections: no
+    template: templates/eisvogel2.tex
+    #template: null
+    pandoc_args:
+      - "--filter"
+      - "pandoc-crossref"
+  word_document:
+    fig_width: 6
+    fig_caption: yes
+    toc: FALSE
+    reference_docx: templates/rmd_style.docx
+    pandoc_args:
+    - "--filter"
+    - "pandoc-crossref"
+    - "--mathml"
+---
+
+```{r caching, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(methods)
+#source("../scripts/rmd_func.R")
+#basename <- "LMA_method"
+opts_chunk$set(fig.path = paste("figs/", sep=""))
+opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE,
+               comment = NA, verbose = TRUE, echo=FALSE)
+# PDF-based figures
+opts_chunk$set(dev='pdf')
+
+# https://github.com/haozhu233/kableExtra/issues/477
+options(kableExtra.auto_format = FALSE)
+library(kableExtra)
+
+#val <- yaml::yaml.load_file("../values.yml")
+```
+
+## Seedling survival models in 10 years interval
+
+We modeled the seedling survival for the dry and rainy seasons separately, in order to better understanding the seasonal dynamics of seedling community.
+
+
+## Neighbor densities
+
+Since the effect of adult neighbors on seedling survival is nonlinear in the logistic scale [@Detto2019], we performed a grid-search for the scaling parameter $c$ between 0 and 1 in 0.01 increments that maximized the likelihood of the following survival model,
+
+$$
+\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c
+$$
+
+where $p_i$ is the individual survival probability in the ith census interval, and $Z_1$ and $Z_2$ are distance-weighted sums of basal areas of conspecifics and heterospecifics respectively.
+We found that $c$ = xx is the best parameter for our dataset.
+
+We then build Bayesian hierarchical models.
+First, we modeled the survival of tree seedlings at individual-level.
+Survival of seedling *i* of individual *m* for species *j* in census *t* in plot *p*  was modeled using the Bernoulli distribution ($B$) :
+
+$$
+s_{i,j,t,p} \sim B(p_{i, j}) + \phi_p + \omega_t + \psi_m
+$$
+
+$$
+\mathrm{logit}(p_{i,j}) = \sum_{k = 1}^{11}\beta_{j,k} z_{j,k}
+$$
+
+(need to check j k of z)
+
+where
+$\beta_{k}$ is the vector of species-level coefficients,
+$z_{k}$ is the explanatory variables,
+$\phi_p$ is the random effect for seedling plots,
+$\omega_t$ is the random effect for different census, and
+$\psi_m$ is the random effect for the repeated observations of the same individuals.
+The set of explanatory variables ($z_{j,k}$) includes
+intercept,
+log of seedling heights,
+rain,
+densities of conspecific (CONS) and heterospecific (HETS) seedlings,
+densities of conspecific (CONA) and heterospecific (HETA) adult trees that are scaled by XXX,
+and the interactions of rains with CONS, with HETS, with CONA and with HETA.
+
+In the species-level regression, $\beta$ was model as:
+
+$$
+\beta_{j,k} \sim MVN(\sum_{m}^{10?}\gamma x, \Sigma)
+$$
+
+
+## References
