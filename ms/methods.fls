@@ -1306,14 +1306,15 @@ INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/tfm/adobe/sourcesanspro/S
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/vf/adobe/sourcesanspro/SourceSansPro-Bold-tlf-t1.vf
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/tfm/adobe/sourcesanspro/SourceSansPro-Bold-tlf-t1--base.tfm
 INPUT methods.aux
-INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc
+INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/sourcesanspro/a_emkxm5.enc
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-Bold.pfb
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-It.pfb
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-Regular.pfb
-INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb
+INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbsy10.pfb
+INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb
 INPUT /Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmib10.pfb
