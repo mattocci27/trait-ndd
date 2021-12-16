@@ -48,6 +48,10 @@ where $\gamma_{n0-1}$ are the vectors of coefficients; $WP_j$ is the water poten
 The covariance matrix $\bf \Sigma_{\beta}$ can be decomposed as ${\bf \Sigma} = {\rm diag}({\bf \sigma}){\bf \Omega}{\rm diag}({\bf \sigma}) = {\rm diag}({\bf \sigma}){\bf LL}\prime {\rm diag}({\bf \sigma})$ using a Cholesky decomposition (See [Alvarez et al. 2014](https://arxiv.org/abs/1408.4050), [Katabuchi et al. 2017](https://www.biorxiv.org/content/10.1101/116855v1.abstract) and [this post](https://stla.github.io/stlapblog/posts/stanlkjprior.html)). See the model code below for the priors.
 
 
+The covariance matrix $\boldsymbol \Sigma_{\beta}$ can be decomposed as ${\boldsymbol \Sigma} = \mathrm {diag}({\boldsymbol \sigma}){\boldsymbol \Omega}\mathrm {diag}({\boldsymbol \sigma}) = \mathrm {diag}({\boldsymbol \sigma})\boldsymbol{LL}\prime \mathrm {diag}({\boldsymbol \sigma})$ using a Cholesky decomposition [@Alvarez2014],
+where
+$\boldsymbol{L}$ is the.
+
 ```{r}
 writeLines(readLines("../model/model.stan"))
 ```
@@ -109,10 +113,10 @@ v3 <- rnorm(n_sp, v2, sig_vec[3])
 v4 <- rnorm(n_sp, -v3, sig_vec[4])
 v5 <- rnorm(n_sp, v4, sig_vec[5])
 
-rmat <- cbind(v1, v2, v3, v4, v5) 
+rmat <- cbind(v1, v2, v3, v4, v5)
 #create means for each column
 r_mean <- matrix(data = 1, nrow = nrow(rmat)) %*% apply(rmat, 2, mean)
- 
+
 #creates a difference matrix
 dmat <- rmat - r_mean
 cmat <- (nrow(rmat)-1)^-1 * t(dmat) %*% dmat
