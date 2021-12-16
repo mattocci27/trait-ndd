@@ -314,9 +314,8 @@
 
 
 
-\hypertarget{seedling-survival-models-in-10-years-interval}{%
-\subsection{Seedling survival models in 10 years
-interval}\label{seedling-survival-models-in-10-years-interval}}
+\hypertarget{model}{%
+\section{Model}\label{model}}
 
 We modeled the seedling survival for the dry and rainy seasons
 separately, in order to better understanding the seasonal dynamics of
@@ -335,42 +334,153 @@ following survival model,
 \mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c
 \]
 
-where \(p_i\) is the individual survival probability in the ith census
-interval, and \(Z_1\) and \(Z_2\) are distance-weighted sums of basal
-areas of conspecifics and heterospecifics respectively. We found that
-\(c\) = xx is the best parameter for our dataset.
+where \(p_i\) is the individual survival probability in the \emph{i}th
+census interval, and \(Z_1\) and \(Z_2\) are distance-weighted sums of
+basal areas of conspecifics and heterospecifics respectively. We found
+that \(c\) = 0.24 for the dry season and \(c\) = 0.27 for the rainy
+season were the best estimates for our dataset.
 
-We then build Bayesian hierarchical models. First, we modeled the
-survival of tree seedlings at individual-level. Survival of seedling
-\emph{i} of individual \emph{m} for species \emph{j} in census \emph{t}
-in plot \emph{p} was modeled using the Bernoulli distribution (\(B\)) :
+\hypertarget{survival-model}{%
+\subsection{Survival model}\label{survival-model}}
+
+We then build Bayesian hierarchical models that include variation among
+species in the effects of conspecific and heterospecific neighbours, and
+rainfall on survival. Survival (\(s\)) of seedling \emph{i} of
+individual \emph{m} for species \emph{j} in census \emph{t} in plot
+\emph{p} was modeled using the Bernoulli distribution (\(\mathcal{B}\))
+:
 
 \[
-s_{i,j,t,p} \sim B(p_{i, j}) + \phi_p + \omega_t + \psi_m
+s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, m, t, p})
 \]
 
 \[
-\mathrm{logit}(p_{i,j}) = \sum_{k = 1}^{11}\beta_{j,k} z_{j,k}
+\mathrm{logit}(p_{i,j,m,t,p}) = \boldsymbol{\beta_{j}} \cdot \boldsymbol{z_{i}} + \phi_p + \omega_t + \psi_m
 \]
 
-(need to check j k of z)
-
-where \(\beta_{k}\) is the vector of species-level coefficients,
-\(z_{k}\) is the explanatory variables, \(\phi_p\) is the random effect
-for seedling plots, \(\omega_t\) is the random effect for different
-census, and \(\psi_m\) is the random effect for the repeated
-observations of the same individuals. The set of explanatory variables
-(\(z_{j,k}\)) includes intercept, log of seedling heights, rain,
-densities of conspecific (CONS) and heterospecific (HETS) seedlings,
-densities of conspecific (CONA) and heterospecific (HETA) adult trees
-that are scaled by XXX, and the interactions of rains with CONS, with
+where
+\(\boldsymbol{\beta_{j}} = \left[\beta_{j,1}, \beta_{j,2}, \ldots, \beta_{j,k} \right]\)
+is the coefficient \emph{k}-vector for species \emph{j}, \emph{k} is the
+number of predictors for an individual seedling,
+\(\boldsymbol{z_i} = \left[z_{1,i}, z_{2,i}, \ldots, z_{k,i} \right]\)
+is the row vector of predictors of size \emph{k} for an individual
+seedling, \(\phi_p\) is the random effect for seedling plots,
+\(\omega_t\) is the random effect for different census, and \(\psi_m\)
+is the random effect for the repeated observations of the same
+individuals (note that \(\cdot\) denotes dot product). The set of
+predictor variables (\(z_{k,i}\)) includes intercept, log of seedling
+heights, rainfall, densities of conspecific (CONS) and heterospecific
+(HETS) seedlings, densities of conspecific (CONA) and heterospecific
+(HETA) adult trees that are scaled by 0.24 for the dry season or 0.27
+for the rainy season, and the interactions of rains with CONS, with
 HETS, with CONA and with HETA.
 
-In the species-level regression, \(\beta\) was model as:
+In the species-level regression, the vector of coefficients
+(\(\beta_{0-k}\)) of each species \emph{j} were assumed to have a
+multivariate normal distribution (\(\mathcal{MVN}\));
 
 \[
-\beta_{j,k} \sim MVN(\sum_{m}^{10?}\gamma x, \Sigma)
+\boldsymbol{\beta_j} \sim  \mathcal{MVN}(\boldsymbol{x_j} \cdot \boldsymbol{\gamma_k}, {\boldsymbol \Sigma_{\beta}})
 \]
+
+where
+\(\boldsymbol{x_{j}} = \left[x_{j,1}, x_{j,2}, \ldots, x_{j,l} \right]\)
+is the vector of predictors of size \emph{l} for each species, \emph{l}
+is the number of predictors for each species,
+\(\boldsymbol{\gamma_i} = \left[\gamma_{1,k}, \gamma_{2,k}, \ldots, \gamma_{l,k} \right]\)
+is the the coefficient \emph{l}-vector for species \emph{j} and
+\(\boldsymbol{\Sigma_{\beta}}\) is the covariance matrix.
+
+In the species-level regression, the vector of coefficients
+(\(\beta_{0-k}\)) of each species \emph{j} were assumed to have a
+multivariate normal distribution through the Cholesky factorization,
+
+\[
+\boldsymbol{\beta_j} = \boldsymbol{x_j} \cdot \boldsymbol{\gamma_k} + (\mathrm{diag}(\boldsymbol{\sigma})\cdot \boldsymbol{L} \cdot \boldsymbol{u})^\top
+\]
+
+where
+\(\boldsymbol{x_{j}} = \left[x_{j,1}, x_{j,2}, \ldots, x_{j,l} \right]\)
+is the vector of predictors of size \emph{l} for each species, \emph{l}
+is the number of predictors for each species,
+\(\boldsymbol{\gamma_i} = \left[\gamma_{1,k}, \gamma_{2,k}, \ldots, \gamma_{l,k} \right]\)
+is the the coefficient \emph{l}-vector for species \emph{j} ,
+\(\mathrm{diag}(\boldsymbol{\sigma})\) is the diagonal matrix with the
+diagonal vector of coefficient scales, \(\boldsymbol{L}\) is the
+Cholesky factor of the original correlation matrix which can be derived
+using a Cholesky decomposition for the covariance matrix of the original
+multivariate normal distribution, \(\boldsymbol{u}\) is a \(k \times j\)
+matrix of latent Gaussian variable, and \(\top\) denotes the conjugate
+transpose. The set of predictor variables (\(x_{j,l}\)) includes LDMC,
+SDMC, LA, SLA, Chl, LT, C13, C, N, CN, and tlp (\textbf{need to edit
+here according to a trait description section}).
+
+Posterior distributions of all parameters were estimated using the
+Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan
+(\protect\hyperlink{ref-Carpenter2017}{Carpenter et al., 2017}) using
+the weakly-informative priors (\protect\hyperlink{ref-Gelman2008}{Gelman
+et al., 2008}). See supplement X for more detail. The Stan code use to
+fit models is available from Github at: XXXX. Convergence of the
+posterior distribution was assessed with the Gelman-Rubin statistic with
+a convergence threshold of 1.1 for all parameters
+(\protect\hyperlink{ref-Gelman2013}{Gelman et al., 2013}).
+
+\hypertarget{si-text}{%
+\section{SI text}\label{si-text}}
+
+\hypertarget{model-estimation}{%
+\subsection{Model estimation}\label{model-estimation}}
+
+We fitted the parameters using laten Gaussian variables for the
+species-level coeffcient
+
+\begin{align}
+s_{i,j,m,t,p} &\sim \mathcal{B}(p_{i, j, m, t, p}) \\
+\boldsymbol{\beta_j} &\sim \mathcal{MVN}(\boldsymbol{x_j} \cdot \boldsymbol{\gamma_k}, {\boldsymbol \Sigma_{\beta}})  \\
+\gamma &\sim \mathcal{N}(0, 5) \\
+L &\sim \mathrm{LkjCholesky}(2) \\
+\tilde{\phi_p}, \tilde{\omega_t}, \tilde{\psi_m}, u &\sim \mathcal{N}(0, 1) \\
+\tilde{\tau_{1-3}}, \tilde{\sigma_{1-3}} &\sim \mathcal{U}(0, \pi/2) \\
+\beta &= x \cdot \gamma + (\mathrm{diag}(\sigma)\cdot L \cdot u)^\top \\
+\tau_{1-3} &= 2.5 \times tan(\tilde{\tau_{1-3}}) \\
+\sigma_{1-3} &= 2.5 \times tan(\tilde{\sigma_{1-3}}) \\
+\phi_p &= \tau_1 \tilde{\phi_p} \\
+\omega_t &= \tau_2 \tilde{\omega_t} \\
+\psi_m &= \tau_3 \tilde{\psi_m} \\
+\end{align}
+
+parameter
+
+\begin{align}
+\mathrm{logit}(p_{i,j,m,t,p}) &= \boldsymbol{\beta_{j}} \cdot \boldsymbol{z_{i}} + \phi_p + \omega_t + \psi_m , \nonumber \\
+\tau_{1-3} &= 2.5 \times tan(\tilde{\tau_{1-3}}), \nonumber \\
+\sigma_{1-3} &= 2.5 \times tan(\tilde{\sigma_{1-3}}), \nonumber \\
+\beta &= x \cdot \gamma + (\mathrm{diag}(\sigma)\cdot L \cdot u)^\top, \nonumber \\
+\phi_p &= \tau_1 \tilde{\phi_p}, \nonumber \\
+\omega_t &= \tau_2 \tilde{\omega_t}, \nonumber \\
+\psi_m &= \tau_3 \tilde{\psi_m}
+\end{align}
+
+likelihood
+
+\begin{align}
+s_{i,j,m,t,p} &\sim \mathcal{B}(p_{i, j, m, t, p}) , \nonumber \\
+\boldsymbol{\beta_j} &\sim \mathcal{MVN}(\boldsymbol{x_j} \cdot \boldsymbol{\gamma_k}, {\boldsymbol \Sigma_{\beta}}) , \nonumber \\
+\tilde{\phi_p}, \tilde{\omega_t}, \tilde{\psi_m}, u &\sim \mathcal{N}(0, 1), \nonumber \\
+\tilde{\tau_{1-3}}, \tilde{\sigma_{1-3}} &\sim \mathcal{U}(0, \pi/2), \nonumber \\
+\gamma &\sim \mathcal{N}(0, 5), \nonumber \\
+L &\sim \mathrm{LkjCholesky}(2)
+\end{align}
+
+The covariance matrix \(\boldsymbol \Sigma_{\beta}\) can be decomposed
+as
+\({\boldsymbol \Sigma} = \mathrm {diag}({\boldsymbol \sigma}){\boldsymbol \Omega}\mathrm {diag}({\boldsymbol \sigma}) = \mathrm {diag}({\boldsymbol \sigma})\boldsymbol{LL}^\top \mathrm {diag}({\boldsymbol \sigma})\)
+using a Cholesky decomposition
+(\protect\hyperlink{ref-Alvarez2014}{Alvarez et al., 2014}), where
+\(\boldsymbol{L}\) is a Cholesky factor of a correlation matrix
+(\(\boldsymbol \Omega\)), \(\boldsymbol{L}^\top\) is the conjugate
+transpose of \(\boldsymbol{L}\), and \(\boldsymbol \sigma\) is the
+vector of coefficient scales.
 
 \hypertarget{references}{%
 \subsection*{References}\label{references}}
@@ -378,11 +488,34 @@ In the species-level regression, \(\beta\) was model as:
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Alvarez2014}{}}%
+Alvarez, I., J. Niemi, and M. Simpson. 2014.
+\href{https://doi.org/10.1214/aos/1176348885}{Bayesian inference for a
+covariance matrix}. \emph{arXiv preprint arXiv:1408.4050v2}: 1--12.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
+Carpenter, B., A. Gelman, M. D. Hoffman, D. Lee, B. Goodrich, M.
+Betancourt, M. Brubaker, et al. 2017.
+\href{https://doi.org/10.18637/jss.v076.i01}{Stan : {A Probabilistic
+Programming Language}}. \emph{Journal of Statistical Software} 76:
+1--32.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Detto2019}{}}%
 Detto, M., M. D. Visser, S. J. Wright, and S. W. Pacala. 2019.
 \href{https://doi.org/10.1111/ele.13372}{Bias in the detection of
 negative density dependence in plant communities}. \emph{Ecology
 Letters} 22: 1923--1939.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
+Gelman, A., J. B. Carlin, H. S. Stern, D. B. Dunson, A. Vehtari, and D.
+B. Rubin. 2013. Bayesian {Data Analysis}, {Third Edition}. {Taylor \&
+Francis}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2008}{}}%
+Gelman, A., A. Jakulin, M. G. Pittau, and Y. S. Su. 2008.
+\href{https://doi.org/10.1214/08-AOAS191}{A weakly informative default
+prior distribution for logistic and other regression models}.
+\emph{Annals of Applied Statistics} 2: 1360--1383.
 
 \end{CSLReferences}
 
