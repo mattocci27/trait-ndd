@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1639633505 "/Users/mattocci/Dropbox/MS/seedling-stan/ms/methods.tex" "methods.pdf" "methods" 1639633506
-  "/Users/mattocci/Dropbox/MS/seedling-stan/ms/methods.tex" 1639633504 18821 b0158bb3259df4331ca43f51a626a497 ""
+["pdflatex"] 1639645336 "/Users/mattocci/Dropbox/MS/seedling-stan/ms/methods.tex" "methods.pdf" "methods" 1639645337
+  "/Users/mattocci/Dropbox/MS/seedling-stan/ms/methods.tex" 1639645334 15892 a2d3c0f82383638029f0232cb249e693 ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1202520719 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc" 1202520719 2840 216e6e45ad352e2456e1149f28885bee ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc" 1202520719 2327 9d6df24f9c4f7368395224341a95523a ""
@@ -38,7 +38,8 @@
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-Bold.pfb" 1587936753 356260 5bc504cea2bf4f3148de985d938ed606 ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-It.pfb" 1587936753 263595 c7d0bf539613db43888d746e8e621f5b ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-Regular.pfb" 1587936753 336785 795f953d37ac49dd5bce485becd006cc ""
-  "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb" 1255129361 116908 1fca96723793882c2e0160350c192fc8 ""
+  "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbsy10.pfb" 1254269338 28028 fcd4f6ddbf905cdea8842b1a7b14335f ""
+  "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb" 1255129361 125241 1d6de6a4ab0d08571b46009b6426dace ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb" 1254269338 30696 2654571912f9cd384da9f7cb8a60c568 ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb" 1254269338 30635 833ec815d446ec453a4913fc26d24cbc ""
   "/Users/mattocci/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmib10.pfb" 1254269338 30962 099bdeb826f0ac8e2d3f42a496d47e5f ""
@@ -181,8 +182,8 @@
   "/Users/mattocci/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1639632578 255286 091c0b58d2d08f292049d38510ac23ae ""
   "/Users/mattocci/Library/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1639551969 1429045 0343d9b9bc95768f16c063bce047de51 ""
   "/Users/mattocci/Library/TinyTeX/texmf.cnf" 1630049491 678 6b5eafc97e135476507fa6dd6c69a163 ""
-  "methods.aux" 1639633505 3098 0aedbed7a5e997e2c3f7bb77bb9c4350 "pdflatex"
-  "methods.tex" 1639633504 18821 b0158bb3259df4331ca43f51a626a497 ""
+  "methods.aux" 1639645337 2346 2cae76f2ca2f5223076e46eba26abd4d "pdflatex"
+  "methods.tex" 1639645334 15892 a2d3c0f82383638029f0232cb249e693 ""
   (generated)
   "methods.aux"
   "methods.log"
