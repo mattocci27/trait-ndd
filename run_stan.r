@@ -31,7 +31,7 @@ hab <- as.character(argv[11])
 #a_delta <-  0.8
 #n_ab <- 50
 #dry <- "dry"
-#ng_data <- "full" 
+#ng_data <- "full"
 #trait_data <- "Full"
 #hab <- "ridge"
 
@@ -97,7 +97,7 @@ seedling <- right_join(seedling_all, tmp10, by = "sp") |>
   mutate(HETS_scaled = scale(HETS) |> as.numeric()) |>
   mutate(CONA_scaled = scale(CONA) |> as.numeric()) |>
   mutate(HETA_scaled = scale(HETA) |> as.numeric()) |>
-  mutate(logH_scaled = log(height) |> scale() |> as.numeric()) 
+  mutate(logH_scaled = log(height) |> scale() |> as.numeric())
 
 # seedling + trait
 # data with only traits are available
@@ -126,7 +126,7 @@ pca_res <- prcomp(
   scale = TRUE, center = TRUE)
 
 trait_pca <- bind_cols(trait3,
-          pca_res$x[,1:(ncol(trait3) - 2)] |> 
+          pca_res$x[,1:(ncol(trait3) - 2)] |>
           as_tibble()) |>
   dplyr::select(sp, starts_with("PC"))
 
@@ -142,6 +142,7 @@ trait5 <- trait4 |>
   bind_cols(trait4 |>
   dplyr::select(starts_with("PC"), sp))
 
+# =========================================================
 # seedling data with traits for analysis
 seedling_dat <- seedling |>
   filter(season == {{dry}})
@@ -235,7 +236,7 @@ seedling_dat2 <- seedling_dat2 |>
   mutate(HETA_rain = HETA_scaled_c * rain_scaled) |>
   mutate(HETS_rain = HETS_scaled * rain_scaled) |>
   mutate(CONA_rain = CONA_scaled_c * rain_scaled) |>
-  mutate(CONS_rain = CONS_scaled * rain_scaled) 
+  mutate(CONS_rain = CONS_scaled * rain_scaled)
 
 # -------------------------------------------------------------------------
 
@@ -310,7 +311,7 @@ print(str_c("n_plot = S = ", n_plot_d))
 print(str_c("n_census = T = ", n_census_d))
 print(str_c("n_tag = M = ", n_tag_d))
 
-model <- stan_model(model_path) 
+model <- stan_model(model_path)
 
 fit <- sampling(model,
             data = list_dat_d,
