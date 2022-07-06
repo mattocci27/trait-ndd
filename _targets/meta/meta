@@ -1,13 +1,51 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
 data_list|stem|0fc98cd994c202a8|5156a111cf83a120|1ea8961a5e5dd743|-1077046627||t19179.4070607178s|3d0fcb419f9ece06|992971|rds|local|vector|||0.525||
-dry_full|stem|82ea1d6110d06e83|5f7d498400cb70cc|620829927f5c3f55|1562356933||t19179.4075247536s|a5a1304db48e85aa|498629|rds|local|vector|||38.972||
-dry_pca|stem|0979f6506ba57f8a|d9d76495838b22ee|620829927f5c3f55|507921283||t19179.407530726s|123c850e596ce89c|492326|rds|local|vector|||40.025||
-dry_wd|stem|940a251bb91a0920|6810d41ad54fa771|620829927f5c3f55|-875521320||t19179.4075294759s|8d02b958ab27267f|497954|rds|local|vector|||39.516||
+dry_full|stem|a16f47cc4ff65cc3|5f7d498400cb70cc|0253565602e6519d|1562356933||t19179.4287231886s|e4fc3e968fef04f8|498706|rds|local|vector|||37.216||
+dry_pca|stem|a2b522ea6ce25455|d9d76495838b22ee|0253565602e6519d|507921283||t19179.4287195312s|2d6072887a805f26|492379|rds|local|vector|||36.87||
+dry_wd|stem|2eef61eb10713b51|6810d41ad54fa771|0253565602e6519d|-875521320||t19179.4287208738s|b16f4a6f8ac1139e|498031|rds|local|vector|||36.775||
+fit_1_dry_full_data|stem|12f661124260ecfd|b2a574a9744c608d|50232a4dc3cf0190|327037444||t19179.4287244386s|40baff6b4e1f0fcc|1593912|qs|local|vector|||0||
+fit_1_dry_full_diagnostics_model_ind|stem|a06423446c0cb9f5|8960140d99469845|147d48c84742ec63|1591881501||t19179.4363233383s|a3d57c2e496c00b4|1018|fst_tbl|local|vector|||0.002||
+fit_1_dry_full_draws_model_ind|stem|3c11253162a7aecb|9506c289b6027a97|147d48c84742ec63|-2062561209||t19179.4363401441s|2edca082a6e94c2f|4749030|fst_tbl|local|vector|||0.548||
+fit_1_dry_full_file_model_ind|stem|6eddc50bd7c972fc|a7a3abd2a743ada0|ef46db3751d8e999|-1276138018|stan/model_ind.stan|t19179.4375992359s|b1488599997d0cbc|2002|file|local|vector|||0||
+fit_1_dry_full_mcmc_model_ind|stem|df5fad081f29a32c|67a27e986449ba9f|8665868a05735383|-179132395||t19179.4363221346s|272cb2f365094033|1592552|qs|local|vector|||71.556|validate_csv is deprecated. Please use diagnostics instead.. EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_1_dry_full_summary_model_ind|stem|3e68e1972a509609|caede29f139a2d35|355d4775204e0595|491518778||t19179.4382380875s|7f7473f28004885a|2785648|fst_tbl|local|vector|||64.083||
+fit_2_wer_full_data|stem||20d1f1e8cf8df0be|fe2d0dec3e860b3e|123074851||t19179.4243036404s||0|qs|local|vector|||0.08||object wer_full not found
+fit_2_wer_full_file_model_ind|stem|5ba6e1046264f958|a7a3abd2a743ada0|ef46db3751d8e999|1587535604|stan/model_ind.stan|t19179.4242603096s|4e65af35d43036b9|2001|file|local|vector|||0.001||
+fit_2_wet_full_data|stem|8dd457d47aab6038|736c8ff33f8fcef7|a0c37cf593648f71|2079488300||t19179.4287077254s|6cf91fbdf859d920|1478289|qs|local|vector|||0||
+fit_2_wet_full_diagnostics_model_ind|stem|972d377b4886faff|1a0ee1b3ecedcb6c|a0e80bb12d682e78|-15849733||t19179.4362030126s|a3d57c2e496c00b4|1018|fst_tbl|local|vector|||0.002||
+fit_2_wet_full_draws_model_ind|stem|554a7303aa81bb78|4698c8da6ac03a1e|a0e80bb12d682e78|1039324780||t19179.4362169943s|d773f7d57e85565d|4279924|fst_tbl|local|vector|||0.356||
+fit_2_wet_full_file_model_ind|stem|6eddc50bd7c972fc|a7a3abd2a743ada0|ef46db3751d8e999|110582070|stan/model_ind.stan|t19179.4375992359s|b1488599997d0cbc|2002|file|local|vector|||0.001||
+fit_2_wet_full_mcmc_model_ind|stem|d6fdf3f19ec19286|b0790dd1493ae8a3|0e063e8d551c41d1|1920322720||t19179.4362019015s|f7fed5ff6f8e2633|1443781|qs|local|vector|||61.17|validate_csv is deprecated. Please use diagnostics instead.. EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_2_wet_full_summary_model_ind|stem|1f51e041fc5b6fda|5047713735d68fa6|7e6fd48285459e63|1822745786||t19179.4368341788s|2ae18b31d9c8e25f|2507630|fst_tbl|local|vector|||54.508||
+fit_3_dry_wd_data|stem|6354e884fdc0d2d4|3e18614d0b0af06d|e26105271eae59ed|-1207212839||t19179.4374918733s|f98883fb1d664e3c|1593325|qs|local|vector|||0.107||
+fit_3_dry_wd_diagnostics_model_ind|stem|c1c526194f29f595|e8aa79325ac18e99|ab42d4e392ede1ef|330489400||t19179.4383938767s|a3d57c2e496c00b4|1018|fst_tbl|local|vector|||0.001||
+fit_3_dry_wd_draws_model_ind|stem|f295b6ea8058f5b1|9a97ac4b1e9fbf85|ab42d4e392ede1ef|-828036621||t19179.4384105436s|12d53ea279fd2bd1|4747994|fst_tbl|local|vector|||0.511||
+fit_3_dry_wd_file_model_ind|stem|6eddc50bd7c972fc|a7a3abd2a743ada0|ef46db3751d8e999|-1395812197|stan/model_ind.stan|t19179.4375992359s|b1488599997d0cbc|2002|file|local|vector|||0||
+fit_3_dry_wd_mcmc_model_ind|stem|ec7834e657606c52|75547cb3b8ee32d9|be7c399285e16196|108849382||t19179.4383930434s|bfe190b7a54ae08b|1587682|qs|local|vector|||77.791|validate_csv is deprecated. Please use diagnostics instead.. EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_3_dry_wd_summary_model_ind|stem|2403b21fb038a964|7eb818ba72fbe2ac|c80488f0372f67d1|-953111391||t19179.4391187481s|7e83e600d04cb103|2784617|fst_tbl|local|vector|||62.557||
+fit_4_wet_wd_data|stem|d47e0691a5e8bdbb|4901cb198382513e|2e5b8b1a480bc2d2|-335432221||t19179.4374927529s|75191eaa64a42bba|1477704|qs|local|vector|||0.114||
+fit_4_wet_wd_diagnostics_model_ind|stem|8ae337c13496ac3c|cc172289d09e6c74|c62954d18b32305c|1917200957||t19179.4382639212s|a3d57c2e496c00b4|1018|fst_tbl|local|vector|||0.001||
+fit_4_wet_wd_draws_model_ind|stem|52463972b92845af|209c24570eba3789|c62954d18b32305c|1730941501||t19179.4382765603s|8b24695c07429d58|4278888|fst_tbl|local|vector|||0.324||
+fit_4_wet_wd_file_model_ind|stem|6eddc50bd7c972fc|a7a3abd2a743ada0|ef46db3751d8e999|183203920|stan/model_ind.stan|t19179.4375992359s|b1488599997d0cbc|2002|file|local|vector|||0||
+fit_4_wet_wd_mcmc_model_ind|stem|b1017a4e4a270aa0|5380820ca8857d85|72e343e206dd6d08|2121883869||t19179.4382632267s|c905b91fb1ee3812|1441678|qs|local|vector|||66.4|validate_csv is deprecated. Please use diagnostics instead.. EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_4_wet_wd_summary_model_ind|stem|2eecceca16680644|fc8dd8235b1b3700|e9e7f24cf4cd6193|1279112412||t19179.4389026802s|0ec11614851bb0d3|2507488|fst_tbl|local|vector|||54.696||
+fit_5_dry_pca_data|stem|2bfc6f8edee1437a|c15e311e34dd51bc|44d855e673fc5649|-1557693373||t19179.4374944196s|8b67c43375b0a680|1588635|qs|local|vector|||0.12||
+fit_5_dry_pca_diagnostics_model_ind|stem|e7f072aae8ee8866|6d87cfb194236869|30bd36f7c6b95b88|-444203832||t19179.4383780895s|a3d57c2e496c00b4|1018|fst_tbl|local|vector|||0.001||
+fit_5_dry_pca_draws_model_ind|stem|220a8af456e9275f|b578c4538db1fce7|30bd36f7c6b95b88|-830228366||t19179.43839221s|e6f472eef3e8c5ad|4739841|fst_tbl|local|vector|||0.407||
+fit_5_dry_pca_file_model_ind|stem|6eddc50bd7c972fc|a7a3abd2a743ada0|ef46db3751d8e999|689839760|stan/model_ind.stan|t19179.4375992359s|b1488599997d0cbc|2002|file|local|vector|||0||
+fit_5_dry_pca_mcmc_model_ind|stem|23ababf16b2b63b5|3e1516e97c959f65|b08bfb128a1bcbad|567231163||t19179.4383765154s|6f3568566c860c13|1581410|qs|local|vector|||76.119|validate_csv is deprecated. Please use diagnostics instead.. EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_5_dry_pca_summary_model_ind|stem|aa3cac3850d763ae|ee762f7d3051d789|5081cbd717690d14|-1422735785||t19179.4391173129s|1bd88c560000e3f8|2781450|fst_tbl|local|vector|||63.76||
+fit_6_wet_pca_data|stem|395d5aaadee76045|06b30b0a5341842d|3ef5877b1501fa50|1017258185||t19179.4374923362s|689afb0698e0b786|1473028|qs|local|vector|||0.108||
+fit_6_wet_pca_diagnostics_model_ind|stem|b5f49b010f77a9e6|a4525f779e716a0f|759160e7fb1a9b59|-70287549||t19179.4382441987s|a3d57c2e496c00b4|1018|fst_tbl|local|vector|||0.003||
+fit_6_wet_pca_draws_model_ind|stem|1fce94d8eccc5c14|519b81db56ef1722|759160e7fb1a9b59|1457588811||t19179.4382604026s|a60b7803cc4555ff|4270727|fst_tbl|local|vector|||0.316||
+fit_6_wet_pca_file_model_ind|stem|6eddc50bd7c972fc|a7a3abd2a743ada0|ef46db3751d8e999|1907680543|stan/model_ind.stan|t19179.4375992359s|b1488599997d0cbc|2002|file|local|vector|||0||
+fit_6_wet_pca_mcmc_model_ind|stem|f9274d61d2d402b0|c4fd75c3768cbe06|09d13e2a03720888|733453389||t19179.4382429024s|4ff20e4b648d1c91|1441006|qs|local|vector|||64.783|validate_csv is deprecated. Please use diagnostics instead.. EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_6_wet_pca_summary_model_ind|stem|5b4a1f8287a9f33f|0e9dc9df0163107e|6e53e153c650e8b8|-52915026||t19179.4388862911s|1a33ffb3de38b62f|2504847|fst_tbl|local|vector|||55.323||
 gen_seedling|function|6838ec6106f5041a|||||||||||||||
-gen_stan_dat|function|9ab237b114bf1a98|||||||||||||||
+gen_stan_dat|function|33b484bb93841c31|||||||||||||||
 habitat_csv|stem|61c06c65d889b4c9|5662cb4d2faecd43|ef46db3751d8e999|-1565732908|data-raw/habitat150.csv|t19179.2661319767s|fa73c227e40b26ed|3652|file|local|vector|||0.116||
 seedling_csv|stem|0d76bc3baf4e853a|e8487222c5c8c2c6|ef46db3751d8e999|1282184644|data-raw/seedlingmatrix.csv|t19179.2659174362s|d8f8d1ecc786716a|6831306|file|local|vector|||0.126||
 trait_csv|stem|eec0624a6f8a17af|786a17129d3fc31d|ef46db3751d8e999|-1641971225|data-raw/trait_sp_code.csv|t19179.2667080507s|013034f81d44c7a3|21222|file|local|vector|||0.115||
-wet_full|stem|99532f0106fc5a56|046f26d2fa05fb65|620829927f5c3f55|-1347563399||t19179.4074940124s|dbc4900cc2083696|466943|rds|local|vector|||36.057||
-wet_pca|stem|cfd10771684020f8|7643a05856fcf8fa|620829927f5c3f55|298177860||t19179.4075282259s|583bd51f687bb4a5|461286|rds|local|vector|||39.244||
-wet_wd|stem|1904722334734edc|bc2c6d37470616ba|620829927f5c3f55|-1221523692||t19179.4075211425s|97a4bd453a97583d|466345|rds|local|vector|||39.225||
+wet_full|stem|34f7aabafc3a5215|046f26d2fa05fb65|0253565602e6519d|-1347563399||t19179.4287011513s|878c03d8f680d305|467039|rds|local|vector|||34.711||
+wet_pca|stem|d108d8ba2011aa81|7643a05856fcf8fa|0253565602e6519d|298177860||t19179.4287066606s|358ce4bf5949a0f7|461349|rds|local|vector|||34.915||
+wet_wd|stem|b32344d5e0e10cf6|bc2c6d37470616ba|0253565602e6519d|-1221523692||t19179.4287109199s|6be79e88e84658d0|466444|rds|local|vector|||35.952||
