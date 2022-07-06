@@ -1,0 +1,447 @@
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+✔ ggplot2 3.3.3     ✔ purrr   0.3.4
+✔ tibble  3.1.2     ✔ dplyr   1.0.6
+✔ tidyr   1.1.3     ✔ stringr 1.4.0
+✔ readr   1.4.0     ✔ forcats 0.5.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+Loading required package: StanHeaders
+rstan (Version 2.21.2, GitRev: 2e1f913d3ca3)
+For execution on a local, multicore CPU with excess RAM we recommend calling
+options(mc.cores = parallel::detectCores()).
+To avoid recompilation of unchanged Stan programs, we recommend calling
+rstan_options(auto_write = TRUE)
+
+Attaching package: ‘rstan’
+
+The following object is masked from ‘package:tidyr’:
+
+    extract
+
+This is bayesplot version 1.8.0
+- Online documentation and vignettes at mc-stan.org/bayesplot
+- bayesplot theme set to bayesplot::theme_default()
+   * Does _not_ affect other ggplot2 plots
+   * See ?bayesplot_theme_set for details on theme setting
+[1] "Model  model_inter"
+[1] "Model for  dry season"
+[1] "Use full"
+[1] "Habitat = slope"
+[1] "n_iter = 4000"
+[1] "n_warm = 2000"
+[1] "n_thin = 1"
+[1] "n_chains = 4"
+[1] "adapt_delta = 0.95"
+[1] "minimum sp abund = 50"
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  qua = col_double(),
+  gx = col_double(),
+  gy = col_double(),
+  plot = col_double(),
+  tag = col_character(),
+  quadrat = col_character(),
+  SPcode = col_character(),
+  height = col_double(),
+  date = col_character(),
+  census = col_character(),
+  year = col_double(),
+  season = col_character(),
+  survive = col_double(),
+  CONS = col_double(),
+  CONA = col_double(),
+  HETA = col_double(),
+  HETS = col_double(),
+  Rainfall = col_double(),
+  habitat = col_character()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  qua = col_double(),
+  habit3 = col_character(),
+  seedtrap = col_double(),
+  habit5 = col_character()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  SPcode = col_character(),
+  LDMC = col_double(),
+  WD = col_double(),
+  SDMC = col_double(),
+  LA = col_double(),
+  SLA = col_double(),
+  Chl = col_double(),
+  LT = col_double(),
+  C13 = col_double(),
+  C = col_double(),
+  N = col_double(),
+  CN = col_double(),
+  tlp = col_double()
+)
+
+No. of species
+76
+[1] "Sp-level: 1 + PC1 + PC2 + PC3"
+[1] "sp number in seedling data: 69"
+[1] "sp number in trait data: 69"
+data{
+  int<lower=0> N; // number of sample
+  int<lower=1> J; // number of sp
+  int<lower=1> K; // number of tree-level preditor (i.e, CONS, HETS,...)
+  int<lower=1> L; // number of sp-level predictor (i.e., interecept and WP)
+  int<lower=1> M; // number of seedling individuals (tag)
+  int<lower=1> S; // number of site
+  int<lower=1> T; // number of census
+  matrix[N, K] x; // tree-level predictor
+  matrix[J, L] u; // sp-level predictor
+  int<lower=0,upper=1> suv[N]; // 1 or 0
+  int<lower=1,upper=J> sp[N]; // integer
+  int<lower=1,upper=S> plot[N]; // integer
+  int<lower=1,upper=T> census[N]; // integer
+  int<lower=1> tag[N]; // integer
+}
+
+parameters{
+  matrix[K, J] z;
+  vector[S] phi_raw;
+  vector[T] xi_raw;
+  vector[M] psi_raw;
+  matrix[L, K] gamma;
+  cholesky_factor_corr[K] L_Omega;
+  vector<lower=0,upper=pi()/2>[K] tau_unif;
+  vector<lower=0,upper=pi()/2>[3] sig_unif;
+}
+
+transformed parameters{
+  matrix[J, K] beta;
+  vector<lower=0>[K] tau;
+  vector<lower=0>[3] sig;
+  vector[S] phi;
+  vector[T] xi;
+  vector[M] psi;
+  for (k in 1:K) tau[k] = 2.5 * tan(tau_unif[k]); // implies tau ~ cauchy(0, 2.5)
+  for (i in 1:3) sig[i] = 2.5 * tan(sig_unif[i]); // implies sig ~ cauchy(0, 2.5)
+  beta = u * gamma + (diag_pre_multiply(tau,L_Omega) * z)';
+  phi = phi_raw * sig[1];
+  xi = xi_raw * sig[2];
+  psi = psi_raw * sig[3];
+}
+
+model {
+  // Hyper-priors
+  to_vector(z) ~ std_normal();
+  to_vector(phi_raw) ~ std_normal();
+  to_vector(xi_raw) ~ std_normal();
+  to_vector(psi_raw) ~ std_normal();
+  L_Omega ~ lkj_corr_cholesky(2); // uniform of L_Omega * L_Omega'
+  // Priors
+  to_vector(gamma) ~ normal(0, 5);
+  // Likelihood
+  suv ~ bernoulli_logit(rows_dot_product(beta[sp] , x) + phi[plot] + xi[census] + psi[tag]);
+}
+
+generated quantities {
+  vector[N] log_lik;
+  corr_matrix[K] Omega;
+  Omega = multiply_lower_tri_self_transpose(L_Omega);
+  for (n in 1:N) {
+    log_lik[n] = bernoulli_logit_lpmf(suv[n] | dot_product(beta[sp[n],] , x[n,]) + phi[plot[n]] + xi[census[n]] + psi[tag[n]]);
+  }
+}
+[1] "use c = 0.4 as a scaling parameter for the distance effect"
+[1] "n_sp = J =69"
+[1] "n_para = K = 11"
+[1] "n_plot = S = 93"
+[1] "n_census = T = 10"
+[1] "n_tag = M = 1993"
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 1).
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 2).
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 3).
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 4).
+Chain 1: 
+Chain 1: Gradient evaluation took 0.008432 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 84.32 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 2: 
+Chain 2: Gradient evaluation took 0.005646 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 56.46 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 3: 
+Chain 3: Gradient evaluation took 0.004414 seconds
+Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 44.14 seconds.
+Chain 3: Adjust your expectations accordingly!
+Chain 3: 
+Chain 3: 
+Chain 2: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 4: 
+Chain 4: Gradient evaluation took 0.005572 seconds
+Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 55.72 seconds.
+Chain 4: Adjust your expectations accordingly!
+Chain 4: 
+Chain 4: 
+Chain 3: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 4: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 3: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 2: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 1: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 4: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 2: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 3: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 4: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 3: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 1: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 2: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 4: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 3: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 1: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 2: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 4: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 3: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 2: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 1: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 4: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 3: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 2: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 1: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 4: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 3: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 2: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 1: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 4: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 3: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 4: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 3: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 2: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 1: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 4: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 2: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 2: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 3: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 3: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 1: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 1: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 4: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 4: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 2: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 3: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 1: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 4: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 2: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 3: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 1: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 4: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 2: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 3: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 1: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 4: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 2: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 3: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 1: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 4: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 2: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 3: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 1: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 4: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 2: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 3: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 1: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 4: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 2: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 3: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 1: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 4: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 2: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 3: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 4: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 1: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 2: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 4: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 3: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 1: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 2: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 4658.4 seconds (Warm-up)
+Chain 2:                4144.1 seconds (Sampling)
+Chain 2:                8802.5 seconds (Total)
+Chain 2: 
+Chain 4: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 4: 
+Chain 4:  Elapsed Time: 4838.82 seconds (Warm-up)
+Chain 4:                4116.57 seconds (Sampling)
+Chain 4:                8955.39 seconds (Total)
+Chain 4: 
+Chain 3: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 3: 
+Chain 3:  Elapsed Time: 4710.03 seconds (Warm-up)
+Chain 3:                4265.77 seconds (Sampling)
+Chain 3:                8975.8 seconds (Total)
+Chain 3: 
+Chain 1: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 4777.69 seconds (Warm-up)
+Chain 1:                4212.41 seconds (Sampling)
+Chain 1:                8990.1 seconds (Total)
+Chain 1: 
+Warning messages:
+1: There were 5 divergent transitions after warmup. See
+http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
+to find out why this is a problem and how to eliminate them. 
+2: Examine the pairs() plot to diagnose sampling problems
+ 
+Inference for Stan model: model_inter.
+4 chains, each with iter=4000; warmup=2000; thin=1; 
+post-warmup draws per chain=2000, total post-warmup draws=8000.
+
+                mean se_mean    sd     2.5%      25%      50%      75%    97.5%
+gamma[1,1]      3.26    0.02  0.67     2.04     2.81     3.23     3.69     4.67
+gamma[1,2]     -1.25    0.02  1.07    -3.54    -1.94    -1.18    -0.49     0.63
+gamma[1,3]     -0.37    0.01  0.40    -1.10    -0.64    -0.39    -0.12     0.46
+gamma[1,4]      0.55    0.00  0.22     0.15     0.40     0.53     0.69     1.00
+gamma[1,5]     -0.05    0.00  0.17    -0.40    -0.16    -0.05     0.06     0.27
+gamma[1,6]     -0.58    0.01  0.37    -1.34    -0.82    -0.57    -0.34     0.11
+gamma[1,7]     -0.41    0.01  0.63    -1.62    -0.83    -0.42     0.01     0.85
+gamma[1,8]     -0.43    0.00  0.23    -0.91    -0.57    -0.41    -0.27    -0.01
+gamma[1,9]      0.02    0.00  0.12    -0.21    -0.06     0.02     0.10     0.26
+gamma[1,10]    -0.28    0.00  0.13    -0.55    -0.36    -0.28    -0.20    -0.05
+gamma[1,11]     1.23    0.00  0.18     0.89     1.10     1.22     1.34     1.60
+gamma[2,1]     -0.17    0.01  0.34    -0.83    -0.39    -0.17     0.05     0.51
+gamma[2,2]     -1.02    0.01  0.60    -2.26    -1.40    -1.00    -0.61     0.13
+gamma[2,3]      0.04    0.00  0.21    -0.35    -0.10     0.04     0.18     0.49
+gamma[2,4]     -0.02    0.00  0.11    -0.25    -0.09    -0.02     0.05     0.19
+gamma[2,5]      0.05    0.00  0.09    -0.12    -0.01     0.05     0.10     0.22
+gamma[2,6]     -0.02    0.00  0.21    -0.44    -0.16    -0.02     0.12     0.39
+gamma[2,7]      0.11    0.01  0.40    -0.69    -0.15     0.12     0.38     0.89
+gamma[2,8]     -0.07    0.00  0.13    -0.31    -0.15    -0.07     0.01     0.19
+gamma[2,9]      0.00    0.00  0.06    -0.12    -0.04     0.00     0.04     0.12
+gamma[2,10]    -0.12    0.00  0.07    -0.26    -0.16    -0.12    -0.08     0.01
+gamma[2,11]    -0.06    0.00  0.09    -0.24    -0.12    -0.06     0.00     0.11
+gamma[3,1]     -0.13    0.01  0.31    -0.77    -0.32    -0.11     0.08     0.44
+gamma[3,2]     -0.25    0.01  0.53    -1.30    -0.59    -0.26     0.09     0.84
+gamma[3,3]     -0.17    0.00  0.19    -0.56    -0.29    -0.16    -0.04     0.17
+gamma[3,4]     -0.09    0.00  0.10    -0.29    -0.16    -0.10    -0.03     0.11
+gamma[3,5]      0.09    0.00  0.08    -0.07     0.04     0.10     0.15     0.25
+gamma[3,6]      0.14    0.00  0.18    -0.21     0.03     0.15     0.26     0.50
+gamma[3,7]      0.22    0.01  0.36    -0.50    -0.02     0.22     0.47     0.94
+gamma[3,8]      0.03    0.00  0.11    -0.19    -0.04     0.03     0.10     0.24
+gamma[3,9]     -0.03    0.00  0.05    -0.14    -0.07    -0.03     0.00     0.08
+gamma[3,10]    -0.01    0.00  0.06    -0.13    -0.05    -0.01     0.03     0.12
+gamma[3,11]     0.02    0.00  0.10    -0.17    -0.05     0.01     0.08     0.22
+gamma[4,1]     -0.64    0.01  0.40    -1.43    -0.91    -0.64    -0.37     0.13
+gamma[4,2]     -0.62    0.01  0.73    -2.00    -1.11    -0.63    -0.15     0.85
+gamma[4,3]     -0.15    0.00  0.25    -0.65    -0.32    -0.15     0.01     0.31
+gamma[4,4]     -0.13    0.00  0.16    -0.44    -0.23    -0.12    -0.02     0.18
+gamma[4,5]      0.06    0.00  0.12    -0.17    -0.02     0.06     0.14     0.32
+gamma[4,6]      0.16    0.00  0.24    -0.33     0.00     0.16     0.32     0.64
+gamma[4,7]      0.23    0.01  0.48    -0.74    -0.08     0.23     0.55     1.15
+gamma[4,8]     -0.04    0.00  0.15    -0.34    -0.14    -0.04     0.07     0.26
+gamma[4,9]      0.00    0.00  0.09    -0.18    -0.06     0.00     0.06     0.19
+gamma[4,10]    -0.09    0.00  0.09    -0.27    -0.15    -0.09    -0.03     0.10
+gamma[4,11]    -0.24    0.00  0.13    -0.50    -0.33    -0.24    -0.16     0.02
+sig[1]          0.52    0.00  0.11     0.32     0.45     0.52     0.59     0.74
+sig[2]          0.61    0.00  0.21     0.33     0.47     0.57     0.71     1.14
+sig[3]          1.19    0.01  0.21     0.80     1.05     1.19     1.33     1.61
+lp__        -3240.19    3.15 75.85 -3384.41 -3292.26 -3241.62 -3188.71 -3089.03
+            n_eff Rhat
+gamma[1,1]   1900 1.00
+gamma[1,2]   2517 1.00
+gamma[1,3]   3697 1.00
+gamma[1,4]   5190 1.00
+gamma[1,5]   6496 1.00
+gamma[1,6]   3192 1.00
+gamma[1,7]   3650 1.00
+gamma[1,8]   4523 1.00
+gamma[1,9]   8007 1.00
+gamma[1,10]  6490 1.00
+gamma[1,11]  4163 1.00
+gamma[2,1]   3012 1.00
+gamma[2,2]   3436 1.00
+gamma[2,3]   3691 1.00
+gamma[2,4]   5984 1.00
+gamma[2,5]   6772 1.00
+gamma[2,6]   2590 1.00
+gamma[2,7]   2403 1.00
+gamma[2,8]   5366 1.00
+gamma[2,9]   7519 1.00
+gamma[2,10]  6874 1.00
+gamma[2,11]  7162 1.00
+gamma[3,1]   2642 1.00
+gamma[3,2]   3129 1.00
+gamma[3,3]   4093 1.00
+gamma[3,4]   6092 1.00
+gamma[3,5]   6040 1.00
+gamma[3,6]   2960 1.00
+gamma[3,7]   3054 1.00
+gamma[3,8]   5600 1.00
+gamma[3,9]   8945 1.00
+gamma[3,10]  7527 1.00
+gamma[3,11]  5921 1.00
+gamma[4,1]   3744 1.00
+gamma[4,2]   3748 1.00
+gamma[4,3]   5225 1.00
+gamma[4,4]   6802 1.00
+gamma[4,5]   5999 1.00
+gamma[4,6]   2937 1.00
+gamma[4,7]   3140 1.00
+gamma[4,8]   6384 1.00
+gamma[4,9]   7942 1.00
+gamma[4,10]  8024 1.00
+gamma[4,11]  6064 1.00
+sig[1]       1817 1.00
+sig[2]       3054 1.00
+sig[3]        583 1.00
+lp__          580 1.01
+
+Samples were drawn using NUTS(diag_e) at Tue Aug 24 11:03:43 2021.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).
+[1] "./rda/dry_spab_50_model_inter_full_PCA_slope.rda"
+[1] "MCMC done!!"
