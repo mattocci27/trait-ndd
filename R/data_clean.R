@@ -141,11 +141,11 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
 
 
   # sp-level matrix for the model
-  Ud <- cbind(
+  Ud <- rbind(
     intercept = rep(1, length(trait_dat$sp)),
     trait_dat |>
       dplyr::select(-sp) |>
-      as.matrix())
+      as.matrix() |> t())
 
   ##  Use Detto et al. 2019 Ecology letters -----------------------------
   x1 <- seedling_dat$cona
@@ -217,7 +217,7 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
        S = n_plot_d,
        T = n_census_d,
        M = n_tag_d,
-       L = ncol(Ud),
+       L = nrow(Ud),
        cc = cc,
        suv = seedling_dat$survive,
        plot = seedling_dat$quadrat |>
