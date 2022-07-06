@@ -1,0 +1,98 @@
+---
+title: Seedling survival analysis (Figs)
+author: Masatoshi Katabuchi
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+#rmdformats::material
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      toc: true
+---
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+basename <- "seedling-stan"
+opts_chunk$set(fig.path = paste0("components/figure/", basename, "-"),
+               cache.path = paste0("components/cache/", basename, "/"))
+knitr::opts_chunk$set(echo=TRUE,
+                      #cache.lazy=FALSE,
+                      cache=FALSE,
+                      warning=FALSE,
+                      message=FALSE)
+```
+
+# Deps
+
+```{r}
+library(tidyverse)
+library(rstan)
+library(bayesplot)
+library(httpgd)
+options(mc.cores = parallel::detectCores())
+```
+
+# Dry
+
+```{r}
+load("./rda/dry_spab_50_model_inter_full_WD_Full.rda")
+```
+
+
+beta[X, 3]
+
+```{r}
+
+get_beta <- \(fit) {
+  post <- as.data.frame(fit)
+  tmp <- names(post)
+  beta_name <- tmp[str_detect(tmp, "beta")]
+  post[, beta_name]
+}
+
+
+beta_fun <- \(fit, x){
+   post_beta <- get_beta(fit)
+   x_chr <- paste0(".", x, "]")
+   beta3 <- names(post_beta)[str_detect(names(post_beta), x_chr)]
+   beta3_dat <- post_beta %>%
+   dplyr::select(contains(beta3)) |>
+   as_tibble()
+
+   mid <- apply(beta3_dat, 2, mean)
+   lwr <- apply(beta3_dat, 2, \(x)qunatile(x, 0.025))
+   upr <- apply(beta3_dat, 2, \(x)qunatile(x, 0.975))
+
+   tibble(mid, lwr, upr)
+}
+
+beta2 <- beta_fun(fit, 2)
+
+beta2_dat <- bind_cols(beta2,
+  Chl = Ud[,"Chl"],
+  SDMC = Ud[,"SDMC"],
+  logSLA = Ud[,"logSLA"])
+
+httpgd::hgd()
+
+
+beta2_dat |>
+  ggplot(aes(x = logSLA, y = mid)) +
+  geom_point()
+
+cor.test(beta2_dat$mid, beta2_dat$SDMC)
+
+lm(mid ~ SDMC, beta2_dat) |> summary()
+lm(mid ~ Chl, beta2_dat) |> summary()
+lm(mid ~ SDMC * Chl, beta2_dat) |> summary()
+
+```
+

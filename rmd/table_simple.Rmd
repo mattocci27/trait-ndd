@@ -51,10 +51,15 @@ writeLines(readLines("../model/model_inter.stan"))
 # Dry
 
 ```{r}
-load("../rda/dry_spab_50_model_inter_full_WD_Full.rda")
+load("../rda/dry_spab_50_model_inter_full_WD_Full_simple.rda")
 ```
 
 ```{r beta}
+
+tic()
+post <- as.data.frame(fit)
+toc()
+
 
 get_beta <- \(fit) {
   post <- as.data.frame(fit)
@@ -90,31 +95,28 @@ get_gamma <- \(fit) {
   post <- as.data.frame(fit)
   n_para <- fit@par_dims$gamma[1]
   gammas <- str_c("gamma[",rep(1:n_para, each = 11), ",", 1:11,"]")
-  list(gammas = post[, gammas], n_para = n_para)
+  post[, gammas]
 }
 
 post_gamma <- get_gamma(fit)
 
-#matrix(gammas, ncol = 12, nrow = 11)
+#matrix(gammas, ncol = 6, nrow = 11)
 
 ```
 
 ```{r table}
 
 tb_fun <- \(post_gamma) {
-  n_para <- post_gamma$n_para
-  post_gamma
-  mean_ <- apply(post_gamma[[1]], 2, mean)  |> round(3)
-  sd_ <- apply(post_gamm[[1]], 2, sd)  |> round(3)
-  upper <- apply(post_gamma[[1]], 2, function(x)quantile(x, 0.975))
-  lower <-  apply(post_gamma[[1]], 2, function(x)quantile(x, 0.025))
+  mean_ <- apply(post_gamma, 2, mean)  |> round(3)
+  sd_ <- apply(post_gamma, 2, sd)  |> round(3)
+  upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
+  lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
 
-  gammas <- str_c("gamma[",rep(1:n_para, each = 11), ",", 1:11,"]")
   m0 <- paste0(mean_, " (", sd_, ")")
-  m <- matrix(m0, ncol, n_para, nrow = 11)
+  m <- matrix(m0, ncol = 6, nrow = 11)
   colnames(m) <- colnames(Ud)
 
-  sig <- matrix(upper * lower, ncol = 12, nrow = 11)
+  sig <- matrix(upper * lower, ncol = 6, nrow = 11)
 
   for (i in 1:nrow(m)) {
     for (j in 1:ncol(m)) {
@@ -133,52 +135,14 @@ tb_fun(post_gamma) |>
 
 ```
 
-## Simple
-
-```{r}
-load("../rda/dry_spab_50_model_inter_full_WD_Full_simple.rda")
-fit_dry2 <- fit
-```
-
-```{r beta-dry2}
-post_beta1 <- get_beta(fit_dry2)
-```
-
-```{r beta-hist-dry2}
-
-mean_ <- apply(post_beta1, 2, mean)
-beta_dat <- tibble(beta = mean_,
-  para = rep(colnames(Xd), each = list_dat_d$J))
-
-beta_dat |>
-  ggplot(aes(beta )) +
-  geom_histogram(bins = 10) +
-  geom_vline(xintercept = 0, lty = 2) +
-  facet_wrap(~ para, scale = "free") +
-  theme_bw()
-
-```
-
-```{r mcmc-dry2}
-post_gamma1s <- get_gamma(fit_dry2)
-```
-
-```{r table-dry2}
-tb_fun(post_gamma1s) |>
-  kable(format = "html") |>
-  kable_styling()
-```
-
 # Wet
 
-## Full
-
 ```{r}
-load("../rda/rainy_spab_50_model_inter_full_WD_Full.rda")
+load("../rda/rainy_spab_50_model_inter_full_WD_Full_simple.rda")
 fit_wet <- fit
 ```
 
-```{r beta-wet}
+```{r beta-wet2}
 post_beta2 <- get_beta(fit_wet)
 ```
 
@@ -197,52 +161,45 @@ beta_dat |>
 
 ```
 
-```{r mcmc-wet}
-post_gamma2 <- get_gamma(fit_wet)
+```{r mcmc2}
+get_gamma2 <- \(fit) {
+  post <- as.data.frame(fit)
+  gammas <- str_c("gamma[",rep(1:2, each = 11), ",", 1:11,"]")
+  post[, gammas]
+}
+
+post_gamma2 <- get_gamma2(fit_wet)
 ```
 
-```{r table-wet}
-tb_fun(post_gamma2) |>
+```{r table2}
+tb_fun2 <- \(post_gamma) {
+  mean_ <- apply(post_gamma, 2, mean)  |> round(3)
+  sd_ <- apply(post_gamma, 2, sd)  |> round(3)
+  upper <- apply(post_gamma, 2, function(x)quantile(x, 0.975))
+  lower <-  apply(post_gamma, 2, function(x)quantile(x, 0.025))
+
+  m0 <- paste0(mean_, " (", sd_, ")")
+  m <- matrix(m0, ncol =2 , nrow = 11)
+  colnames(m) <- colnames(Ud)
+
+  sig <- matrix(upper * lower, ncol =2 , nrow = 11)
+
+  for (i in 1:nrow(m)) {
+    for (j in 1:ncol(m)) {
+      if (sig[i, j] > 0) {
+        m[i, j] <- paste0("**", m[i, j], "**")
+      }
+    }
+  }
+  tb <- bind_cols(parameters = colnames(Xd), m)
+  tb
+}
+
+tb_fun2(post_gamma2) |>
   kable(format = "html") |>
   kable_styling()
-```
-
-## Simple
-
-```{r}
-load("../rda/rainy_spab_50_model_inter_full_WD_Full_simple.rda")
-fit_wet2 <- fit
-```
-
-```{r beta-wet2}
-post_beta2 <- get_beta(fit_wet2)
-```
-
-```{r beta-hist-wet2}
-
-mean_ <- apply(post_beta2, 2, mean)
-beta_dat <- tibble(beta = mean_,
-  para = rep(colnames(Xd), each = list_dat_d$J))
-
-beta_dat |>
-  ggplot(aes(beta )) +
-  geom_histogram(bins = 10) +
-  geom_vline(xintercept = 0, lty = 2) +
-  facet_wrap(~ para, scale = "free") +
-  theme_bw()
 
 ```
-
-```{r mcmc-wet2}
-post_gamma2s <- get_gamma(fit_wet2)
-```
-
-```{r table-wet2}
-tb_fun(post_gamma2s) |>
-  kable(format = "html") |>
-  kable_styling()
-```
-
 
 # Computing Environment
 
@@ -250,3 +207,14 @@ tb_fun(post_gamma2s) |>
 devtools::session_info()
 ```
 
+```{r, eval=FALSE}
+
+load("./rda/dry_spab_50_model_inter_full_WD_Full_simple.rda")
+fit1 <- fit
+#loo1 <- loo(fit1)
+load("./rda/dry_spab_50_model_inter_full_WD_Full.rda")
+fit2 <- fit
+#loo2 <- loo(fit2)
+s1 <- data.frame(summary(fit1)$summary)
+s2 <- data.frame(summary(fit2)$summary)
+```

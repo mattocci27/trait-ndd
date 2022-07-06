@@ -1,0 +1,643 @@
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+✔ ggplot2 3.3.3     ✔ purrr   0.3.4
+✔ tibble  3.1.2     ✔ dplyr   1.0.6
+✔ tidyr   1.1.3     ✔ stringr 1.4.0
+✔ readr   1.4.0     ✔ forcats 0.5.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+Loading required package: StanHeaders
+rstan (Version 2.21.2, GitRev: 2e1f913d3ca3)
+For execution on a local, multicore CPU with excess RAM we recommend calling
+options(mc.cores = parallel::detectCores()).
+To avoid recompilation of unchanged Stan programs, we recommend calling
+rstan_options(auto_write = TRUE)
+
+Attaching package: ‘rstan’
+
+The following object is masked from ‘package:tidyr’:
+
+    extract
+
+This is bayesplot version 1.8.0
+- Online documentation and vignettes at mc-stan.org/bayesplot
+- bayesplot theme set to bayesplot::theme_default()
+   * Does _not_ affect other ggplot2 plots
+   * See ?bayesplot_theme_set for details on theme setting
+[1] "Model  model_inter"
+[1] "Model for  dry season"
+[1] "Use full"
+[1] "Habitat = valley"
+[1] "n_iter = 4000"
+[1] "n_warm = 2000"
+[1] "n_thin = 1"
+[1] "n_chains = 4"
+[1] "adapt_delta = 0.95"
+[1] "minimum sp abund = 50"
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  qua = col_double(),
+  gx = col_double(),
+  gy = col_double(),
+  plot = col_double(),
+  tag = col_character(),
+  quadrat = col_character(),
+  SPcode = col_character(),
+  height = col_double(),
+  date = col_character(),
+  census = col_character(),
+  year = col_double(),
+  season = col_character(),
+  survive = col_double(),
+  CONS = col_double(),
+  CONA = col_double(),
+  HETA = col_double(),
+  HETS = col_double(),
+  Rainfall = col_double(),
+  habitat = col_character()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  qua = col_double(),
+  habit3 = col_character(),
+  seedtrap = col_double(),
+  habit5 = col_character()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  SPcode = col_character(),
+  LDMC = col_double(),
+  WD = col_double(),
+  SDMC = col_double(),
+  LA = col_double(),
+  SLA = col_double(),
+  Chl = col_double(),
+  LT = col_double(),
+  C13 = col_double(),
+  C = col_double(),
+  N = col_double(),
+  CN = col_double(),
+  tlp = col_double()
+)
+
+No. of species
+76
+[1] "Sp-level: 1 + all the traits"
+[1] "sp number in seedling data: 69"
+[1] "sp number in trait data: 69"
+data{
+  int<lower=0> N; // number of sample
+  int<lower=1> J; // number of sp
+  int<lower=1> K; // number of tree-level preditor (i.e, CONS, HETS,...)
+  int<lower=1> L; // number of sp-level predictor (i.e., interecept and WP)
+  int<lower=1> M; // number of seedling individuals (tag)
+  int<lower=1> S; // number of site
+  int<lower=1> T; // number of census
+  matrix[N, K] x; // tree-level predictor
+  matrix[J, L] u; // sp-level predictor
+  int<lower=0,upper=1> suv[N]; // 1 or 0
+  int<lower=1,upper=J> sp[N]; // integer
+  int<lower=1,upper=S> plot[N]; // integer
+  int<lower=1,upper=T> census[N]; // integer
+  int<lower=1> tag[N]; // integer
+}
+
+parameters{
+  matrix[K, J] z;
+  vector[S] phi_raw;
+  vector[T] xi_raw;
+  vector[M] psi_raw;
+  matrix[L, K] gamma;
+  cholesky_factor_corr[K] L_Omega;
+  vector<lower=0,upper=pi()/2>[K] tau_unif;
+  vector<lower=0,upper=pi()/2>[3] sig_unif;
+}
+
+transformed parameters{
+  matrix[J, K] beta;
+  vector<lower=0>[K] tau;
+  vector<lower=0>[3] sig;
+  vector[S] phi;
+  vector[T] xi;
+  vector[M] psi;
+  for (k in 1:K) tau[k] = 2.5 * tan(tau_unif[k]); // implies tau ~ cauchy(0, 2.5)
+  for (i in 1:3) sig[i] = 2.5 * tan(sig_unif[i]); // implies sig ~ cauchy(0, 2.5)
+  beta = u * gamma + (diag_pre_multiply(tau,L_Omega) * z)';
+  phi = phi_raw * sig[1];
+  xi = xi_raw * sig[2];
+  psi = psi_raw * sig[3];
+}
+
+model {
+  // Hyper-priors
+  to_vector(z) ~ std_normal();
+  to_vector(phi_raw) ~ std_normal();
+  to_vector(xi_raw) ~ std_normal();
+  to_vector(psi_raw) ~ std_normal();
+  L_Omega ~ lkj_corr_cholesky(2); // uniform of L_Omega * L_Omega'
+  // Priors
+  to_vector(gamma) ~ normal(0, 5);
+  // Likelihood
+  suv ~ bernoulli_logit(rows_dot_product(beta[sp] , x) + phi[plot] + xi[census] + psi[tag]);
+}
+
+generated quantities {
+  vector[N] log_lik;
+  corr_matrix[K] Omega;
+  Omega = multiply_lower_tri_self_transpose(L_Omega);
+  for (n in 1:N) {
+    log_lik[n] = bernoulli_logit_lpmf(suv[n] | dot_product(beta[sp[n],] , x[n,]) + phi[plot[n]] + xi[census[n]] + psi[tag[n]]);
+  }
+}
+[1] "use c = 0.35 as a scaling parameter for the distance effect"
+[1] "n_sp = J =69"
+[1] "n_para = K = 11"
+[1] "n_plot = S = 180"
+[1] "n_census = T = 10"
+[1] "n_tag = M = 4226"
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+CHECKING DATA AND PREPROCESSING FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+COMPILING MODEL 'model_inter' NOW.
+
+STARTING SAMPLER FOR MODEL 'model_inter' NOW.
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 1).
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 2).
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 3).
+
+SAMPLING FOR MODEL 'model_inter' NOW (CHAIN 4).
+Chain 2: 
+Chain 2: Gradient evaluation took 0.007239 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 72.39 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 3: 
+Chain 3: Gradient evaluation took 0.006426 seconds
+Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 64.26 seconds.
+Chain 3: Adjust your expectations accordingly!
+Chain 3: 
+Chain 3: 
+Chain 1: 
+Chain 1: Gradient evaluation took 0.016256 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 162.56 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 3: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 4: 
+Chain 4: Gradient evaluation took 0.00739 seconds
+Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 73.9 seconds.
+Chain 4: Adjust your expectations accordingly!
+Chain 4: 
+Chain 4: 
+Chain 1: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 4: Iteration:    1 / 4000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 2: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 4: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 3: Iteration:  200 / 4000 [  5%]  (Warmup)
+Chain 1: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 4: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 3: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 4000 [ 10%]  (Warmup)
+Chain 2: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 4: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 3: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 1: Iteration:  600 / 4000 [ 15%]  (Warmup)
+Chain 2: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 4: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 3: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 1: Iteration:  800 / 4000 [ 20%]  (Warmup)
+Chain 2: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 4: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 3: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 1: Iteration: 1000 / 4000 [ 25%]  (Warmup)
+Chain 2: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 4: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 3: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 1: Iteration: 1200 / 4000 [ 30%]  (Warmup)
+Chain 2: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 4: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 3: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 1: Iteration: 1400 / 4000 [ 35%]  (Warmup)
+Chain 2: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 4: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 3: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1600 / 4000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 4: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 3: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 2: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 2: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1800 / 4000 [ 45%]  (Warmup)
+Chain 4: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 4: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 3: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 3: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 2: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 4: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 1: Iteration: 2000 / 4000 [ 50%]  (Warmup)
+Chain 1: Iteration: 2001 / 4000 [ 50%]  (Sampling)
+Chain 3: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 2: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 4: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 1: Iteration: 2200 / 4000 [ 55%]  (Sampling)
+Chain 3: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 2: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 1: Iteration: 2400 / 4000 [ 60%]  (Sampling)
+Chain 4: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 3: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 2: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 1: Iteration: 2600 / 4000 [ 65%]  (Sampling)
+Chain 4: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 3: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 2: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 1: Iteration: 2800 / 4000 [ 70%]  (Sampling)
+Chain 4: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 3: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 2: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 1: Iteration: 3000 / 4000 [ 75%]  (Sampling)
+Chain 4: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 3: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 2: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 1: Iteration: 3200 / 4000 [ 80%]  (Sampling)
+Chain 4: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 3: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 2: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 1: Iteration: 3400 / 4000 [ 85%]  (Sampling)
+Chain 4: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 3: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 1: Iteration: 3600 / 4000 [ 90%]  (Sampling)
+Chain 2: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 4: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 3: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 4: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 4: 
+Chain 4:  Elapsed Time: 32945.3 seconds (Warm-up)
+Chain 4:                27275.4 seconds (Sampling)
+Chain 4:                60220.7 seconds (Total)
+Chain 4: 
+Chain 1: Iteration: 3800 / 4000 [ 95%]  (Sampling)
+Chain 2: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 32547.7 seconds (Warm-up)
+Chain 2:                27811.1 seconds (Sampling)
+Chain 2:                60358.7 seconds (Total)
+Chain 2: 
+Chain 3: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 3: 
+Chain 3:  Elapsed Time: 33553 seconds (Warm-up)
+Chain 3:                27284.7 seconds (Sampling)
+Chain 3:                60837.7 seconds (Total)
+Chain 3: 
+Chain 1: Iteration: 4000 / 4000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 35837.5 seconds (Warm-up)
+Chain 1:                26804 seconds (Sampling)
+Chain 1:                62641.4 seconds (Total)
+Chain 1: 
+Warning message:
+Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+Running the chains for more iterations may help. See
+http://mc-stan.org/misc/warnings.html#bulk-ess 
+Inference for Stan model: model_inter.
+4 chains, each with iter=4000; warmup=2000; thin=1; 
+post-warmup draws per chain=2000, total post-warmup draws=8000.
+
+                 mean se_mean     sd     2.5%      25%      50%      75%
+gamma[1,1]       3.71    0.03   1.27     1.26     2.87     3.68     4.53
+gamma[1,2]      -2.72    0.05   1.89    -6.41    -3.99    -2.71    -1.40
+gamma[1,3]       0.58    0.02   0.81    -1.02     0.06     0.58     1.10
+gamma[1,4]       0.12    0.00   0.18    -0.20     0.00     0.11     0.23
+gamma[1,5]      -0.10    0.00   0.22    -0.53    -0.24    -0.10     0.05
+gamma[1,6]       0.91    0.02   0.99    -1.04     0.26     0.90     1.59
+gamma[1,7]       1.49    0.03   1.60    -1.64     0.39     1.50     2.54
+gamma[1,8]       0.09    0.01   0.50    -0.89    -0.24     0.09     0.42
+gamma[1,9]      -0.04    0.00   0.19    -0.42    -0.17    -0.03     0.08
+gamma[1,10]      0.04    0.00   0.14    -0.23    -0.06     0.03     0.13
+gamma[1,11]      1.78    0.00   0.23     1.35     1.63     1.78     1.93
+gamma[2,1]      -1.19    0.03   1.49    -4.11    -2.18    -1.21    -0.19
+gamma[2,2]       0.52    0.04   2.19    -3.71    -0.97     0.46     1.98
+gamma[2,3]      -0.91    0.02   1.13    -3.12    -1.65    -0.91    -0.17
+gamma[2,4]      -0.23    0.01   0.27    -0.77    -0.40    -0.22    -0.05
+gamma[2,5]      -0.03    0.01   0.31    -0.62    -0.24    -0.03     0.18
+gamma[2,6]      -3.39    0.03   1.11    -5.55    -4.13    -3.39    -2.63
+gamma[2,7]      -5.46    0.04   1.75    -8.92    -6.66    -5.44    -4.27
+gamma[2,8]      -0.34    0.02   0.77    -1.83    -0.86    -0.35     0.18
+gamma[2,9]      -0.08    0.01   0.27    -0.62    -0.26    -0.07     0.10
+gamma[2,10]      0.12    0.00   0.21    -0.28    -0.02     0.12     0.27
+gamma[2,11]     -0.09    0.01   0.33    -0.76    -0.29    -0.08     0.13
+gamma[3,1]      -1.73    0.03   1.78    -5.19    -2.93    -1.75    -0.52
+gamma[3,2]       0.36    0.04   2.66    -4.85    -1.43     0.36     2.14
+gamma[3,3]      -0.76    0.03   1.35    -3.42    -1.66    -0.77     0.16
+gamma[3,4]      -0.47    0.01   0.46    -1.41    -0.77    -0.47    -0.16
+gamma[3,5]       0.56    0.01   0.59    -0.65     0.16     0.57     0.94
+gamma[3,6]      -0.83    0.03   1.49    -3.75    -1.85    -0.84     0.17
+gamma[3,7]      -2.08    0.05   2.54    -7.12    -3.77    -2.07    -0.40
+gamma[3,8]      -0.23    0.02   0.86    -1.96    -0.80    -0.24     0.34
+gamma[3,9]      -0.12    0.01   0.47    -1.07    -0.45    -0.11     0.20
+gamma[3,10]      0.05    0.01   0.42    -0.78    -0.22     0.06     0.33
+gamma[3,11]     -0.81    0.01   0.61    -2.03    -1.22    -0.82    -0.41
+gamma[4,1]       0.17    0.04   2.13    -4.10    -1.27     0.18     1.60
+gamma[4,2]      -3.69    0.06   3.38   -10.44    -5.96    -3.70    -1.46
+gamma[4,3]       0.69    0.03   1.59    -2.37    -0.38     0.70     1.76
+gamma[4,4]       0.70    0.01   0.50    -0.27     0.37     0.69     1.02
+gamma[4,5]      -0.82    0.01   0.63    -2.03    -1.24    -0.82    -0.41
+gamma[4,6]       1.12    0.03   1.59    -1.98     0.04     1.14     2.21
+gamma[4,7]       1.06    0.05   2.87    -4.64    -0.87     1.06     2.98
+gamma[4,8]       0.91    0.02   0.96    -1.00     0.28     0.92     1.56
+gamma[4,9]      -0.04    0.01   0.53    -1.06    -0.40    -0.05     0.32
+gamma[4,10]     -0.32    0.01   0.43    -1.16    -0.62    -0.32    -0.03
+gamma[4,11]      0.55    0.01   0.66    -0.77     0.12     0.55     0.98
+gamma[5,1]      -0.15    0.03   1.31    -2.78    -1.01    -0.16     0.72
+gamma[5,2]       0.41    0.04   1.86    -3.25    -0.84     0.41     1.67
+gamma[5,3]      -0.15    0.02   1.13    -2.35    -0.90    -0.17     0.59
+gamma[5,4]       0.13    0.00   0.23    -0.30    -0.03     0.12     0.27
+gamma[5,5]      -0.25    0.01   0.31    -0.86    -0.46    -0.25    -0.04
+gamma[5,6]      -1.10    0.02   0.85    -2.76    -1.67    -1.10    -0.53
+gamma[5,7]      -0.71    0.03   1.63    -3.85    -1.79    -0.72     0.38
+gamma[5,8]      -0.96    0.01   0.58    -2.09    -1.34    -0.96    -0.58
+gamma[5,9]      -0.18    0.00   0.23    -0.62    -0.34    -0.19    -0.03
+gamma[5,10]      0.15    0.00   0.20    -0.25     0.02     0.15     0.29
+gamma[5,11]      0.18    0.01   0.33    -0.44    -0.04     0.17     0.39
+gamma[6,1]      -1.05    0.03   1.12    -3.29    -1.79    -1.05    -0.32
+gamma[6,2]      -1.46    0.04   1.83    -5.02    -2.69    -1.48    -0.24
+gamma[6,3]       0.11    0.01   0.68    -1.14    -0.35     0.09     0.55
+gamma[6,4]       0.12    0.00   0.21    -0.29    -0.02     0.12     0.26
+gamma[6,5]      -0.18    0.00   0.26    -0.71    -0.35    -0.18    -0.01
+gamma[6,6]      -0.91    0.02   1.08    -3.00    -1.64    -0.91    -0.17
+gamma[6,7]      -2.48    0.04   2.06    -6.48    -3.88    -2.50    -1.11
+gamma[6,8]       0.32    0.01   0.39    -0.42     0.06     0.32     0.58
+gamma[6,9]      -0.05    0.00   0.20    -0.44    -0.18    -0.04     0.08
+gamma[6,10]     -0.04    0.00   0.17    -0.37    -0.14    -0.03     0.07
+gamma[6,11]      0.24    0.00   0.25    -0.25     0.07     0.24     0.40
+gamma[7,1]      -0.43    0.03   1.33    -3.03    -1.32    -0.41     0.48
+gamma[7,2]       0.46    0.04   2.07    -3.64    -0.94     0.48     1.86
+gamma[7,3]      -0.74    0.02   1.00    -2.70    -1.41    -0.75    -0.07
+gamma[7,4]       0.30    0.01   0.35    -0.43     0.07     0.31     0.54
+gamma[7,5]       0.01    0.01   0.37    -0.75    -0.22     0.03     0.26
+gamma[7,6]      -0.13    0.02   1.03    -2.12    -0.82    -0.12     0.54
+gamma[7,7]      -1.24    0.03   1.73    -4.64    -2.39    -1.22    -0.10
+gamma[7,8]       0.10    0.01   0.71    -1.31    -0.36     0.12     0.57
+gamma[7,9]       0.14    0.01   0.33    -0.49    -0.07     0.14     0.36
+gamma[7,10]      0.03    0.00   0.24    -0.44    -0.13     0.03     0.19
+gamma[7,11]      0.21    0.01   0.38    -0.58    -0.03     0.22     0.47
+gamma[8,1]       0.29    0.06   2.63    -4.91    -1.50     0.28     2.05
+gamma[8,2]      -2.59    0.06   3.38    -9.23    -4.86    -2.62    -0.31
+gamma[8,3]       3.11    0.05   2.28    -1.58     1.61     3.12     4.69
+gamma[8,4]      -0.51    0.01   0.69    -1.83    -0.96    -0.52    -0.07
+gamma[8,5]       0.11    0.02   0.75    -1.30    -0.39     0.10     0.61
+gamma[8,6]      -0.26    0.05   2.18    -4.49    -1.77    -0.26     1.23
+gamma[8,7]       1.08    0.06   3.07    -4.83    -0.98     1.01     3.15
+gamma[8,8]      -0.01    0.04   1.76    -3.42    -1.22    -0.03     1.17
+gamma[8,9]       0.05    0.01   0.71    -1.36    -0.41     0.05     0.51
+gamma[8,10]     -0.06    0.01   0.52    -1.09    -0.40    -0.06     0.29
+gamma[8,11]     -0.41    0.01   0.70    -1.79    -0.88    -0.42     0.05
+gamma[9,1]       2.22    0.05   2.47    -2.60     0.52     2.24     3.90
+gamma[9,2]       0.06    0.05   3.13    -6.05    -2.03     0.07     2.17
+gamma[9,3]       3.92    0.05   2.22    -0.53     2.41     3.92     5.43
+gamma[9,4]      -0.62    0.02   0.79    -2.09    -1.16    -0.64    -0.11
+gamma[9,5]       0.05    0.02   0.81    -1.52    -0.50     0.03     0.58
+gamma[9,6]      -0.81    0.05   2.10    -4.95    -2.27    -0.81     0.62
+gamma[9,7]       1.48    0.06   2.90    -4.06    -0.51     1.42     3.46
+gamma[9,8]      -0.78    0.04   1.78    -4.25    -2.01    -0.80     0.43
+gamma[9,9]      -0.15    0.02   0.78    -1.70    -0.67    -0.14     0.37
+gamma[9,10]     -0.03    0.01   0.58    -1.21    -0.41    -0.03     0.35
+gamma[9,11]     -0.34    0.02   0.78    -1.81    -0.87    -0.35     0.17
+gamma[10,1]     -0.79    0.02   1.01    -2.78    -1.46    -0.81    -0.10
+gamma[10,2]     -2.73    0.04   1.85    -6.35    -4.01    -2.72    -1.49
+gamma[10,3]      0.89    0.01   0.67    -0.35     0.42     0.86     1.30
+gamma[10,4]      0.22    0.00   0.17    -0.12     0.11     0.23     0.34
+gamma[10,5]     -0.40    0.00   0.28    -0.98    -0.58    -0.39    -0.21
+gamma[10,6]      0.06    0.01   0.78    -1.43    -0.47     0.07     0.59
+gamma[10,7]     -0.70    0.03   1.49    -3.61    -1.69    -0.71     0.29
+gamma[10,8]      0.41    0.01   0.43    -0.40     0.12     0.41     0.70
+gamma[10,9]     -0.02    0.00   0.20    -0.43    -0.16    -0.03     0.11
+gamma[10,10]    -0.15    0.00   0.18    -0.51    -0.27    -0.15    -0.03
+gamma[10,11]    -0.15    0.00   0.26    -0.68    -0.32    -0.15     0.02
+gamma[11,1]     -1.40    0.03   1.31    -3.97    -2.28    -1.39    -0.50
+gamma[11,2]      0.38    0.04   1.99    -3.53    -1.00     0.37     1.74
+gamma[11,3]     -1.15    0.02   1.09    -3.36    -1.87    -1.14    -0.42
+gamma[11,4]     -0.39    0.00   0.23    -0.86    -0.54    -0.39    -0.23
+gamma[11,5]      0.10    0.01   0.32    -0.52    -0.10     0.10     0.31
+gamma[11,6]     -0.56    0.02   1.03    -2.60    -1.26    -0.55     0.13
+gamma[11,7]     -1.17    0.04   1.82    -4.75    -2.38    -1.17     0.04
+gamma[11,8]      0.26    0.01   0.64    -0.97    -0.16     0.25     0.69
+gamma[11,9]     -0.42    0.00   0.25    -0.91    -0.58    -0.42    -0.25
+gamma[11,10]     0.13    0.00   0.22    -0.30    -0.02     0.13     0.28
+gamma[11,11]    -0.15    0.01   0.31    -0.74    -0.36    -0.15     0.05
+gamma[12,1]     -0.75    0.04   1.59    -3.87    -1.82    -0.74     0.31
+gamma[12,2]      0.13    0.04   2.25    -4.26    -1.39     0.14     1.66
+gamma[12,3]     -0.52    0.03   1.29    -2.93    -1.40    -0.55     0.31
+gamma[12,4]     -0.02    0.01   0.32    -0.59    -0.24    -0.05     0.18
+gamma[12,5]     -0.33    0.01   0.36    -1.04    -0.57    -0.33    -0.11
+gamma[12,6]     -0.40    0.02   1.09    -2.46    -1.15    -0.41     0.35
+gamma[12,7]      0.74    0.04   1.97    -3.13    -0.58     0.73     2.03
+gamma[12,8]     -0.66    0.01   0.71    -2.02    -1.14    -0.67    -0.20
+gamma[12,9]     -0.29    0.00   0.28    -0.83    -0.48    -0.30    -0.11
+gamma[12,10]     0.14    0.00   0.23    -0.30     0.00     0.14     0.30
+gamma[12,11]     0.03    0.01   0.41    -0.76    -0.25     0.02     0.29
+gamma[13,1]     -0.81    0.02   0.96    -2.72    -1.43    -0.80    -0.18
+gamma[13,2]     -0.59    0.04   1.57    -3.43    -1.68    -0.65     0.44
+gamma[13,3]     -0.67    0.02   0.85    -2.38    -1.21    -0.67    -0.13
+gamma[13,4]     -0.12    0.00   0.21    -0.51    -0.26    -0.14     0.00
+gamma[13,5]      0.07    0.00   0.25    -0.36    -0.09     0.05     0.22
+gamma[13,6]     -1.47    0.01   0.62    -2.73    -1.90    -1.47    -1.05
+gamma[13,7]     -3.13    0.02   0.97    -5.02    -3.79    -3.13    -2.48
+gamma[13,8]      0.28    0.01   0.55    -0.78    -0.08     0.28     0.64
+gamma[13,9]      0.03    0.00   0.18    -0.31    -0.08     0.03     0.15
+gamma[13,10]     0.04    0.00   0.14    -0.24    -0.05     0.04     0.13
+gamma[13,11]    -0.25    0.01   0.28    -0.84    -0.42    -0.23    -0.05
+sig[1]           0.54    0.00   0.07     0.40     0.49     0.53     0.58
+sig[2]           0.68    0.01   0.24     0.37     0.52     0.64     0.80
+sig[3]           1.37    0.01   0.21     0.99     1.22     1.35     1.50
+lp__         -5950.65    8.74 142.92 -6223.86 -6048.88 -5953.89 -5856.76
+                97.5% n_eff Rhat
+gamma[1,1]       6.29  1429 1.00
+gamma[1,2]       0.90  1658 1.00
+gamma[1,3]       2.17  1917 1.00
+gamma[1,4]       0.50  2509 1.00
+gamma[1,5]       0.32  3753 1.00
+gamma[1,6]       2.81  2055 1.00
+gamma[1,7]       4.65  2528 1.00
+gamma[1,8]       1.07  2404 1.00
+gamma[1,9]       0.32  4236 1.00
+gamma[1,10]      0.32  5762 1.00
+gamma[1,11]      2.25  2490 1.00
+gamma[2,1]       1.70  2079 1.00
+gamma[2,2]       4.79  2675 1.00
+gamma[2,3]       1.38  2193 1.00
+gamma[2,4]       0.29  2622 1.00
+gamma[2,5]       0.61  2618 1.00
+gamma[2,6]      -1.21  1641 1.00
+gamma[2,7]      -2.02  2287 1.00
+gamma[2,8]       1.21  2023 1.00
+gamma[2,9]       0.44  2884 1.00
+gamma[2,10]      0.54  2874 1.00
+gamma[2,11]      0.54  2765 1.00
+gamma[3,1]       1.78  2657 1.00
+gamma[3,2]       5.61  3659 1.00
+gamma[3,3]       1.92  2853 1.00
+gamma[3,4]       0.43  3272 1.00
+gamma[3,5]       1.71  2856 1.00
+gamma[3,6]       2.12  2326 1.00
+gamma[3,7]       2.90  2743 1.00
+gamma[3,8]       1.46  2942 1.00
+gamma[3,9]       0.80  4375 1.00
+gamma[3,10]      0.86  3687 1.00
+gamma[3,11]      0.38  2931 1.00
+gamma[4,1]       4.29  2763 1.00
+gamma[4,2]       2.85  3307 1.00
+gamma[4,3]       3.76  2728 1.00
+gamma[4,4]       1.71  3141 1.00
+gamma[4,5]       0.46  3043 1.00
+gamma[4,6]       4.13  2958 1.00
+gamma[4,7]       6.66  3574 1.00
+gamma[4,8]       2.80  3448 1.00
+gamma[4,9]       1.02  3943 1.00
+gamma[4,10]      0.50  3806 1.00
+gamma[4,11]      1.84  3028 1.00
+gamma[5,1]       2.43  1830 1.00
+gamma[5,2]       3.95  2279 1.00
+gamma[5,3]       2.04  2077 1.00
+gamma[5,4]       0.62  2965 1.00
+gamma[5,5]       0.37  3535 1.00
+gamma[5,6]       0.59  2530 1.00
+gamma[5,7]       2.51  2554 1.00
+gamma[5,8]       0.17  3728 1.00
+gamma[5,9]       0.30  3581 1.00
+gamma[5,10]      0.55  3472 1.00
+gamma[5,11]      0.84  3909 1.00
+gamma[6,1]       1.19  2000 1.00
+gamma[6,2]       2.13  2558 1.00
+gamma[6,3]       1.53  2314 1.00
+gamma[6,4]       0.52  4144 1.00
+gamma[6,5]       0.31  3570 1.00
+gamma[6,6]       1.21  2161 1.00
+gamma[6,7]       1.57  2292 1.00
+gamma[6,8]       1.07  3892 1.00
+gamma[6,9]       0.33  4727 1.00
+gamma[6,10]      0.29  4679 1.00
+gamma[6,11]      0.75  4255 1.00
+gamma[7,1]       2.18  2460 1.00
+gamma[7,2]       4.55  3356 1.00
+gamma[7,3]       1.25  2306 1.00
+gamma[7,4]       0.96  2204 1.00
+gamma[7,5]       0.73  2441 1.00
+gamma[7,6]       1.90  2519 1.00
+gamma[7,7]       2.15  3333 1.00
+gamma[7,8]       1.46  2277 1.00
+gamma[7,9]       0.79  2931 1.00
+gamma[7,10]      0.52  2854 1.00
+gamma[7,11]      0.93  2132 1.00
+gamma[8,1]       5.45  2220 1.00
+gamma[8,2]       3.97  3480 1.00
+gamma[8,3]       7.40  2184 1.00
+gamma[8,4]       0.86  2228 1.00
+gamma[8,5]       1.65  2154 1.00
+gamma[8,6]       4.02  2113 1.00
+gamma[8,7]       7.07  2809 1.00
+gamma[8,8]       3.41  2184 1.00
+gamma[8,9]       1.45  2769 1.00
+gamma[8,10]      0.96  2409 1.00
+gamma[8,11]      0.94  2265 1.00
+gamma[9,1]       7.00  2404 1.00
+gamma[9,2]       6.27  3327 1.00
+gamma[9,3]       8.29  2228 1.00
+gamma[9,4]       1.00  2068 1.00
+gamma[9,5]       1.70  2125 1.00
+gamma[9,6]       3.34  1891 1.00
+gamma[9,7]       7.21  2498 1.00
+gamma[9,8]       2.71  2026 1.00
+gamma[9,9]       1.38  2705 1.00
+gamma[9,10]      1.11  2330 1.00
+gamma[9,11]      1.21  2131 1.00
+gamma[10,1]      1.14  2202 1.00
+gamma[10,2]      0.95  1856 1.00
+gamma[10,3]      2.31  2881 1.00
+gamma[10,4]      0.56  5008 1.00
+gamma[10,5]      0.13  4282 1.00
+gamma[10,6]      1.60  3079 1.00
+gamma[10,7]      2.27  3301 1.00
+gamma[10,8]      1.27  4317 1.00
+gamma[10,9]      0.38  5047 1.00
+gamma[10,10]     0.20  5536 1.00
+gamma[10,11]     0.34  4375 1.00
+gamma[11,1]      1.12  2667 1.00
+gamma[11,2]      4.24  3036 1.00
+gamma[11,3]      0.94  2303 1.00
+gamma[11,4]      0.06  3399 1.00
+gamma[11,5]      0.73  2842 1.00
+gamma[11,6]      1.45  2202 1.00
+gamma[11,7]      2.37  2432 1.00
+gamma[11,8]      1.52  2540 1.00
+gamma[11,9]      0.07  3454 1.00
+gamma[11,10]     0.56  3245 1.00
+gamma[11,11]     0.47  3389 1.00
+gamma[12,1]      2.42  1890 1.00
+gamma[12,2]      4.56  3139 1.00
+gamma[12,3]      2.16  1736 1.00
+gamma[12,4]      0.66  2091 1.00
+gamma[12,5]      0.38  3341 1.00
+gamma[12,6]      1.78  2255 1.00
+gamma[12,7]      4.63  2566 1.00
+gamma[12,8]      0.77  2488 1.00
+gamma[12,9]      0.29  3254 1.00
+gamma[12,10]     0.57  3472 1.00
+gamma[12,11]     0.85  4031 1.00
+gamma[13,1]      1.06  2290 1.00
+gamma[13,2]      2.68  1624 1.00
+gamma[13,3]      1.02  2582 1.00
+gamma[13,4]      0.32  3076 1.00
+gamma[13,5]      0.62  2907 1.00
+gamma[13,6]     -0.25  1927 1.00
+gamma[13,7]     -1.21  2640 1.00
+gamma[13,8]      1.36  2544 1.00
+gamma[13,9]      0.39  3506 1.00
+gamma[13,10]     0.30  3874 1.00
+gamma[13,11]     0.26  2652 1.00
+sig[1]           0.69  1251 1.01
+sig[2]           1.25  1407 1.00
+sig[3]           1.80   260 1.01
+lp__         -5665.53   267 1.01
+
+Samples were drawn using NUTS(diag_e) at Fri Aug 13 06:55:16 2021.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).
+[1] "./rda/dry_spab_50_model_inter_full_Full_valley.rda"
+[1] "MCMC done!!"
