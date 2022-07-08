@@ -1,0 +1,50 @@
+---
+Title: "your title"
+author: "Masatoshi Katabuchi"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+     collapsed: TRUE
+     smooth_scroll: TRUE
+     toc: true
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.show = "hold"
+)
+```
+
+```{r}
+targets::tar_load(fit_5_dry_pca_summary_model_ind)
+targets::tar_load(fit_6_wet_pca_summary_model_ind)
+
+targets::tar_load(fit_5_dry_pca_diagnostics_model_ind)
+targets::tar_load(fit_6_wet_pca_diagnostics_model_ind)
+```
+
+```{r}
+fit_5_dry_pca_summary_model_ind
+```
+```{r}
+fit_6_wet_pca_summary_model_ind
+```
+
+
+```{r}
+div_check(fit_5_dry_pca_diagnostics_model_ind)
+div_check(fit_6_wet_pca_diagnostics_model_ind)
+```

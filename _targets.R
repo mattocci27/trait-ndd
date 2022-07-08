@@ -7,7 +7,7 @@ library(furrr)
 library(languageserver)
 
 source("R/data_clean.R")
-#source("R/stan.R")
+source("R/stan.R")
 
 plan(multicore)
 options(clustermq.scheduler = "multicore")
@@ -103,7 +103,7 @@ list(
     parallel_chains = getOption("mc.cores", 4),
     iter_warmup = 2000,
     iter_sampling = 2000,
-    adapt_delta = 0.9,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
@@ -115,33 +115,33 @@ list(
     parallel_chains = getOption("mc.cores", 4),
     iter_warmup = 2000,
     iter_sampling = 2000,
-    adapt_delta = 0.9,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
-  tar_stan_mcmc(
-    fit_3_dry_wd,
-    "stan/model_ind.stan",
-    data = dry_wd,
-    refresh = 0,
-    chains = 4,
-    parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 2000,
-    iter_sampling = 2000,
-    adapt_delta = 0.9,
-    max_treedepth = 15,
-    seed = 123),
-  tar_stan_mcmc(
-    fit_4_wet_wd,
-    "stan/model_ind.stan",
-    data = wet_wd,
-    refresh = 0,
-    chains = 4,
-    parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 2000,
-    iter_sampling = 2000,
-    adapt_delta = 0.9,
-    max_treedepth = 15,
-    seed = 123),
+  # tar_stan_mcmc(
+  #   fit_3_dry_wd,
+  #   "stan/model_ind.stan",
+  #   data = dry_wd,
+  #   refresh = 0,
+  #   chains = 4,
+  #   parallel_chains = getOption("mc.cores", 4),
+  #   iter_warmup = 2000,
+  #   iter_sampling = 2000,
+  #   adapt_delta = 0.9,
+  #   max_treedepth = 15,
+  #   seed = 123),
+  # tar_stan_mcmc(
+  #   fit_4_wet_wd,
+  #   "stan/model_ind.stan",
+  #   data = wet_wd,
+  #   refresh = 0,
+  #   chains = 4,
+  #   parallel_chains = getOption("mc.cores", 4),
+  #   iter_warmup = 2000,
+  #   iter_sampling = 2000,
+  #   adapt_delta = 0.9,
+  #   max_treedepth = 15,
+  #   seed = 123),
   tar_stan_mcmc(
     fit_5_dry_pca,
     "stan/model_ind.stan",
@@ -165,13 +165,10 @@ list(
     iter_sampling = 2000,
     adapt_delta = 0.9,
     max_treedepth = 15,
-    seed = 123)
+    seed = 123),
 
-
-
- #)#,
-  # tar_render(
-  #   report,
-  #   "report.Rmd"
-  # )
+  tar_render(
+    report,
+    "report.Rmd"
+  )
 )

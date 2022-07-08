@@ -7,3 +7,11 @@ str(dry_wd)
 str(dry_pca)
 
 
+model_code <-
+  '
+  functions {
+    vector test() {
+      return rows_dot_product(beta[sp] , x);
+   }
+  }
+'
