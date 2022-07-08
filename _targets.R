@@ -26,6 +26,11 @@ tar_option_set(packages = c(
   "multcompView"
 ))
 
+tar_option_set(
+  garbage_collection = TRUE,
+  memory = "transient"
+)
+
 # check if it's inside a container
 # if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
 #   Sys.setenv(CMDSTAN = "/opt/cmdstan/cmdstan-2.29.0")
