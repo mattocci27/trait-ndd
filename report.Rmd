@@ -29,22 +29,37 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
+targets::tar_load(fit_1_dry_full_summary_model_ind)
+targets::tar_load(fit_2_wet_full_summary_model_ind)
 targets::tar_load(fit_5_dry_pca_summary_model_ind)
 targets::tar_load(fit_6_wet_pca_summary_model_ind)
 
+targets::tar_load(fit_1_dry_full_diagnostics_model_ind)
+targets::tar_load(fit_2_wet_full_diagnostics_model_ind)
 targets::tar_load(fit_5_dry_pca_diagnostics_model_ind)
 targets::tar_load(fit_6_wet_pca_diagnostics_model_ind)
 ```
 
 ```{r}
+fit_1_dry_full_summary_model_ind
+```
+
+```{r}
+fit_2_wet_full_summary_model_ind
+```
+
+```{r}
 fit_5_dry_pca_summary_model_ind
 ```
+
 ```{r}
 fit_6_wet_pca_summary_model_ind
 ```
 
 
 ```{r}
+div_check(fit_1_dry_full_diagnostics_model_ind)
+div_check(fit_2_wet_full_diagnostics_model_ind)
 div_check(fit_5_dry_pca_diagnostics_model_ind)
 div_check(fit_6_wet_pca_diagnostics_model_ind)
 ```
