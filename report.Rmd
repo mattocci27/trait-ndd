@@ -1,5 +1,5 @@
 ---
-Title: "your title"
+title: "Report"
 author: "Masatoshi Katabuchi"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
@@ -29,37 +29,49 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-targets::tar_load(fit_1_dry_full_summary_model_ind)
-targets::tar_load(fit_2_wet_full_summary_model_ind)
-targets::tar_load(fit_5_dry_pca_summary_model_ind)
-targets::tar_load(fit_6_wet_pca_summary_model_ind)
+targets::tar_load(fit_1_dry_full_int_summary_model_ind)
+targets::tar_load(fit_2_wet_full_int_summary_model_ind)
+targets::tar_load(fit_3_dry_wd_int_summary_model_ind)
+targets::tar_load(fit_4_wet_wd_int_summary_model_ind)
+targets::tar_load(fit_5_dry_pca_int_summary_model_ind)
+targets::tar_load(fit_6_wet_pca_int_summary_model_ind)
+targets::tar_load(fit_7_dry_full_noint_summary_model_ind)
+targets::tar_load(fit_8_wet_full_noint_summary_model_ind)
 
-targets::tar_load(fit_1_dry_full_diagnostics_model_ind)
-targets::tar_load(fit_2_wet_full_diagnostics_model_ind)
-targets::tar_load(fit_5_dry_pca_diagnostics_model_ind)
-targets::tar_load(fit_6_wet_pca_diagnostics_model_ind)
+targets::tar_load(fit_1_dry_full_int_diagnostics_model_ind)
+targets::tar_load(fit_2_wet_full_int_diagnostics_model_ind)
+targets::tar_load(fit_3_dry_wd_int_diagnostics_model_ind)
+targets::tar_load(fit_4_wet_wd_int_diagnostics_model_ind)
+targets::tar_load(fit_5_dry_pca_int_diagnostics_model_ind)
+targets::tar_load(fit_6_wet_pca_int_diagnostics_model_ind)
+targets::tar_load(fit_7_dry_full_noint_diagnostics_model_ind)
+targets::tar_load(fit_8_wet_full_noint_diagnostics_model_ind)
 ```
 
 ```{r}
-fit_1_dry_full_summary_model_ind
+fit_1_dry_full_int_summary_model_ind
 ```
 
 ```{r}
-fit_2_wet_full_summary_model_ind
+fit_2_wet_full_int_summary_model_ind
 ```
 
 ```{r}
-fit_5_dry_pca_summary_model_ind
+fit_5_dry_pca_int_summary_model_ind
 ```
 
 ```{r}
-fit_6_wet_pca_summary_model_ind
+fit_6_wet_pca_int_summary_model_ind
 ```
 
 
 ```{r}
-div_check(fit_1_dry_full_diagnostics_model_ind)
-div_check(fit_2_wet_full_diagnostics_model_ind)
-div_check(fit_5_dry_pca_diagnostics_model_ind)
-div_check(fit_6_wet_pca_diagnostics_model_ind)
+div_check(fit_1_dry_full_int_diagnostics_model_ind)
+div_check(fit_2_wet_full_int_diagnostics_model_ind)
+div_check(fit_3_dry_wd_int_diagnostics_model_ind)
+div_check(fit_4_wet_wd_int_diagnostics_model_ind)
+div_check(fit_5_dry_pca_int_diagnostics_model_ind)
+div_check(fit_6_wet_pca_int_diagnostics_model_ind)
+div_check(fit_7_dry_full_noint_diagnostics_model_ind)
+div_check(fit_8_wet_full_noint_diagnostics_model_ind)
 ```

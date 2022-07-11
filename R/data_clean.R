@@ -99,7 +99,7 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
 
 #targets::tar_load(data_list)
 gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
-                        neighbor = c("full", "seedling", "adult"),
+                        inter = TRUE,
                         trait_set = c("full", "wd", "pca", "sla_wd_lt")) {
   seedling <- data_list$seedling |>
     filter(season == {{season}})
@@ -172,7 +172,7 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
     mutate(cons_rain = cons_scaled * rain_scaled)
 
 
-  if (neighbor == "full") {
+  if (inter) {
     Xd <- cbind(rep(1, nrow(seedling_dat)),
                 seedling_dat[,c("cons_scaled",
                                  "cona_scaled_c",
@@ -184,22 +184,13 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
                                  "hets_rain",
                                  "heta_rain",
                                  "logh_scaled")])
-  } else if (neighbor == "seedling") {
+  } else  {
     Xd <- cbind(rep(1, nrow(seedling_dat)),
                 seedling_dat[,c("cons_scaled",
-                                 "hets_scaled",
-                                 "rain_scaled",
-                                 "cons_rain",
-                                 "hets_rain",
-                                 "logh_scaled")])
-  } else if (neighbor == "adult") {
-    Xd <- cbind(rep(1, nrow(seedling_dat)),
-                seedling_dat[,c(
                                  "cona_scaled_c",
+                                 "hets_scaled",
                                  "heta_scaled_c",
                                  "rain_scaled",
-                                 "cona_rain",
-                                 "heta_rain",
                                  "logh_scaled")])
   }
 

@@ -14,26 +14,24 @@ create_stan_tab <- function(draws) {
 #' @title use mean estiamte
 #' @param ld use leaf density (TRUE) or LMAd (FALSE)
 #' @param add use oringal coef (FALSE) or added coef (TRUE)
-coef_pointrange <- function(data, ld = TRUE, add = FALSE) {
-  data <- data |>
+coef_pointrange <- function(dry_data, wet_data) {
+  dry_data <- create_stan_tab(dyr_data) |>
+    mutate(season = "Dry")
+  wet_data <- create_stan_tab(wet_data) |>
+    mutate(season = "Rainy")
+  data <- bind_rows(dry_data, wet_data) |>
     mutate(sig = ifelse(lwr2_5 * upr97_5 > 0, "sig", "ns")) |>
     mutate(ci_sig = case_when(
       lwr2_5 * upr97_5 > 0 ~ "sig95",
       lwr5 * upr95 > 0 ~ "sig90",
       TRUE ~ "ns"
       ))
-  # beta (mean)
-  data1 <- data |>
-    filter(str_detect(para, "beta")) |>
-    filter(para != "beta_1") |>
-    mutate(para = factor(para, levels = rev(para)))
-
-  data2 <- data |>
+  data <- data |>
     filter(str_detect(para, "gamma")) |>
     filter(str_detect(para, "_1$")) |>
     filter(para != "gamma_1_1") |>
-    mutate(para = factor(para, levels = rev(para))) |>
-    mutate(para_chr = colnames(dry_full$x)[-1]) |>
+    #mutate(para = factor(para, levels = rev(para))) |>
+    mutate(para_chr = colnames(dry_full$x)[-1] |> rep(2)) |>
     mutate(para_fct = factor(para_chr,
       levels = c(
         "logh_scaled",
@@ -46,7 +44,7 @@ coef_pointrange <- function(data, ld = TRUE, add = FALSE) {
         "cona_rain",
         "hets_rain",
         "heta_rain"
-        ) |> rev() )
+        ) |> rev())
     )
 
   gamma_lab <- c(
@@ -61,11 +59,11 @@ coef_pointrange <- function(data, ld = TRUE, add = FALSE) {
     rain_scaled = expression(Rainfall),
     logh_scaled = expression(Height)
   )
-
   # plot function without title and y-lab
   plot_fun <- function(data) {
     data |>
       ggplot(aes(y = para_fct)) +
+      facet_grid(~ season) +
       geom_vline(xintercept = 0, lty  = 2, color = "grey60") +
       geom_linerange(
         aes(xmin = lwr2_5, xmax = upr97_5),
@@ -80,7 +78,7 @@ coef_pointrange <- function(data, ld = TRUE, add = FALSE) {
         shape = 21,
         size = 3) +
       ylab("") +
-      ggtitle("Effects on mean") +
+    #  ggtitle("Effects on mean") +
       scale_fill_manual(
         values = c(
           "sig" = "#33CCFF",
@@ -89,7 +87,7 @@ coef_pointrange <- function(data, ld = TRUE, add = FALSE) {
           "ns" = "#FFFFFF"
         )) +
       xlab("Standardized coefficients")
-    p1 <- plot_fun(data2) +
-        scale_y_discrete(labels = gamma_lab)
   }
-
+  plot_fun(data) +
+    scale_y_discrete(labels = gamma_lab)
+}
