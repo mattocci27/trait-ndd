@@ -16,11 +16,11 @@ data{
 }
 
 parameters{
+  matrix[K, L] gamma;
   matrix[K, J] z;
   vector[S] phi_raw;
   vector[T] xi_raw;
   vector[M] psi_raw;
-  matrix[K, L] gamma;
   cholesky_factor_corr[K] L_Omega;
   vector<lower=0,upper=pi()/2>[K] tau_unif;
   vector<lower=0,upper=pi()/2>[3] sig_unif;
