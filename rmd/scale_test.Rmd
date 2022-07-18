@@ -1,0 +1,37 @@
+
+```{r}
+library(poilog)
+
+set.seed(123)
+N <- 1000
+cc <- 0.1
+CONA <- rpoilog(N, log(9), 2, keep0 = TRUE)
+CONA_c <- CONA^cc
+
+mean(CONA_c)
+sd(CONA_c)
+
+mean(CONA)
+sd(CONA)
+
+#HETA <- rpoilog(N, log(12), 0.5, keep0 = TRUE)
+CONS <- rnorm(N)
+
+#HETS <- rnorm(N)
+
+beta0 <- 1
+beta1 <- -1
+beta2 <- -1
+
+mu <- beta0 + beta1 * CONS + beta2 * CONA^cc
+
+y <- rnorm(N, mu, 0.1) 
+
+lm(y ~ CONS + CONA_c) |>
+  summary()
+
+lm(y ~ CONS + scale(CONA_c)) |>
+  summary()
+
+
+```
