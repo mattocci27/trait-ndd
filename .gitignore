@@ -1,3 +1,6 @@
+*
+!*/
+!*.*
 bayes.rar
 model/*.rds
 kitematic/*
@@ -64,3 +67,4 @@ rmd/components/
 model/model_inter_opencl*
 
 test.Rda
+*.html
