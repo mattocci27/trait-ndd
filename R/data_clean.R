@@ -1,5 +1,21 @@
-#library(tidyverse)
-# Data
+
+#' @title Just cleaning seedling csv
+seedling_clean <- function(seedling_csv) {
+  seedling_clean <- read_csv(seedling_csv) |>
+    janitor::clean_names()
+  write_csv(seedling_clean, "data/seedling_clean.csv")
+  paste("data/seedling_clean.csv")
+}
+
+#' @title Just cleaning trait csv
+trait_clean <- function(trait_csv) {
+  trait_clean <- read_csv(trait_csv) |>
+    janitor::clean_names() |>
+    rename(sp_code = s_pcode)
+  write_csv(trait_clean, "data/trait_clean.csv")
+  paste("data/trait_clean.csv")
+}
+
 gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
   # seedling_csv <- "data/seedlingmatrix.csv"
   # habitat_csv <- "data/habitat150.csv"
@@ -16,7 +32,7 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
 
   trait <- read_csv(trait_csv) |>
       janitor::clean_names() |>
-      rename(sp = r_pcode) |>
+      rename(sp = s_pcode) |>
       rename(c_mass = c) |>
       rename(n_mass = n) |>
     # remove species starting with Sn
@@ -100,7 +116,7 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
 #targets::tar_load(data_list)
 gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
                         inter = TRUE,
-                        trait_set = c("full", "wd", "pca", "sla_wd_lt")) {
+                        trait_set = c("cn", "wd", "pca", "sla_wd_lt")) {
   seedling <- data_list$seedling |>
     filter(season == {{season}})
   if (habitat != "all") {
@@ -108,9 +124,11 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
     filter(habit3 == {{habitat}})
   }
 
-  if (trait_set == "full") {
+  if (trait_set == "cn") {
     trait <- data_list$trait |>
       dplyr::select(!starts_with("pc")) |>
+      dplyr::select(-wd) |>
+      dplyr::select(-cn) |>
       na.omit()
   } else if (trait_set == "wd") {
     trait <- data_list$trait |>
@@ -222,5 +240,3 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
        x = Xd |> as.matrix(),
        u = Ud)
 }
-
-
