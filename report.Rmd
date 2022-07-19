@@ -49,6 +49,21 @@ targets::tar_load(fit_8_wet_full_noint_diagnostics_model_ind)
 ```
 
 ```{r}
+targets::tar_load(test_dry_summary_model_no_like)
+targets::tar_load(test_wet_summary_model_no_like)
+targets::tar_load(test_dry_diagnostics_model_no_like)
+targets::tar_load(test_wet_diagnostics_model_no_like)
+
+library(tidyverse)
+test_dry_summary_model_no_like |> filter(rhat > 1.1)
+test_wet_summary_model_no_like |> filter(rhat > 1.1)
+
+div_check(test_dry_diagnostics_model_no_like)
+div_check(test_wet_diagnostics_model_no_like)
+
+```
+
+```{r}
 fit_1_dry_full_int_summary_model_ind
 ```
 
