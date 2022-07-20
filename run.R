@@ -1,6 +1,7 @@
 targets::tar_make_clustermq(
-  workers = parallel::detectCores(),
-  reporter = "silent"
+  workers = 48#,
+ # workers = parallel::detectCores()#,
+# reporter = "silent"
 )
 
 # targets::tar_make(
