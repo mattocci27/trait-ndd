@@ -46,16 +46,13 @@ To run analysis:
 # apptainer exec apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 #		--env RENV_PATHS_PREFIX_AUTO=TRUE \
 #	 radian.sif Rscript -e "renv::restore()"
-
 apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
 	radian.sif Rscript run.R
 
-
-apptainer run --env RENV_PATHS_CACHE=/home/mattocci/renv \
+singularity run --env RENV_PATHS_CACHE=/work/home/ac3lm58jvc/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
-	radian.sif bash
-
+	radian.sif
 ```
 
 Requirements:

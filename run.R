@@ -1,5 +1,7 @@
+arg = commandArgs(T)
+
 targets::tar_make_clustermq(
-  workers = 48#,
+  workers = as.numeric(arg[1])
  # workers = parallel::detectCores()#,
 # reporter = "silent"
 )
