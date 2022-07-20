@@ -1,9 +1,8 @@
 ---
-title: Data check
-author: Masatoshi Katabuchi
+title: "Data Exploration"
+author: "Masatoshi Katabuchi"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
-#rmdformats::material
   html_document:
     fig_caption: yes
     theme: spacelab #readable #sandstone #spacelab #flatly
@@ -12,13 +11,13 @@ output:
     toc_depth: 2
     number_sections: TRUE
     toc_float:
-      collapsed: TRUE
-      smooth_scroll: TRUE
-      toc: true
+     collapsed: TRUE
+     smooth_scroll: TRUE
+     toc: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
 
 ```{r, data, include=FALSE}
@@ -26,28 +25,20 @@ library(tidyverse)
 library(GGally)
 library(tictoc)
 library(FactoMineR)
-#install.packages("factoextra")
 library(factoextra)
+library(here)
 theme_set(theme_light())
 
-#seedling_all <- read_csv("../data/seedling_for_drought.csv")
-seedling_all <- read_csv("../data/seedlingmatrix.csv")
-
-#trait0 <- read_csv("./data/BB_SeedlingTrait.csv")
-trait <- read_csv("../data/trait SPcode.csv")
-
-#trait <- trait %>%
-#  select(-Cname) %>%
-#  rename(StemD = WD)
-
+targets::tar_load(seedling_clean_csv)
+targets::tar_load(trait_clean_csv)
+seedling_all <- read_csv(seedling_clean_csv)
+trait <- read_csv(trait_clean_csv)
 ```
 
 missing values in the trait data.
 
 ```{r}
-
 is.na(trait) %>% apply(., 2, sum)
-
 ```
 
 
@@ -55,10 +46,10 @@ is.na(trait) %>% apply(., 2, sum)
 
 ## Demography
 
-```{r demo-cov, cache=TRUE, message=FALSE, warning=FALSE}
-seedling_all %>%
-  dplyr::select(CONS, CONA, HETS, HETA) %>%
-  ggpairs(.)
+```{r demo-cov, message=FALSE, warning=FALSE}
+tic()
+tar_read(demo_cov)
+toc()
 ```
 
 ## Traits
@@ -74,7 +65,7 @@ is.na(trait) %>%
 
 ```{r}
 trait %>%
-  pivot_longer(LDMC:tlp) %>%
+  pivot_longer(ldmc:tlp) %>%
   ggplot(., aes(x = value)) +
   geom_histogram() +
   facet_wrap(~ name, scale = "free")
@@ -82,13 +73,13 @@ trait %>%
 
 ```{r}
 trait2 <- trait %>%
-  mutate(logLA = log(LA)) %>%
-  mutate(logSLA = log(SLA)) %>%
-  mutate(logLT = log(LT)) %>%
-  dplyr::select(-LA, -SLA, -LT)
+  mutate(log_la = log(la)) %>%
+  mutate(log_sla = log(sla)) %>%
+  mutate(log_lt = log(lt)) %>%
+  dplyr::select(-la, -sla, -lt)
 
 trait2 %>%
-  pivot_longer(LDMC:logLT) %>%
+  pivot_longer(ldmc:log_lt) %>%
   ggplot(., aes(x = value)) +
   geom_histogram() +
   facet_wrap(~ name, scale = "free")
@@ -96,39 +87,28 @@ trait2 %>%
 
 ### Pair plot
 
-```{r trait-cov, cache=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=12}
-tic()
-trait2 %>%
-  dplyr::select(-SPcode) %>%
-  ggpairs(trait2)
-toc()
+```{r trait-cov, include=FALSE}
+tar_load(trait_pair_plot)
 ```
+
+![](../figs/trait_pair.png)
+
+We will check if we keep WD and CN in our Bayesian model.
 
 ### PCA
 
 *Original PCA*
 
 ```{r}
-
+tic()
 trait_pca <- prcomp(trait2 %>%
-                    dplyr::select(-SPcode) %>%
+                    dplyr::select(-sp_code) %>%
                     na.omit, scale = TRUE, center = TRUE)
-
 df <- facto_summarize(trait_pca, element = "var",
-                     result = c("coord", "contrib", "cos2"), axes = c(1,2))
+                     result = c("coord", "contrib", "cos2"), axes = c(1, 2))
 colnames(df)[2:3] <-  c("x", "y")
 
-# need this to calc scale
-pca_ind <- get_pca_ind(trait_pca)
-ind <- data.frame(pca_ind$coord[, c(1,2), drop=FALSE], stringsAsFactors = TRUE)
-colnames(ind)<- c("x", "y")
-
-# rescale variable coordinates
-r <- min(
-(max(ind[,"x"])-min(ind[,"x"])/(max(df[,"x"])-min(df[,"x"]))),
-(max(ind[,"y"])-min(ind[,"y"])/(max(df[,"y"])-min(df[,"y"])))
-)
-
+toc()
 ```
 
 ```{r}
@@ -138,8 +118,10 @@ summary(trait_pca)
 - `labels = FALSE`
 - `mean.point = FALSE`
 
-```{r}
+### PCA1-2
 
+```{r}
+tic()
 fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 col.var = "black",
                 geom = "text",
@@ -151,8 +133,10 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 repel = TRUE   # Avoid text overlapping
                 )
 
-
+toc()
 ```
+
+### PCA1-3
 
 ```{r}
 fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
@@ -168,6 +152,8 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 )
 ```
 
+### PCA2-3
+
 ```{r}
 fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 col.var = "black",
@@ -182,39 +168,13 @@ fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
                 )
 ```
 
-```{r}
-
-trait3 <- trait2 %>%
-  dplyr::select(WD, logSLA, logLT) %>%
-  na.omit
-
-trait_pca2 <- prcomp(trait3,
-                  scale = TRUE, center = TRUE)
-
-fviz_pca_biplot(trait_pca2, axes.linetype = "dotted",
-                col.var = "black",
-                geom = "text",
-                alpha.ind = 0.4,
-                geom.ind = "point",
-                addEllipses = FALSE,
-                label = "var",
-                mean.point = FALSE,
-                repel = TRUE   # Avoid text overlapping
-                )
-```
-
-```{r, eval = TRUE}
-qplot(data= trait2, x = logLA, y = tlp)
-```
 
 # Species-level model options
 
-Collinearity will be fine except for stem density and SDMC. We will check the
-following models.
+Collinearity will be fine except for stem density and SDMC (CN and N is also strong but acceptable).
+We will check the following models.
 
-All species
-
-- Full
-- removing StemD from the full model
-- Intercept + PC1 + PC2 + PC3 (66%)
+- Removing StemD from the full model
+- Removing StemD and CN from the full model
+- PC1 + PC2 + PC3 (66%)
 
