@@ -8,7 +8,6 @@ wet_data <- create_stan_tab(fit_2_wet_full_draws_model_ind) |>
   mutate(season = "Rainy")
 
 
-
 library(tidyverse)
 
 draws <- fit_1_dry_full_draws_model_ind |>
@@ -37,15 +36,6 @@ coef_pointrange <- function(data, ld = TRUE, add = FALSE) {
 
   data2 <- data |>
     filter(str_detect(para, "gamma")) |>
-    filter(str_detect(para, "_1$")) |>
-    filter(para != "gamma_1_1") |>
-    mutate(para = factor(para, levels = rev(para))) |>
-    mutate(para_chr = colnames(dry_full$x)[-1]) |>
-    mutate(para_fct = factor(para_chr,
-      levels = c(
-        "logh_scaled",
-        "cons_scaled",
-        "cona_scaled_c",
         "hets_scaled",
         "heta_scaled_c",
         "rain_scaled",

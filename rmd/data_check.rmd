@@ -36,7 +36,7 @@ seedling_all <- read_csv("../data/seedlingmatrix.csv")
 #trait0 <- read_csv("./data/BB_SeedlingTrait.csv")
 trait <- read_csv("../data/trait SPcode.csv")
 
-#trait <- trait %>% 
+#trait <- trait %>%
 #  select(-Cname) %>%
 #  rename(StemD = WD)
 
@@ -110,11 +110,11 @@ toc()
 
 ```{r}
 
-trait_pca <- prcomp(trait2 %>% 
+trait_pca <- prcomp(trait2 %>%
                     dplyr::select(-SPcode) %>%
                     na.omit, scale = TRUE, center = TRUE)
 
-df <- facto_summarize(trait_pca, element = "var", 
+df <- facto_summarize(trait_pca, element = "var",
                      result = c("coord", "contrib", "cos2"), axes = c(1,2))
 colnames(df)[2:3] <-  c("x", "y")
 
@@ -140,67 +140,67 @@ summary(trait_pca)
 
 ```{r}
 
-fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
-                col.var = "black", 
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
+                col.var = "black",
                 geom = "text",
-                alpha.ind = 0.4, 
+                alpha.ind = 0.4,
                 geom.ind = "point",
                 addEllipses = FALSE,
                 label = "var",
                 mean.point = FALSE,
                 repel = TRUE   # Avoid text overlapping
-                ) 
+                )
 
 
 ```
 
 ```{r}
-fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
-                col.var = "black", 
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
+                col.var = "black",
                 geom = "text",
                 axes = c(1, 3),
-                alpha.ind = 0.4, 
+                alpha.ind = 0.4,
                 geom.ind = "point",
                 addEllipses = FALSE,
                 label = "var",
                 mean.point = FALSE,
                 repel = TRUE   # Avoid text overlapping
-                ) 
+                )
 ```
 
 ```{r}
-fviz_pca_biplot(trait_pca, axes.linetype = "dotted", 
-                col.var = "black", 
+fviz_pca_biplot(trait_pca, axes.linetype = "dotted",
+                col.var = "black",
                 geom = "text",
                 axes = c(2, 3),
-                alpha.ind = 0.4, 
+                alpha.ind = 0.4,
                 geom.ind = "point",
                 addEllipses = FALSE,
                 label = "var",
                 mean.point = FALSE,
                 repel = TRUE   # Avoid text overlapping
-                ) 
+                )
 ```
 
 ```{r}
 
-trait3 <- trait2 %>% 
+trait3 <- trait2 %>%
   dplyr::select(WD, logSLA, logLT) %>%
   na.omit
 
 trait_pca2 <- prcomp(trait3,
                   scale = TRUE, center = TRUE)
 
-fviz_pca_biplot(trait_pca2, axes.linetype = "dotted", 
-                col.var = "black", 
+fviz_pca_biplot(trait_pca2, axes.linetype = "dotted",
+                col.var = "black",
                 geom = "text",
-                alpha.ind = 0.4, 
+                alpha.ind = 0.4,
                 geom.ind = "point",
                 addEllipses = FALSE,
                 label = "var",
                 mean.point = FALSE,
                 repel = TRUE   # Avoid text overlapping
-                ) 
+                )
 ```
 
 ```{r, eval = TRUE}
