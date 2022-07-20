@@ -1,0 +1,134 @@
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.7     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+This is cmdstanr version 0.5.2.1
+- CmdStanR documentation and vignettes: mc-stan.org/cmdstanr
+- CmdStan path: /work/home/ac3lm58jvc/.cmdstan/cmdstan-2.29.2
+- CmdStan version: 2.29.2
+Loading required package: future
+
+Attaching package: ‘languageserver’
+
+The following object is masked from ‘package:future’:
+
+    run
+
+CmdStan path set to: /opt/cmdstan/cmdstan-2.29.2
+✔ skip target fit_8_wet_wd_noint_file_model_ind
+✔ skip target fit_6_wet_cn_noint_file_model_ind
+✔ skip target fit_2_wet_cn_int_file_model_ind
+✔ skip target fit_5_dry_cn_noint_file_model_ind
+✔ skip target fit_11_dry_pca_noint_file_model_ind
+✔ skip target fit_4_wet_wd_int_file_model_ind
+✔ skip target fit_12_wet_pca_noint_file_model_ind
+✔ skip target fit_1_dry_cn_int_file_model_ind
+• start target fit_10_wet_pca_int_file_model_ind
+• built target fit_10_wet_pca_int_file_model_ind
+✔ skip target seedling_csv
+✔ skip target seedling_clean_csv
+• start target demo_cov
+✔ skip target fit_3_dry_wd_int_file_model_ind
+✔ skip target fit_7_dry_wd_noint_file_model_ind
+• start target fit_9_dry_pca_int_file_model_ind
+• built target fit_9_dry_pca_int_file_model_ind
+✔ skip target habitat_csv
+✔ skip target trait_csv
+• start target data_list
+✔ skip target trait_clean_csv
+• start target trait_log
+• built target demo_cov
+• built target trait_log
+• start target trait_pair_plot
+• built target data_list
+• start target dry_pca_int
+• start target dry_wd_int
+• start target wet_pca_int
+• start target dry_cn_int
+• start target wet_cn_int
+• start target wet_cn_noint
+• start target wet_wd_int
+• start target dry_wd_noint
+• start target wet_pca_noint
+• start target dry_pca_noint
+• start target dry_cn_noint
+• start target wet_wd_noint
+• built target dry_pca_int
+• start target fit_9_dry_pca_int_data
+• built target fit_9_dry_pca_int_data
+• start target fit_9_dry_pca_int_mcmc_model_ind
+• built target trait_pair_plot
+• start target data_check_html
+• built target data_check_html
+• built target wet_pca_int
+• start target fit_10_wet_pca_int_data
+• built target wet_cn_int
+• start target fit_2_wet_cn_int_data
+• built target dry_wd_int
+• start target fit_3_dry_wd_int_data
+• built target dry_cn_int
+• start target fit_1_dry_cn_int_data
+• built target wet_wd_noint
+• start target fit_8_wet_wd_noint_data
+• built target wet_cn_noint
+• start target fit_6_wet_cn_noint_data
+• built target wet_pca_noint
+• start target fit_12_wet_pca_noint_data
+• built target wet_wd_int
+• start target fit_4_wet_wd_int_data
+• built target dry_pca_noint
+• start target fit_11_dry_pca_noint_data
+• built target dry_cn_noint
+• start target fit_5_dry_cn_noint_data
+• built target dry_wd_noint
+• start target fit_7_dry_wd_noint_data
+• built target fit_10_wet_pca_int_data
+• start target fit_10_wet_pca_int_mcmc_model_ind
+• built target fit_2_wet_cn_int_data
+• start target fit_2_wet_cn_int_mcmc_model_ind
+• built target fit_3_dry_wd_int_data
+• start target fit_3_dry_wd_int_mcmc_model_ind
+• built target fit_1_dry_cn_int_data
+• start target fit_1_dry_cn_int_mcmc_model_ind
+• built target fit_8_wet_wd_noint_data
+• start target fit_8_wet_wd_noint_mcmc_model_ind
+• built target fit_6_wet_cn_noint_data
+• start target fit_6_wet_cn_noint_mcmc_model_ind
+• built target fit_12_wet_pca_noint_data
+• start target fit_12_wet_pca_noint_mcmc_model_ind
+• built target fit_4_wet_wd_int_data
+• start target fit_4_wet_wd_int_mcmc_model_ind
+• built target fit_11_dry_pca_noint_data
+• start target fit_11_dry_pca_noint_mcmc_model_ind
+• built target fit_5_dry_cn_noint_data
+• start target fit_5_dry_cn_noint_mcmc_model_ind
+• built target fit_7_dry_wd_noint_data
+• start target fit_7_dry_wd_noint_mcmc_model_ind
+• built target fit_8_wet_wd_noint_mcmc_model_ind
+• built target fit_6_wet_cn_noint_mcmc_model_ind
+• built target fit_4_wet_wd_int_mcmc_model_ind
+• start target fit_4_wet_wd_int_summary_model_ind
+• start target fit_4_wet_wd_int_diagnostics_model_ind
+• built target fit_4_wet_wd_int_diagnostics_model_ind
+• built target fit_10_wet_pca_int_mcmc_model_ind
+• built target fit_2_wet_cn_int_mcmc_model_ind
+• built target fit_12_wet_pca_noint_mcmc_model_ind
+• built target fit_9_dry_pca_int_mcmc_model_ind
+• built target fit_3_dry_wd_int_mcmc_model_ind
+• start target fit_3_dry_wd_int_diagnostics_model_ind
+• start target fit_3_dry_wd_int_summary_model_ind
+• built target fit_3_dry_wd_int_diagnostics_model_ind
+• built target fit_11_dry_pca_noint_mcmc_model_ind
+• built target fit_7_dry_wd_noint_mcmc_model_ind
+• built target fit_1_dry_cn_int_mcmc_model_ind
+• built target fit_5_dry_cn_noint_mcmc_model_ind
+• built target fit_4_wet_wd_int_summary_model_ind
+• built target fit_3_dry_wd_int_summary_model_ind
+Master: [464.1s 12.2% CPU]; Worker: [avg 57.0% CPU, max 621.6 Mb]
+• end pipeline: 7.753 minutes
+Warning message:
+13 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. 
