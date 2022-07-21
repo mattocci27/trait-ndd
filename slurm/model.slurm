@@ -6,8 +6,8 @@
 #SBATCH --output=log/model.out
 #SBATCH --error=log/model.err
 #SBATCH --cpus-per-task=48
-#SBATCH --mem-per-cpu=1000mb
-#SBATCH --time=1:00:00
+#SBATCH --mem-per-cpu=2000mb
+#SBATCH --time=60:00:00
 
 #Example:
 # sbatch slurm/model.slurm
