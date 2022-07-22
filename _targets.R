@@ -361,10 +361,44 @@ list(
     adapt_delta = 0.9,
     max_treedepth = 15,
     seed = 123),
-
+  # Better not to use `mclapply`. It requries too much RAM
+  tar_target(
+    dry_loo,
+    lapply(
+      list(
+          fit_1_dry_cn_int_mcmc_model_ind = fit_1_dry_cn_int_mcmc_model_ind,
+          fit_3_dry_wd_int_mcmc_model_ind = fit_3_dry_wd_int_mcmc_model_ind,
+          fit_5_dry_cn_noint_mcmc_model_ind = fit_5_dry_cn_noint_mcmc_model_ind,
+          fit_7_dry_wd_noint_mcmc_model_ind = fit_7_dry_wd_noint_mcmc_model_ind,
+          fit_9_dry_pca_int_mcmc_model_ind = fit_9_dry_pca_int_mcmc_model_ind,
+          fit_11_dry_pca_noint_mcmc_model_ind = fit_11_dry_pca_noint_mcmc_model_ind
+        ),
+    \(x)x$loo(cores = parallel::detectCores())
+    )
+  ),
+  tar_target(
+    wet_loo,
+    lapply(
+      list(
+          fit_2_wet_cn_int_mcmc_model_ind = fit_2_wet_cn_int_mcmc_model_ind,
+          fit_4_wet_wd_int_mcmc_model_ind = fit_4_wet_wd_int_mcmc_model_ind,
+          fit_6_wet_cn_noint_mcmc_model_ind = fit_6_wet_cn_noint_mcmc_model_ind,
+          fit_8_wet_wd_noint_mcmc_model_ind = fit_8_wet_wd_noint_mcmc_model_ind,
+          fit_10_wet_pca_int_mcmc_model_ind = fit_10_wet_pca_int_mcmc_model_ind,
+          fit_12_wet_pca_noint_mcmc_model_ind = fit_12_wet_pca_noint_mcmc_model_ind
+        ),
+    \(x)x$loo(cores = parallel::detectCores())
+    )
+  ),
   tar_render(
     data_check_html,
     "docs/data_check.Rmd",
+    output_format = "html_document"
+    #knit_root_dir = here::here()
+  ),
+    tar_render(
+    bayes_check_html,
+    "docs/bayes_check.Rmd",
     output_format = "html_document"
     #knit_root_dir = here::here()
   )

@@ -1,13 +1,13 @@
 # For general run
-targets::tar_make_clustermq(
-  workers = parallel::detectCores(),
-  reporter = "silent"
-)
-
-# For single thread
-# targets::tar_make(
+# targets::tar_make_clustermq(
+#   workers = parallel::detectCores(),
 #   reporter = "silent"
 # )
+
+# For single thread
+targets::tar_make(
+#  reporter = "silent"
+)
 
 # For HPC
 # arg = commandArgs(T)
