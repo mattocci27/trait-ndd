@@ -15,6 +15,7 @@ core
 nohup.out
 .DS_Store
 *.sif
+*.zip
 
 # History files
 .Rhistory
