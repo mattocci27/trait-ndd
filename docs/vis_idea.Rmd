@@ -1,0 +1,62 @@
+---
+Title: "your title"
+author: "Masatoshi Katabuchi"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+     collapsed: TRUE
+     smooth_scroll: TRUE
+     toc: true
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.show = "hold"
+)
+```
+
+```{r}
+library(tidyverse)
+library(ggridges)
+library(here)
+```
+
+```{r}
+set.seed(123)
+n_sp <- 30
+n_each <- 4000
+n_pred <- 11
+
+pred_mean <- rnorm(n_pred, 0, 2)
+m <- mapply(rnorm, n_sp, pred_mean)
+trait <- mapply(rnorm, n_each, as.numeric(m)) |> as.numeric()
+
+sp_m <- rep(seq_len(n_sp), n_pred)
+sp <- rep(sp_m, each = n_each)
+pred_m <- rep(seq_len(n_pred), each = n_sp)
+pred <- rep(pred_m, each = n_each)
+
+dummy <- tibble(trait,
+  sp = paste0("sp", sp),
+  pred = paste0("pred", pred)
+)
+
+ggplot(dummy, aes(x = trait, y = pred, gr = sp)) +
+  geom_density_ridges(
+    alpha = 0.1) +
+  theme_bw()
+
+```

@@ -41,6 +41,8 @@ source(here("R", "stan.R"))
 
 # Model
 
+I compared 12 models for now.
+
 - traits
   - CN: model without CN and WD
   - WD: model without WD
@@ -164,6 +166,25 @@ loo::loo_compare(
   pca_int = wet_loo[[5]],
   pca_noint = wet_loo[[6]])
 ```
+
+# Figs
+
+## Coef
+
+```{r}
+targets::tar_load(fit1_tab)
+targets::tar_load(dry_cn_int)
+
+colnames(dry_cn_int$x)
+
+fit1_tab |>
+  filter(str_detect(para, "gamma")) |>
+  filter(lwr2_5 * upr97_5 > 0)
+#targets::tar_load(fit9_tab)
+# filter(str_detect(para, "gamma_1_")) |>
+# as.data.frame()
+```
+
 
 # Session information
 
