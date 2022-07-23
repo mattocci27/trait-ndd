@@ -396,13 +396,35 @@ list(
     output_format = "html_document"
     #knit_root_dir = here::here()
   ),
-    tar_render(
+  tar_render(
     bayes_check_html,
     "docs/bayes_check.Rmd",
     output_format = "html_document"
     #knit_root_dir = here::here()
-  )
+  ),
+  tar_render(
+    vis_idea_html,
+    "docs/vis_idea.Rmd",
+    output_format = "html_document"
+    #knit_root_dir = here::here()
+  ),
 
+  tar_target(
+    fit1_tab,
+    create_stan_tab(fit_1_dry_cn_int_draws_model_ind)
+  ),
+  tar_target(
+    fit5_tab,
+    create_stan_tab(fit_5_dry_cn_noint_draws_model_ind)
+  ),
+  tar_target(
+    fit9_tab,
+    create_stan_tab(fit_9_dry_pca_int_draws_model_ind)
+  ),
+  tar_target(
+    fit11_tab,
+    create_stan_tab(fit_11_dry_pca_noint_draws_model_ind)
+  )
 
   # tar_target(
   #   dry_full_coef_data,
