@@ -1,5 +1,5 @@
 ---
-Title: "your title"
+title: "Visualization ideas"
 author: "Masatoshi Katabuchi"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
@@ -34,15 +34,17 @@ library(ggridges)
 library(here)
 ```
 
+# Posterior distributions
+
 ```{r}
 set.seed(123)
-n_sp <- 30
+n_sp <- 80
 n_each <- 4000
 n_pred <- 11
 
 pred_mean <- rnorm(n_pred, 0, 2)
 m <- mapply(rnorm, n_sp, pred_mean)
-trait <- mapply(rnorm, n_each, as.numeric(m)) |> as.numeric()
+trait <- mapply(rnorm, n_each, as.numeric(m), 0.5) |> as.numeric()
 
 sp_m <- rep(seq_len(n_sp), n_pred)
 sp <- rep(sp_m, each = n_each)
@@ -52,11 +54,47 @@ pred <- rep(pred_m, each = n_each)
 dummy <- tibble(trait,
   sp = paste0("sp", sp),
   pred = paste0("pred", pred)
+#  density = dnorm(trait, as.numeric(m), 0.5)
 )
 
 ggplot(dummy, aes(x = trait, y = pred, gr = sp)) +
   geom_density_ridges(
-    alpha = 0.1) +
+    scale = 4,
+    fill = NA,
+    colour = rgb(0, 0, 0, 0.3)) +
+  theme_bw()
+
+```
+
+# Predictions
+
+```{r}
+set.seed(123)
+n_sp <- 80
+n_each <- 4000
+n_pred <- 11
+sp <- paste0("sp_", 1:n_sp)
+pred <- paste0("pred_", 1:n_pred)
+
+tmp <- expand_grid(pred, sp)
+mu0 <- rnorm(n_pred, 0, 2)
+mu0 <- rep(mu0, each = n_sp)
+
+sig0 <- abs(rnorm(n_pred, 0.3, 0.03))
+sig0 <- rep(sig0, each = n_sp)
+
+dummy2 <- tmp |>
+  mutate(mu = rnorm(nrow(tmp), mu0, 0.3)) |>
+  mutate(sig = abs(rnorm(nrow(tmp), sig0, 0.01))) |>
+  mutate(lwr = qnorm(0.025, mu, sig)) |>
+  mutate(upr = qnorm(0.975, mu, sig)) |>
+  mutate(x = map2(lwr, upr, seq, length = 80)) |>
+  unnest(x) |>
+  mutate(density = dnorm(x, mu, sig)) |>
+  mutate(density = density / max(density))
+
+ggplot(dummy2, aes(x = x, y = pred, gr = sp)) +
+  geom_ridgeline(aes(height = density), fill = NA, colour = rgb(0, 0, 0, 0.1)) +
   theme_bw()
 
 ```
