@@ -102,5 +102,7 @@ ggplot(dummy2, aes(x = x, y = pred, gr = sp)) +
 ```{r}
 
 a <- rnorm(100)
+b <- density(a)
+plot(b$x, b$y)
 
 ```
