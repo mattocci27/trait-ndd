@@ -32,6 +32,7 @@ knitr::opts_chunk$set(
 
 ```{r}
 library(tidyverse)
+library(ggridges)
 library(here)
 ```
 
@@ -169,22 +170,111 @@ loo::loo_compare(
 
 # Figs
 
-## Coef
+## Dry
 
 ```{r}
 targets::tar_load(fit1_tab)
 targets::tar_load(dry_cn_int)
+x_name <- colnames(dry_cn_int$x)
+u_name <- rownames(dry_cn_int$u)
 
-colnames(dry_cn_int$x)
-
-fit1_tab |>
+fit1_gamma <- fit1_tab |>
   filter(str_detect(para, "gamma")) |>
+  mutate(pred_name = rep(x_name,  length(u_name))) |>
+  mutate(trait_name = rep(u_name, each = length(x_name)))
+
+fit1_gamma |>
   filter(lwr2_5 * upr97_5 > 0)
-#targets::tar_load(fit9_tab)
-# filter(str_detect(para, "gamma_1_")) |>
-# as.data.frame()
+
+fit1_gamma |>
+  filter(trait_name == "intercept")
+
 ```
 
+
+```{r}
+
+n_sp <- ncol(dry_cn_int$u)
+
+fit1_beta <- fit1_tab |>
+  filter(str_detect(para, "beta")) |>
+  mutate(pred_name = rep(x_name,  n_sp)) |>
+  mutate(sp_name = rep(paste0("sp_", 1:n_sp), each = length(x_name)))
+
+targets::tar_load(fit_1_dry_cn_int_draws_model_ind)
+
+tmp <- fit_1_dry_cn_int_draws_model_ind |>
+    janitor::clean_names() |>
+    dplyr::select(contains(c("beta")))
+
+tmp2 <- pivot_longer(tmp, 1:ncol(tmp)) |>
+  group_by(name) |>
+  nest()
+
+tmp3 <- tmp2 |>
+  mutate(value = map(data, unlist)) |>
+  mutate(density_= map(value, density)) |>
+  mutate(x = map(density_, \(x)x$x)) |>
+  mutate(y = map(density_, \(x)x$y)) |>
+  mutate(max_y = map(y, max))
+
+tmp4 <- tmp3 |>
+  ungroup() |>
+  mutate(pred_name = rep(x_name,  n_sp)) |>
+  mutate(sp_name = rep(paste0("sp_", 1:n_sp), each = length(x_name))) |>
+  dplyr::select(name, x, y, max_y, pred_name, sp_name) |>
+  unnest() |>
+  mutate(density = y / max_y)
+
+ggplot(tmp4, aes(x = x, y = pred_name, gr = sp_name)) +
+  geom_ridgeline(aes(height = density), fill = NA, colour = rgb(0, 0, 0, 0.1)) +
+  theme_bw()
+
+```
+
+
+
+## Dry no interaction
+
+```{r}
+targets::tar_load(fit5_tab)
+targets::tar_load(dry_cn_noint)
+x_name2 <- colnames(dry_cn_noint$x)
+u_name2 <- rownames(dry_cn_noint$u)
+
+fit5_tab |>
+  filter(str_detect(para, "gamma")) |>
+  mutate(pred_name = rep(x_name2,  length(u_name2))) |>
+  mutate(trait_name = rep(u_name2, each = length(x_name2))) |>
+  filter(lwr2_5 * upr97_5 > 0)
+
+fit5_tab |>
+  filter(str_detect(para, "gamma")) |>
+  mutate(pred_name = rep(x_name2,  length(u_name2))) |>
+  mutate(trait_name = rep(u_name2, each = length(x_name2))) |>
+  filter(trait_name == "intercept")
+
+```
+
+## Rainy
+
+```{r}
+targets::tar_load(fit2_tab)
+targets::tar_load(wet_cn_int)
+x_name <- colnames(wet_cn_int$x)
+u_name <- rownames(wet_cn_int$u)
+
+fit2_gamma <- fit2_tab |>
+  filter(str_detect(para, "gamma")) |>
+  mutate(pred_name = rep(x_name,  length(u_name))) |>
+  mutate(trait_name = rep(u_name, each = length(x_name)))
+
+fit2_gamma |>
+  filter(lwr2_5 * upr97_5 > 0)
+
+fit2_gamma |>
+  filter(trait_name == "intercept")
+```
 
 # Session information
 

@@ -98,3 +98,9 @@ ggplot(dummy2, aes(x = x, y = pred, gr = sp)) +
   theme_bw()
 
 ```
+
+```{r}
+
+a <- rnorm(100)
+
+```
