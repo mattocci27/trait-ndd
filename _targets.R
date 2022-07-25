@@ -121,314 +121,234 @@ list(
   ),
 
   tar_target(
-    dry_cn_int,
-    gen_stan_dat(data_list, season = "dry", habitat = "all",
-      inter = TRUE, trait_set = "cn"),
+    dry_each_int,
+    gen_stan_dat(data_list, season = "dry",
+      inter = TRUE, trait_set = "each"),
   ),
   tar_target(
-    wet_cn_int,
-    gen_stan_dat(data_list, season = "rainy", habitat = "all",
-      inter = TRUE, trait_set = "cn"),
+    wet_each_int,
+    gen_stan_dat(data_list, season = "rainy",
+      inter = TRUE, trait_set = "each"),
   ),
   tar_target(
-    dry_wd_int,
-    gen_stan_dat(data_list, season = "dry", habitat = "all",
-      inter = TRUE, trait_set = "wd"),
+    dry_each_noint,
+    gen_stan_dat(data_list, season = "dry",
+      inter = FALSE, trait_set = "each"),
   ),
   tar_target(
-    wet_wd_int,
-    gen_stan_dat(data_list, season = "rainy", habitat = "all",
-      inter = TRUE, trait_set = "wd"),
+    wet_each_noint,
+    gen_stan_dat(data_list, season = "rainy",
+      inter = FALSE, trait_set = "each"),
   ),
   tar_target(
     dry_pca_int,
-    gen_stan_dat(data_list, season = "dry", habitat = "all",
+    gen_stan_dat(data_list, season = "dry",
       inter = TRUE, trait_set = "pca"),
   ),
   tar_target(
     wet_pca_int,
-    gen_stan_dat(data_list, season = "rainy", habitat = "all",
+    gen_stan_dat(data_list, season = "rainy",
       inter = TRUE, trait_set = "pca"),
   ),
   tar_target(
-    dry_cn_noint,
-    gen_stan_dat(data_list, season = "dry", habitat = "all",
-      inter = FALSE, trait_set = "cn"),
-  ),
-  tar_target(
-    wet_cn_noint,
-    gen_stan_dat(data_list, season = "rainy", habitat = "all",
-      inter = FALSE, trait_set = "cn"),
-  ),
-  tar_target(
-    dry_wd_noint,
-    gen_stan_dat(data_list, season = "dry", habitat = "all",
-      inter = FALSE, trait_set = "wd"),
-  ),
-  tar_target(
-    wet_wd_noint,
-    gen_stan_dat(data_list, season = "rainy", habitat = "all",
-      inter = FALSE, trait_set = "wd"),
-  ),
-  tar_target(
     dry_pca_noint,
-    gen_stan_dat(data_list, season = "dry", habitat = "all",
+    gen_stan_dat(data_list, season = "dry",
       inter = FALSE, trait_set = "pca"),
   ),
   tar_target(
     wet_pca_noint,
-    gen_stan_dat(data_list, season = "rainy", habitat = "all",
+    gen_stan_dat(data_list, season = "rainy",
       inter = FALSE, trait_set = "pca"),
   ),
 
   tar_stan_mcmc(
-    fit_1_dry_cn_int,
+    fit_1_dry_each_int,
     "stan/model_ind.stan",
-    data = dry_cn_int,
+    data = dry_each_int,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_2_wet_cn_int,
+    fit_2_wet_each_int,
     "stan/model_ind.stan",
-    data = wet_cn_int,
+    data = wet_each_int,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_3_dry_wd_int,
+    fit_3_dry_each_noint,
     "stan/model_ind.stan",
-    data = dry_wd_int,
+    data = dry_each_noint,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_4_wet_wd_int,
+    fit_4_wet_each_noint,
     "stan/model_ind.stan",
-    data = wet_wd_int,
+    data = wet_each_noint,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_5_dry_cn_noint,
-    "stan/model_ind.stan",
-    data = dry_cn_noint,
-    refresh = 0,
-    chains = 4,
-    parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
-    max_treedepth = 15,
-    seed = 123),
-  tar_stan_mcmc(
-    fit_6_wet_cn_noint,
-    "stan/model_ind.stan",
-    data = wet_cn_noint,
-    refresh = 0,
-    chains = 4,
-    parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
-    max_treedepth = 15,
-    seed = 123),
-  tar_stan_mcmc(
-    fit_7_dry_wd_noint,
-    "stan/model_ind.stan",
-    data = dry_wd_noint,
-    refresh = 0,
-    chains = 4,
-    parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
-    max_treedepth = 15,
-    seed = 123),
-  tar_stan_mcmc(
-    fit_8_wet_wd_noint,
-    "stan/model_ind.stan",
-    data = wet_wd_noint,
-    refresh = 0,
-    chains = 4,
-    parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
-    max_treedepth = 15,
-    seed = 123),
-  tar_stan_mcmc(
-    fit_9_dry_pca_int,
+    fit_5_dry_pca_int,
     "stan/model_ind.stan",
     data = dry_pca_int,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_10_wet_pca_int,
+    fit_6_wet_pca_int,
     "stan/model_ind.stan",
     data = wet_pca_int,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_11_dry_pca_noint,
+    fit_7_dry_pca_noint,
     "stan/model_ind.stan",
     data = dry_pca_noint,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
   tar_stan_mcmc(
-    fit_12_wet_pca_noint,
+    fit_8_wet_pca_noint,
     "stan/model_ind.stan",
     data = wet_pca_noint,
     refresh = 0,
     chains = 4,
     parallel_chains = getOption("mc.cores", 4),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    draws = TRUE,
-    diagnostics = TRUE,
-    summary = TRUE,
-    adapt_delta = 0.9,
+    iter_warmup = 1,
+    iter_sampling = 1,
+    draws = FALSE,
+    diagnostics = FALSE,
+    summary = FALSE,
+    adapt_delta = 0.95,
     max_treedepth = 15,
-    seed = 123),
-  # Better not to use `mclapply`. It requries too much RAM
-  tar_target(
-    dry_loo,
-    lapply(
-      list(
-          fit_1_dry_cn_int_mcmc_model_ind = fit_1_dry_cn_int_mcmc_model_ind,
-          fit_3_dry_wd_int_mcmc_model_ind = fit_3_dry_wd_int_mcmc_model_ind,
-          fit_5_dry_cn_noint_mcmc_model_ind = fit_5_dry_cn_noint_mcmc_model_ind,
-          fit_7_dry_wd_noint_mcmc_model_ind = fit_7_dry_wd_noint_mcmc_model_ind,
-          fit_9_dry_pca_int_mcmc_model_ind = fit_9_dry_pca_int_mcmc_model_ind,
-          fit_11_dry_pca_noint_mcmc_model_ind = fit_11_dry_pca_noint_mcmc_model_ind
-        ),
-    \(x)x$loo(cores = parallel::detectCores())
-    )
-  ),
-  tar_target(
-    wet_loo,
-    lapply(
-      list(
-          fit_2_wet_cn_int_mcmc_model_ind = fit_2_wet_cn_int_mcmc_model_ind,
-          fit_4_wet_wd_int_mcmc_model_ind = fit_4_wet_wd_int_mcmc_model_ind,
-          fit_6_wet_cn_noint_mcmc_model_ind = fit_6_wet_cn_noint_mcmc_model_ind,
-          fit_8_wet_wd_noint_mcmc_model_ind = fit_8_wet_wd_noint_mcmc_model_ind,
-          fit_10_wet_pca_int_mcmc_model_ind = fit_10_wet_pca_int_mcmc_model_ind,
-          fit_12_wet_pca_noint_mcmc_model_ind = fit_12_wet_pca_noint_mcmc_model_ind
-        ),
-    \(x)x$loo(cores = parallel::detectCores())
-    )
-  ),
-  tar_render(
-    data_check_html,
-    "docs/data_check.Rmd",
-    output_format = "html_document"
-    #knit_root_dir = here::here()
-  ),
-  tar_render(
-    bayes_check_html,
-    "docs/bayes_check.Rmd",
-    output_format = "html_document"
-    #knit_root_dir = here::here()
-  ),
-  tar_render(
-    vis_idea_html,
-    "docs/vis_idea.Rmd",
-    output_format = "html_document"
-    #knit_root_dir = here::here()
-  ),
+    seed = 123)
+  # # Better not to use `mclapply`. It requries too much RAM
+  # tar_target(
+  #   dry_loo,
+  #   lapply(
+  #     list(
+  #         fit_1_dry_cn_int_mcmc_model_ind = fit_1_dry_cn_int_mcmc_model_ind,
+  #         fit_3_dry_wd_int_mcmc_model_ind = fit_3_dry_wd_int_mcmc_model_ind,
+  #         fit_5_dry_cn_noint_mcmc_model_ind = fit_5_dry_cn_noint_mcmc_model_ind,
+  #         fit_7_dry_wd_noint_mcmc_model_ind = fit_7_dry_wd_noint_mcmc_model_ind,
+  #         fit_9_dry_pca_int_mcmc_model_ind = fit_9_dry_pca_int_mcmc_model_ind,
+  #         fit_11_dry_pca_noint_mcmc_model_ind = fit_11_dry_pca_noint_mcmc_model_ind
+  #       ),
+  #   \(x)x$loo(cores = parallel::detectCores())
+  #   )
+  # ),
+  # tar_target(
+  #   wet_loo,
+  #   lapply(
+  #     list(
+  #         fit_2_wet_cn_int_mcmc_model_ind = fit_2_wet_cn_int_mcmc_model_ind,
+  #         fit_4_wet_wd_int_mcmc_model_ind = fit_4_wet_wd_int_mcmc_model_ind,
+  #         fit_6_wet_cn_noint_mcmc_model_ind = fit_6_wet_cn_noint_mcmc_model_ind,
+  #         fit_8_wet_wd_noint_mcmc_model_ind = fit_8_wet_wd_noint_mcmc_model_ind,
+  #         fit_10_wet_pca_int_mcmc_model_ind = fit_10_wet_pca_int_mcmc_model_ind,
+  #         fit_12_wet_pca_noint_mcmc_model_ind = fit_12_wet_pca_noint_mcmc_model_ind
+  #       ),
+  #   \(x)x$loo(cores = parallel::detectCores())
+  #   )
+  # ),
+  # tar_render(
+  #   data_check_html,
+  #   "docs/data_check.Rmd",
+  #   output_format = "html_document"
+  #   #knit_root_dir = here::here()
+  # ),
+  # tar_render(
+  #   bayes_check_html,
+  #   "docs/bayes_check.Rmd",
+  #   output_format = "html_document"
+  #   #knit_root_dir = here::here()
+  # ),
+  # tar_render(
+  #   vis_idea_html,
+  #   "docs/vis_idea.Rmd",
+  #   output_format = "html_document"
+  #   #knit_root_dir = here::here()
+  # ),
 
-  tar_target(
-    fit1_tab,
-    create_stan_tab(fit_1_dry_cn_int_draws_model_ind)
-  ),
-  tar_target(
-    fit5_tab,
-    create_stan_tab(fit_5_dry_cn_noint_draws_model_ind)
-  ),
-  tar_target(
-    fit9_tab,
-    create_stan_tab(fit_9_dry_pca_int_draws_model_ind)
-  ),
-  tar_target(
-    fit11_tab,
-    create_stan_tab(fit_11_dry_pca_noint_draws_model_ind)
-  ),
-  tar_target(
-    fit2_tab,
-    create_stan_tab(fit_2_wet_cn_int_draws_model_ind)
-  )
+  # tar_target(
+  #   fit1_tab,
+  #   create_stan_tab(fit_1_dry_cn_int_draws_model_ind)
+  # ),
+  # tar_target(
+  #   fit5_tab,
+  #   create_stan_tab(fit_5_dry_cn_noint_draws_model_ind)
+  # ),
+  # tar_target(
+  #   fit9_tab,
+  #   create_stan_tab(fit_9_dry_pca_int_draws_model_ind)
+  # ),
+  # tar_target(
+  #   fit11_tab,
+  #   create_stan_tab(fit_11_dry_pca_noint_draws_model_ind)
+  # ),
+  # tar_target(
+  #   fit2_tab,
+  #   create_stan_tab(fit_2_wet_cn_int_draws_model_ind)
+  # )
 
   # tar_target(
   #   dry_full_coef_data,
@@ -455,9 +375,5 @@ list(
   #   create_stan_tab(fit_6_wet_pca_int_draws_model_ind)
   # ),
 
-  # tar_render(
-  #   report,
-  #   "report.Rmd"
-  # )
 
 )
