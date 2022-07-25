@@ -424,6 +424,10 @@ list(
   tar_target(
     fit11_tab,
     create_stan_tab(fit_11_dry_pca_noint_draws_model_ind)
+  ),
+  tar_target(
+    fit2_tab,
+    create_stan_tab(fit_2_wet_cn_int_draws_model_ind)
   )
 
   # tar_target(
