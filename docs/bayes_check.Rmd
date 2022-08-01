@@ -268,6 +268,10 @@ fit8_gamma |>
 
 ## Each trait with interactions
 
+```{r, include=FALSE}
+targets::tar_load(coef_trait_int_plot)
+```
+
 ![](../figs/coef_trait_int.png)
 
 
@@ -276,9 +280,17 @@ fit8_gamma |>
 Let's forget about this visualizaiton.
 It's not easy to understand.
 
+```{r, include=FALSE}
+targets::tar_load(test_ridge_plot)
+```
+
 ![](../figs/test_ridge.png)
 
 ## Each trait without interactions
+
+```{r, include=FALSE}
+targets::tar_load(coef_trait_noint_plot)
+```
 
 ![](../figs/coef_trait_noint.png)
 

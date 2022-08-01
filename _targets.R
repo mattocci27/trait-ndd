@@ -365,7 +365,7 @@ list(
   ),
   tar_target(
     fit2_gamma,
-    create_gamma_tab(fit1_tab, wet_each_int)
+    create_gamma_tab(fit2_tab, wet_each_int)
   ),
   tar_target(
     fit3_gamma,
@@ -457,6 +457,5 @@ list(
   #   wet_pca_coef_data,
   #   create_stan_tab(fit_6_wet_pca_int_draws_model_ind)
   # ),
-
 
 )
