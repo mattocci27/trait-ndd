@@ -1,10 +1,10 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-bayes_check_html|stem|b7f49b5a29ba20fb|b871fe8fb1d649bc|2940ff3cbd79f8c8|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19205.4179493835s|8aa2702c6561d321|1550171|file|local|vector|||2.081||
+bayes_check_html|stem|c07e8c55e752d984|3ccb000fe1b51660|7a4491885c03f35f|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19205.4219393678s|5c22d0fff7f48f34|1550711|file|local|vector|||2.151||
 coef_pointrange|function|d7825b4c5290191b|||||||||||||||
 coef_pointrange0|function|a2c9555e8345670b|||||||||||||||
 coef_ridge|function|9114335e7d5b95e8|||||||||||||||
 coef_ridge_plot|function|9114335e7d5b95e8|||||||||||||||
-coef_trait_int_plot|stem|beccf815cebe9311|0816c8d215220a43|c8eb94c01bb74b5c|800819603|figs/coef_trait_int.png*figs/coef_trait_int.pdf|t19205.41696568s|ea9b20eee620ce75|127310|file|local|vector|||0.598||
+coef_trait_int_plot|stem|4ecee59d21d101e5|0816c8d215220a43|29498bd083ac3205|800819603|figs/coef_trait_int.png*figs/coef_trait_int.pdf|t19205.4201529215s|ce4ea591f8335368|127653|file|local|vector|||0.323||
 coef_trait_noint_plot|stem|d2c55ed682736f66|b63f3d6f48de2d18|8537d4921dc4478b|-1194131693|figs/coef_trait_noint.png*figs/coef_trait_noint.pdf|t19205.4169664207s|91dc7d6e3484ef7f|86030|file|local|vector|||0.525||
 create_gamma_tab|function|79194e3713edd654|||||||||||||||
 create_stan_tab|function|5b370bbd5c73521c|||||||||||||||
@@ -66,7 +66,7 @@ fit_8_wet_pca_noint_mcmc_model_ind|stem|39fdb0acd47f6144|47da62b3cf14f9e8|07ec25
 fit_8_wet_pca_noint_summary_model_ind|stem|d50e236ef872084a|2b3081ce65075eb8|e981c3161d95414b|1251164703||t19205.124257613s|9e2eea12750257a4|3523017|fst_tbl|local|vector|||290.687|The ESS has been capped to avoid unstable estimates.|
 fit1_gamma|stem|27e0be3ff7042a8a|7b2f9b7f0e68133d|dba9b733655f255b|-1084346080||t19205.3538979025s|8956b6d5f7a965e3|5783|rds|local|vector|||0.11||
 fit1_tab|stem|85bcc55189feeb83|689c9016409fbe88|459dd96a50974f0d|-423509467||t19205.1544862741s|d61f9cf7ee2dd8b8|40878|rds|local|vector|||14.888||
-fit2_gamma|stem|27e0be3ff7042a8a|3f9f42f310780812|c8a8bd27e3fbca3d|1734244057||t19205.353911653s|8956b6d5f7a965e3|5783|rds|local|vector|||0.112||
+fit2_gamma|stem|3b014301aee23c5e|a1ce8830c17513c0|8a21e97f065fcd3d|1734244057||t19205.4201469958s|7fbc201b73ddd265|5761|rds|local|vector|||0.115||
 fit2_tab|stem|3d524838d97f28f7|3db7575ec59a5ebd|ebef7d11ab313f0d|-1967150068||t19205.1563416507s|363748cf73940e40|41043|rds|local|vector|||13.827||
 fit3_gamma|stem|ce226a27523c28a6|ebb3885ade55cc9a|199e88a8c28cb7b7|1767905543||t19205.3539004026s|e4e9d95f5c2d9ef6|3827|rds|local|vector|||0.007||
 fit3_tab|stem|03027e292a6a1e34|5a35e9a2c6332b45|3ac485410e54b5ee|1265489317||t19205.1586826903s|c15d6e8fb3544c63|26572|rds|local|vector|||14.865||
