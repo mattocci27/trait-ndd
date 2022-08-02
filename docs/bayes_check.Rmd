@@ -67,6 +67,7 @@ Stan code.
 All the models have converged (Rhat < 1.1).
 
 ```{r}
+targets::tar_load(fit_0_dry_each_oneint_summary_model_ind)
 targets::tar_load(fit_1_dry_each_int_summary_model_ind)
 targets::tar_load(fit_2_wet_each_int_summary_model_ind)
 targets::tar_load(fit_3_dry_each_noint_summary_model_ind)
@@ -79,6 +80,7 @@ targets::tar_load(fit_8_wet_pca_noint_summary_model_ind)
 
 
 ```{r}
+fit_0_dry_each_oneint_summary_model_ind |> filter(rhat > 1.1)
 fit_1_dry_each_int_summary_model_ind |> filter(rhat > 1.1)
 fit_2_wet_each_int_summary_model_ind |> filter(rhat > 1.1)
 fit_3_dry_each_noint_summary_model_ind |> filter(rhat > 1.1)
@@ -93,6 +95,7 @@ fit_8_wet_pca_noint_summary_model_ind |> filter(rhat > 1.1)
 # Divergent transitions
 
 ```{r}
+targets::tar_load(fit_0_dry_each_oneint_diagnostics_model_ind)
 targets::tar_load(fit_1_dry_each_int_diagnostics_model_ind)
 targets::tar_load(fit_2_wet_each_int_diagnostics_model_ind)
 targets::tar_load(fit_3_dry_each_noint_diagnostics_model_ind)
@@ -107,6 +110,7 @@ There were a few divergent transitions for model 8 (PCA with interactions for Ra
 I could increase `adapt_delta ` later but the current results look OK.
 
 ```{r}
+div_check(fit_0_dry_each_oneint_diagnostics_model_ind)
 div_check(fit_1_dry_each_int_diagnostics_model_ind)
 div_check(fit_2_wet_each_int_diagnostics_model_ind)
 div_check(fit_3_dry_each_noint_diagnostics_model_ind)
@@ -128,9 +132,10 @@ Removing interactions (each_noint) is better for single traits models.
 targets::tar_load(dry_loo)
 loo::loo_compare(
   dry_loo[[1]],
-  each_noint = dry_loo[[2]],
-  pca_int = dry_loo[[3]],
-  pca_noint = dry_loo[[4]])
+  each_int = dry_loo[[2]],
+  each_noint = dry_loo[[3]],
+  pca_int = dry_loo[[4]],
+  pca_noint = dry_loo[[5]])
 ```
 
 ## Rainy seasons
@@ -161,6 +166,20 @@ fit1_gamma |>
   filter(lwr2_5 * upr97_5 > 0)
 
 fit1_gamma |>
+  filter(trait_name == "intercept")
+```
+
+## Dry one interaction
+
+```{r}
+targets::tar_load(fit0_tab)
+targets::tar_load(dry_each_oneint)
+fit0_gamma <- create_gamma_tab(fit0_tab, dry_each_oneint)
+
+fit0_gamma |>
+  filter(lwr2_5 * upr97_5 > 0)
+
+fit0_gamma |>
   filter(trait_name == "intercept")
 ```
 
@@ -267,6 +286,10 @@ fit8_gamma |>
 # Figs
 
 ## Each trait with interactions
+
+Thick and thin lines indicate 90% and 95% credible intervals, respectively.
+Circles show posterior means of coefficients.
+Filled circles indicate significant effects and open circles indicate non-significance effects.
 
 ```{r, include=FALSE}
 targets::tar_load(coef_trait_int_plot)

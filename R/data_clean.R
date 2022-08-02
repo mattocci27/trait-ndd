@@ -112,7 +112,9 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
 gen_stan_dat <- function(data_list,
                         season = "dry",
                         inter = TRUE,
-                        trait_set = c("each", "pca")) {
+                        trait_set = c("each", "pca"),
+                        one_inter = FALSE
+                        ) {
 
   # targets::tar_load(data_list)
   seedling <- data_list$seedling
@@ -198,6 +200,18 @@ gen_stan_dat <- function(data_list,
                                  "hets_scaled",
                                  "heta_scaled_c",
                                  "rain_scaled")])
+  }
+
+  if (one_inter) {
+    Xd <- cbind(rep(1, nrow(seedling_dat)),
+                seedling_dat[,c( "logh_scaled",
+                                 "cons_scaled",
+                                 "cona_scaled_c",
+                                 "hets_scaled",
+                                 "heta_scaled_c",
+                                 "rain_scaled",
+                                 "cona_rain"
+                                 )])
   }
 
   colnames(Xd)[1] <- "int"

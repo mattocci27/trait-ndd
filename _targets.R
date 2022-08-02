@@ -123,6 +123,11 @@ list(
   ),
 
   tar_target(
+    dry_each_oneint,
+    gen_stan_dat(data_list, season = "dry",
+      inter = TRUE, trait_set = "each", one_inter = TRUE),
+  ),
+  tar_target(
     dry_each_int,
     gen_stan_dat(data_list, season = "dry",
       inter = TRUE, trait_set = "each"),
@@ -163,6 +168,21 @@ list(
       inter = FALSE, trait_set = "pca"),
   ),
 
+  tar_stan_mcmc(
+    fit_0_dry_each_oneint,
+    "stan/model_ind.stan",
+    data = dry_each_oneint,
+    refresh = 0,
+    chains = 4,
+    parallel_chains = getOption("mc.cores", 4),
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    draws = TRUE,
+    diagnostics = TRUE,
+    summary = TRUE,
+    adapt_delta = 0.95,
+    max_treedepth = 15,
+    seed = 123),
   tar_stan_mcmc(
     fit_1_dry_each_int,
     "stan/model_ind.stan",
@@ -288,6 +308,7 @@ list(
     dry_loo,
     lapply(
       list(
+          fit_0_dry_each_oneint_mcmc_model_ind = fit_0_dry_each_oneint_mcmc_model_ind,
           fit_1_dry_each_int_mcmc_model_ind = fit_1_dry_each_int_mcmc_model_ind,
           fit_3_dry_each_noint_mcmc_model_ind = fit_3_dry_each_noint_mcmc_model_ind,
           fit_5_dry_pca_int_mcmc_model_ind = fit_5_dry_pca_int_mcmc_model_ind,
@@ -327,6 +348,10 @@ list(
   #   #knit_root_dir = here::here()
   # ),
 
+  tar_target(
+    fit0_tab,
+    create_stan_tab(fit_0_dry_each_oneint_draws_model_ind)
+  ),
   tar_target(
     fit1_tab,
     create_stan_tab(fit_1_dry_each_int_draws_model_ind)
