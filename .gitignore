@@ -71,3 +71,4 @@ test.Rda
 *.html
 
 figs/*
+*.pdf
