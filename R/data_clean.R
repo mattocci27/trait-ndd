@@ -60,6 +60,7 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
     summarize(n = n()) |>
     filter(n >= n_ab)
 
+# Eventually we didn't use habitat
   habitat <- read_csv(habitat_csv) |>
     janitor::clean_names()
 # seedling data for abundance >= n_ab
@@ -109,13 +110,20 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
 }
 
 #targets::tar_load(data_list)
+#' @title Create data list for stan
+#' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
 gen_stan_dat <- function(data_list,
                         season = "dry",
                         inter = TRUE,
                         trait_set = c("each", "pca"),
-                        one_inter = FALSE
+                        one_inter = FALSE,
+                        scaling_within_seasons = FALSE
                         ) {
 
+  if (scaling_within_seasons) {
+    seedling <- data_list$seedling |>
+      filter(season == {{season}})
+  }
   # targets::tar_load(data_list)
   seedling <- data_list$seedling
 
@@ -165,7 +173,8 @@ gen_stan_dat <- function(data_list,
 
   cc <- which(lik == max(lik)) / 100
 
-  # Scaling should be done across seasons
+  # Scaling will be done across seasons if (!scale_within_seasons)
+  # Scaling will be done within seasons if (scale_within_seasons)
   seedling_dat <- seedling_dat |>
     mutate(cons_scaled = scale(cons) |> as.numeric()) |>
     mutate(hets_scaled = scale(hets) |> as.numeric()) |>
