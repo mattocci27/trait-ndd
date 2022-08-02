@@ -122,6 +122,7 @@ list(
     gen_seedling(seedling_csv, trait_csv, habitat_csv, n_ab = 50)
   ),
 
+  # scaling across seasons
   tar_target(
     dry_each_oneint,
     gen_stan_dat(data_list, season = "dry",
@@ -166,6 +167,20 @@ list(
     wet_pca_noint,
     gen_stan_dat(data_list, season = "rainy",
       inter = FALSE, trait_set = "pca"),
+  ),
+
+  # scaling within seasons
+  tar_target(
+    dry_each_int_s,
+    gen_stan_dat(data_list, season = "dry",
+      inter = TRUE, trait_set = "each",
+      scaling_within_seasons = TRUE),
+  ),
+  tar_target(
+    wet_each_int_s,
+    gen_stan_dat(data_list, season = "wet",
+      inter = TRUE, trait_set = "each",
+      scaling_within_seasons = TRUE),
   ),
 
   tar_stan_mcmc(
