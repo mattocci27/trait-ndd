@@ -1,0 +1,435 @@
+% Options for packages loaded elsewhere
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL /var/folders/1v/_ypjfm2d71bf8nf01_2jk2t00000gn/T/D7UPTqFFGF/latexdiff-vc-c31e6ea2/ms/methods.tex   Tue Aug  2 15:40:43 2022
+%DIF ADD ms/methods.tex                                                                                     Tue Aug  2 17:49:44 2022
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  12pt,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage{xr}
+\usepackage[default]{sourcesanspro}
+\usepackage{sourcecodepro}
+\usepackage{lineno}
+\linenumbers
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Fig.}
+\else
+  \newcommand\figurename{Fig.}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF HYPERREF PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+\ifdefined\Shaded\DIFdelbegin %DIFDELCMD < \renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, enhanced, sharp corners, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, interior hidden]}{\end{tcolorbox}}%%%
+\DIFdelend \DIFaddbegin \renewenvironment{Shaded}{\begin{tcolorbox}[breakable, borderline west={3pt}{0pt}{shadecolor}, enhanced, sharp corners, interior hidden, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\DIFaddend \fi
+
+\hypertarget{model}{%
+\section{Model}\label{model}}
+
+We modeled the seedling survival for the dry and rainy seasons
+separately. Since the effect of tree neighbors on seedling survival is
+nonlinear on a logistic scale (\protect\hyperlink{ref-Detto2019}{Detto
+\emph{et al.} 2019}), we performed a grid-search for the scaling
+parameter \emph{c} between 0 and 1 in 0.01 increments that maximized the
+likelihood of the following survival model,
+
+\[
+\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c,
+\]
+
+where \(p_i\) is the individual survival probability in the \DIFdelbegin \DIFdel{ith }\DIFdelend \DIFaddbegin \emph{\DIFadd{i}}\DIFadd{th
+}\DIFaddend census interval, and \(Z_1\) and \(Z_2\) are distance-weighted sums of
+basal areas of conspecifics and heterospecifics respectively. We found
+that \(c\) = \DIFdelbegin \DIFdel{0.24 }\DIFdelend \DIFaddbegin \DIFadd{0.27 }\DIFaddend for the dry season and \(c\) = \DIFdelbegin \DIFdel{0.27 }\DIFdelend \DIFaddbegin \DIFadd{0.24 }\DIFaddend for the rainy
+season were the best estimates for our dataset.
+
+We built Bayesian hierarchical models that include variation among
+species in the effects of conspecific and heterospecific neighbours, and
+rainfall on survival. Survival (\(s\)) of seedling record \emph{i} of
+individual \emph{m} for species \emph{j} in census \emph{t} in plot
+\emph{p} was modeled using the Bernoulli distribution (\(\mathcal{B}\)):
+
+\[
+s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, m, t, p}),
+\]
+
+\[
+\mathrm{logit}(p_{i,j,m,t,p}) = \DIFdelbegin %DIFDELCMD < \boldsymbol{\beta_{j}} %%%
+\DIFdel{\cdot }\DIFdelend \boldsymbol{x_{i}} \DIFaddbegin \DIFadd{\cdot }\boldsymbol{\beta_{j}} \DIFaddend + \phi_p + \omega_t + \psi_m,
+\]
+
+where
+\DIFdelbegin \DIFdel{\(\boldsymbol{\beta_{j}} = \left[\beta_{j,1}, \beta_{j,2}, \ldots, \beta_{j,K} \right]\)
+}\DIFdelend \DIFaddbegin \DIFadd{\(\boldsymbol{\beta_{j}} = \left[\beta_{1,j}, \beta_{2,j}, \ldots, \beta_{K,j} \right]\)
+}\DIFaddend is the coefficient \DIFaddbegin \DIFadd{row }\DIFaddend \emph{K}-vector for species \emph{j}, \emph{K} is
+the number of predictors for an individual seedling,
+\DIFdelbegin \DIFdel{\(\boldsymbol{x_i} = \left[x_{1,i},x _{2,i}, \ldots,x_{K,i} \right]\) is
+the row }\DIFdelend \DIFaddbegin \DIFadd{\(\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]\) is
+the }\DIFaddend vector of predictors of size \emph{K} for an individual seedling,
+\(\phi_p\) is the random effect for seedling plots, \(\omega_t\) is the
+random effect for different census, and \(\psi_m\) is the random effect
+for the repeated observations of the same individuals (note that
+\(\cdot\) denotes dot product). The set of predictor variables
+(\(\boldsymbol{x_i}\)) includes intercept, log of seedling heights,
+rainfall, densities of conspecific (\emph{ConS}) and heterospecific
+(\emph{HetS}) seedlings, densities of conspecific (\emph{ConA}) and
+heterospecific (\emph{HetA}) trees that are scaled by \DIFdelbegin \DIFdel{0.24 }\DIFdelend \DIFaddbegin \DIFadd{0.27 }\DIFaddend for the dry
+season or \DIFdelbegin \DIFdel{0.27 }\DIFdelend \DIFaddbegin \DIFadd{0.24 }\DIFaddend for the rainy season, and the interactions of rains with
+\emph{ConS}, with \emph{HetS}, with \emph{ConA} and with \emph{HetA}.
+
+In the species-level regression, the \DIFaddbegin \DIFadd{row }\DIFaddend vector of coefficients
+(\(\boldsymbol{\beta_{1-K}}\)) of each species \emph{j} were assumed to
+have a multivariate normal distribution through the Cholesky
+factorization (\protect\hyperlink{ref-StanDevelopmentTeam2021}{Stan
+Development Team 2021}),
+
+\[
+\boldsymbol{\beta_j} = \DIFdelbegin %DIFDELCMD < \boldsymbol{u_j} %%%
+\DIFdel{\cdot }\DIFdelend \boldsymbol{\gamma_k} \DIFaddbegin \DIFadd{\cdot }\boldsymbol{u_j} \DIFaddend + \DIFdelbegin \DIFdel{(}\DIFdelend \mathrm{diag}(\boldsymbol{\sigma})\cdot \boldsymbol{L} \cdot \boldsymbol{z}\DIFdelbegin \DIFdel{)^\top}\DIFdelend ,
+\]
+
+where
+\DIFdelbegin \DIFdel{\(\boldsymbol{u_{j}} = \left[u_{j,1}, u_{j,2}, \ldots, u_{j,L} \right]\)
+is the }\DIFdelend \DIFaddbegin \DIFadd{\(\boldsymbol{u_{j}} = \left[u_{1,j}, u_{2,j}, \ldots, u_{L,j} \right]\)
+is the row }\DIFaddend vector of predictors of size \emph{L} for species \emph{j},
+\emph{L} is the number of predictors for each species (i.e., the number
+of traits including an intercept),
+\DIFdelbegin \DIFdel{\(\boldsymbol{\gamma_k} = \left[\gamma_{1,k}, \gamma_{2,k}, \ldots, \gamma_{L,k} \right]\)
+is the the }\DIFdelend \DIFaddbegin \DIFadd{\(\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]\)
+is the }\DIFaddend coefficient \emph{L}-vector for \emph{k}th predictor in the
+individual-level regression, \(\mathrm{diag}(\boldsymbol{\sigma})\) is
+the diagonal matrix with the diagonal vector of coefficient scales,
+\(\boldsymbol{L}\) is the Cholesky factor of the original correlation
+matrix which can be derived using a Cholesky decomposition for the
+covariance matrix of the original multivariate normal distribution,
+\(\boldsymbol{z}\) is a \emph{K} \(\times\) \emph{J} matrix of latent
+Gaussian variables, \DIFaddbegin \DIFadd{and }\DIFaddend \emph{J} is the number of species\DIFdelbegin \DIFdel{, and \(\top\)
+denotes the conjugate transpose}\DIFdelend . The set of
+\DIFaddbegin \DIFadd{species-level }\DIFaddend predictor variables (\(\boldsymbol{u_j}\)) includes LDMC,
+SDMC, \DIFdelbegin \DIFdel{RDMC, }\DIFdelend LA, SLA, Chl, LT, \(\delta\)C\textsubscript{13}, C, N, \DIFdelbegin \DIFdel{CN, }\DIFdelend and
+\(\pi\)\textsubscript{tlp}\DIFaddbegin \DIFadd{. The row vector \(\gamma_{k,1}\) represents
+average effects of the each individual-level predictor (e.g.,
+}\emph{\DIFadd{ConS}}\DIFadd{) across species, whereas \(\gamma_{k, l}\) (\(l \ne 1\)),
+represents the effects of the }\emph{\DIFadd{l}}\DIFadd{-th individual-level predictor
+(e.g., SLA) on the variation in the strength of the each
+individual-level predictor (e.g., variation in the strength of
+}\emph{\DIFadd{ConS}} \DIFadd{among species). }\DIFaddend To allow comparisons among parameter
+estimates, \DIFdelbegin \DIFdel{all the predictor
+variables }\DIFdelend \DIFaddbegin \DIFadd{the individual-level predictors }\DIFaddend (\(\boldsymbol{x_i}\)\DIFdelbegin \DIFdel{and }\DIFdelend \DIFaddbegin \DIFadd{) and
+the species-level predictors (}\DIFaddend \(\boldsymbol{u_j}\)) were scaled to a
+mean of 0 and standard deviation of \DIFdelbegin \DIFdel{1.
+}\DIFdelend \DIFaddbegin \DIFadd{1 within each season and across
+species, respectively.
+}\DIFaddend 
+
+Posterior distributions of all parameters were estimated using the
+Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan
+(\protect\hyperlink{ref-Carpenter2017}{Carpenter \emph{et al.} 2017})
+using the weakly-informative priors
+(\protect\hyperlink{ref-Gelman2008}{Gelman \emph{et al.} 2008}).
+Convergence of the posterior distribution was assessed with the
+Gelman-Rubin statistic with a convergence threshold of 1.1 for all
+parameters (\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.}
+2013}). \DIFaddbegin \DIFadd{All statistical analyses were conducted in R version 4.2.1
+(}\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}\DIFadd{) using the R
+package }\emph{\DIFadd{targets}} \DIFadd{version 0.12.1 for workflow management
+(}\protect\hyperlink{ref-Landau2021}{Landau 2021}\DIFadd{).
+}\DIFaddend 
+
+\hypertarget{references}{%
+\subsection*{References}\label{references}}
+\addcontentsline{toc}{subsection}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
+Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
+Betancourt, M., \emph{et al.} (2017).
+\href{https://doi.org/10.18637/jss.v076.i01}{Stan : {A Probabilistic
+Programming Language}}. \emph{Journal of Statistical Software}, 76,
+1--32.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Detto2019}{}}%
+Detto, M., Visser, M.D., Wright, S.J. \& Pacala, S.W. (2019).
+\href{https://doi.org/10.1111/ele.13372}{Bias in the detection of
+negative density dependence in plant communities}. \emph{Ecology
+Letters}, 22, 1923--1939.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
+Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. \&
+Rubin, D.B. (2013). \emph{Bayesian {Data Analysis}, {Third Edition}}.
+{\DIFdelbegin \DIFdel{Taylor \& Francis}\DIFdelend \DIFaddbegin \DIFadd{Chapman \& Hall/CRC}\DIFaddend }\DIFdelbegin \DIFdel{.
+}\DIFdelend \DIFaddbegin \DIFadd{, }{\DIFadd{Boca Raton, FL, USA.}}
+\DIFaddend 
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2008}{}}%
+Gelman, A., Jakulin, A., Pittau, M.G. \& Su, Y.S. (2008).
+\href{https://doi.org/10.1214/08-AOAS191}{A weakly informative default
+prior distribution for logistic and other regression models}.
+\emph{Annals of Applied Statistics}, 2, 1360--1383.
+
+\leavevmode\vadjust pre{\DIFaddbegin \hypertarget{ref-Landau2021}{}}%DIF > 
+\DIFadd{Landau, W.M. (2021). }\href{https://doi.org/10.21105/joss.02959}{\DIFadd{The
+targets }{\DIFadd{R}} \DIFadd{package: A dynamic }{\DIFadd{Make-like}} \DIFadd{function-oriented pipeline
+toolkit for reproducibility and high-performance computing}}\DIFadd{.
+}\emph{\DIFadd{Journal of Open Source Software}}\DIFadd{, 6, 2959.
+}
+
+\leavevmode\vadjust \DIFadd{pre}{\hypertarget{ref-RCoreTeam2022}{}}%DIF > 
+\DIFadd{R Core Team. (2022). }\emph{\DIFadd{R: }{\DIFadd{A}} \DIFadd{language and environment for
+statistical computing}}\DIFadd{. Manual. }{\DIFadd{R Foundation for Statistical
+Computing}}\DIFadd{, }{\DIFadd{Vienna, Austria}}\DIFadd{.
+}
+
+\leavevmode\vadjust \DIFadd{pre}{\DIFaddend \hypertarget{ref-StanDevelopmentTeam2021}{}}%
+Stan Development Team. (2021). \DIFdelbegin \emph{\DIFdel{Stan user's guide v2.28 (}%DIFDELCMD < {%%%
+\DIFdel{Accesed
+December}%DIFDELCMD < } %%%
+\DIFdel{16 2021)}}%DIFAUXCMD
+\DIFdel{. Manual}\DIFdelend \DIFaddbegin \DIFadd{Stan user's guide v2.28 (}{\DIFadd{Accesed
+December}} \DIFadd{16 2021)}\DIFaddend .
+
+\end{CSLReferences}
+
+
+
+\end{document}
