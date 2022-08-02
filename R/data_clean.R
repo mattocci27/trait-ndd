@@ -120,12 +120,12 @@ gen_stan_dat <- function(data_list,
                         scaling_within_seasons = FALSE
                         ) {
 
+  # targets::tar_load(data_list)
+  seedling <- data_list$seedling
   if (scaling_within_seasons) {
     seedling <- data_list$seedling |>
       filter(season == {{season}})
   }
-  # targets::tar_load(data_list)
-  seedling <- data_list$seedling
 
   if (trait_set == "each") {
     trait <- data_list$trait |>
