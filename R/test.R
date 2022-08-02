@@ -1,5 +1,9 @@
 library(tidyverse)
-targets::tar_load(data_list)
+
+targets::tar_load(dry_each_int_s)
+targets::tar_load(wet_each_int_s)
+wet_each_int_s |> str()
+dry_each_int_s |> str()
 
 
   seedling <- data_list$seedling
