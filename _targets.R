@@ -383,7 +383,11 @@ list(
     bayes_check_html,
     "docs/bayes_check.Rmd",
     output_format = "html_document"
-    #knit_root_dir = here::here()
+  ),
+  tar_render(
+    bayes_check_all_html,
+    "docs/bayes_check_all.Rmd",
+    output_format = "html_document"
   ),
   # tar_render(
   #   vis_idea_html,
@@ -429,6 +433,14 @@ list(
     create_stan_tab(fit_8_wet_pca_noint_draws_model_ind)
   ),
   tar_target(
+    fit9_tab,
+    create_stan_tab(fit_9_dry_each_int_s_draws_model_ind)
+  ),
+  tar_target(
+    fit10_tab,
+    create_stan_tab(fit_10_wet_each_int_s_draws_model_ind)
+  ),
+  tar_target(
     fit1_gamma,
     create_gamma_tab(fit1_tab, dry_each_int)
   ),
@@ -443,6 +455,14 @@ list(
   tar_target(
     fit4_gamma,
     create_gamma_tab(fit4_tab, wet_each_noint)
+  ),
+  tar_target(
+    fit9_gamma,
+    create_gamma_tab(fit9_tab, dry_each_int_s)
+  ),
+  tar_target(
+    fit10_gamma,
+    create_gamma_tab(fit10_tab, wet_each_int_s)
   ),
 
   tar_target(
@@ -479,6 +499,24 @@ list(
         width = 6,
         height = 3)
       paste0("figs/coef_trait_int", c(".png", ".pdf"))
+    },
+    format = "file"
+  ),
+  tar_target(
+    coef_trait_int_s_plot, {
+      p <- coef_pointrange(fit9_gamma, fit10_gamma)
+      ggsave(
+        "figs/coef_trait_int_s.png",
+        p,
+        dpi = 300,
+        width = 6,
+        height = 3)
+      ggsave(
+        "figs/coef_trait_int_s.pdf",
+        p,
+        width = 6,
+        height = 3)
+      paste0("figs/coef_trait_int_s", c(".png", ".pdf"))
     },
     format = "file"
   ),

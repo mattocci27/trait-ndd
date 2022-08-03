@@ -33,7 +33,6 @@ knitr::opts_chunk$set(
 ```{r}
 library(tidyverse)
 library(patchwork)
-library(ggridges)
 library(here)
 ```
 
@@ -41,281 +40,111 @@ library(here)
 source(here("R", "stan.R"))
 ```
 
+
 # Model
 
-I compared 8 models for now.
-
-- traits
-  - each: model without CN and WD
-  - PCA: model with PCA1-3
-
-```{r}
-expand_grid(
-  season = c("dry", "wet"),
-  traits = c("each", "PCA"),
-  interaction = c("with", "without"))
-```
-
-Stan code.
+Stan code for the multilevel logistic regression in the main text.
 
 ```{stan, file="stan/model_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```
 
+# Data
+
+The object names and letters are as for the stan code above.
+
+```{r, include=FALSE}
+targets::tar_load(dry_each_int_s)
+targets::tar_load(wet_each_int_s)
+```
+
+## Dry season
+
+```{r}
+dry_each_int_s |> str()
+```
+
+## Rainy season
+
+```{r}
+wet_each_int_s |> str()
+```
 
 # Convergence
 
-All the models have converged (Rhat < 1.1).
 
-```{r}
-targets::tar_load(fit_0_dry_each_oneint_summary_model_ind)
-targets::tar_load(fit_1_dry_each_int_summary_model_ind)
-targets::tar_load(fit_2_wet_each_int_summary_model_ind)
-targets::tar_load(fit_3_dry_each_noint_summary_model_ind)
-targets::tar_load(fit_4_wet_each_noint_summary_model_ind)
-targets::tar_load(fit_5_dry_pca_int_summary_model_ind)
-targets::tar_load(fit_6_wet_pca_int_summary_model_ind)
-targets::tar_load(fit_7_dry_pca_noint_summary_model_ind)
-targets::tar_load(fit_8_wet_pca_noint_summary_model_ind)
+```{r, include=FALSE}
+targets::tar_load(fit_9_dry_each_int_s_summary_model_ind)
+targets::tar_load(fit_10_wet_each_int_s_summary_model_ind)
 ```
 
+Both models have converged (Rhat < 1.1).
 
 ```{r}
-fit_0_dry_each_oneint_summary_model_ind |> filter(rhat > 1.1)
-fit_1_dry_each_int_summary_model_ind |> filter(rhat > 1.1)
-fit_2_wet_each_int_summary_model_ind |> filter(rhat > 1.1)
-fit_3_dry_each_noint_summary_model_ind |> filter(rhat > 1.1)
-fit_4_wet_each_noint_summary_model_ind |> filter(rhat > 1.1)
-fit_5_dry_pca_int_summary_model_ind |> filter(rhat > 1.1)
-fit_6_wet_pca_int_summary_model_ind |> filter(rhat > 1.1)
-fit_7_dry_pca_noint_summary_model_ind |> filter(rhat > 1.1)
-fit_8_wet_pca_noint_summary_model_ind |> filter(rhat > 1.1)
+fit_9_dry_each_int_s_summary_model_ind |> filter(rhat > 1.1)
+fit_10_wet_each_int_s_summary_model_ind |> filter(rhat > 1.1)
 ```
 
 
 # Divergent transitions
 
-```{r}
-targets::tar_load(fit_0_dry_each_oneint_diagnostics_model_ind)
-targets::tar_load(fit_1_dry_each_int_diagnostics_model_ind)
-targets::tar_load(fit_2_wet_each_int_diagnostics_model_ind)
-targets::tar_load(fit_3_dry_each_noint_diagnostics_model_ind)
-targets::tar_load(fit_4_wet_each_noint_diagnostics_model_ind)
-targets::tar_load(fit_5_dry_pca_int_diagnostics_model_ind)
-targets::tar_load(fit_6_wet_pca_int_diagnostics_model_ind)
-targets::tar_load(fit_7_dry_pca_noint_diagnostics_model_ind)
-targets::tar_load(fit_8_wet_pca_noint_diagnostics_model_ind)
+```{r, include=FALSE}
+targets::tar_load(fit_9_dry_each_int_s_diagnostics_model_ind)
+targets::tar_load(fit_10_wet_each_int_s_diagnostics_model_ind)
 ```
 
-There were a few divergent transitions for model 8 (PCA with interactions for Rainy seasons) and model 12 (PCA without interactions for Rainy seasons).
-I could increase `adapt_delta ` later but the current results look OK.
+There were no divergent transitions.
 
 ```{r}
-div_check(fit_0_dry_each_oneint_diagnostics_model_ind)
-div_check(fit_1_dry_each_int_diagnostics_model_ind)
-div_check(fit_2_wet_each_int_diagnostics_model_ind)
-div_check(fit_3_dry_each_noint_diagnostics_model_ind)
-div_check(fit_4_wet_each_noint_diagnostics_model_ind)
-div_check(fit_5_dry_pca_int_diagnostics_model_ind)
-div_check(fit_6_wet_pca_int_diagnostics_model_ind)
-div_check(fit_7_dry_pca_noint_diagnostics_model_ind)
-div_check(fit_8_wet_pca_noint_diagnostics_model_ind)
+div_check(fit_9_dry_each_int_s_diagnostics_model_ind)
+div_check(fit_10_wet_each_int_s_diagnostics_model_ind)
 ```
 
-# Model comparisons
-
-## Dry seasons
-
-PCA with interactions is the best model.
-Removing interactions (each_noint) is better for single traits models.
-
-```{r}
-targets::tar_load(dry_loo)
-loo::loo_compare(
-  dry_loo[[1]],
-  each_int = dry_loo[[2]],
-  each_noint = dry_loo[[3]],
-  pca_int = dry_loo[[4]],
-  pca_noint = dry_loo[[5]])
-```
-
-## Rainy seasons
-
-PCA with interactions is the best model.
-Removing interactions (each_noint) is better for single traits models.
-
-```{r}
-targets::tar_load(wet_loo)
-loo::loo_compare(
-  wet_loo[[1]],
-  each_noint = wet_loo[[2]],
-  pca_int = wet_loo[[3]],
-  pca_noint = wet_loo[[4]])
-```
 
 # Tables
 
 ## Dry
 
 ```{r}
-targets::tar_load(fit1_tab)
-targets::tar_load(dry_each_int)
+targets::tar_load(fit9_tab)
+targets::tar_load(dry_each_int_s)
 
-fit1_gamma <- create_gamma_tab(fit1_tab, dry_each_int)
+fit9_gamma <- create_gamma_tab(fit9_tab, dry_each_int_s)
 
-fit1_gamma |>
+fit9_gamma |>
   filter(lwr2_5 * upr97_5 > 0)
 
-fit1_gamma |>
+fit9_gamma |>
   filter(trait_name == "intercept")
 ```
 
-## Dry one interaction
 
-```{r}
-targets::tar_load(fit0_tab)
-targets::tar_load(dry_each_oneint)
-fit0_gamma <- create_gamma_tab(fit0_tab, dry_each_oneint)
-
-fit0_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit0_gamma |>
-  filter(trait_name == "intercept")
-```
-
-## Dry no interaction
-
-```{r}
-targets::tar_load(fit3_tab)
-targets::tar_load(dry_each_noint)
-fit3_gamma <- create_gamma_tab(fit3_tab, dry_each_noint)
-
-fit3_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit3_gamma |>
-  filter(trait_name == "intercept")
-```
-
-## Dry PCA
-
-```{r}
-targets::tar_load(fit5_tab)
-targets::tar_load(dry_pca_int)
-fit5_gamma <- create_gamma_tab(fit5_tab, dry_pca_int)
-
-fit5_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit5_gamma |>
-  filter(trait_name == "intercept")
-```
-
-## Dry PCA no interaction
-
-```{r}
-targets::tar_load(fit7_tab)
-targets::tar_load(dry_pca_noint)
-fit7_gamma <- create_gamma_tab(fit7_tab, dry_pca_noint)
-
-fit7_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit7_gamma |>
-  filter(trait_name == "intercept")
-```
 
 ## Rainy
 
 ```{r}
-targets::tar_load(fit2_tab)
-targets::tar_load(wet_each_int)
-fit2_gamma <- create_gamma_tab(fit2_tab, wet_each_int)
+targets::tar_load(fit10_tab)
+targets::tar_load(wet_each_int_s)
+fit10_gamma <- create_gamma_tab(fit10_tab, wet_each_int_s)
 
-fit2_gamma |>
+fit10_gamma |>
   filter(lwr2_5 * upr97_5 > 0)
 
-fit2_gamma |>
-  filter(trait_name == "intercept")
-```
-
-## Rainy no interaction
-
-```{r}
-targets::tar_load(fit4_tab)
-targets::tar_load(wet_each_noint)
-
-fit4_gamma <- create_gamma_tab(fit4_tab, wet_each_noint)
-
-fit4_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit4_gamma |>
-  filter(trait_name == "intercept")
-```
-
-
-## Rainy PCA
-
-```{r}
-targets::tar_load(fit6_tab)
-targets::tar_load(wet_pca_int)
-fit6_gamma <- create_gamma_tab(fit6_tab, wet_pca_int)
-
-fit6_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit6_gamma |>
-  filter(trait_name == "intercept")
-```
-
-## Rainy PCA no interaction
-
-```{r}
-targets::tar_load(fit8_tab)
-targets::tar_load(wet_pca_noint)
-fit8_gamma <- create_gamma_tab(fit8_tab, wet_pca_noint)
-
-fit8_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
-
-fit8_gamma |>
+fit10_gamma |>
   filter(trait_name == "intercept")
 ```
 
 # Figs
-
-## Each trait with interactions
 
 Thick and thin lines indicate 90% and 95% credible intervals, respectively.
 Circles show posterior means of coefficients.
 Filled circles indicate significant effects and open circles indicate non-significance effects.
 
 ```{r, include=FALSE}
-targets::tar_load(coef_trait_int_plot)
+targets::tar_load(coef_trait_int_s_plot)
 ```
 
-![](../figs/coef_trait_int.png)
+![](../figs/coef_trait_int_s.png)
 
-
-### For dry season
-
-Let's forget about this visualizaiton.
-It's not easy to understand.
-
-```{r, include=FALSE}
-targets::tar_load(test_ridge_plot)
-```
-
-![](../figs/test_ridge.png)
-
-## Each trait without interactions
-
-```{r, include=FALSE}
-targets::tar_load(coef_trait_noint_plot)
-```
-
-![](../figs/coef_trait_noint.png)
 
 # Session information
 
