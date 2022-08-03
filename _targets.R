@@ -5,6 +5,7 @@ library(stantargets)
 library(cmdstanr)
 library(furrr)
 library(languageserver)
+library(quarto)
 
 source("R/data_clean.R")
 source("R/data_check.R")
@@ -389,6 +390,21 @@ list(
     "docs/bayes_check_all.Rmd",
     output_format = "html_document"
   ),
+  # tar_quarto(
+  #   si_pdf,
+  #   "ms/SI.qmd"
+  #   # output_format = "pdf"
+  # ),
+  # tar_target(
+  #   si_pdf, {
+  #     quarto_render(
+  #       "ms/SI.qmd",
+  #       output_format = "pdf"
+  #     )
+  #     paste("ms/SI.pdf")
+  #   },
+  #   format = "file"
+  # ),
   # tar_render(
   #   vis_idea_html,
   #   "docs/vis_idea.Rmd",
@@ -463,6 +479,13 @@ list(
   tar_target(
     fit10_gamma,
     create_gamma_tab(fit10_tab, wet_each_int_s)
+  ),
+  tar_target(
+    dry_gamma_csv, {
+      write_csv(fit9_gamma, "data/dry_gamma.csv")
+      paste("data/dry_gamma.csv")
+    },
+    format = "file"
   ),
 
   tar_target(

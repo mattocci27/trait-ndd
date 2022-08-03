@@ -117,6 +117,72 @@ fit9_gamma |>
   filter(trait_name == "intercept")
 ```
 
+```{r}
+fit9_gamma$trait_name |> unique()
+library(kableExtra)
+
+#str_split_fixed(fit9_gamma$para, "_" ,3)[,2]
+
+fit9_gamma |>
+  mutate(pred_name = case_when(
+    pred_name == "int" ~ "Intercept",
+    pred_name == "logh_scaled" ~ "log[Height]",
+    pred_name == "cons_scaled" ~ "ConS",
+    pred_name == "cona_scaled_c" ~ "ConT",
+    pred_name == "hets_scaled" ~ "HetS",
+    pred_name == "heta_scaled_c" ~ "HetT",
+    pred_name == "rain_scaled" ~ "Rainfall",
+    pred_name == "cons_rain" ~ "Cons $\\times$ Rainfall",
+    pred_name == "cona_rain" ~ "ConT $\\times$ Rainfall",
+    pred_name == "hets_rain" ~ "HetS $\\times$ Rainfall",
+    pred_name == "heta_rain" ~ "HetT $\\times$ Rainfall"
+  )) |>
+  mutate(trait_name = case_when(
+    trait_name == "intercept" ~ "Intercept",
+    trait_name == "ldmc" ~ "LDMC",
+    trait_name == "sdmc" ~ "SDMC",
+    trait_name == "chl" ~ "Chl",
+    trait_name == "c13" ~ "$\\delta C_{13}$",
+    trait_name == "c_mass" ~ "C",
+    trait_name == "n_mass" ~ "N",
+    trait_name == "tlp" ~ "$\\pi_{tlp}$",
+    trait_name == "log_la" ~ "log[LA]",
+    trait_name == "log_sla" ~ "log[SLA]",
+    trait_name == "log_lt" ~ "log[LT]")) |>
+  mutate(para = paste0(
+    "$\\gamma_{",
+    str_split_fixed(fit9_gamma$para, "_" ,3)[,2],
+    ",",
+    str_split_fixed(fit9_gamma$para, "_" ,3)[,3],
+    "}$")) |>
+  # rename(Parameter = para) |>
+  # rename(Mean = mean_) |>
+  # rename(`Lower 2.5% CI` = lwr2_5) |>
+  # rename(`Lower 5% CI` = lwr5) |>
+  # rename(`Upper 95% CI` = upr95) |>
+  # rename(`Upper 97.5% CI` = upr97_5) |>
+  # rename(`Individual-level predictor` = pred_name) |>
+  # rename(`Species-level predictor` = trait_name) |>
+  kable(format = "html") |>
+  kable_styling()
+
+  #|
+  #mutate(hoge = paste0("Effect of ", trait_name, " on ", pred_name))
+```
+
+
+
+```{r}
+  # rename(Parameter = para) |>
+  # rename(Mean = mean_) |>
+  # rename(`Lower 2.5% CI` = lwr2_5) |>
+  # rename(`Lower 5% CI` = lwr5) |>
+  # rename(`Upper 95% CI` = upr95) |>
+  # rename(`Upper 97.5% CI` = upr97_5) |>
+  # rename(`Individual-level predictor` = pred_name) |>
+  # rename(`Species-level predictor` = trait_name)
+```
+
 
 
 ## Rainy
