@@ -17,11 +17,11 @@ create_stan_tab <- function(draws) {
     janitor::clean_names() |>
     dplyr::select(contains(c("beta", "gamma")))
   mean_ <- apply(tmp, 2, mean)
-  lwr2_5 <- apply(tmp, 2, \(x)(quantile(x, 0.025)))
-  lwr5 <- apply(tmp, 2, \(x)(quantile(x, 0.05)))
-  upr97_5 <- apply(tmp, 2, \(x)(quantile(x, 0.975)))
-  upr95 <- apply(tmp, 2, \(x)(quantile(x, 0.9)))
-  tibble(para = names(mean_), mean_, lwr2_5, lwr5, upr95, upr97_5)
+  q2_5 <- apply(tmp, 2, \(x)(quantile(x, 0.025)))
+  q5 <- apply(tmp, 2, \(x)(quantile(x, 0.05)))
+  q97_5 <- apply(tmp, 2, \(x)(quantile(x, 0.975)))
+  q95 <- apply(tmp, 2, \(x)(quantile(x, 0.9)))
+  tibble(para = names(mean_), mean_, q2_5, q5, q95, q97_5)
 }
 
 #' @title clean tabs
@@ -31,11 +31,11 @@ create_gamma_tab <- function(fit_tab, stan_dat) {
   fit_tab |>
     filter(str_detect(para, "gamma")) |>
     mutate(pred_name = rep(x_name,  length(u_name))) |>
-    mutate(trait_name = rep(u_name, each = length(x_name))) |>
-    mutate(sig = ifelse(lwr2_5 * upr97_5 > 0, "sig", "ns")) #|>
+    mutate(trait_name = rep(u_name, each = length(x_name)))# |>
+#    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns")) #|>
     # mutate(ci_sig = case_when(
-    # lwr2_5 * upr97_5 > 0 ~ "sig95",
-    # lwr5 * upr95 > 0 ~ "sig90",
+    # q2_5 * q97_5 > 0 ~ "sig95",
+    # q5 * q95 > 0 ~ "sig90",
     # TRUE ~ "ns"
     # ))
 }
@@ -60,17 +60,18 @@ coef_pointrange0 <- function(fit_gamma, stan_data, title = "Dry", int = TRUE) {
   }
 
   fig_dat <- fit_gamma |>
-    filter(trait_name == "intercept")
+    filter(trait_name == "intercept") |>
+    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns"))
 
   fig_dat |>
     mutate(para = factor(para, levels = paste0("gamma_", 1:nrow(fig_dat), "_1") |> rev())) |>
     ggplot(aes(y = para)) +
     geom_linerange(
-      aes(xmin = lwr2_5, xmax = upr97_5),
+      aes(xmin = q2_5, xmax = q97_5),
       color = "#3366FF"
     ) +
     geom_linerange(
-      aes(xmin = lwr5, xmax = upr95),
+      aes(xmin = q5, xmax = q95),
       size = 1.5,
       color = "#3366FF"
     ) +
