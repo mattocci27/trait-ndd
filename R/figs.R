@@ -127,3 +127,5 @@ coef_ridge <- function(fit_tab, stan_dat, draws) {
     geom_ridgeline(aes(height = density), fill = NA, colour = rgb(0, 0, 0, 0.1)) +
     theme_bw()
 }
+
+#' @title beta
