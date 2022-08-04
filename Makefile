@@ -1,10 +1,17 @@
-all: ms/Seedling.bib ms/methods.pdf
+GIT = c31e6ea2
+METHODS = ms/methods
+all: $(METHODS).pdf $(METHODS).docx ms/methods-diff$(GIT).pdf
+diff: ms/methods-diff$(GIT).pdf
 
-ms/methods.pdf: ms/methods.Rmd  ms/Seedling.bib figs/*
-	R -e 'system.time(rmarkdown::render("$<", "all"))'
+$(METHODS).pdf: $(METHODS).qmd
+	quarto render $< --to pdf
 
-ms/Seedling.bib: ~/Seedling.bib
-	cp $< ./ms/
+$(METHODS).docx: $(METHODS).qmd
+	quarto render $< --to docx
+
+ms/methods-diff$(GIT).pdf: ms/methods.tex
+	latexdiff-vc --git --flatten --force -r $(GIT) $^ ; \
+	cd ms; pdflatex methods-diff$(GIT).tex
 
 .PHONY: clean
 clean:
