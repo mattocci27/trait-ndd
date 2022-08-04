@@ -1,7 +1,7 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|bee8b17f70ac0a74|||||||||||||||
+.Random.seed|object|4c26b9290d86f67f|||||||||||||||
 bayes_check_all_html|stem|41d8646a05e205ae|265fad80fffb9ea8|62d302474fa70296|-1832300251|docs/bayes_check_all.html*docs/bayes_check_all.Rmd|t19208.2740906577s|3a2051053a3f8e9a|1558025|file|local|vector|||1.836||
-bayes_check_html|stem|1507925d60965b18|b12b88b168da87fc|3357cc5d95d0a67e|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19208.3136414052s|bd9e678349f4dca4|1236770|file|local|vector|||1.229||
+bayes_check_html|stem|00728dd896034460|f075e5e250244bc5|b292b08f00f62e3e|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19208.6479283434s|26d59cdbf080faa7|1725706|file|local|vector|||3.025||
 bayes_check_pdf|stem||3700e8c4beb0b354|7b9e54ffa8878d6e|811837955||t19207.2643887309s||0|file|local|vector|||1.118|error in running command|LaTeX failed to compile bayes_check.tex. See httpsyihui.orgtinytexrdebugging for debugging tips. See bayes_check.log for more info.
 coef_pointrange|function|e051abb502e01df2|||||||||||||||
 coef_pointrange0|function|f8cc2d0a9117672b|||||||||||||||
@@ -10,6 +10,7 @@ coef_ridge_plot|function|9114335e7d5b95e8|||||||||||||||
 coef_trait_int_plot|stem|b7947219f4c69df1|0816c8d215220a43|844356e66fcbfca8|800819603|figs/coef_trait_int.png*figs/coef_trait_int.pdf|t19208.2736095364s|6e1381b01602644e|127919|file|local|vector|||0.337||
 coef_trait_int_s_plot|stem|e36b555a740205a2|168108a296673e35|b4fe8124dabbd5bb|-416017211|figs/coef_trait_int_s.png*figs/coef_trait_int_s.pdf|t19208.2736218515s|567fe2f7a331ac57|125278|file|local|vector|||0.266||
 coef_trait_noint_plot|stem|3ee72ded01210d39|b63f3d6f48de2d18|8e0ae92c7065b247|-1194131693|figs/coef_trait_noint.png*figs/coef_trait_noint.pdf|t19208.2736138421s|d031fc35af5466a3|86424|file|local|vector|||0.248||
+create_beta_tab|function|8925657f274dedff|||||||||||||||
 create_gamma_tab|function|864b2b26b563badd|||||||||||||||
 create_stan_tab|function|6c9f81b970c47bfe|||||||||||||||
 data_list|stem|db9a81b475ff2663|5156a111cf83a120|125f16409ed797dc|-1077046627||t19199.5361805556s|e5e10ebb7732841e|742396|rds|local|vector|||1.956||
@@ -92,6 +93,7 @@ fit_9_dry_each_int_s_summary_model_ind|stem|d6e3c2573b16ff65|309edb344710ea16|b0
 fit0_tab|stem|f1d0fa71a8491c20|74aa9032173a66b7|03f70f9addf6a318|1648181856||t19208.2717640768s|95de07af6219279b|30431|rds|local|vector|||14.296||
 fit1_gamma|stem|7cd7c1f456c6d03c|7b2f9b7f0e68133d|2c7928f2368c5057|-1084346080||t19208.2735981473s|fa41e525b0377be3|5637|rds|local|vector|||0.008||
 fit1_tab|stem|f66994ce6974b13b|689c9016409fbe88|3739bb9b2e6500e9|-423509467||t19208.2715592105s|30ad4f0d20c5a8dd|40874|rds|local|vector|||14.636||
+fit10_beta|stem|500d4680de1271fb|ff7ff3eb914f03a9|14fbbfd04a91bd35|-39914120||t19208.3375378687s|503ec5896bee1b85|36525|rds|local|vector|||0.131||
 fit10_gamma|stem|e0a6b612b579381a|d719ca7a0a117272|4da15ac5eccbb17e|146462991||t19208.2736042585s|23d4c068c1a38c5b|5606|rds|local|vector|||0.005||
 fit10_tab|stem|2fbeae0d3c7d840c|d7e843ff27ab859c|3f048cb30d74fc01|30511509||t19208.2733301785s|ac160be82e7fd9d6|41157|rds|local|vector|||13.127||
 fit2_gamma|stem|f0a0484ae4e1bc46|a1ce8830c17513c0|7c60f4c50ecf5977|1734244057||t19208.2735997214s|e625827d1fc1c457|5622|rds|local|vector|||0.004||
@@ -104,6 +106,7 @@ fit5_tab|stem|d7abc933ff06935d|288377a5a57e486b|5a42c1f98e044642|-633787410||t19
 fit6_tab|stem|45113f14e18cd4c7|a5b64813ea387d23|01626eb0f6a2e097|150395408||t19208.2727408134s|8df4f220cc38c634|37826|rds|local|vector|||13.066||
 fit7_tab|stem|668bf2693cd4066c|d6644a207452e65c|25066b5501c35196|1579961846||t19208.2721791797s|0887cb850d1ac565|24406|rds|local|vector|||14.094||
 fit8_tab|stem|4fdb1fb13a5157a7|652c62325100f112|5a0a35139f30495c|-1489246203||t19208.2729237342s|0abfae036598e81f|24392|rds|local|vector|||12.625||
+fit9_beta|stem|af9105693c06ab2e|1c04171b7584c764|dbc76a83ae590631|-1205547076||t19208.3375370817s|fca6d939521d3633|36552|rds|local|vector|||0.121||
 fit9_gamma|stem|0c937c203e2fed28|a387824bac353d33|41092015fccc3990|1273905777||t19208.2736027307s|d26e1a9c90b67c2c|5603|rds|local|vector|||0.005||
 fit9_tab|stem|6089bb51ef960713|6a32766fb7fe6cd6|e233c8b86431be9d|-1297962861||t19208.2731407299s|e210e59c089b7ee2|41197|rds|local|vector|||15.071||
 gen_seedling|function|e28467cb1d0bfc0a|||||||||||||||

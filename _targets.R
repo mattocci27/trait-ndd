@@ -481,6 +481,14 @@ list(
     create_gamma_tab(fit10_tab, wet_each_int_s)
   ),
   tar_target(
+    fit9_beta,
+    create_beta_tab(fit9_tab, dry_each_int_s)
+  ),
+  tar_target(
+    fit10_beta,
+    create_beta_tab(fit10_tab, wet_each_int_s)
+  ),
+  tar_target(
     dry_gamma_csv, {
       write_csv(fit9_gamma, "data/dry_gamma.csv")
       paste("data/dry_gamma.csv")

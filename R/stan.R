@@ -32,12 +32,15 @@ create_gamma_tab <- function(fit_tab, stan_dat) {
     filter(str_detect(para, "gamma")) |>
     mutate(pred_name = rep(x_name,  length(u_name))) |>
     mutate(trait_name = rep(u_name, each = length(x_name)))# |>
-#    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns")) #|>
-    # mutate(ci_sig = case_when(
-    # q2_5 * q97_5 > 0 ~ "sig95",
-    # q5 * q95 > 0 ~ "sig90",
-    # TRUE ~ "ns"
-    # ))
+}
+#' @title clean tabs
+create_beta_tab <- function(fit_tab, stan_dat) {
+  x_name <- colnames(stan_dat$x)
+  sp_name <- paste0("sp_",1:stan_dat$J)
+  fit_tab |>
+    filter(str_detect(para, "beta")) |>
+    mutate(pred_name = rep(x_name, length(sp_name))) |>
+    mutate(sp_name = rep(sp_name, each = length(x_name)))
 }
 
 coef_pointrange0 <- function(fit_gamma, stan_data, title = "Dry", int = TRUE) {
