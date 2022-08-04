@@ -60,9 +60,8 @@ dry_gamma |>
 
 # Table S1
 
-Posterior of distributions of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the dry seasons.
-Posterior means, 90% and 95% credible intervals (CI) are shown.
-(
+Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the dry seasons.
+Bold values are significantly different from zero (the 95% CIs do not include zero).
 ConS/HetS: conspecific/heterospecific seedling density,
 ConT/HetT: conspecific/heterospecific tree density,
 LDMC: leaf dry matter content,
@@ -74,69 +73,96 @@ N: nitrogen concentration,
 $\pi$~tlp~: leaf turgor loss point,
 LA: leaf area,
 SLA: specific leaf area,
-LT: leaf thickness
-)
+LT: leaf thickness.
+
+```{r, include=FALSE}
+gen_si_tab <- function(data) {
+  data |>
+    mutate(pred_name = case_when(
+      pred_name == "int" ~ "Intercept",
+      pred_name == "logh_scaled" ~ "log[Height]",
+      pred_name == "cons_scaled" ~ "ConS",
+      pred_name == "cona_scaled_c" ~ "ConT",
+      pred_name == "hets_scaled" ~ "HetS",
+      pred_name == "heta_scaled_c" ~ "HetT",
+      pred_name == "rain_scaled" ~ "Rainfall",
+      pred_name == "cons_rain" ~ "ConS $\\times$ Rainfall",
+      pred_name == "cona_rain" ~ "ConT $\\times$ Rainfall",
+      pred_name == "hets_rain" ~ "HetS $\\times$ Rainfall",
+      pred_name == "heta_rain" ~ "HetT $\\times$ Rainfall"
+    )) |>
+    mutate(trait_name = case_when(
+      trait_name == "intercept" ~ "Intercept",
+      trait_name == "ldmc" ~ "LDMC",
+      trait_name == "sdmc" ~ "SDMC",
+      trait_name == "chl" ~ "Chl",
+      trait_name == "c13" ~ "$\\delta \\mathrm{C_{13}}$",
+      trait_name == "c_mass" ~ "C",
+      trait_name == "n_mass" ~ "N",
+      trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
+      trait_name == "log_la" ~ "log[LA]",
+      trait_name == "log_sla" ~ "log[SLA]",
+      trait_name == "log_lt" ~ "log[LT]")) |>
+    mutate(mean_ = round(mean_, 3)) |>
+    mutate(mean_ = cell_spec(mean_, bold= ifelse(lwr2_5 * upr97_5 > 0, TRUE,FALSE))) |>
+    mutate(lwr2_5 = round(lwr2_5, 3)) |>
+    mutate(lwr5 = round(lwr5, 3)) |>
+    mutate(upr95 = round(upr95, 3)) |>
+    mutate(upr97_5 = round(upr97_5, 3)) |>
+    mutate(`90\\% CI` = paste0("[", lwr5, ", ", upr95, "]")) |>
+    mutate(`95\\% CI` = paste0("[", lwr2_5, ", ", upr97_5, "]")) |>
+    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(lwr2_5 * upr97_5 > 0, TRUE,FALSE))) |>
+    mutate(para = paste0(
+      "$\\gamma_{",
+      str_split_fixed(data$para, "_" ,3)[,2],
+      ",",
+      str_split_fixed(data$para, "_" ,3)[,3],
+      "}$")) |>
+    rename(Parameter = para) |>
+    rename(Mean = mean_) |>
+    rename(`Lower 2.5\\% CI` = lwr2_5) |>
+    rename(`Lower 5\\% CI` = lwr5) |>
+    rename(`Upper 95\\% CI` = upr95) |>
+    rename(`Upper 97.5\\% CI` = upr97_5) |>
+    rename(`Individual-level predictor` = pred_name) |>
+    rename(`Species-level predictor` = trait_name) |>
+    # kable(format = "latex") #|>
+    dplyr::select(Parameter, Mean,
+    # `Lower 2.5\\% CI`#,
+    #`90\\% CI`,
+    `95\\% CI`,
+    `Individual-level predictor`,
+    `Species-level predictor`
+    ) |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
+    #kable_styling()
+}
+```
 
 ```{r}
-dry_gamma |>
-  dplyr::select(-sig) |>
-  mutate(pred_name = case_when(
-    pred_name == "int" ~ "Intercept",
-    pred_name == "logh_scaled" ~ "log[Height]",
-    pred_name == "cons_scaled" ~ "ConS",
-    pred_name == "cona_scaled_c" ~ "ConT",
-    pred_name == "hets_scaled" ~ "HetS",
-    pred_name == "heta_scaled_c" ~ "HetT",
-    pred_name == "rain_scaled" ~ "Rainfall",
-    pred_name == "cons_rain" ~ "ConS $\\times$ Rainfall",
-    pred_name == "cona_rain" ~ "ConT $\\times$ Rainfall",
-    pred_name == "hets_rain" ~ "HetS $\\times$ Rainfall",
-    pred_name == "heta_rain" ~ "HetT $\\times$ Rainfall"
-  )) |>
-  mutate(trait_name = case_when(
-    trait_name == "intercept" ~ "Intercept",
-    trait_name == "ldmc" ~ "LDMC",
-    trait_name == "sdmc" ~ "SDMC",
-    trait_name == "chl" ~ "Chl",
-    trait_name == "c13" ~ "$\\delta \\mathrm{C_{13}}$",
-    trait_name == "c_mass" ~ "C",
-    trait_name == "n_mass" ~ "N",
-    trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
-    trait_name == "log_la" ~ "log[LA]",
-    trait_name == "log_sla" ~ "log[SLA]",
-    trait_name == "log_lt" ~ "log[LT]")) |>
-  mutate(mean_ = round(mean_, 3)) |>
-  mutate(lwr2_5 = round(lwr2_5, 3)) |>
-  mutate(lwr5 = round(lwr5, 3)) |>
-  mutate(upr95 = round(upr95, 3)) |>
-  mutate(upr97_5 = round(upr97_5, 3)) |>
-  mutate(`90\\% CI` = paste0("[", lwr5, ", ", upr95, "]")) |>
-  mutate(`95\\% CI` = paste0("[", lwr2_5, ", ", upr97_5, "]")) |>
-  mutate(para = paste0(
-    "$\\gamma_{",
-    str_split_fixed(dry_gamma$para, "_" ,3)[,2],
-    ",",
-    str_split_fixed(dry_gamma$para, "_" ,3)[,3],
-    "}$")) |>
-  rename(Parameter = para) |>
-  rename(Mean = mean_) |>
-  rename(`Lower 2.5\\% CI` = lwr2_5) |>
-  rename(`Lower 5\\% CI` = lwr5) |>
-  rename(`Upper 95\\% CI` = upr95) |>
-  rename(`Upper 97.5\\% CI` = upr97_5) |>
-  rename(`Individual-level predictor` = pred_name) |>
-  rename(`Species-level predictor` = trait_name) |>
-  # kable(format = "latex") #|>
-  dplyr::select(Parameter, Mean,
-  # `Lower 2.5\\% CI`#,
-  `90\\% CI`,
-  `95\\% CI`,
-  `Individual-level predictor`,
-  `Species-level predictor`
-  ) |>
-  kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
-  kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
-  #kable_styling()
-  #|
-  #mutate(hoge = paste0("Effect of ", trait_name, " on ", pred_name))
+gen_si_tab(dry_gamma)
+```
+
+\newpage
+
+```{r, include=FALSE}
+s_table_full <- captioner::captioner(prefix = "Table S", auto_space = FALSE)
+s_table <- pryr::partial(s_table_full, display = "cite", caption = "blank")
+```
+
+# Table S2
+
+Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the rainy seasons.
+Details as for Table S1.
+
+```{r, include=FALSE}
+wet_gamma <- read_csv(here("data", "wet_gamma.csv"))
+wet_gamma |>
+  filter(lwr2_5 * upr97_5 > 0)
+wet_gamma |>
+  filter(trait_name == "intercept")
+```
+```{r}
+gen_si_tab(wet_gamma)
 ```

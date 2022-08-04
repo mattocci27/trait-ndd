@@ -487,6 +487,13 @@ list(
     },
     format = "file"
   ),
+  tar_target(
+    wet_gamma_csv, {
+      write_csv(fit10_gamma, "data/wet_gamma.csv")
+      paste("data/wet_gamma.csv")
+    },
+    format = "file"
+  ),
 
   tar_target(
     test_ridge_plot, {
