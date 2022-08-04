@@ -1,5 +1,5 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|0d5d04a779011bf0|||||||||||||||
+.Random.seed|object|11c02f9862bb5e35|||||||||||||||
 bayes_check_all_html|stem|c2237aae7d9a541d|265fad80fffb9ea8|22068be994d89ddd|-1832300251|docs/bayes_check_all.html*docs/bayes_check_all.Rmd|t19208.0632926377s|bca6d1399f6d7d72|1558405|file|local|vector|||2.607||
 bayes_check_html|stem|cd5826e912b8b341|69465a50708dfc25|7b9e54ffa8878d6e|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19208.0632925914s|0de63a8efe150bc1|1287117|file|local|vector|||1.671||
 bayes_check_pdf|stem||3700e8c4beb0b354|7b9e54ffa8878d6e|811837955||t19207.2643887309s||0|file|local|vector|||1.118|error in running command|LaTeX failed to compile bayes_check.tex. See httpsyihui.orgtinytexrdebugging for debugging tips. See bayes_check.log for more info.
