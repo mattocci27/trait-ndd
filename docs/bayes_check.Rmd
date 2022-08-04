@@ -220,6 +220,134 @@ targets::tar_load(coef_trait_int_s_plot)
 
 ## $\beta$
 
+```{r}
+targets::tar_load(fit9_beta)
+targets::tar_load(fit10_beta)
+targets::tar_load(fit9_gamma)
+targets::tar_load(fit10_gamma)
+targets::tar_load(dry_each_int_s)
+```
+
+```{r}
+library(tidyverse)
+set.seed(123)
+dat <- tibble(x = rnorm(10), y = rnorm(10))
+y_lab <- "Effect of xxx"
+lab_dat <- tibble(para = "beta", i = 2, j = 3)
+
+ggplot(dat, aes(x = x, y = y)) +
+  geom_point() +
+  ylab(expression(Effect~of~xxx~(~beta[paste(2, ",", 3)])))
+```
+
+```{r}
+library(tidyverse)
+set.seed(123)
+dat <- tibble(x = rnorm(10), y = rnorm(10))
+
+y_lab <- "Effect~of~xxx~"
+
+lab_dat <- tibble(para = "beta", i = 2, j = 3) |>
+  mutate(para2 = paste0("expression(",y_lab ,"(beta[paste(", i, ",',',", j,")]))"))
+
+ggplot(dat, aes(x = x, y = y)) +
+  geom_point() +
+  ylab(eval(parse(text = lab_dat$para2)))
+```
+
+```{r}
+x <- "chl"
+y <- "cons_scaled"
+x_lab <- "Chlorophyll"
+y_lab <- "ConS~effect~"
+#y_lab <- expression("ConS effect ("~paste(beta[3,2])~")")
+
+fit9_gamma |>
+  filter(q2_5 * q97_5 > 0) |>
+  filter(trait_name != "intercept")
+
+tmp_beta <- fit9_beta |>
+  filter(pred_name == paste(y))
+gamma_slope <- fit9_gamma |>
+  filter(pred_name == paste(y)) |>
+  filter(trait_name == paste(x))
+gamma_int <- fit9_gamma |>
+  filter(pred_name == paste(y)) |>
+  filter(trait_name == "intercept")
+trait <- dry_each_int_s$u[paste(x), ]
+
+tmp_para <- gamma_slope |>
+  pull(para) |>
+  str_split_fixed("_", 3)
+
+y_lab_beta <- tmp_beta$para |> str_split_fixed("_", 3)
+k <- y_lab_beta[,2] |> unique()
+
+hoge <- paste0("expression(",y_lab ,"(beta[paste(", k, ",',',", "j)]))")
+
+beta_trait <- bind_cols(tmp_beta, trait = trait)
+
+ggplot(beta_trait) +
+  geom_point(aes(x = trait, y = mean_)) +
+  geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5)) +
+  geom_abline(
+    slope = gamma_slope |> pull(mean_),
+    intercept = gamma_int |> pull(mean_)
+    ) +
+  xlab(x_lab) +
+  ylab(eval(parse(text = hoge)))
+  # annotate("text", x = 2, y = -10,
+  #   label = paste0("\u03b3[", tmp_para[2], "," ,tmp_para[3], "]"),
+  #   # label = expression(paste(gamma[23])),
+  #   parse = TRUE)
+  # geom_text(x = 0, y = 0, label = "gamma")
+
+```
+
+```{r}
+beta_plot <- function(fit_beta, fit_gamma,stan_data, x, y, x_lab, y_lab) {
+  tmp_beta <- fit_beta |>
+    filter(pred_name == paste(y))
+  gamma_slope <- fit_gamma |>
+    filter(pred_name == paste(y)) |>
+    filter(trait_name == paste(x))
+  gamma_int <- fit_gamma |>
+    filter(pred_name == paste(y)) |>
+    filter(trait_name == "intercept")
+  trait <- stan_data$u[paste(x), ]
+
+  tmp_para <- gamma_slope |>
+    pull(para) |>
+    str_split_fixed("_", 3)
+
+  y_lab_beta <- tmp_beta$para |> str_split_fixed("_", 3)
+  k <- y_lab_beta[,2] |> unique()
+
+  hoge <- paste0("expression(",y_lab ,"(beta[paste(", k, ",',',", "j)]))")
+
+  beta_trait <- bind_cols(tmp_beta, trait = trait)
+
+  ggplot(beta_trait) +
+    geom_point(aes(x = trait, y = mean_)) +
+    geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5)) +
+    geom_abline(
+      slope = gamma_slope |> pull(mean_),
+      intercept = gamma_int |> pull(mean_)
+      ) +
+    xlab(x_lab) +
+    ylab(eval(parse(text = hoge)))
+}
+```
+
+```{r}
+beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "ldmc",
+          y = "rain_scaled",
+          x_lab = "LDMC",
+          y_lab  = "Rainfall~effect~")
+```
+
 # Session information
 
 ```{r}
