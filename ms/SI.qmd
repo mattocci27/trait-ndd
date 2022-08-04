@@ -63,7 +63,7 @@ dry_gamma |>
 Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the dry seasons.
 Bold values are significantly different from zero (the 95% CIs do not include zero).
 ConS/HetS: conspecific/heterospecific seedling density,
-ConT/HetT: conspecific/heterospecific tree density,
+ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27),
 LDMC: leaf dry matter content,
 SDMC: stem dry matter content,
 Chl: chlorophyll content,
@@ -100,9 +100,9 @@ gen_si_tab <- function(data) {
       trait_name == "c_mass" ~ "C",
       trait_name == "n_mass" ~ "N",
       trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
-      trait_name == "log_la" ~ "log[LA]",
-      trait_name == "log_sla" ~ "log[SLA]",
-      trait_name == "log_lt" ~ "log[LT]")) |>
+      trait_name == "log_la" ~ "ln LA",
+      trait_name == "log_sla" ~ "ln SLA",
+      trait_name == "log_lt" ~ "ln LT")) |>
     mutate(mean_ = round(mean_, 3)) |>
     mutate(mean_ = cell_spec(mean_, bold= ifelse(lwr2_5 * upr97_5 > 0, TRUE,FALSE))) |>
     mutate(lwr2_5 = round(lwr2_5, 3)) |>
@@ -154,7 +154,8 @@ s_table <- pryr::partial(s_table_full, display = "cite", caption = "blank")
 # Table S2
 
 Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the rainy seasons.
-Details as for Table S1.
+Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Other details as for Table S1.
 
 ```{r, include=FALSE}
 wet_gamma <- read_csv(here("data", "wet_gamma.csv"))

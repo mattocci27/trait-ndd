@@ -164,7 +164,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, frame hidden, enhanced, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden, enhanced, sharp corners, frame hidden, breakable]}{\end{tcolorbox}}\fi
 
 \hypertarget{table-s1}{%
 \section{Table S1}\label{table-s1}}
@@ -173,12 +173,12 @@ Posterior means and 95\% credible intervals (CIs) of the effects of
 species-level predcitors on indivdiual-level precitors (\(\gamma\)) in
 the dry seasons. Bold values are significantly different from zero (the
 95\% CIs do not include zero). ConS/HetS: conspecific/heterospecific
-seedling density, ConT/HetT: conspecific/heterospecific tree density,
-LDMC: leaf dry matter content, SDMC: stem dry matter content, Chl:
-chlorophyll content, \(\delta\)C\textsubscript{13}: stable carbon
-isotope composition, C: carbon concentration, N: nitrogen concentration,
-\(\pi\)\textsubscript{tlp}: leaf turgor loss point, LA: leaf area, SLA:
-specific leaf area, LT: leaf thickness.
+seedling density, ConT/HetT: conspecific/heterospecific tree density
+(scaled by 0.27), LDMC: leaf dry matter content, SDMC: stem dry matter
+content, Chl: chlorophyll content, \(\delta\)C\textsubscript{13}: stable
+carbon isotope composition, C: carbon concentration, N: nitrogen
+concentration, \(\pi\)\textsubscript{tlp}: leaf turgor loss point, LA:
+leaf area, SLA: specific leaf area, LT: leaf thickness.
 
 \begin{longtable}[t]{lllll}
 \toprule
@@ -299,46 +299,46 @@ $\gamma_{7,8}$ & 0.68 & {}[-0.209, 1.521] & Rainfall & $\pi_\mathrm{{tlp}}$\\
 $\gamma_{9,8}$ & -0.167 & {}[-0.466, 0.134] & ConT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
 \cellcolor{gray!6}{$\gamma_{10,8}$} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.255, 0.087]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
 $\gamma_{11,8}$ & 0.022 & {}[-0.167, 0.213] & HetT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{-0.834} & \cellcolor{gray!6}{{}[-1.653, 0.009]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{2,9}$ & -0.12 & {}[-0.378, 0.133] & log[Height] & log[LA]\\
+\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{-0.834} & \cellcolor{gray!6}{{}[-1.653, 0.009]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{2,9}$ & -0.12 & {}[-0.378, 0.133] & log[Height] & ln LA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{-1.185} & \cellcolor{gray!6}{{}[-2.64, 0.193]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{4,9}$ & -0.226 & {}[-0.705, 0.266] & ConT & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{-0.111} & \cellcolor{gray!6}{{}[-0.333, 0.08]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{6,9}$ & 0.14 & {}[-0.106, 0.389] & HetT & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{-0.231} & \cellcolor{gray!6}{{}[-0.818, 0.346]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{log[LA]}\\
+\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{-1.185} & \cellcolor{gray!6}{{}[-2.64, 0.193]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{4,9}$ & -0.226 & {}[-0.705, 0.266] & ConT & ln LA\\
+\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{-0.111} & \cellcolor{gray!6}{{}[-0.333, 0.08]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{6,9}$ & 0.14 & {}[-0.106, 0.389] & HetT & ln LA\\
+\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{-0.231} & \cellcolor{gray!6}{{}[-0.818, 0.346]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LA}\\
 \addlinespace
-$\gamma_{8,9}$ & -0.346 & {}[-1.303, 0.588] & ConS $\times$ Rainfall & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{9,9}$} & \cellcolor{gray!6}{-0.007} & \cellcolor{gray!6}{{}[-0.281, 0.254]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{10,9}$ & -0.063 & {}[-0.205, 0.074] & HetS $\times$ Rainfall & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{11,9}$} & \cellcolor{gray!6}{0.092} & \cellcolor{gray!6}{{}[-0.083, 0.268]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{1,10}$ & -0.116 & {}[-1.417, 1.336] & Intercept & log[SLA]\\
+$\gamma_{8,9}$ & -0.346 & {}[-1.303, 0.588] & ConS $\times$ Rainfall & ln LA\\
+\cellcolor{gray!6}{$\gamma_{9,9}$} & \cellcolor{gray!6}{-0.007} & \cellcolor{gray!6}{{}[-0.281, 0.254]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{10,9}$ & -0.063 & {}[-0.205, 0.074] & HetS $\times$ Rainfall & ln LA\\
+\cellcolor{gray!6}{$\gamma_{11,9}$} & \cellcolor{gray!6}{0.092} & \cellcolor{gray!6}{{}[-0.083, 0.268]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{1,10}$ & -0.116 & {}[-1.417, 1.336] & Intercept & ln SLA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{2,10}$} & \cellcolor{gray!6}{0.117} & \cellcolor{gray!6}{{}[-0.301, 0.553]} & \cellcolor{gray!6}{log[Height]} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{3,10}$ & -1.015 & {}[-3.3, 1.297] & ConS & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{4,10}$} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{{}[-0.894, 0.94]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{5,10}$ & -0.061 & {}[-0.358, 0.287] & HetS & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{6,10}$} & \cellcolor{gray!6}{-0.238} & \cellcolor{gray!6}{{}[-0.589, 0.081]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{log[SLA]}\\
+\cellcolor{gray!6}{$\gamma_{2,10}$} & \cellcolor{gray!6}{0.117} & \cellcolor{gray!6}{{}[-0.301, 0.553]} & \cellcolor{gray!6}{log[Height]} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{3,10}$ & -1.015 & {}[-3.3, 1.297] & ConS & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{4,10}$} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{{}[-0.894, 0.94]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{5,10}$ & -0.061 & {}[-0.358, 0.287] & HetS & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{6,10}$} & \cellcolor{gray!6}{-0.238} & \cellcolor{gray!6}{{}[-0.589, 0.081]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{ln SLA}\\
 \addlinespace
-$\gamma_{7,10}$ & \textbf{-1.1} & \textbf{[-1.991, -0.149]} & Rainfall & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{8,10}$} & \cellcolor{gray!6}{-1.035} & \cellcolor{gray!6}{{}[-2.548, 0.572]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{9,10}$ & -0.38 & {}[-0.823, 0.071] & ConT $\times$ Rainfall & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{10,10}$} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.332, 0.131]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{11,10}$ & 0.082 & {}[-0.157, 0.33] & HetT $\times$ Rainfall & log[SLA]\\
+$\gamma_{7,10}$ & \textbf{-1.1} & \textbf{[-1.991, -0.149]} & Rainfall & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{8,10}$} & \cellcolor{gray!6}{-1.035} & \cellcolor{gray!6}{{}[-2.548, 0.572]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{9,10}$ & -0.38 & {}[-0.823, 0.071] & ConT $\times$ Rainfall & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{10,10}$} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.332, 0.131]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{11,10}$ & 0.082 & {}[-0.157, 0.33] & HetT $\times$ Rainfall & ln SLA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{1,11}$} & \cellcolor{gray!6}{-0.199} & \cellcolor{gray!6}{{}[-1.216, 0.741]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{2,11}$ & -0.01 & {}[-0.324, 0.292] & log[Height] & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{3,11}$} & \cellcolor{gray!6}{-0.496} & \cellcolor{gray!6}{{}[-2.008, 1.108]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{4,11}$ & -0.216 & {}[-0.997, 0.488] & ConT & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{5,11}$} & \cellcolor{gray!6}{-0.062} & \cellcolor{gray!6}{{}[-0.287, 0.153]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{log[LT]}\\
+\cellcolor{gray!6}{$\gamma_{1,11}$} & \cellcolor{gray!6}{-0.199} & \cellcolor{gray!6}{{}[-1.216, 0.741]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{2,11}$ & -0.01 & {}[-0.324, 0.292] & log[Height] & ln LT\\
+\cellcolor{gray!6}{$\gamma_{3,11}$} & \cellcolor{gray!6}{-0.496} & \cellcolor{gray!6}{{}[-2.008, 1.108]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{4,11}$ & -0.216 & {}[-0.997, 0.488] & ConT & ln LT\\
+\cellcolor{gray!6}{$\gamma_{5,11}$} & \cellcolor{gray!6}{-0.062} & \cellcolor{gray!6}{{}[-0.287, 0.153]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LT}\\
 \addlinespace
-$\gamma_{6,11}$ & 0.038 & {}[-0.204, 0.278] & HetT & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{7,11}$} & \cellcolor{gray!6}{-0.508} & \cellcolor{gray!6}{{}[-1.089, 0.106]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{8,11}$ & \textbf{-1.036} & \textbf{[-1.965, -0.106]} & ConS $\times$ Rainfall & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{9,11}$} & \cellcolor{gray!6}{0.146} & \cellcolor{gray!6}{{}[-0.209, 0.53]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{10,11}$ & 0.053 & {}[-0.1, 0.207] & HetS $\times$ Rainfall & log[LT]\\
+$\gamma_{6,11}$ & 0.038 & {}[-0.204, 0.278] & HetT & ln LT\\
+\cellcolor{gray!6}{$\gamma_{7,11}$} & \cellcolor{gray!6}{-0.508} & \cellcolor{gray!6}{{}[-1.089, 0.106]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{8,11}$ & \textbf{-1.036} & \textbf{[-1.965, -0.106]} & ConS $\times$ Rainfall & ln LT\\
+\cellcolor{gray!6}{$\gamma_{9,11}$} & \cellcolor{gray!6}{0.146} & \cellcolor{gray!6}{{}[-0.209, 0.53]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{10,11}$ & 0.053 & {}[-0.1, 0.207] & HetS $\times$ Rainfall & ln LT\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{11,11}$} & \cellcolor{gray!6}{-0.004} & \cellcolor{gray!6}{{}[-0.161, 0.16]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{log[LT]}\\*
+\cellcolor{gray!6}{$\gamma_{11,11}$} & \cellcolor{gray!6}{-0.004} & \cellcolor{gray!6}{{}[-0.161, 0.16]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\*
 \end{longtable}
 
 \newpage
@@ -348,7 +348,8 @@ $\gamma_{10,11}$ & 0.053 & {}[-0.1, 0.207] & HetS $\times$ Rainfall & log[LT]\\
 
 Posterior means and 95\% credible intervals (CIs) of the effects of
 species-level predcitors on indivdiual-level precitors (\(\gamma\)) in
-the rainy seasons. Details as for Table S1.
+the rainy seasons. Densities of conspecific (ConT) and heterospecific
+(HetT) trees are scaled by 0.24. Other details as for Table S1.
 
 \begin{longtable}[t]{lllll}
 \toprule
@@ -469,46 +470,46 @@ $\gamma_{7,8}$ & \textbf{2.29} & \textbf{[1.102, 3.536]} & Rainfall & $\pi_\math
 $\gamma_{9,8}$ & 0.039 & {}[-0.307, 0.366] & ConT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
 \cellcolor{gray!6}{$\gamma_{10,8}$} & \cellcolor{gray!6}{-0.082} & \cellcolor{gray!6}{{}[-0.241, 0.075]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
 $\gamma_{11,8}$ & 0.033 & {}[-0.216, 0.28] & HetT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{0.007} & \cellcolor{gray!6}{{}[-0.949, 1.029]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{2,9}$ & -0.016 & {}[-0.311, 0.267] & log[Height] & log[LA]\\
+\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{0.007} & \cellcolor{gray!6}{{}[-0.949, 1.029]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{2,9}$ & -0.016 & {}[-0.311, 0.267] & log[Height] & ln LA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{-0.146} & \cellcolor{gray!6}{{}[-2.103, 1.69]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{4,9}$ & -0.164 & {}[-0.71, 0.372] & ConT & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{-0.009} & \cellcolor{gray!6}{{}[-0.183, 0.155]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{6,9}$ & -0.009 & {}[-0.314, 0.301] & HetT & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{-0.375} & \cellcolor{gray!6}{{}[-1.076, 0.314]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{log[LA]}\\
+\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{-0.146} & \cellcolor{gray!6}{{}[-2.103, 1.69]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{4,9}$ & -0.164 & {}[-0.71, 0.372] & ConT & ln LA\\
+\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{-0.009} & \cellcolor{gray!6}{{}[-0.183, 0.155]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{6,9}$ & -0.009 & {}[-0.314, 0.301] & HetT & ln LA\\
+\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{-0.375} & \cellcolor{gray!6}{{}[-1.076, 0.314]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LA}\\
 \addlinespace
-$\gamma_{8,9}$ & -0.464 & {}[-1.944, 0.95] & ConS $\times$ Rainfall & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{9,9}$} & \cellcolor{gray!6}{-0.127} & \cellcolor{gray!6}{{}[-0.45, 0.196]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{10,9}$ & 0.061 & {}[-0.078, 0.204] & HetS $\times$ Rainfall & log[LA]\\
-\cellcolor{gray!6}{$\gamma_{11,9}$} & \cellcolor{gray!6}{0.196} & \cellcolor{gray!6}{{}[-0.042, 0.433]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{log[LA]}\\
-$\gamma_{1,10}$ & -0.494 & {}[-2.134, 1.174] & Intercept & log[SLA]\\
+$\gamma_{8,9}$ & -0.464 & {}[-1.944, 0.95] & ConS $\times$ Rainfall & ln LA\\
+\cellcolor{gray!6}{$\gamma_{9,9}$} & \cellcolor{gray!6}{-0.127} & \cellcolor{gray!6}{{}[-0.45, 0.196]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{10,9}$ & 0.061 & {}[-0.078, 0.204] & HetS $\times$ Rainfall & ln LA\\
+\cellcolor{gray!6}{$\gamma_{11,9}$} & \cellcolor{gray!6}{0.196} & \cellcolor{gray!6}{{}[-0.042, 0.433]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{1,10}$ & -0.494 & {}[-2.134, 1.174] & Intercept & ln SLA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{2,10}$} & \cellcolor{gray!6}{0.124} & \cellcolor{gray!6}{{}[-0.365, 0.596]} & \cellcolor{gray!6}{log[Height]} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{3,10}$ & -0.583 & {}[-3.763, 2.46] & ConS & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{4,10}$} & \cellcolor{gray!6}{-0.42} & \cellcolor{gray!6}{{}[-1.401, 0.567]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{5,10}$ & 0.065 & {}[-0.206, 0.336] & HetS & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{6,10}$} & \cellcolor{gray!6}{0.07} & \cellcolor{gray!6}{{}[-0.355, 0.51]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{log[SLA]}\\
+\cellcolor{gray!6}{$\gamma_{2,10}$} & \cellcolor{gray!6}{0.124} & \cellcolor{gray!6}{{}[-0.365, 0.596]} & \cellcolor{gray!6}{log[Height]} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{3,10}$ & -0.583 & {}[-3.763, 2.46] & ConS & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{4,10}$} & \cellcolor{gray!6}{-0.42} & \cellcolor{gray!6}{{}[-1.401, 0.567]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{5,10}$ & 0.065 & {}[-0.206, 0.336] & HetS & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{6,10}$} & \cellcolor{gray!6}{0.07} & \cellcolor{gray!6}{{}[-0.355, 0.51]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{ln SLA}\\
 \addlinespace
-$\gamma_{7,10}$ & -0.016 & {}[-1.121, 1.093] & Rainfall & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{8,10}$} & \cellcolor{gray!6}{-0.623} & \cellcolor{gray!6}{{}[-2.947, 1.787]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{9,10}$ & 0.05 & {}[-0.502, 0.595] & ConT $\times$ Rainfall & log[SLA]\\
-\cellcolor{gray!6}{$\gamma_{10,10}$} & \cellcolor{gray!6}{0.018} & \cellcolor{gray!6}{{}[-0.204, 0.259]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{log[SLA]}\\
-$\gamma_{11,10}$ & -0.11 & {}[-0.426, 0.209] & HetT $\times$ Rainfall & log[SLA]\\
+$\gamma_{7,10}$ & -0.016 & {}[-1.121, 1.093] & Rainfall & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{8,10}$} & \cellcolor{gray!6}{-0.623} & \cellcolor{gray!6}{{}[-2.947, 1.787]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{9,10}$ & 0.05 & {}[-0.502, 0.595] & ConT $\times$ Rainfall & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{10,10}$} & \cellcolor{gray!6}{0.018} & \cellcolor{gray!6}{{}[-0.204, 0.259]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{11,10}$ & -0.11 & {}[-0.426, 0.209] & HetT $\times$ Rainfall & ln SLA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{1,11}$} & \cellcolor{gray!6}{-0.27} & \cellcolor{gray!6}{{}[-1.14, 0.611]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{2,11}$ & 0.004 & {}[-0.318, 0.32] & log[Height] & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{3,11}$} & \cellcolor{gray!6}{0.117} & \cellcolor{gray!6}{{}[-1.362, 1.639]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{4,11}$ & -0.213 & {}[-0.947, 0.504] & ConT & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{5,11}$} & \cellcolor{gray!6}{-0.015} & \cellcolor{gray!6}{{}[-0.196, 0.17]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{log[LT]}\\
+\cellcolor{gray!6}{$\gamma_{1,11}$} & \cellcolor{gray!6}{-0.27} & \cellcolor{gray!6}{{}[-1.14, 0.611]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{2,11}$ & 0.004 & {}[-0.318, 0.32] & log[Height] & ln LT\\
+\cellcolor{gray!6}{$\gamma_{3,11}$} & \cellcolor{gray!6}{0.117} & \cellcolor{gray!6}{{}[-1.362, 1.639]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{4,11}$ & -0.213 & {}[-0.947, 0.504] & ConT & ln LT\\
+\cellcolor{gray!6}{$\gamma_{5,11}$} & \cellcolor{gray!6}{-0.015} & \cellcolor{gray!6}{{}[-0.196, 0.17]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LT}\\
 \addlinespace
-$\gamma_{6,11}$ & 0.151 & {}[-0.136, 0.475] & HetT & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{7,11}$} & \cellcolor{gray!6}{0.167} & \cellcolor{gray!6}{{}[-0.52, 0.889]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{8,11}$ & 0.572 & {}[-0.806, 1.975] & ConS $\times$ Rainfall & log[LT]\\
-\cellcolor{gray!6}{$\gamma_{9,11}$} & \cellcolor{gray!6}{-0.054} & \cellcolor{gray!6}{{}[-0.499, 0.396]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{log[LT]}\\
-$\gamma_{10,11}$ & 0.089 & {}[-0.064, 0.241] & HetS $\times$ Rainfall & log[LT]\\
+$\gamma_{6,11}$ & 0.151 & {}[-0.136, 0.475] & HetT & ln LT\\
+\cellcolor{gray!6}{$\gamma_{7,11}$} & \cellcolor{gray!6}{0.167} & \cellcolor{gray!6}{{}[-0.52, 0.889]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{8,11}$ & 0.572 & {}[-0.806, 1.975] & ConS $\times$ Rainfall & ln LT\\
+\cellcolor{gray!6}{$\gamma_{9,11}$} & \cellcolor{gray!6}{-0.054} & \cellcolor{gray!6}{{}[-0.499, 0.396]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{10,11}$ & 0.089 & {}[-0.064, 0.241] & HetS $\times$ Rainfall & ln LT\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{11,11}$} & \cellcolor{gray!6}{-0.024} & \cellcolor{gray!6}{{}[-0.243, 0.198]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{log[LT]}\\*
+\cellcolor{gray!6}{$\gamma_{11,11}$} & \cellcolor{gray!6}{-0.024} & \cellcolor{gray!6}{{}[-0.243, 0.198]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\*
 \end{longtable}
 
 
