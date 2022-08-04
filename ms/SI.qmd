@@ -80,7 +80,7 @@ gen_si_tab <- function(data) {
   data |>
     mutate(pred_name = case_when(
       pred_name == "int" ~ "Intercept",
-      pred_name == "logh_scaled" ~ "log[Height]",
+      pred_name == "logh_scaled" ~ "ln Height",
       pred_name == "cons_scaled" ~ "ConS",
       pred_name == "cona_scaled_c" ~ "ConT",
       pred_name == "hets_scaled" ~ "HetS",
