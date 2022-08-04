@@ -60,16 +60,12 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
     summarize(n = n()) |>
     filter(n >= n_ab)
 
+# Eventually we didn't use habitat
   habitat <- read_csv(habitat_csv) |>
     janitor::clean_names()
 # seedling data for abundance >= n_ab
   seedling <- right_join(seedling, tmp10, by = "sp") |>
-    full_join(habitat, by = "qua") |>
-    mutate(cons_scaled = scale(cons) |> as.numeric()) |>
-    mutate(hets_scaled = scale(hets) |> as.numeric()) |>
-    mutate(cona_scaled = scale(cona) |> as.numeric()) |>
-    mutate(heta_scaled = scale(heta) |> as.numeric()) |>
-    mutate(logh_scaled = log(height) |> scale() |> as.numeric())
+    full_join(habitat, by = "qua")
 
 # seedling + trait
 # data with only traits are available
@@ -108,40 +104,38 @@ gen_seedling <- function(seedling_csv, trait_csv, habitat_csv, n_ab = 50) {
     dplyr::select(starts_with("pc"), sp))
 
   list(seedling = full_dat |>
-        dplyr::select(qua:logh_scaled),
+        dplyr::select(qua:habit5),
         trait = trait_re)
 
 }
 
 #targets::tar_load(data_list)
-gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
+#' @title Create data list for stan
+#' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
+gen_stan_dat <- function(data_list,
+                        season = "dry",
                         inter = TRUE,
-                        trait_set = c("cn", "wd", "pca", "sla_wd_lt")) {
-  seedling <- data_list$seedling |>
-    filter(season == {{season}})
-  if (habitat != "all") {
-  seedling<- seedling_dat |>
-    filter(habit3 == {{habitat}})
+                        trait_set = c("each", "pca"),
+                        one_inter = FALSE,
+                        scaling_within_seasons = FALSE
+                        ) {
+
+  # targets::tar_load(data_list)
+  seedling <- data_list$seedling
+  if (scaling_within_seasons) {
+    seedling <- data_list$seedling |>
+      filter(season == {{season}})
   }
 
-  if (trait_set == "cn") {
+  if (trait_set == "each") {
     trait <- data_list$trait |>
       dplyr::select(!starts_with("pc")) |>
       dplyr::select(-wd) |>
       dplyr::select(-cn) |>
       na.omit()
-  } else if (trait_set == "wd") {
-    trait <- data_list$trait |>
-      dplyr::select(!starts_with("pc")) |>
-      dplyr::select(-wd) |>
-      na.omit()
   } else if (trait_set == "pca") {
     trait <- data_list$trait |>
       dplyr::select(sp, pc1, pc2, pc3) |>
-      na.omit()
-  } else if (trait_set == "sla_wd_lt") {
-    trait <- data_list$trait |>
-      dplyr::select(sp, log_sla, log_lt, wd) |>
       na.omit()
   }
 
@@ -156,7 +150,6 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
 
   seedling_dat <- seedling |>
     filter(sp %in% sp_c)
-
 
   # sp-level matrix for the model
   Ud <- rbind(
@@ -180,19 +173,25 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
 
   cc <- which(lik == max(lik)) / 100
 
+  # Scaling will be done across seasons if (!scale_within_seasons)
+  # Scaling will be done within seasons if (scale_within_seasons)
   seedling_dat <- seedling_dat |>
+    mutate(cons_scaled = scale(cons) |> as.numeric()) |>
+    mutate(hets_scaled = scale(hets) |> as.numeric()) |>
+    mutate(logh_scaled = log(height) |> scale() |> as.numeric()) |>
     mutate(heta_scaled_c = as.numeric(scale(heta^cc))) |>
     mutate(cona_scaled_c = as.numeric(scale(cona^cc))) |>
     mutate(rain_scaled = as.numeric(scale(rainfall))) |>
     mutate(heta_rain = heta_scaled_c * rain_scaled) |>
     mutate(hets_rain = hets_scaled * rain_scaled) |>
     mutate(cona_rain = cona_scaled_c * rain_scaled) |>
-    mutate(cons_rain = cons_scaled * rain_scaled)
-
+    mutate(cons_rain = cons_scaled * rain_scaled) |>
+    filter(season == {{season}})
 
   if (inter) {
     Xd <- cbind(rep(1, nrow(seedling_dat)),
-                seedling_dat[,c("cons_scaled",
+                seedling_dat[,c( "logh_scaled",
+                                 "cons_scaled",
                                  "cona_scaled_c",
                                  "hets_scaled",
                                  "heta_scaled_c",
@@ -200,16 +199,28 @@ gen_stan_dat <- function(data_list, season = "dry", habitat = "all",
                                  "cons_rain",
                                  "cona_rain",
                                  "hets_rain",
-                                 "heta_rain",
-                                 "logh_scaled")])
+                                 "heta_rain"
+                                 )])
   } else  {
     Xd <- cbind(rep(1, nrow(seedling_dat)),
-                seedling_dat[,c("cons_scaled",
+                seedling_dat[,c( "logh_scaled",
+                                 "cons_scaled",
+                                 "cona_scaled_c",
+                                 "hets_scaled",
+                                 "heta_scaled_c",
+                                 "rain_scaled")])
+  }
+
+  if (one_inter) {
+    Xd <- cbind(rep(1, nrow(seedling_dat)),
+                seedling_dat[,c( "logh_scaled",
+                                 "cons_scaled",
                                  "cona_scaled_c",
                                  "hets_scaled",
                                  "heta_scaled_c",
                                  "rain_scaled",
-                                 "logh_scaled")])
+                                 "cona_rain"
+                                 )])
   }
 
   colnames(Xd)[1] <- "int"

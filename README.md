@@ -58,6 +58,11 @@ apptainer shell --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
 	radian.sif Rscript bash
 
+
+apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
+	--env RENV_PATHS_PREFIX_AUTO=TRUE \
+	radian.sif quarto render ms/SI.qmd --to pdf
+
 ```
 
 Requirements:
