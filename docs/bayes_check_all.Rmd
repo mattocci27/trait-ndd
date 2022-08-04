@@ -163,7 +163,7 @@ targets::tar_load(dry_each_int)
 fit1_gamma <- create_gamma_tab(fit1_tab, dry_each_int)
 
 fit1_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit1_gamma |>
   filter(trait_name == "intercept")
@@ -177,7 +177,7 @@ targets::tar_load(dry_each_oneint)
 fit0_gamma <- create_gamma_tab(fit0_tab, dry_each_oneint)
 
 fit0_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit0_gamma |>
   filter(trait_name == "intercept")
@@ -191,7 +191,7 @@ targets::tar_load(dry_each_noint)
 fit3_gamma <- create_gamma_tab(fit3_tab, dry_each_noint)
 
 fit3_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit3_gamma |>
   filter(trait_name == "intercept")
@@ -205,7 +205,7 @@ targets::tar_load(dry_pca_int)
 fit5_gamma <- create_gamma_tab(fit5_tab, dry_pca_int)
 
 fit5_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit5_gamma |>
   filter(trait_name == "intercept")
@@ -219,7 +219,7 @@ targets::tar_load(dry_pca_noint)
 fit7_gamma <- create_gamma_tab(fit7_tab, dry_pca_noint)
 
 fit7_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit7_gamma |>
   filter(trait_name == "intercept")
@@ -233,7 +233,7 @@ targets::tar_load(wet_each_int)
 fit2_gamma <- create_gamma_tab(fit2_tab, wet_each_int)
 
 fit2_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit2_gamma |>
   filter(trait_name == "intercept")
@@ -248,7 +248,7 @@ targets::tar_load(wet_each_noint)
 fit4_gamma <- create_gamma_tab(fit4_tab, wet_each_noint)
 
 fit4_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit4_gamma |>
   filter(trait_name == "intercept")
@@ -263,7 +263,7 @@ targets::tar_load(wet_pca_int)
 fit6_gamma <- create_gamma_tab(fit6_tab, wet_pca_int)
 
 fit6_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit6_gamma |>
   filter(trait_name == "intercept")
@@ -277,7 +277,7 @@ targets::tar_load(wet_pca_noint)
 fit8_gamma <- create_gamma_tab(fit8_tab, wet_pca_noint)
 
 fit8_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 
 fit8_gamma |>
   filter(trait_name == "intercept")

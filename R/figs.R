@@ -4,11 +4,11 @@ create_stan_tab <- function(draws) {
     janitor::clean_names() |>
     dplyr::select(contains(c("beta", "gamma")))
   mean_ <- apply(tmp, 2, mean)
-  lwr2_5 <- apply(tmp, 2, \(x)(quantile(x, 0.025)))
-  lwr5 <- apply(tmp, 2, \(x)(quantile(x, 0.05)))
-  upr97_5 <- apply(tmp, 2, \(x)(quantile(x, 0.975)))
-  upr95 <- apply(tmp, 2, \(x)(quantile(x, 0.9)))
-  tibble(para = names(mean_), mean_, lwr2_5, lwr5, upr95, upr97_5)
+  q2_5 <- apply(tmp, 2, \(x)(quantile(x, 0.025)))
+  q5 <- apply(tmp, 2, \(x)(quantile(x, 0.05)))
+  q97_5 <- apply(tmp, 2, \(x)(quantile(x, 0.975)))
+  q95 <- apply(tmp, 2, \(x)(quantile(x, 0.9)))
+  tibble(para = names(mean_), mean_, q2_5, q5, q95, q97_5)
 }
 
 #' @title Coef plot
@@ -35,11 +35,13 @@ coef_pointrange <- function(fit_gamma_dry, fit_gamma_wet, int = TRUE) {
   }
 
   fit_gamma_dry <- fit_gamma_dry |>
+    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns")) |>
     mutate(season = "Dry") |>
     filter(trait_name == "intercept") |>
     mutate(para = factor(para, levels = paste0("gamma_", 1:nrow(fit_gamma_dry), "_1") |> rev()))
 
   fit_gamma_wet <- fit_gamma_wet |>
+    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns")) |>
     mutate(season = "Rainy") |>
     filter(trait_name == "intercept") |>
     mutate(para = factor(para, levels = paste0("gamma_", 1:nrow(fit_gamma_wet), "_1") |> rev()))
@@ -52,10 +54,10 @@ coef_pointrange <- function(fit_gamma_dry, fit_gamma_wet, int = TRUE) {
     facet_grid(~season) +
     geom_vline(xintercept = 0, lty = 2, col = "grey40") +
     geom_linerange(
-      aes(xmin = lwr2_5, xmax = upr97_5, col = season),
+      aes(xmin = q2_5, xmax = q97_5, col = season),
     ) +
     geom_linerange(
-      aes(xmin = lwr5, xmax = upr95, col = season),
+      aes(xmin = q5, xmax = q95, col = season),
       size = 1.5,
     ) +
     geom_point(

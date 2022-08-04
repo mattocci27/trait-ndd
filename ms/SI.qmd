@@ -53,7 +53,7 @@ source(here("R", "stan.R"))
 ```{r, include=FALSE}
 dry_gamma <- read_csv(here("data", "dry_gamma.csv"))
 dry_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 dry_gamma |>
   filter(trait_name == "intercept")
 ```
@@ -104,14 +104,14 @@ gen_si_tab <- function(data) {
       trait_name == "log_sla" ~ "ln SLA",
       trait_name == "log_lt" ~ "ln LT")) |>
     mutate(mean_ = round(mean_, 3)) |>
-    mutate(mean_ = cell_spec(mean_, bold= ifelse(lwr2_5 * upr97_5 > 0, TRUE,FALSE))) |>
-    mutate(lwr2_5 = round(lwr2_5, 3)) |>
-    mutate(lwr5 = round(lwr5, 3)) |>
-    mutate(upr95 = round(upr95, 3)) |>
-    mutate(upr97_5 = round(upr97_5, 3)) |>
-    mutate(`90\\% CI` = paste0("[", lwr5, ", ", upr95, "]")) |>
-    mutate(`95\\% CI` = paste0("[", lwr2_5, ", ", upr97_5, "]")) |>
-    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(lwr2_5 * upr97_5 > 0, TRUE,FALSE))) |>
+    mutate(mean_ = cell_spec(mean_, bold= ifelse(q2_5 * q97_5 > 0, TRUE,FALSE))) |>
+    mutate(q2_5 = round(q2_5, 3)) |>
+    mutate(q5 = round(q5, 3)) |>
+    mutate(q95 = round(q95, 3)) |>
+    mutate(q97_5 = round(q97_5, 3)) |>
+    mutate(`90\\% CI` = paste0("[", q5, ", ", q95, "]")) |>
+    mutate(`95\\% CI` = paste0("[", q2_5, ", ", q97_5, "]")) |>
+    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(q2_5 * q97_5 > 0, TRUE,FALSE))) |>
     mutate(para = paste0(
       "$\\gamma_{",
       str_split_fixed(data$para, "_" ,3)[,2],
@@ -120,10 +120,10 @@ gen_si_tab <- function(data) {
       "}$")) |>
     rename(Parameter = para) |>
     rename(Mean = mean_) |>
-    rename(`Lower 2.5\\% CI` = lwr2_5) |>
-    rename(`Lower 5\\% CI` = lwr5) |>
-    rename(`Upper 95\\% CI` = upr95) |>
-    rename(`Upper 97.5\\% CI` = upr97_5) |>
+    rename(`Lower 2.5\\% CI` = q2_5) |>
+    rename(`Lower 5\\% CI` = q5) |>
+    rename(`Upper 95\\% CI` = q95) |>
+    rename(`Upper 97.5\\% CI` = q97_5) |>
     rename(`Individual-level predictor` = pred_name) |>
     rename(`Species-level predictor` = trait_name) |>
     # kable(format = "latex") #|>
@@ -160,7 +160,7 @@ Other details as for Table S1.
 ```{r, include=FALSE}
 wet_gamma <- read_csv(here("data", "wet_gamma.csv"))
 wet_gamma |>
-  filter(lwr2_5 * upr97_5 > 0)
+  filter(q2_5 * q97_5 > 0)
 wet_gamma |>
   filter(trait_name == "intercept")
 ```
