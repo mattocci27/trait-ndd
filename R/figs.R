@@ -129,3 +129,36 @@ coef_ridge <- function(fit_tab, stan_dat, draws) {
 }
 
 #' @title beta
+beta_plot <- function(fit_beta, fit_gamma,stan_data, x, y, x_lab, y_lab) {
+  tmp_beta <- fit_beta |>
+    filter(pred_name == paste(y))
+  gamma_slope <- fit_gamma |>
+    filter(pred_name == paste(y)) |>
+    filter(trait_name == paste(x))
+  gamma_int <- fit_gamma |>
+    filter(pred_name == paste(y)) |>
+    filter(trait_name == "intercept")
+  trait <- stan_data$u[paste(x), ]
+
+  tmp_para <- gamma_slope |>
+    pull(para) |>
+    str_split_fixed("_", 3)
+
+  beta_k <- tmp_beta$para |> str_split_fixed("_", 3)
+  k <- beta_k[, 2] |> unique()
+
+  hoge <- paste0("expression(", y_lab ,"(beta[paste(", k, ",',',", "j)]))")
+
+  beta_trait <- bind_cols(tmp_beta, trait = trait)
+
+  ggplot(beta_trait) +
+    geom_point(aes(x = trait, y = mean_)) +
+    geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5)) +
+    geom_abline(
+      slope = gamma_slope |> pull(mean_),
+      intercept = gamma_int |> pull(mean_)
+      ) +
+    xlab(x_lab) +
+    ylab(eval(parse(text = hoge))) +
+    theme_bw()
+}

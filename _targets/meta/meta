@@ -1,8 +1,20 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|4c26b9290d86f67f|||||||||||||||
+.Random.seed|object|65fb87359071b03a|||||||||||||||
 bayes_check_all_html|stem|41d8646a05e205ae|265fad80fffb9ea8|62d302474fa70296|-1832300251|docs/bayes_check_all.html*docs/bayes_check_all.Rmd|t19208.2740906577s|3a2051053a3f8e9a|1558025|file|local|vector|||1.836||
-bayes_check_html|stem|00728dd896034460|f075e5e250244bc5|b292b08f00f62e3e|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19208.6479283434s|26d59cdbf080faa7|1725706|file|local|vector|||3.025||
+bayes_check_html|stem|cb9da222301fcde1|e15b72d35230a489|e3127d8019127bc3|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19209.6583781993s|49573d7b4996f74f|1490955|file|local|vector|||2.739||
 bayes_check_pdf|stem||3700e8c4beb0b354|7b9e54ffa8878d6e|811837955||t19207.2643887309s||0|file|local|vector|||1.118|error in running command|LaTeX failed to compile bayes_check.tex. See httpsyihui.orgtinytexrdebugging for debugging tips. See bayes_check.log for more info.
+beta_cons_c|stem|d92bd5a5e0037f2f|e13f0af2babcc9d8|393effee13d0d026|-1079081701||t19209.4649489134s|8383c4af94fce8cb|587049|rds|local|vector|||0.159||
+beta_cons_chl|stem|1473041bba3ba3c3|e11f018c1b36c1a9|393effee13d0d026|1766953729||t19209.4649501634s|3845f11cc982c553|587059|rds|local|vector|||0.147||
+beta_cons_sdmc|stem|63f6efa75243a879|9065983e8faf7ce4|393effee13d0d026|43196374||t19209.4649515986s|a7a416bf50adbd72|587050|rds|local|vector|||0.143||
+beta_consrain_c13|stem|208699ad2a0db2f1|0e0088118b308288|ab52967d6c41f17d|1950443360||t19209.6580570896s|b23d7967cb7e13b8|586944|rds|local|vector|||0.174||
+beta_consrain_ldcm|stem|63435ce153277b79|e586f36a36c1c7b7|393effee13d0d026|-1136415527||t19209.6580582007s|87ac281dac6a0bc7|586884|rds|local|vector|||0.153||
+beta_consrain_ldmc|stem|63435ce153277b79|e586f36a36c1c7b7|393effee13d0d026|717720834||t19209.6583428754s|87ac281dac6a0bc7|586884|rds|local|vector|||0.159||
+beta_consrain_lt|stem|c123c775b196d32d|737f69875a141f38|393effee13d0d026|-397443416||t19209.6580603304s|6f6a3ccf3f73f330|586897|rds|local|vector|||0.151||
+beta_consrain_tlp|stem|b932d8d4586679bb|5402e42ea4aa9506|ab52967d6c41f17d|-114691714||t19209.6580612563s|bb15245037cb1d6e|586924|rds|local|vector|||0.139||
+beta_plot|function|6cdf7e1f1422785b|||||||||||||||
+beta_rain_c|stem|3a447ad2441e176f|8ae5262a13f47a36|ab52967d6c41f17d|1387758324||t19209.470790143s|53c66178c483a912|586959|rds|local|vector|||0.174||
+beta_rain_ldmc|stem|9223409e6e6c7d53|f7b31f49a1ed003e|393effee13d0d026|-2045908370||t19209.470793893s|8a5df9cd3690a57a|586902|rds|local|vector|||0.443||
+beta_rain_sla|stem|752149de6bd24e7c|227dd54c1b32d7a7|393effee13d0d026|644230715||t19209.470795143s|5c6b22ef3a6b9368|586917|rds|local|vector|||0.158||
 coef_pointrange|function|e051abb502e01df2|||||||||||||||
 coef_pointrange0|function|f8cc2d0a9117672b|||||||||||||||
 coef_ridge|function|9114335e7d5b95e8|||||||||||||||

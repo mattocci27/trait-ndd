@@ -127,6 +127,7 @@ The full list is available table S1 in a separate file.
 ```{r}
 fit9_gamma |>
   filter(q2_5 * q97_5 > 0) |>
+  arrange(para) |>
   mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
   kbl(format = "html", escape = FALSE) |>
   kable_styling(bootstrap_options = c("striped", "hover"))
@@ -190,6 +191,7 @@ The full list is available table S2 in a separate file.
 ```{r}
 fit10_gamma |>
   filter(q2_5 * q97_5 > 0) |>
+  arrange(para) |>
   mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
   kbl(format = "html", escape = FALSE) |>
   kable_styling(bootstrap_options = c("striped", "hover"))
@@ -237,7 +239,7 @@ x_lab <- "Chlorophyll"
 y_lab <- "ConS~effect~"
 ```
 
-```{r}
+```{r,eval=FALSE}
 beta_plot <- function(fit_beta, fit_gamma,stan_data, x, y, x_lab, y_lab) {
   tmp_beta <- fit_beta |>
     filter(pred_name == paste(y))
@@ -274,94 +276,38 @@ beta_plot <- function(fit_beta, fit_gamma,stan_data, x, y, x_lab, y_lab) {
 ```
 
 ```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "ldmc",
-          y = "rain_scaled",
-          x_lab = "LDMC",
-          y_lab  = "Rainfall~effect~")
+targets::tar_load(beta_cons_sdmc)
+targets::tar_load(beta_cons_chl)
+targets::tar_load(beta_cons_c)
+```
+
+
+```{r}
+beta_cons_sdmc + beta_cons_chl + beta_cons_c
 ```
 
 ```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "ldmc",
-          y = "cons_rain",
-          x_lab = "LDMC",
-          y_lab  = "ConS%*%Rainfall~effect~")
+targets::tar_load(beta_rain_ldmc)
+targets::tar_load(beta_rain_c)
+targets::tar_load(beta_rain_sla)
 ```
 
 ```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "sdmc",
-          y = "cons_scaled",
-          x_lab = "SDMC",
-          y_lab  = "ConS~effect~")
+beta_rain_ldmc + beta_rain_c + beta_rain_sla
 ```
 
 ```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "chl",
-          y = "cons_scaled",
-          x_lab = "Chlorophyll",
-          y_lab  = "ConS~effect~")
+targets::tar_load(beta_consrain_ldmc)
+targets::tar_load(beta_consrain_lt)
+targets::tar_load(beta_consrain_c13)
+targets::tar_load(beta_consrain_tlp)
 ```
 
 ```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "c13",
-          y = "rain_scaled",
-          x_lab = expression(delta*C[13]),
-          y_lab  = "Rainfall~effect~")
+beta_consrain_ldmc + beta_consrain_lt + beta_consrain_c13 + beta_consrain_tlp
 ```
 
-```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "c13",
-          y = "cons_rain",
-          x_lab = expression(delta*C[13]),
-          y_lab  = "ConS%*%Rainfall~effect~")
-```
 
-```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "c_mass",
-          y = "cons_scaled",
-          x_lab = "C",
-          y_lab  = "ConS~effect~")
-```
-
-```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "tlp",
-          y = "cons_rain",
-          x_lab = expression(pi[tlp]),
-          y_lab  = "ConS%*%Rainfall~effect~")
-```
-
-```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "log_sla",
-          y = "rain_scaled",
-          x_lab = "ln SLA",
-          y_lab  = "Rainfall~effect~")
-```
-
-```{r}
-beta_plot(fit9_beta, fit9_gamma,
-          stan_data = dry_each_int_s,
-          x = "log_lt",
-          y = "cons_rain",
-          x_lab = "ln LT",
-          y_lab  = "ConS%*%Rainfall~effect~")
-```
 
 # Session information
 
