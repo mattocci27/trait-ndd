@@ -575,9 +575,98 @@ list(
       paste0("figs/coef_trait_noint", c(".png", ".pdf"))
     },
     format = "file"
+  ),
+  # beta figs
+  tar_target(
+    beta_cons_sdmc,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "sdmc",
+          y = "cons_scaled",
+          x_lab = "SDMC",
+          y_lab  = "ConS~effect~")
+  ),
+  tar_target(
+    beta_cons_chl,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "chl",
+          y = "cons_scaled",
+          x_lab = "Chlorophyll",
+          y_lab  = "ConS~effect~")
+  ),
+  tar_target(
+    beta_cons_c,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "c_mass",
+          y = "cons_scaled",
+          x_lab = "C",
+          y_lab  = "ConS~effect~")
+  ),
+  tar_target(
+    beta_rain_ldmc,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "ldmc",
+          y = "rain_scaled",
+          x_lab = "LDMC",
+          y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_rain_c,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "c13",
+          y = "rain_scaled",
+          x_lab = expression(delta*C[13]),
+          y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_rain_sla,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "log_sla",
+          y = "rain_scaled",
+          x_lab = "ln SLA",
+          y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_consrain_ldmc,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "ldmc",
+          y = "cons_rain",
+          x_lab = "LDMC",
+          y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_consrain_lt,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "log_lt",
+          y = "cons_rain",
+          x_lab = "ln LT",
+          y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_consrain_c13,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "c13",
+          y = "cons_rain",
+          x_lab = expression(delta*C[13]),
+          y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_consrain_tlp,
+    beta_plot(fit9_beta, fit9_gamma,
+          stan_data = dry_each_int_s,
+          x = "tlp",
+          y = "cons_rain",
+          x_lab = expression(pi[tlp]),
+          y_lab  = "ConS%*%Rainfall~effect~")
   )
-
-
   # tar_target(
   #   dry_full_coef_data,
   #   create_stan_tab(fit_1_dry_full_int_draws_model_ind)
