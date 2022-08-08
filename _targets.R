@@ -390,9 +390,13 @@ list(
   #   "docs/bayes_check_all.Rmd",
   #   output_format = "html_document"
   # ),
+  # tar_quarto(
+  #   bayes_check_html,
+  #   "docs/bayes_check.qmd",
+  # ),
   tar_quarto(
-    bayes_check_html,
-    "docs/bayes_check.qmd",
+    test_html,
+    "docs/test.qmd",
   ),
   # tar_quarto(
   #   si_pdf,
@@ -582,8 +586,8 @@ list(
   ),
   # beta figs
   tar_target(
-    beta_dry_cons_sdmc,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_cons_sdmc_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "sdmc",
@@ -592,8 +596,8 @@ list(
           y_lab  = "ConS~effect~")
   ),
   tar_target(
-    beta_dry_cons_chl,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_cons_chl_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "chl",
@@ -602,8 +606,8 @@ list(
           y_lab  = "ConS~effect~")
   ),
   tar_target(
-    beta_dry_cons_c,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_cons_c_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "c_mass",
@@ -612,8 +616,8 @@ list(
           y_lab  = "ConS~effect~")
   ),
   tar_target(
-    beta_dry_rain_ldmc,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_rain_ldmc_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "ldmc",
@@ -622,8 +626,8 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_rain_c,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_rain_c_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "c13",
@@ -632,8 +636,8 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_rain_sla,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_rain_sla_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "log_sla",
@@ -642,8 +646,8 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_consrain_ldmc,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_consrain_ldmc_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "ldmc",
@@ -652,8 +656,8 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_consrain_lt,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_consrain_lt_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "log_lt",
@@ -662,8 +666,8 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_consrain_c13,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_consrain_c13_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "c13",
@@ -672,8 +676,8 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_consrain_tlp,
-    beta_plot(fit9_beta, fit9_gamma,
+    beta_dry_consrain_tlp_list,
+    generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
           x = "tlp",
@@ -682,44 +686,136 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_wet_rain_tlp,
-    beta_plot(fit10_beta, fit10_gamma,
+    beta_wet_rain_tlp_list,
+    generate_beta_list(fit10_beta, fit10_gamma,
           stan_data = wet_each_int_s,
           draws = fit_10_wet_each_int_s_draws_model_ind,
           x = "tlp",
           y = "rain_scaled",
           x_lab = expression(pi[tlp]),
           y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_rain_n_list,
+    generate_beta_list(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "n_mass",
+          y = "rain_scaled",
+          x_lab = "N",
+          y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_consrain_tlp_list,
+    generate_beta_list(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "tlp",
+          y = "cons_rain",
+          x_lab = expression(pi[tlp]),
+          y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_consrain_n_list,
+    generate_beta_list(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "n_mass",
+          y = "cons_rain",
+          x_lab = "N",
+          y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_dry_cons_sdmc,
+    beta_plot(beta_dry_cons_sdmc_list)
+  ),
+  tar_target(
+    beta_dry_cons_chl,
+    beta_plot(beta_dry_cons_chl_list)
+  ),
+  tar_target(
+    beta_dry_cons_c,
+    beta_plot(beta_dry_cons_c_list)
+  ),
+  tar_target(
+    beta_dry_rain_ldmc,
+    beta_plot(beta_dry_rain_ldmc_list)
+  ),
+  tar_target(
+    beta_dry_rain_sla,
+    beta_plot(beta_dry_rain_sla_list)
+  ),
+  tar_target(
+    beta_dry_rain_c,
+    beta_plot(beta_dry_rain_c_list)
+  ),
+
+  tar_target(
+    beta_dry_consrain_ldmc,
+    beta_plot(beta_dry_consrain_ldmc_list)
+  ),
+  tar_target(
+    beta_dry_consrain_lt,
+    beta_plot(beta_dry_consrain_lt_list)
+  ),
+  tar_target(
+    beta_dry_consrain_tlp,
+    beta_plot(beta_dry_consrain_tlp_list)
+  ),
+  tar_target(
+    beta_dry_consrain_c13,
+    beta_plot(beta_dry_consrain_c13_list)
+  ),
+
+  tar_target(
+    beta_wet_rain_tlp,
+    beta_plot(beta_wet_rain_tlp_list)
   ),
   tar_target(
     beta_wet_rain_n,
-    beta_plot(fit10_beta, fit10_gamma,
-          stan_data = wet_each_int_s,
-          draws = fit_10_wet_each_int_s_draws_model_ind,
-          x = "n_mass",
-          y = "rain_scaled",
-          x_lab = "N",
-          y_lab  = "Rainfall~effect~")
+    beta_plot(beta_wet_rain_n_list)
   ),
   tar_target(
     beta_wet_consrain_tlp,
-    beta_plot(fit10_beta, fit10_gamma,
-          stan_data = wet_each_int_s,
-          draws = fit_10_wet_each_int_s_draws_model_ind,
-          x = "tlp",
-          y = "cons_rain",
-          x_lab = expression(pi[tlp]),
-          y_lab  = "ConS%*%Rainfall~effect~")
+    beta_plot(beta_wet_rain_tlp_list)
   ),
   tar_target(
     beta_wet_consrain_n,
-    beta_plot(fit10_beta, fit10_gamma,
-          stan_data = wet_each_int_s,
-          draws = fit_10_wet_each_int_s_draws_model_ind,
-          x = "n_mass",
-          y = "cons_rain",
-          x_lab = "N",
-          y_lab  = "ConS%*%Rainfall~effect~")
+    beta_plot(beta_wet_consrain_n_list)
+  ),
+
+  tar_target(
+    beta_dry_plot, {
+    p <- beta_comb_plot(
+      beta_dry_cons_sdmc,
+      beta_dry_cons_c,
+      beta_dry_cons_chl,
+
+      beta_dry_rain_ldmc,
+      beta_dry_rain_sla,
+      beta_dry_rain_c,
+
+      beta_dry_consrain_ldmc,
+      beta_dry_consrain_tlp,
+      beta_dry_consrain_c13,
+      beta_dry_consrain_lt)
+
+      ggsave(
+        "figs/beta_dry.png",
+        p,
+        dpi = 300,
+        width = 7.25,
+        height = 7.25
+      )
+      ggsave(
+        "figs/beta_dry.pdf",
+        p,
+        width = 7.25,
+        height = 7.25
+      )
+      paste0("figs/beta_dry", c(".png", ".pdf"))
+    },
+    format = "file"
   )
 
   # tar_target(

@@ -127,20 +127,8 @@ coef_ridge <- function(fit_tab, stan_dat, draws) {
     theme_bw()
 }
 
-#' @title beta
-  #          x = "chl"
-  #          y = "cons_scaled"
-  #          targets::tar_load(dry_each_int_s)
-  #         stan_data = dry_each_int_s
-  # targets::tar_load(fit_9_dry_each_int_s_draws_model_ind)
-  # targets::tar_load(fit9_gamma)
-  # fit_gamma <- fit9_gamma
-  # targets::tar_load(fit9_beta)
-  # fit_beta <- fit9_beta
-  # draws <- fit_9_dry_each_int_s_draws_model_ind
-  #         x_lab = "SDMC"
-  #         y_lab  = "ConS~effect~"
-beta_plot <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_lab, y_lab) {
+#' @title generate beta plot data (takes time)
+generate_beta_list <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_lab, y_lab) {
   tmp_beta <- fit_beta |>
     filter(pred_name == paste(y))
   gamma_slope <- fit_gamma |>
@@ -185,26 +173,48 @@ beta_plot <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_lab, y_lab)
 
   pred_lin <- matrix(unlist(tmp2$y), ncol = nrow(draws), byrow = FALSE) |> t()
   # dim(pred_lin)
-
   df_pred_lin <- tidy_predictions(pred_lin, new_data)
 
-  ggplot(beta_trait) +
+  list(
+    beta_trait = beta_trait,
+    df_pred_lin = df_pred_lin,
+    x_lab  = x_lab,
+    y_lab  = y_lab_parse
+    )
+}
+
+
+#' @title beta
+  #          x = "chl"
+  #          y = "cons_scaled"
+  #          targets::tar_load(dry_each_int_s)
+  #         stan_data = dry_each_int_s
+  # targets::tar_load(fit_9_dry_each_int_s_draws_model_ind)
+  # targets::tar_load(fit9_gamma)
+  # fit_gamma <- fit9_gamma
+  # targets::tar_load(fit9_beta)
+  # fit_beta <- fit9_beta
+  # draws <- fit_9_dry_each_int_s_draws_model_ind
+  #         x_lab = "SDMC"
+  #         y_lab  = "ConS~effect~"
+beta_plot <- function(list_data) {
+  ggplot(list_data$beta_trait) +
     geom_point(aes(x = trait, y = mean_)) +
     geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5)) +
     geom_ribbon(
-      data = df_pred_lin,
+      data = list_data$df_pred_lin,
       aes(ymin = lower, ymax = upper, x = x_lt),
       alpha = 0.4,
       fill = "grey60"
     ) +
     geom_line(
       aes(y = mean, x = x_lt),
-      data = df_pred_lin,
+      data = list_data$df_pred_lin,
       # colour = "#3366FF",
       size = 1
     ) +
-    xlab(x_lab) +
-    ylab(eval(parse(text = y_lab_parse))) +
+    xlab(list_data$x_lab) +
+    ylab(eval(parse(text = list_data$y_lab_parse))) +
     theme_bw()
 }
 
@@ -243,4 +253,11 @@ tidy_predictions <- function(
     ) |>
     left_join(df_data, by = obs_name)
 
+}
+
+
+beta_comb_plot <- function(p1, p2, p3){
+  (p1 + p2 + p3 + plot_spacer()) /
+  (p4 + p5 + p6 + plot_spacer()) /
+  (p7 + p8 + p9 + p10)
 }
