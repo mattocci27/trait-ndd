@@ -185,36 +185,39 @@ generate_beta_list <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_la
 
 
 #' @title beta
-  #          x = "chl"
-  #          y = "cons_scaled"
-  #          targets::tar_load(dry_each_int_s)
-  #         stan_data = dry_each_int_s
-  # targets::tar_load(fit_9_dry_each_int_s_draws_model_ind)
-  # targets::tar_load(fit9_gamma)
-  # fit_gamma <- fit9_gamma
-  # targets::tar_load(fit9_beta)
-  # fit_beta <- fit9_beta
-  # draws <- fit_9_dry_each_int_s_draws_model_ind
-  #         x_lab = "SDMC"
-  #         y_lab  = "ConS~effect~"
-beta_plot <- function(list_data) {
+beta_plot <- function(list_data, rain = FALSE) {
+  my_col <- brewer.pal(5, "RdBu")
+  if (!rain) {
+    my_col1 <- my_col[1]
+    my_col2 <- my_col[2]
+  } else {
+    my_col1 <- my_col[5]
+    my_col2 <- my_col[4]
+  }
   ggplot(list_data$beta_trait) +
-    geom_point(aes(x = trait, y = mean_)) +
-    geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5)) +
     geom_ribbon(
       data = list_data$df_pred_lin,
       aes(ymin = lower, ymax = upper, x = x_lt),
       alpha = 0.4,
-      fill = "grey60"
+      #fill = "grey60"
+      fill = my_col2
     ) +
     geom_line(
       aes(y = mean, x = x_lt),
       data = list_data$df_pred_lin,
-      # colour = "#3366FF",
-      size = 1
+      colour = my_col1,
+      size = 0.5
     ) +
+    geom_point(aes(x = trait, y = mean_),
+      colour = my_col1,
+      size = 0.5
+      ) +
+    geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5),
+      colour = my_col1,
+      size = 0.2
+      ) +
     xlab(list_data$x_lab) +
-    ylab(eval(parse(text = list_data$y_lab_parse))) +
+    ylab(eval(parse(text = list_data$y_lab))) +
     theme_bw()
 }
 
@@ -256,8 +259,22 @@ tidy_predictions <- function(
 }
 
 
-beta_comb_plot <- function(p1, p2, p3){
-  (p1 + p2 + p3 + plot_spacer()) /
-  (p4 + p5 + p6 + plot_spacer()) /
-  (p7 + p8 + p9 + p10)
+beta_dry_comb_plot <- function(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10){
+  p1 + p2 + p3 + plot_spacer() +
+  p4 + p5 + p6 + plot_spacer() +
+  p7 + p8 + p9 + p10 + plot_layout(ncol = 4, nrow = 3) +
+   plot_annotation(tag_levels = "A") &
+   theme(
+    text = element_text(size = 8),
+     plot.tag = element_text(face = "bold")
+    )
+}
+
+beta_wet_comb_plot <- function(p1, p2, p3, p4){
+  p1 + p2 + p3 + p4 + plot_layout(ncol = 2, nrow = 2) +
+   plot_annotation(tag_levels = "A") &
+   theme(
+    text = element_text(size = 8),
+     plot.tag = element_text(face = "bold")
+    )
 }

@@ -1,0 +1,56 @@
+---
+title: "test"
+author: "Masatoshi Katabuchi"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+format:
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+params:
+  your_param: "default value"
+---
+
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.show = "hold"
+)
+```
+
+
+# Setup
+
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(patchwork)
+library(here)
+```
+
+```{r}
+source(here("R", "stan.R"))
+source(here("R", "figs.R"))
+```
+
+
+```{r, eval=FALSE}
+targets::tar_load(beta_dry_consrain_ldmc)
+beta_dry_consrain_ldmc
+```
+
+```{r, eval=FALSE}
+targets::tar_load(beta_dry_consrain_ldmc_list)
+beta_plot(beta_dry_consrain_ldmc_list)
+```
