@@ -394,10 +394,10 @@ list(
   #   bayes_check_html,
   #   "docs/bayes_check.qmd",
   # ),
-  tar_quarto(
-    test_html,
-    "docs/test.qmd",
-  ),
+  # tar_quarto(
+  #   test_html,
+  #   "docs/test.qmd",
+  # ),
   # tar_quarto(
   #   si_pdf,
   #   "ms/SI.qmd"
@@ -626,7 +626,7 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_dry_rain_c_list,
+    beta_dry_rain_c13_list,
     generate_beta_list(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -723,7 +723,7 @@ list(
           x = "n_mass",
           y = "cons_rain",
           x_lab = "N",
-          y_lab  = "ConS%*%Rainfall~effect~")
+          y_lab  = "ConS%*%Rainfall\n~effect~")
   ),
   tar_target(
     beta_dry_cons_sdmc,
@@ -746,8 +746,8 @@ list(
     beta_plot(beta_dry_rain_sla_list)
   ),
   tar_target(
-    beta_dry_rain_c,
-    beta_plot(beta_dry_rain_c_list)
+    beta_dry_rain_c13,
+    beta_plot(beta_dry_rain_c13_list)
   ),
 
   tar_target(
@@ -769,51 +769,76 @@ list(
 
   tar_target(
     beta_wet_rain_tlp,
-    beta_plot(beta_wet_rain_tlp_list)
+    beta_plot(beta_wet_rain_tlp_list, rain = TRUE)
   ),
   tar_target(
     beta_wet_rain_n,
-    beta_plot(beta_wet_rain_n_list)
+    beta_plot(beta_wet_rain_n_list, rain = TRUE)
   ),
   tar_target(
     beta_wet_consrain_tlp,
-    beta_plot(beta_wet_rain_tlp_list)
+    beta_plot(beta_wet_consrain_tlp_list, rain = TRUE)
   ),
   tar_target(
     beta_wet_consrain_n,
-    beta_plot(beta_wet_consrain_n_list)
+    beta_plot(beta_wet_consrain_n_list, rain = TRUE)
   ),
 
   tar_target(
     beta_dry_plot, {
-    p <- beta_comb_plot(
+    p <- beta_dry_comb_plot(
       beta_dry_cons_sdmc,
       beta_dry_cons_c,
       beta_dry_cons_chl,
-
       beta_dry_rain_ldmc,
+      beta_dry_rain_c13,
       beta_dry_rain_sla,
-      beta_dry_rain_c,
-
       beta_dry_consrain_ldmc,
       beta_dry_consrain_tlp,
       beta_dry_consrain_c13,
       beta_dry_consrain_lt)
-
       ggsave(
         "figs/beta_dry.png",
         p,
         dpi = 300,
-        width = 7.25,
-        height = 7.25
+        width = 173,
+        height = 130,
+        units = "mm"
       )
       ggsave(
         "figs/beta_dry.pdf",
         p,
-        width = 7.25,
-        height = 7.25
+        width = 173,
+        height = 130,
+        units = "mm"
       )
       paste0("figs/beta_dry", c(".png", ".pdf"))
+    },
+    format = "file"
+  ),
+  tar_target(
+    beta_wet_plot, {
+    p <- beta_wet_comb_plot(
+      beta_wet_consrain_n,
+      beta_wet_consrain_tlp,
+      beta_wet_rain_n,
+      beta_wet_rain_tlp)
+      ggsave(
+        "figs/beta_wet.png",
+        p,
+        dpi = 300,
+        width = 110,
+        height = 110,
+        units = "mm"
+      )
+      ggsave(
+        "figs/beta_wet.pdf",
+        p,
+        width = 110,
+        height = 110,
+        units = "mm"
+      )
+      paste0("figs/beta_wet", c(".png", ".pdf"))
     },
     format = "file"
   )

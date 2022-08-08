@@ -1,7 +1,7 @@
 #For general run
-# targets::tar_make_clustermq(
-#  workers = parallel::detectCores()
-# )
+targets::tar_make_clustermq(
+ workers = parallel::detectCores()
+)
 
 #For single thread
 #targets::tar_make()
@@ -14,6 +14,6 @@
 
 # For building mcmc draws, diagnostics, summary
 # this needs huge RAM
-targets::tar_make_clustermq(
-  workers = 2
-)
+# targets::tar_make_clustermq(
+#   workers = 2
+# )
