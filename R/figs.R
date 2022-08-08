@@ -99,7 +99,6 @@ coef_ridge <- function(fit_tab, stan_dat, draws) {
     mutate(pred_name = rep(x_name,  n_sp)) |>
     mutate(sp_name = rep(paste0("sp_", 1:n_sp), each = length(x_name)))
 
-
   tmp <- draws |>
       janitor::clean_names() |>
       dplyr::select(contains(c("beta")))
@@ -129,7 +128,19 @@ coef_ridge <- function(fit_tab, stan_dat, draws) {
 }
 
 #' @title beta
-beta_plot <- function(fit_beta, fit_gamma,stan_data, x, y, x_lab, y_lab) {
+  #          x = "chl"
+  #          y = "cons_scaled"
+  #          targets::tar_load(dry_each_int_s)
+  #         stan_data = dry_each_int_s
+  # targets::tar_load(fit_9_dry_each_int_s_draws_model_ind)
+  # targets::tar_load(fit9_gamma)
+  # fit_gamma <- fit9_gamma
+  # targets::tar_load(fit9_beta)
+  # fit_beta <- fit9_beta
+  # draws <- fit_9_dry_each_int_s_draws_model_ind
+  #         x_lab = "SDMC"
+  #         y_lab  = "ConS~effect~"
+beta_plot <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_lab, y_lab) {
   tmp_beta <- fit_beta |>
     filter(pred_name == paste(y))
   gamma_slope <- fit_gamma |>
@@ -147,18 +158,89 @@ beta_plot <- function(fit_beta, fit_gamma,stan_data, x, y, x_lab, y_lab) {
   beta_k <- tmp_beta$para |> str_split_fixed("_", 3)
   k <- beta_k[, 2] |> unique()
 
-  hoge <- paste0("expression(", y_lab ,"(beta[paste(", k, ",',',", "j)]))")
+  y_lab_parse <- paste0("expression(", y_lab ,"(beta[paste(", k, ",',',", "j)]))")
 
   beta_trait <- bind_cols(tmp_beta, trait = trait)
+
+  x_steps <- seq(min(beta_trait$trait), max(beta_trait$trait), length = 80)
+  new_data <- tibble(
+    observation = seq_along(x_steps) |> as.character(),
+    x_lt = x_steps)
+
+#  tic()
+  tmp <- draws |>
+    janitor::clean_names() |>
+    dplyr::select(
+      gamma_int |> pull(para),
+      gamma_slope |> pull(para))
+#  toc()
+
+  colnames(tmp) <- c("gamma_int_draw", "gamma_slope_draw")
+
+  tmp2 <- tmp |>
+    mutate(rep = paste0("rep", 1:nrow(tmp))) |>
+    nest(data = c(gamma_int_draw, gamma_slope_draw)) |>
+    mutate(x = list(new_data$x_lt)) |>
+    mutate(y = map2(x, data, \(x, data) {data$gamma_int_draw + data$gamma_slope_draw * x}))
+
+  pred_lin <- matrix(unlist(tmp2$y), ncol = nrow(draws), byrow = FALSE) |> t()
+  # dim(pred_lin)
+
+  df_pred_lin <- tidy_predictions(pred_lin, new_data)
 
   ggplot(beta_trait) +
     geom_point(aes(x = trait, y = mean_)) +
     geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5)) +
-    geom_abline(
-      slope = gamma_slope |> pull(mean_),
-      intercept = gamma_int |> pull(mean_)
-      ) +
+    geom_ribbon(
+      data = df_pred_lin,
+      aes(ymin = lower, ymax = upper, x = x_lt),
+      alpha = 0.4,
+      fill = "grey60"
+    ) +
+    geom_line(
+      aes(y = mean, x = x_lt),
+      data = df_pred_lin,
+      # colour = "#3366FF",
+      size = 1
+    ) +
     xlab(x_lab) +
-    ylab(eval(parse(text = hoge))) +
+    ylab(eval(parse(text = y_lab_parse))) +
     theme_bw()
+}
+
+#' @title predicitons for beta
+#' @para mat_pred dataframe for MCMC draws of mean predictions (n.mcmc x 80)
+#' @para df_pred dataframe for trait (80 x 2)
+#' @ref https://www.tjmahr.com/visualizing-uncertainty-rstanarm/
+tidy_predictions <- function(
+  mat_pred,
+  df_data,
+  obs_name = "observation",
+  prob_lwr = .025,
+  prob_upr = .975
+) {
+  # Get dataframe with one row per fitted value per posterior sample
+  df_pred <- mat_pred |>
+    as_tibble() |>
+    setNames(seq_len(ncol(mat_pred))) |>
+    tibble::rownames_to_column("posterior_sample") |>
+    tidyr::pivot_longer(
+      cols = c(-posterior_sample),
+      names_to = obs_name,
+      values_to = "fitted"
+    )
+
+  # Helps with joining later
+  class(df_pred[[obs_name]]) <- class(df_data[[obs_name]])
+
+  # Summarise prediction interval for each observation
+  df_pred |>
+    group_by(.data[[obs_name]]) |>
+    summarise(
+      mean = mean(fitted),
+      lower = quantile(fitted, prob_lwr),
+      upper = quantile(fitted, prob_upr)
+    ) |>
+    left_join(df_data, by = obs_name)
+
 }
