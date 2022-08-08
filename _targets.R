@@ -5,7 +5,7 @@ library(stantargets)
 library(cmdstanr)
 library(furrr)
 library(languageserver)
-library(quarto)
+# library(quarto)
 
 source("R/data_clean.R")
 source("R/data_check.R")
@@ -380,15 +380,19 @@ list(
   #   output_format = "html_document"
   #   #knit_root_dir = here::here()
   # ),
-  tar_render(
+  # tar_render(
+  #   bayes_check_html,
+  #   "docs/bayes_check.Rmd",
+  #   output_format = "html_document"
+  # ),
+  # tar_render(
+  #   bayes_check_all_html,
+  #   "docs/bayes_check_all.Rmd",
+  #   output_format = "html_document"
+  # ),
+  tar_quarto(
     bayes_check_html,
-    "docs/bayes_check.Rmd",
-    output_format = "html_document"
-  ),
-  tar_render(
-    bayes_check_all_html,
-    "docs/bayes_check_all.Rmd",
-    output_format = "html_document"
+    "docs/bayes_check.qmd",
   ),
   # tar_quarto(
   #   si_pdf,
@@ -578,7 +582,7 @@ list(
   ),
   # beta figs
   tar_target(
-    beta_cons_sdmc,
+    beta_dry_cons_sdmc,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -588,7 +592,7 @@ list(
           y_lab  = "ConS~effect~")
   ),
   tar_target(
-    beta_cons_chl,
+    beta_dry_cons_chl,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -598,7 +602,7 @@ list(
           y_lab  = "ConS~effect~")
   ),
   tar_target(
-    beta_cons_c,
+    beta_dry_cons_c,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -608,7 +612,7 @@ list(
           y_lab  = "ConS~effect~")
   ),
   tar_target(
-    beta_rain_ldmc,
+    beta_dry_rain_ldmc,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -618,7 +622,7 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_rain_c,
+    beta_dry_rain_c,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -628,7 +632,7 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_rain_sla,
+    beta_dry_rain_sla,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -638,7 +642,7 @@ list(
           y_lab  = "Rainfall~effect~")
   ),
   tar_target(
-    beta_consrain_ldmc,
+    beta_dry_consrain_ldmc,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -648,7 +652,7 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_consrain_lt,
+    beta_dry_consrain_lt,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -658,7 +662,7 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_consrain_c13,
+    beta_dry_consrain_c13,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -668,7 +672,7 @@ list(
           y_lab  = "ConS%*%Rainfall~effect~")
   ),
   tar_target(
-    beta_consrain_tlp,
+    beta_dry_consrain_tlp,
     beta_plot(fit9_beta, fit9_gamma,
           stan_data = dry_each_int_s,
           draws = fit_9_dry_each_int_s_draws_model_ind,
@@ -676,8 +680,47 @@ list(
           y = "cons_rain",
           x_lab = expression(pi[tlp]),
           y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_rain_tlp,
+    beta_plot(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "tlp",
+          y = "rain_scaled",
+          x_lab = expression(pi[tlp]),
+          y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_rain_n,
+    beta_plot(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "n_mass",
+          y = "rain_scaled",
+          x_lab = "N",
+          y_lab  = "Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_consrain_tlp,
+    beta_plot(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "tlp",
+          y = "cons_rain",
+          x_lab = expression(pi[tlp]),
+          y_lab  = "ConS%*%Rainfall~effect~")
+  ),
+  tar_target(
+    beta_wet_consrain_n,
+    beta_plot(fit10_beta, fit10_gamma,
+          stan_data = wet_each_int_s,
+          draws = fit_10_wet_each_int_s_draws_model_ind,
+          x = "n_mass",
+          y = "cons_rain",
+          x_lab = "N",
+          y_lab  = "ConS%*%Rainfall~effect~")
   )
-
 
   # tar_target(
   #   dry_full_coef_data,
