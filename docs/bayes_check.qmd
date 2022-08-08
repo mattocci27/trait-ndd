@@ -2,19 +2,19 @@
 title: "Diagnostics for MCMC"
 author: "Masatoshi Katabuchi"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
-output:
-  html_document:
-    fig_caption: yes
+format:
+  html:
     theme: spacelab #readable #sandstone #spacelab #flatly
-    highlight: pygments #tango #kate
-    toc: TRUE
-    toc_depth: 2
-    number_sections: TRUE
-    toc_float:
-     collapsed: TRUE
-     smooth_scroll: TRUE
-     toc: true
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+params:
+  your_param: "default value"
 ---
+
 
 Here we diagnose model convergence and divergent transitions, then we check parameters that are significantly different from zero.
 All codes are in R or Stan, and workflow is managed with the R `targets` package (https://github.com/ropensci/targets).
@@ -31,6 +31,7 @@ knitr::opts_chunk$set(
   fig.show = "hold"
 )
 ```
+
 
 # Setup
 

@@ -1,20 +1,34 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|7d9c866fa30690f8|||||||||||||||
-bayes_check_all_html|stem|41d8646a05e205ae|265fad80fffb9ea8|62d302474fa70296|-1832300251|docs/bayes_check_all.html*docs/bayes_check_all.Rmd|t19208.2740906577s|3a2051053a3f8e9a|1558025|file|local|vector|||1.836||
-bayes_check_html|stem|0f27ec889af18e9d|e15b72d35230a489|233cc2c0fe76b363|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19212.2740031353s|2ea1c9ff165ef48b|1630140|file|local|vector|||9.78||
+.Random.seed|object|525840a795753a9c|||||||||||||||
+bayes_check_all_html|stem|de79de354ed3a7a3|27b8a399a5a7fa38|943b0509e6091439|-1832300251|docs/bayes_check_all.html*docs/bayes_check_all.Rmd|t19212.3429614621s|34f494256d883e8d|120366|file|local|vector|||5.564||
+bayes_check_html|stem|9fe5703dbb137323|4a4a2a419a7ae406|6c0c7dc411b2732a|-192214636|docs/bayes_check.html*docs/bayes_check.qmd|t19212.3580365026s|f724f7d8a4c1edff|1504087|file|local|vector|||382.921||
 bayes_check_pdf|stem||3700e8c4beb0b354|7b9e54ffa8878d6e|811837955||t19207.2643887309s||0|file|local|vector|||1.118|error in running command|LaTeX failed to compile bayes_check.tex. See httpsyihui.orgtinytexrdebugging for debugging tips. See bayes_check.log for more info.
-beta_cons_c|stem|d92bd5a5e0037f2f|e13f0af2babcc9d8|393effee13d0d026|-1079081701||t19209.4649489134s|8383c4af94fce8cb|587049|rds|local|vector|||0.159||
-beta_cons_chl|stem|1473041bba3ba3c3|e11f018c1b36c1a9|393effee13d0d026|1766953729||t19209.4649501634s|3845f11cc982c553|587059|rds|local|vector|||0.147||
-beta_cons_sdmc|stem|f8cba0ca26df853a|3b3456da8a1b0784|763346226d5ae6ef|43196374||t19212.2738037765s|490e69a4eb408d72|1341808351|rds|local|vector|||13.797|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
-beta_consrain_c13|stem|208699ad2a0db2f1|0e0088118b308288|ab52967d6c41f17d|1950443360||t19209.6580570896s|b23d7967cb7e13b8|586944|rds|local|vector|||0.174||
+beta_cons_c|stem|b0a7271009a7da85|86446430264d9071|7bbc758e90ca0163|-1079081701||t19212.283755863s|663b4aa333438690|1341806425|rds|local|vector|||14.807||
+beta_cons_chl|stem|d030264818288ed9|23df825b6291fbb5|7bbc758e90ca0163|1766953729||t19212.2843870822s|3b2cbd045a1eed81|1341790303|rds|local|vector|||14.826||
+beta_cons_sdmc|stem|2ae98b0aff672ed0|3b3456da8a1b0784|7bbc758e90ca0163|43196374||t19212.2823189754s|53f250a22adbc3dd|1341808265|rds|local|vector|||15.066|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
+beta_consrain_c13|stem|a202c3f344770d7f|492920fcc0ce90d7|8f8c51dd3f9e81f0|1950443360||t19212.2796827959s|3aecdda99382a748|1341806738|rds|local|vector|||14.991|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
 beta_consrain_ldcm|stem|63435ce153277b79|e586f36a36c1c7b7|393effee13d0d026|-1136415527||t19209.6580582007s|87ac281dac6a0bc7|586884|rds|local|vector|||0.153||
-beta_consrain_ldmc|stem|63435ce153277b79|e586f36a36c1c7b7|393effee13d0d026|717720834||t19209.6583428754s|87ac281dac6a0bc7|586884|rds|local|vector|||0.159||
-beta_consrain_lt|stem|c123c775b196d32d|737f69875a141f38|393effee13d0d026|-397443416||t19209.6580603304s|6f6a3ccf3f73f330|586897|rds|local|vector|||0.151||
-beta_consrain_tlp|stem|b932d8d4586679bb|5402e42ea4aa9506|6ee51e396729aa96|-114691714||t19209.6580612563s||586924|rds|local|vector|||0.052||object fit9_gamma not found
-beta_plot|function|a6477fd24b120ded|||||||||||||||
-beta_rain_c|stem|3a447ad2441e176f|8ae5262a13f47a36|ab52967d6c41f17d|1387758324||t19209.470790143s|53c66178c483a912|586959|rds|local|vector|||0.174||
-beta_rain_ldmc|stem|9223409e6e6c7d53|f7b31f49a1ed003e|393effee13d0d026|-2045908370||t19209.470793893s|8a5df9cd3690a57a|586902|rds|local|vector|||0.443||
-beta_rain_sla|stem|752149de6bd24e7c|227dd54c1b32d7a7|393effee13d0d026|644230715||t19209.470795143s|5c6b22ef3a6b9368|586917|rds|local|vector|||0.158||
+beta_consrain_ldmc|stem|bc84ec97cce537b8|6c9c283055a65296|7bbc758e90ca0163|717720834||t19212.285041774s|21a8dae069a3b71b|1341804633|rds|local|vector|||14.936||
+beta_consrain_lt|stem|0e4ff3bb5f8fbb8f|4069a4a5b326f2d4|7bbc758e90ca0163|-397443416||t19212.2805989776s|2a3ddffc0736bd3d|1341793758|rds|local|vector|||27.31|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
+beta_consrain_tlp|stem|93f2c40b3ce972de|f620178694c66cf9|8f8c51dd3f9e81f0|-114691714||t19212.2856844746s|a75003b715ef3acd|1341809281|rds|local|vector|||14.971||
+beta_dry_cons_c|stem|b0a7271009a7da85|86446430264d9071|7bbc758e90ca0163|-1776167563||t19212.2967003906s|663b4aa333438690|1341806425|rds|local|vector|||14.427||
+beta_dry_cons_chl|stem|d030264818288ed9|23df825b6291fbb5|7bbc758e90ca0163|-1570648869||t19212.298791783s|3b2cbd045a1eed81|1341790303|rds|local|vector|||14.395||
+beta_dry_cons_sdmc|stem|2ae98b0aff672ed0|3b3456da8a1b0784|7bbc758e90ca0163|-1159126890||t19212.2994512763s|53f250a22adbc3dd|1341808265|rds|local|vector|||14.846||
+beta_dry_consrain_c13|stem|a202c3f344770d7f|492920fcc0ce90d7|8f8c51dd3f9e81f0|-1164950705||t19212.3000894274s|3aecdda99382a748|1341806738|rds|local|vector|||14.846||
+beta_dry_consrain_ldmc|stem|bc84ec97cce537b8|6c9c283055a65296|7bbc758e90ca0163|-1681822056||t19212.3007348476s|21a8dae069a3b71b|1341804633|rds|local|vector|||14.41||
+beta_dry_consrain_lt|stem|0e4ff3bb5f8fbb8f|4069a4a5b326f2d4|7bbc758e90ca0163|400375607||t19212.3013914719s|2a3ddffc0736bd3d|1341793758|rds|local|vector|||14.387||
+beta_dry_consrain_tlp|stem|93f2c40b3ce972de|f620178694c66cf9|8f8c51dd3f9e81f0|1059974811||t19212.3020659209s|a75003b715ef3acd|1341809281|rds|local|vector|||14.496||
+beta_dry_rain_c|stem|90427c5a7fc74c7c|056e702c064f34ae|8f8c51dd3f9e81f0|1481973989||t19212.298136457s|73862a2605e686f7|1341777917|rds|local|vector|||14.436||
+beta_dry_rain_ldmc|stem|151623b68e0f36b7|67578f2bcff1e765|7bbc758e90ca0163|-1335871147||t19212.2972691871s|9b19489448fd99e5|1341799566|rds|local|vector|||14.496||
+beta_dry_rain_sla|stem|bb74179bc96b4dec|b8dc7b2e2938de8a|7bbc758e90ca0163|1696108960||t19212.3026348139s|4ec4ca1bcb04983a|1341796395|rds|local|vector|||14.474||
+beta_plot|function|d2afab7d9fe9d366|||||||||||||||
+beta_rain_c|stem|90427c5a7fc74c7c|056e702c064f34ae|8f8c51dd3f9e81f0|1387758324||t19212.2863411569s|73862a2605e686f7|1341777917|rds|local|vector|||14.901||
+beta_rain_ldmc|stem|151623b68e0f36b7|67578f2bcff1e765|7bbc758e90ca0163|-2045908370||t19212.282882647s|9b19489448fd99e5|1341799566|rds|local|vector|||15.151|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
+beta_rain_sla|stem|bb74179bc96b4dec|b8dc7b2e2938de8a|7bbc758e90ca0163|644230715||t19212.2869104297s|4ec4ca1bcb04983a|1341796395|rds|local|vector|||15.379||
+beta_wet_consrain_n|stem|253186f349624a5c|933e9be775867304|0450e4bc28915d5d|1848864343||t19212.3519536301s|a85e0ecea8dc9fd3|1218321224|rds|local|vector|||13.092|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
+beta_wet_consrain_tlp|stem|06f7591b34e18505|000c70219863ffdf|80fcd15e5ebc96ff|807743103||t19212.2947262288s|3c82f9af16f0d265|1218311450|rds|local|vector|||13.264|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
+beta_wet_rain_n|stem|4edf52dbeeb40606|abda6f9625d582c9|0450e4bc28915d5d|-1839017379||t19212.3524728048s|b3807c6dbece882c|1218322578|rds|local|vector|||13.211|The x argument of as_tibble.matrix must have unique column names if .name_repair is omitted as of tibble 2.0.0.Using compatibility .name_repair.This warning is displayed once every 8 hours.Call lifecyclelast_lifecycle_warnings to see where this warning was generated.|
+beta_wet_rain_tlp|stem|e09bf15e1d52e6e0|832fe9cbe8b1cb5e|80fcd15e5ebc96ff|-241063105||t19212.2957752528s|10463e03352955ec|1218318191|rds|local|vector|||13.085||
 coef_pointrange|function|e051abb502e01df2|||||||||||||||
 coef_pointrange0|function|f8cc2d0a9117672b|||||||||||||||
 coef_ridge|function|9114335e7d5b95e8|||||||||||||||
@@ -128,6 +142,7 @@ seedling_clean|function|b1f93e3dffea3ce2|||||||||||||||
 seedling_clean_csv|stem|141bfb128ecb71e3|2d2a2dd839556d8c|dcf571f8cabdcede|-273364208|data/seedling_clean.csv|t19193.554371561s|417a38a146f13273|6775159|file|local|vector|||1.542||
 seedling_csv|stem|0d76bc3baf4e853a|e8487222c5c8c2c6|ef46db3751d8e999|1282184644|data-raw/seedlingmatrix.csv|t19191.1411246232s|d8f8d1ecc786716a|6831306|file|local|vector|||3.267||
 si_pdf|stem|c485abf8a89c740c|4d396e2cc7d10b00|d84d7cdd1c3c4b08|-1969991469|ms/SI.docx*ms/SI.html*ms/SI.pdf*ms/SI.qmd|t19207.6234284685s||1639833|file|local|vector|||5.163||System command quarto failed
+test_quarto|stem|365ec03fa1bc139f|47e24345366b9d8e|a1485bcb3f14d375|1645673000|docs/test.html*docs/test.qmd|t19212.3418269566s|28b215e64e1964ae|102677|file|local|vector|||139.141||
 test_ridge_plot|stem|d5b13994cdcd69e9|9cb9e2aaad86e0a6|f1bd6db12e9eab31|-707751598|figs/test_ridge.png*figs/test_ridge.pdf|t19208.2735963417s|0c5fca1735d3c34a|1962971|file|local|vector|||21.822|cols is now required when using unnest.Please use cols  cx, y, max_y|
 tidy_predictions|function|4de722f36d67b4f5|||||||||||||||
 trait_clean|function|437c6ea7e05926f1|||||||||||||||

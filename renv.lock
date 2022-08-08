@@ -451,6 +451,14 @@
         "processx"
       ]
     },
+    "captioner": {
+      "Package": "captioner",
+      "Version": "2.2.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "67d494ef44c6ea5f9a8803a1fc4b851a",
+      "Requirements": []
+    },
     "car": {
       "Package": "car",
       "Version": "3.1-0",
@@ -1687,6 +1695,19 @@
         "nloptr"
       ]
     },
+    "lobstr": {
+      "Package": "lobstr",
+      "Version": "1.1.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "f2a94f8fc9db382a642e965339635ad6",
+      "Requirements": [
+        "cpp11",
+        "crayon",
+        "prettyunits",
+        "rlang"
+      ]
+    },
     "loo": {
       "Package": "loo",
       "Version": "2.5.1",
@@ -2090,6 +2111,19 @@
         "later",
         "magrittr",
         "rlang"
+      ]
+    },
+    "pryr": {
+      "Package": "pryr",
+      "Version": "0.1.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "3fb39bed6e21e21cdb79a3203c6a198e",
+      "Requirements": [
+        "Rcpp",
+        "codetools",
+        "lobstr",
+        "stringr"
       ]
     },
     "ps": {
@@ -2657,10 +2691,15 @@
     },
     "tarchetypes": {
       "Package": "tarchetypes",
-      "Version": "0.6.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "4d76a20b57bc46b0be7ef6ca3cb68e2f",
+      "Version": "0.7.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "tarchetypes",
+      "RemoteUsername": "ropensci",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "dcf87b332ce9f68356be6a5ec586620d1625ddae",
+      "Hash": "b9f3340d0d2f827590352cf51ecefc0e",
       "Requirements": [
         "digest",
         "dplyr",
