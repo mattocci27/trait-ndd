@@ -1,0 +1,97 @@
+---
+fontsize: 12pt
+geometry: margin=1in
+link-citations: yes
+csl: templates/ecology-letters.csl
+bibliography: templates/seedling.bib
+crossref:
+  fig-title: Fig.
+  fig-prefix: Fig.
+  eq-prefix: Eq.
+format:
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+  docx:
+    toc: false
+    number-sections: false
+    highlight-style: github
+    html-math-method: katex
+  pdf:
+    toc: false
+    keep-tex: true
+    pdf-engine: pdflatex
+    include-in-header:
+      text: |
+        \usepackage{xr}
+        \usepackage[default]{sourcesanspro}
+        \usepackage{sourcecodepro}
+        \usepackage{lineno}
+        \linenumbers
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+**Figure 1**
+Standardized regression coefficients common to all species ($\gamma_{k,1}$) modeling the effects of
+log of individual height (ln Height),
+conspecific seedling density (ConS),
+conspecific tree density (ConT),
+heterospecific seedling density (HetS),
+heterospecific tree density (HetS),
+rainfall, and
+interactions between densities and rainfall for dry and rainy seasons.
+Thick and thin lines indicate 90% and 95% credible intervals, respectively.
+Circles show posterior means of coefficients.
+Filled circles indicate significant effects and open circles indicate non-significance effects.
+Positive $\gamma_{k,1}$ values indicate higher survival rates with increasing values of the predictors,
+while negative $\gamma_{k,1}$ values indicate lower survival rates with increasing values of the predictors.
+Note that predictors are scaled to a mean of 0 andstandard deviation of 1 within each season.
+
+![](../figs/coef_trait_int_s.pdf)
+
+\newpage
+
+
+**Figure 2**
+Relatonships between species traits and individual-level predictors on survival rates in dry seasons.
+Points and bars indicate posteriors means and 95% credible intervals (CIs) of coefficients for each species ($\beta_{k,j}$), respectively.
+Slopes indicate the relative influence of functional traits on the response of species survival to each individual-level predictors ($\gamma_{k,l}$).
+The 95% CIs are presented as the shaded area.
+Note that the effecs of traits of not interest are controled for the slopes ($\gamma_{k,l}$) but not controlled for the points ($\beta_{k,j}$).
+A-C: the species-specific response to conspecific seedling density (ConS; $\beta_{3,j}$) and its relationship with functional
+(SDMC: stem dry matter content;
+C: carbon concertration;
+Chlorophyll: leaf chlorophyll content);
+D-F: the species-specific response to rainfall ($\beta_{7,j}$) and its relationship with functional traits
+(LDMC: leaf dry matter content,
+$\delta$C~13~: stable carbon isotope composition,
+$\pi$~tlp~: leaf turgor loss point);
+G-J: the species-specific response to the interaction between ConS and rainfall ($\beta_{8,j}$) and its relationship with functional traits
+(LDMC,
+$\pi$~tlp~,
+$\delta$C~13~,
+ln LT: log of leaf thickness).
+
+![](../figs/beta_dry.pdf)
+
+
+\newpage
+
+**Figure 3**
+Relatonships between species traits and individual-level predictors on survival rates in rainy seasons.
+Details as for Figure 2.
+A-B: the species-specific response to rainfall ($\beta_{7,j}$) and its relationship with functional traits
+(N: nitrogen concertraiont,
+$\pi$~tlp~: leaf turgor loss point);
+C-D: the species-specific response to the interaction between conspecific seedling density (ConS) and rainfall ($\beta_{8,j}$) and its relationship with functional traits
+(N, $\pi$~tlp~).
+
+![](../figs/beta_wet.pdf)

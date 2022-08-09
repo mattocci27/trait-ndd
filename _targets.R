@@ -819,10 +819,10 @@ list(
   tar_target(
     beta_wet_plot, {
     p <- beta_wet_comb_plot(
-      beta_wet_consrain_n,
-      beta_wet_consrain_tlp,
       beta_wet_rain_n,
-      beta_wet_rain_tlp)
+      beta_wet_rain_tlp,
+      beta_wet_consrain_n,
+      beta_wet_consrain_tlp)
       ggsave(
         "figs/beta_wet.png",
         p,
