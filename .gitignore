@@ -70,5 +70,5 @@ model/model_inter_opencl*
 test.Rda
 *.html
 
-figs/*
 *.pdf
+figs/*

@@ -1,0 +1,214 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  12pt,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{xr}
+\usepackage[default]{sourcesanspro}
+\usepackage{sourcecodepro}
+\usepackage{lineno}
+\linenumbers
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Fig.}
+\else
+  \newcommand\figurename{Fig.}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable, frame hidden]}{\end{tcolorbox}}\fi
+
+\textbf{Figure 1} Standardized regression coefficients common to all
+species (\(\gamma_{k,1}\)) modeling the effects of log of individual
+height (ln Height), conspecific seedling density (ConS), conspecific
+tree density (ConT), heterospecific seedling density (HetS),
+heterospecific tree density (HetS), rainfall, and interactions between
+densities and rainfall for dry and rainy seasons. Thick and thin lines
+indicate 90\% and 95\% credible intervals, respectively. Circles show
+posterior means of coefficients. Filled circles indicate significant
+effects and open circles indicate non-significance effects. Positive
+\(\gamma_{k,1}\) values indicate higher survival rates with increasing
+values of the predictors, while negative \(\gamma_{k,1}\) values
+indicate lower survival rates with increasing values of the predictors.
+Note that predictors are scaled to a mean of 0 andstandard deviation of
+1 within each season.
+
+\includegraphics{../figs/coef_trait_int_s.pdf}
+
+\newpage
+
+\textbf{Figure 2} Relatonships between species traits and
+individual-level predictors on survival rates in dry seasons. Points and
+bars indicate posteriors means and 95\% credible intervals (CIs) of
+coefficients for each species (\(\beta_{k,j}\)), respectively. Slopes
+indicate the relative influence of functional traits on the response of
+species survival to each individual-level predictors (\(\gamma_{k,l}\)).
+The 95\% CIs are presented as the shaded area. Note that the effecs of
+traits of not interest are controled for the slopes (\(\gamma_{k,l}\))
+but not controlled for the points (\(\beta_{k,j}\)). A-C: the
+species-specific response to conspecific seedling density (ConS;
+\(\beta_{3,j}\)) and its relationship with functional (SDMC: stem dry
+matter content; C: carbon concertration; Chlorophyll: leaf chlorophyll
+content); D-F: the species-specific response to rainfall
+(\(\beta_{7,j}\)) and its relationship with functional traits (LDMC:
+leaf dry matter content, \(\delta\)C\textsubscript{13}: stable carbon
+isotope composition, \(\pi\)\textsubscript{tlp}: leaf turgor loss
+point); G-J: the species-specific response to the interaction between
+ConS and rainfall (\(\beta_{8,j}\)) and its relationship with functional
+traits (LDMC, \(\pi\)\textsubscript{tlp}, \(\delta\)C\textsubscript{13},
+ln LT: log of leaf thickness).
+
+\includegraphics{../figs/beta_dry.pdf}
+
+\newpage
+
+\textbf{Figure 3} Relatonships between species traits and
+individual-level predictors on survival rates in rainy seasons. Details
+as for Figure 2. A-B: the species-specific response to rainfall
+(\(\beta_{7,j}\)) and its relationship with functional traits (N:
+nitrogen concertraiont, \(\pi\)\textsubscript{tlp}: leaf turgor loss
+point); C-D: the species-specific response to the interaction between
+conspecific seedling density (ConS) and rainfall (\(\beta_{8,j}\)) and
+its relationship with functional traits (N, \(\pi\)\textsubscript{tlp}).
+
+\includegraphics{../figs/beta_wet.pdf}
+
+
+
+\end{document}
