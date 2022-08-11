@@ -137,6 +137,13 @@ gen_stan_dat <- function(data_list,
     trait <- data_list$trait |>
       dplyr::select(sp, pc1, pc2, pc3) |>
       na.omit()
+  } else if (trait_set == "cn") {
+    trait <- data_list$trait |>
+      dplyr::select(!starts_with("pc")) |>
+      dplyr::select(-wd) |>
+      dplyr::select(-c_mass) |>
+      dplyr::select(-n_mass) |>
+      na.omit()
   }
 
   # tweak sp list for trait and seedling data
