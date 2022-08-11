@@ -234,7 +234,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, breakable, interior hidden, enhanced, sharp corners, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, interior hidden, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -244,13 +244,14 @@
 }
 \newpage
 
-Here we diagnose model convergence and divergent transitions, then we
-check parameters that are significantly different from zero. All codes
-are in R or Stan, and workflow is managed with the R \texttt{targets}
-package \url{https://github.com/ropensci/targets}. Data, codes, and
-computing environments to reproduce this manuscript will be archived on
-zendo at https://doi.org/xxx and also available on Github at
-\url{https://github.com/mattocci27/seedling-stan}.
+Here we diagnose model convergence and divergent transitions for our
+Bayesian model in the main text, then we check parameters that are
+significantly different from zero. All codes are in R and Stan, and
+workflow is managed with the R \texttt{targets} package
+\href{https://github.com/ropensci/targets}{(https://github.com/ropensci/targets)}.
+Data, codes, and computing environments to reproduce this manuscript
+will be archived on zendo at https://doi.org/xxx and also available on
+Github at \url{https://github.com/mattocci27/seedling-stan}.
 
 \hypertarget{setup}{%
 \section{Setup}\label{setup}}
@@ -271,8 +272,130 @@ First, we load R packages.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{model}{%
-\section{Model}\label{model}}
+\hypertarget{data}{%
+\section{Data}\label{data}}
+
+All the data and results are in the \texttt{targets} cache, which can be
+load using \texttt{tar\_load}.
+
+\begin{itemize}
+\item
+  \texttt{dry\_each\_int\_s}: list object that contains data for dry
+  seasons in our model
+\item
+  \texttt{wet\_each\_int\_s}: list object that contains data for rainy
+  seasons in our model
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(dry\_each\_int\_s)}
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(wet\_each\_int\_s)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{dry-season}{%
+\subsection{Dry season}\label{dry-season}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dry\_each\_int\_s }\SpecialCharTok{|\textgreater{}} \FunctionTok{str}\NormalTok{()}
+\CommentTok{\#\textgreater{} List of 15}
+\CommentTok{\#\textgreater{}  $ N     : int 29085}
+\CommentTok{\#\textgreater{}  $ J     : int 76}
+\CommentTok{\#\textgreater{}  $ K     : int 11}
+\CommentTok{\#\textgreater{}  $ S     : int 384}
+\CommentTok{\#\textgreater{}  $ T     : int 10}
+\CommentTok{\#\textgreater{}  $ M     : int 9153}
+\CommentTok{\#\textgreater{}  $ L     : int 11}
+\CommentTok{\#\textgreater{}  $ cc    : num 0.27}
+\CommentTok{\#\textgreater{}  $ suv   : num [1:29085] 0 1 0 1 1 0 0 0 1 0 ...}
+\CommentTok{\#\textgreater{}  $ plot  : int [1:29085] 267 267 267 267 267 267 267 265 265 267 ...}
+\CommentTok{\#\textgreater{}  $ census: int [1:29085] 1 1 1 7 7 1 1 8 6 1 ...}
+\CommentTok{\#\textgreater{}  $ sp    : int [1:29085] 53 53 53 12 20 53 53 53 62 53 ...}
+\CommentTok{\#\textgreater{}  $ tag   : int [1:29085] 6121 6185 6162 6138 6159 6122 6184 6070 6067 6165 ...}
+\CommentTok{\#\textgreater{}  $ x     : num [1:29085, 1:11] 1 1 1 1 1 1 1 1 1 1 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "int" "logh\_scaled" "cons\_scaled" "cona\_scaled\_c" ...}
+\CommentTok{\#\textgreater{}  $ u     : num [1:11, 1:76] 1 1.337 1.175 0.87 {-}0.414 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "intercept" "ldmc" "sdmc" "chl" ...}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\end{Highlighting}
+\end{Shaded}
+
+The elements in the object are as follows:
+
+\begin{itemize}
+\item
+  \texttt{N}: number of individuals
+\item
+  \texttt{J}: number of species
+\item
+  \texttt{K}: number of individual-level predictors (e.g., ConS)
+\item
+  \texttt{S}: number of plots
+\item
+  \texttt{T}: number of censuses
+\item
+  \texttt{M}: number of the unique seedling individuals
+\item
+  \texttt{L}: number of species-level predictors (e.g., SLA)
+\item
+  \texttt{cc}: scaling parameter for conspecific and heterospecific tree
+  densities
+\item
+  \texttt{suv}: survival data (0: dead, 1: alive)
+\item
+  \texttt{plot}: plot ID
+\item
+  \texttt{census}: census ID
+\item
+  \texttt{sp}: species ID
+\item
+  \texttt{tag}: seedling ID
+\item
+  \texttt{x}: N \(\times\) L matrix for individual-level predictors
+\item
+  \texttt{u}: N \(\times\) J matrix for species-level predictors
+\end{itemize}
+
+\hypertarget{rainy-season}{%
+\subsection{Rainy season}\label{rainy-season}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wet\_each\_int\_s }\SpecialCharTok{|\textgreater{}} \FunctionTok{str}\NormalTok{()}
+\CommentTok{\#\textgreater{} List of 15}
+\CommentTok{\#\textgreater{}  $ N     : int 26712}
+\CommentTok{\#\textgreater{}  $ J     : int 76}
+\CommentTok{\#\textgreater{}  $ K     : int 11}
+\CommentTok{\#\textgreater{}  $ S     : int 384}
+\CommentTok{\#\textgreater{}  $ T     : int 10}
+\CommentTok{\#\textgreater{}  $ M     : int 7859}
+\CommentTok{\#\textgreater{}  $ L     : int 11}
+\CommentTok{\#\textgreater{}  $ cc    : num 0.24}
+\CommentTok{\#\textgreater{}  $ suv   : num [1:26712] 1 0 1 0 1 1 0 0 0 0 ...}
+\CommentTok{\#\textgreater{}  $ plot  : int [1:26712] 265 265 265 267 267 265 266 265 265 267 ...}
+\CommentTok{\#\textgreater{}  $ census: int [1:26712] 7 8 7 8 8 7 8 8 8 8 ...}
+\CommentTok{\#\textgreater{}  $ sp    : int [1:26712] 53 53 28 53 20 62 53 53 53 53 ...}
+\CommentTok{\#\textgreater{}  $ tag   : int [1:26712] 4900 4896 4888 4946 4937 4887 4912 4894 4895 4945 ...}
+\CommentTok{\#\textgreater{}  $ x     : num [1:26712, 1:11] 1 1 1 1 1 1 1 1 1 1 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "int" "logh\_scaled" "cons\_scaled" "cona\_scaled\_c" ...}
+\CommentTok{\#\textgreater{}  $ u     : num [1:11, 1:76] 1 1.337 1.175 0.87 {-}0.414 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "intercept" "ldmc" "sdmc" "chl" ...}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\end{Highlighting}
+\end{Shaded}
+
+Details are same as in the dry seasons.
+
+\hypertarget{model-stan-code}{%
+\section{Model (Stan code)}\label{model-stan-code}}
 
 Stan code for the multilevel logistic regression in the main text.
 
@@ -347,74 +470,6 @@ Stan code for the multilevel logistic regression in the main text.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{data}{%
-\section{Data}\label{data}}
-
-Here is the dataset for each season. The object names and letters are
-same as in the stan code above.
-
-\hypertarget{dry-season}{%
-\subsection{Dry season}\label{dry-season}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{dry\_each\_int\_s }\SpecialCharTok{|\textgreater{}} \FunctionTok{str}\NormalTok{()}
-\CommentTok{\#\textgreater{} List of 15}
-\CommentTok{\#\textgreater{}  $ N     : int 29085}
-\CommentTok{\#\textgreater{}  $ J     : int 76}
-\CommentTok{\#\textgreater{}  $ K     : int 11}
-\CommentTok{\#\textgreater{}  $ S     : int 384}
-\CommentTok{\#\textgreater{}  $ T     : int 10}
-\CommentTok{\#\textgreater{}  $ M     : int 9153}
-\CommentTok{\#\textgreater{}  $ L     : int 11}
-\CommentTok{\#\textgreater{}  $ cc    : num 0.27}
-\CommentTok{\#\textgreater{}  $ suv   : num [1:29085] 0 1 0 1 1 0 0 0 1 0 ...}
-\CommentTok{\#\textgreater{}  $ plot  : int [1:29085] 267 267 267 267 267 267 267 265 265 267 ...}
-\CommentTok{\#\textgreater{}  $ census: int [1:29085] 1 1 1 7 7 1 1 8 6 1 ...}
-\CommentTok{\#\textgreater{}  $ sp    : int [1:29085] 53 53 53 12 20 53 53 53 62 53 ...}
-\CommentTok{\#\textgreater{}  $ tag   : int [1:29085] 6121 6185 6162 6138 6159 6122 6184 6070 6067 6165 ...}
-\CommentTok{\#\textgreater{}  $ x     : num [1:29085, 1:11] 1 1 1 1 1 1 1 1 1 1 ...}
-\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
-\CommentTok{\#\textgreater{}   .. ..$ : NULL}
-\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "int" "logh\_scaled" "cons\_scaled" "cona\_scaled\_c" ...}
-\CommentTok{\#\textgreater{}  $ u     : num [1:11, 1:76] 1 1.337 1.175 0.87 {-}0.414 ...}
-\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
-\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "intercept" "ldmc" "sdmc" "chl" ...}
-\CommentTok{\#\textgreater{}   .. ..$ : NULL}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{rainy-season}{%
-\subsection{Rainy season}\label{rainy-season}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{wet\_each\_int\_s }\SpecialCharTok{|\textgreater{}} \FunctionTok{str}\NormalTok{()}
-\CommentTok{\#\textgreater{} List of 15}
-\CommentTok{\#\textgreater{}  $ N     : int 26712}
-\CommentTok{\#\textgreater{}  $ J     : int 76}
-\CommentTok{\#\textgreater{}  $ K     : int 11}
-\CommentTok{\#\textgreater{}  $ S     : int 384}
-\CommentTok{\#\textgreater{}  $ T     : int 10}
-\CommentTok{\#\textgreater{}  $ M     : int 7859}
-\CommentTok{\#\textgreater{}  $ L     : int 11}
-\CommentTok{\#\textgreater{}  $ cc    : num 0.24}
-\CommentTok{\#\textgreater{}  $ suv   : num [1:26712] 1 0 1 0 1 1 0 0 0 0 ...}
-\CommentTok{\#\textgreater{}  $ plot  : int [1:26712] 265 265 265 267 267 265 266 265 265 267 ...}
-\CommentTok{\#\textgreater{}  $ census: int [1:26712] 7 8 7 8 8 7 8 8 8 8 ...}
-\CommentTok{\#\textgreater{}  $ sp    : int [1:26712] 53 53 28 53 20 62 53 53 53 53 ...}
-\CommentTok{\#\textgreater{}  $ tag   : int [1:26712] 4900 4896 4888 4946 4937 4887 4912 4894 4895 4945 ...}
-\CommentTok{\#\textgreater{}  $ x     : num [1:26712, 1:11] 1 1 1 1 1 1 1 1 1 1 ...}
-\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
-\CommentTok{\#\textgreater{}   .. ..$ : NULL}
-\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "int" "logh\_scaled" "cons\_scaled" "cona\_scaled\_c" ...}
-\CommentTok{\#\textgreater{}  $ u     : num [1:11, 1:76] 1 1.337 1.175 0.87 {-}0.414 ...}
-\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
-\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "intercept" "ldmc" "sdmc" "chl" ...}
-\CommentTok{\#\textgreater{}   .. ..$ : NULL}
-\end{Highlighting}
-\end{Shaded}
-
 \hypertarget{model-validation}{%
 \section{Model validation}\label{model-validation}}
 
@@ -431,10 +486,21 @@ convergence threshold of 1.1 for all parameters as following.
 \hypertarget{convergence}{%
 \subsection{Convergence}\label{convergence}}
 
-\texttt{fit\_9\_dry\_each\_int\_s\_summary\_model\_ind} object and
-\texttt{fit\_10\_wet\_each\_int\_s\_summary\_model\_ind} object contain
-summaries of posterior distributions of all the parameters in dry
-seasons and rainy seasons, respectively.
+\begin{itemize}
+\item
+  \texttt{fit\_9\_dry\_each\_int\_s\_summary\_model\_ind}: summaries of
+  posterior distributions of all the parameters for dry seasons
+\item
+  \texttt{fit\_10\_wet\_each\_int\_s\_summary\_model\_ind}: summaries of
+  posterior distributions of all the parameters for rainy seasons
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_9\_dry\_each\_int\_s\_summary\_model\_ind)}
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_10\_wet\_each\_int\_s\_summary\_model\_ind)}
+\end{Highlighting}
+\end{Shaded}
 
 There were no parameters with Rhat \textgreater{} 1.1, which indicates
 both models have converged.
@@ -457,12 +523,24 @@ both models have converged.
 \hypertarget{divergent-transitions}{%
 \subsection{Divergent transitions}\label{divergent-transitions}}
 
-\texttt{fit\_9\_dry\_each\_int\_s\_diagnostics\_model\_ind} object and
-\texttt{fit\_10\_wet\_each\_int\_s\_diagnostics\_model\_ind} object
-contain the number of divergences during HMC in dry seasons and rainy
-seasons, respectively. When the number of divergences is too large,
-posterior distributions are not reliable
-(\protect\hyperlink{ref-Betancourt2016}{Betancourt 2016}).
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_9\_dry\_each\_int\_s\_diagnostics\_model\_ind)}
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_10\_wet\_each\_int\_s\_diagnostics\_model\_ind)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  \texttt{fit\_9\_dry\_each\_int\_s\_diagnostics\_model\_ind}: the
+  number of divergences during HMC for dry seasons
+\item
+  \texttt{fit\_10\_wet\_each\_int\_s\_diagnostics\_model\_ind}: the
+  number of divergences during HMC for rainy seasons
+\end{itemize}
+
+When the number of divergences is too large, posterior distributions are
+not reliable (\protect\hyperlink{ref-Betancourt2016}{Betancourt 2016}).
 
 Here is the code to check the number of divergences:
 
@@ -496,9 +574,16 @@ tracked the true trajectory
 \hypertarget{tables}{%
 \section{Tables}\label{tables}}
 
-\hypertarget{gamma-values-for-dry-season}{%
-\subsection{\texorpdfstring{\(\gamma\) values for dry
-season}{\textbackslash gamma values for dry season}}\label{gamma-values-for-dry-season}}
+\hypertarget{gamma-coefficients-for-dry-seasons}{%
+\subsection{\texorpdfstring{\(\gamma\) coefficients for dry
+seasons}{\textbackslash gamma coefficients for dry seasons}}\label{gamma-coefficients-for-dry-seasons}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{fit9\_gamma}: \(\gamma\) values of all the parameters for dry
+  seasons
+\end{itemize}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -623,6 +708,8 @@ Species-level predictors are as follows:
 \item
   \texttt{c\_mass}: carbon concentration
 \item
+  \texttt{n\_mass}: nitrogen concentration
+\item
   \texttt{tlp}: leaf turgor loss point
 \item
   \texttt{log\_sla}: natural logarithm of specific leaf area
@@ -672,9 +759,16 @@ gamma\_10\_1 & -0.016 & -0.151 & -0.127 & 0.066 & 0.109 & hets\_rain & intercept
 \cellcolor{gray!6}{gamma\_11\_1} & \cellcolor{gray!6}{-0.014} & \cellcolor{gray!6}{-0.145} & \cellcolor{gray!6}{-0.126} & \cellcolor{gray!6}{0.073} & \cellcolor{gray!6}{0.121} & \cellcolor{gray!6}{heta\_rain} & \cellcolor{gray!6}{intercept}\\*
 \end{longtable}
 
-\hypertarget{gamma-values-for-rainy-season}{%
-\subsection{\texorpdfstring{\(\gamma\) values for rainy
-season}{\textbackslash gamma values for rainy season}}\label{gamma-values-for-rainy-season}}
+\hypertarget{gamma-coefficients-for-rainy-seasons}{%
+\subsection{\texorpdfstring{\(\gamma\) coefficients for rainy
+seasons}{\textbackslash gamma coefficients for rainy seasons}}\label{gamma-coefficients-for-rainy-seasons}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{fit10\_gamma}: \(\gamma\) values of all the parameters for
+  rainy seasons
+\end{itemize}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -683,8 +777,15 @@ season}{\textbackslash gamma values for rainy season}}\label{gamma-values-for-ra
 \end{Highlighting}
 \end{Shaded}
 
-Details are same as in the tables above except for \texttt{c=0.24}. The
-full list is available as Table S2 in a separate file.
+\begin{itemize}
+\tightlist
+\item
+  \texttt{n\_mass}: nitrogen concentration
+\end{itemize}
+
+Other details are same as in the tables above except for
+\texttt{c=0.24}. The full list is available as Table S2 in a separate
+file.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -695,6 +796,31 @@ full list is available as Table S2 in a separate file.
   \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }\StringTok{"repeat\_header"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{longtable}[t]{lrrrrrll}
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endfirsthead
+\multicolumn{8}{@{}l}{\textit{(continued)}}\\
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{gamma\_1\_1} & \cellcolor{gray!6}{2.811} & \cellcolor{gray!6}{1.897} & \cellcolor{gray!6}{2.038} & \cellcolor{gray!6}{3.414} & \cellcolor{gray!6}{3.781} & \cellcolor{gray!6}{int} & \cellcolor{gray!6}{intercept}\\
+gamma\_2\_1 & 1.232 & 1.001 & 1.040 & 1.384 & 1.475 & logh\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_4\_1} & \cellcolor{gray!6}{-0.687} & \cellcolor{gray!6}{-1.231} & \cellcolor{gray!6}{-1.124} & \cellcolor{gray!6}{-0.349} & \cellcolor{gray!6}{-0.170} & \cellcolor{gray!6}{cona\_scaled\_c} & \cellcolor{gray!6}{intercept}\\
+gamma\_5\_1 & 0.176 & 0.035 & 0.057 & 0.272 & 0.328 & hets\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_7\_7} & \cellcolor{gray!6}{1.489} & \cellcolor{gray!6}{0.219} & \cellcolor{gray!6}{0.428} & \cellcolor{gray!6}{2.303} & \cellcolor{gray!6}{2.727} & \cellcolor{gray!6}{rain\_scaled} & \cellcolor{gray!6}{n\_mass}\\
+\addlinespace
+gamma\_7\_8 & 2.290 & 1.102 & 1.257 & 3.099 & 3.536 & rain\_scaled & tlp\\
+\cellcolor{gray!6}{gamma\_8\_7} & \cellcolor{gray!6}{3.245} & \cellcolor{gray!6}{0.642} & \cellcolor{gray!6}{1.070} & \cellcolor{gray!6}{4.941} & \cellcolor{gray!6}{5.819} & \cellcolor{gray!6}{cons\_rain} & \cellcolor{gray!6}{n\_mass}\\
+gamma\_8\_8 & 4.552 & 2.000 & 2.412 & 6.249 & 7.173 & cons\_rain & tlp\\*
+\end{longtable}
 
 This is the list of \(\gamma_{k,1}\) parameters.
 
@@ -736,8 +862,8 @@ gamma\_10\_1 & 0.003 & -0.113 & -0.094 & 0.078 & 0.120 & hets\_rain & intercept\
 \cellcolor{gray!6}{gamma\_11\_1} & \cellcolor{gray!6}{0.002} & \cellcolor{gray!6}{-0.167} & \cellcolor{gray!6}{-0.137} & \cellcolor{gray!6}{0.109} & \cellcolor{gray!6}{0.177} & \cellcolor{gray!6}{heta\_rain} & \cellcolor{gray!6}{intercept}\\*
 \end{longtable}
 
-\hypertarget{session-information}{%
-\section{Session information}\label{session-information}}
+\hypertarget{r-session-information}{%
+\section{R session information}\label{r-session-information}}
 
 \begin{Shaded}
 \begin{Highlighting}[]

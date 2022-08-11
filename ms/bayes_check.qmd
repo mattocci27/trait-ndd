@@ -41,8 +41,8 @@ format:
 
 \newpage
 
-Here we diagnose model convergence and divergent transitions, then we check parameters that are significantly different from zero.
-All codes are in R or Stan, and workflow is managed with the R `targets` package [https://github.com/ropensci/targets](https://github.com/ropensci/targets).
+Here we diagnose model convergence and divergent transitions for our Bayesian model in the main text, then we check parameters that are significantly different from zero.
+All codes are in R and Stan, and workflow is managed with the R `targets` package [(https://github.com/ropensci/targets)](https://github.com/ropensci/targets).
 Data, codes, and computing environments to reproduce this manuscript will be archived on zendo at https://doi.org/xxx and also available on Github at [https://github.com/mattocci27/seedling-stan](https://github.com/mattocci27/seedling-stan).
 
 
@@ -75,23 +75,18 @@ source(here("R", "stan.R"))
 ```
 
 
-# Model
-
-Stan code for the multilevel logistic regression in the main text.
-
-```{stan, file="stan/model_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
-```
-
 # Data
 
-Here is the dataset for each season.
-The object names and letters are same as in the stan code above.
+All the data and results are in the `targets` cache, which can be load using `tar_load`.
 
-```{r, include=FALSE}
+- `dry_each_int_s`: list object that contains data for dry seasons in our model
+
+- `wet_each_int_s`: list object that contains data for rainy seasons in our model
+
+```{r, include=TRUE}
 targets::tar_load(dry_each_int_s)
 targets::tar_load(wet_each_int_s)
 ```
-
 
 ## Dry season
 
@@ -99,10 +94,52 @@ targets::tar_load(wet_each_int_s)
 dry_each_int_s |> str()
 ```
 
+The elements in the object are as follows:
+
+- `N`: number of individuals
+
+- `J`: number of species
+
+- `K`: number of individual-level predictors (e.g., ConS)
+
+- `S`: number of plots
+
+- `T`: number of censuses
+
+- `M`: number of the unique seedling individuals
+
+- `L`: number of species-level predictors (e.g., SLA)
+
+- `cc`: scaling parameter for conspecific and heterospecific tree densities
+
+- `suv`: survival data (0: dead, 1: alive)
+
+- `plot`: plot ID
+
+- `census`: census ID
+
+- `sp`: species ID
+
+- `tag`: seedling ID
+
+- `x`: N $\times$ L matrix for individual-level predictors
+
+- `u`: N $\times$ J matrix for species-level predictors
+
 ## Rainy season
 
 ```{r}
 wet_each_int_s |> str()
+```
+
+Details are same as in the dry seasons.
+
+
+# Model (Stan code)
+
+Stan code for the multilevel logistic regression in the main text.
+
+```{stan, file="stan/model_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```
 
 # Model validation
@@ -114,12 +151,14 @@ Convergence of the posterior distribution was assessed with the Gelman-Rubin sta
 
 ## Convergence
 
-```{r, include=FALSE}
+- `fit_9_dry_each_int_s_summary_model_ind`: summaries of posterior distributions of all the parameters for dry seasons
+
+- `fit_10_wet_each_int_s_summary_model_ind`: summaries of posterior distributions of all the parameters for rainy seasons
+
+```{r, include=TRUE}
 targets::tar_load(fit_9_dry_each_int_s_summary_model_ind)
 targets::tar_load(fit_10_wet_each_int_s_summary_model_ind)
 ```
-
-`fit_9_dry_each_int_s_summary_model_ind` object and `fit_10_wet_each_int_s_summary_model_ind` object contain summaries of posterior distributions of all the parameters in dry seasons and rainy seasons, respectively.
 
 There were no parameters with Rhat > 1.1, which indicates both models have converged.
 
@@ -131,12 +170,15 @@ fit_10_wet_each_int_s_summary_model_ind |> filter(rhat > 1.1)
 
 ## Divergent transitions
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 targets::tar_load(fit_9_dry_each_int_s_diagnostics_model_ind)
 targets::tar_load(fit_10_wet_each_int_s_diagnostics_model_ind)
 ```
 
-`fit_9_dry_each_int_s_diagnostics_model_ind` object and `fit_10_wet_each_int_s_diagnostics_model_ind` object contain the number of divergences during HMC in dry seasons and rainy seasons, respectively.
+- `fit_9_dry_each_int_s_diagnostics_model_ind`: the number of divergences during HMC for dry seasons
+
+- `fit_10_wet_each_int_s_diagnostics_model_ind`: the number of divergences during HMC for rainy seasons
+
 When the number of divergences is too large, posterior distributions are not reliable [@Betancourt2016].
 
 Here is the code to check the number of divergences:
@@ -155,7 +197,9 @@ div_check(fit_10_wet_each_int_s_diagnostics_model_ind)
 
 # Tables
 
-## $\gamma$ values for dry season
+## $\gamma$ coefficients for dry seasons
+
+- `fit9_gamma`: $\gamma$ values of all the parameters for dry seasons
 
 ```{r}
 targets::tar_load(fit9_gamma)
@@ -203,6 +247,7 @@ Species-level predictors are as follows:
 - `chl`: chlorophyll content
 - `c13`: stable carbon isotope composition,
 - `c_mass`: carbon concentration
+- `n_mass`: nitrogen concentration
 - `tlp`: leaf turgor loss point
 - `log_sla`: natural logarithm of specific leaf area
 - `log_lt`: natural logarithm of leaf thickness
@@ -216,18 +261,21 @@ fit9_gamma |>
   kable_styling(latex_options = c("striped", "repeat_header"))
 ```
 
+## $\gamma$ coefficients for rainy seasons
 
-## $\gamma$ values for rainy season
+- `fit10_gamma`: $\gamma$ values of all the parameters for rainy seasons
 
 ```{r}
 targets::tar_load(fit10_gamma)
 fit10_gamma[2:6] <- round(fit10_gamma[2:6], 3)
 ```
 
-Details are same as in the tables above except for `c=0.24`.
+- `n_mass`: nitrogen concentration
+
+Other details are same as in the tables above except for `c=0.24`.
 The full list is available as Table S2 in a separate file.
 
-```{r,eval=FALSE}
+```{r}
 fit10_gamma |>
   filter(q2_5 * q97_5 > 0) |>
   arrange(para) |>
@@ -244,8 +292,7 @@ fit10_gamma |>
   kable_styling(latex_options = c("striped", "repeat_header"))
 ```
 
-
-# Session information
+# R session information
 
 ```{r}
 devtools::session_info()
