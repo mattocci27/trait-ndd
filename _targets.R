@@ -434,9 +434,17 @@ list(
   #   output_format = "html_document"
   # ),
   tar_quarto(
-    bayes_check_html,
-    "docs/bayes_check.qmd",
+    bayes_check_pdf,
+    "ms/bayes_check.qmd"
   ),
+  # tar_quarto(
+  #   bayes_check_html,
+  #   "ms/bayes_check.qmd"
+  # ),
+  # tar_quarto(
+  #   bayes_check_docx,
+  #   "ms/bayes_check.qmd"
+  # ),
   # not wokring (path issue)
   # tar_target(
   #   bayes_check_html, {

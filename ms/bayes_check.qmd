@@ -1,24 +1,50 @@
 ---
-title: "Diagnostics for MCMC"
-author: "Masatoshi Katabuchi"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
-output:
-  html_document:
-    fig_caption: yes
+title: "Appendix SX: Diagnostics for posterior distributions"
+# author: "Masatoshi Katabuchi"
+# date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+link-citations: yes
+csl: templates/ecology-letters.csl
+bibliography: templates/seedling.bib
+format:
+  pdf:
+    toc: true
+    keep-tex: true
+    pdf-engine: pdflatex
+    highlight-style: github
+    include-in-header:
+      text: |
+        \usepackage{xr}
+        \usepackage[default]{sourcesanspro}
+        \usepackage{sourcecodepro}
+        \usepackage{fancyhdr}
+        \usepackage{fvextra}
+        \pagestyle{fancy}
+        \fancypagestyle{plain}{\pagestyle{fancy}}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[RE,RO]{Song \textit{et al}. --Ecology Letters-- Appendix SX}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+  html:
     theme: spacelab #readable #sandstone #spacelab #flatly
-    highlight: pygments #tango #kate
-    toc: TRUE
-    toc_depth: 2
-    number_sections: TRUE
-    toc_float:
-     collapsed: TRUE
-     smooth_scroll: TRUE
-     toc: true
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+  docx:
+    toc: false
+    number-sections: false
+    highlight-style: github
+    html-math-method: katex
 ---
 
+\newpage
+
 Here we diagnose model convergence and divergent transitions, then we check parameters that are significantly different from zero.
-All codes are in R or Stan, and workflow is managed with the R `targets` package (https://github.com/ropensci/targets).
-Data, codes, and computing environments to reproduce this manuscript will be archived on xxxx (e.g., zendo) at https://doi.org/xxx and also available on Github at https://github.com/mattocci27/xxx.
+All codes are in R or Stan, and workflow is managed with the R `targets` package [https://github.com/ropensci/targets](https://github.com/ropensci/targets).
+Data, codes, and computing environments to reproduce this manuscript will be archived on zendo at https://doi.org/xxx and also available on Github at [https://github.com/mattocci27/seedling-stan](https://github.com/mattocci27/seedling-stan).
+
 
 ```{r global_options, include=FALSE}
 library(knitr)
@@ -32,14 +58,17 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 # Setup
+
+First, we load R packages.
 
 ```{r}
 library(tidyverse)
 library(kableExtra)
-library(patchwork)
 library(here)
 ```
+
 
 ```{r}
 source(here("R", "stan.R"))
@@ -63,6 +92,7 @@ targets::tar_load(dry_each_int_s)
 targets::tar_load(wet_each_int_s)
 ```
 
+
 ## Dry season
 
 ```{r}
@@ -75,7 +105,12 @@ dry_each_int_s |> str()
 wet_each_int_s |> str()
 ```
 
-# Diagnostics
+# Model validation
+
+Posterior distributions of all parameters were estimated using the Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan [@Carpenter2017; @StanDevelopmentTeam2022].
+Posterior estimates were obtained from 4 independent chains of 1,000 iteraions after a warmup of 1,000 iterations.
+Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic [@Gelman2013] with a convergence threshold of 1.1 for all parameters as following.
+
 
 ## Convergence
 
@@ -84,7 +119,9 @@ targets::tar_load(fit_9_dry_each_int_s_summary_model_ind)
 targets::tar_load(fit_10_wet_each_int_s_summary_model_ind)
 ```
 
-Both models have converged (Rhat < 1.1).
+`fit_9_dry_each_int_s_summary_model_ind` object and `fit_10_wet_each_int_s_summary_model_ind` object contain summaries of posterior distributions of all the parameters in dry seasons and rainy seasons, respectively.
+
+There were no parameters with Rhat > 1.1, which indicates both models have converged.
 
 ```{r}
 fit_9_dry_each_int_s_summary_model_ind |> filter(rhat > 1.1)
@@ -99,12 +136,16 @@ targets::tar_load(fit_9_dry_each_int_s_diagnostics_model_ind)
 targets::tar_load(fit_10_wet_each_int_s_diagnostics_model_ind)
 ```
 
-There were no divergent transitions
-(when the divergence is too high, posterior distributions are not reliable).
+`fit_9_dry_each_int_s_diagnostics_model_ind` object and `fit_10_wet_each_int_s_diagnostics_model_ind` object contain the number of divergences during HMC in dry seasons and rainy seasons, respectively.
+When the number of divergences is too large, posterior distributions are not reliable [@Betancourt2016].
+
+Here is the code to check the number of divergences:
 
 ```{r}
 div_check
 ```
+
+There were no divergent transitions, suggesting that HMC trajectory tracked the true trajectory [@StanDevelopmentTeam2022].
 
 ```{r}
 div_check(fit_9_dry_each_int_s_diagnostics_model_ind)
@@ -114,7 +155,7 @@ div_check(fit_10_wet_each_int_s_diagnostics_model_ind)
 
 # Tables
 
-## Dry
+## $\gamma$ values for dry season
 
 ```{r}
 targets::tar_load(fit9_gamma)
@@ -122,15 +163,14 @@ fit9_gamma[2:6] <- round(fit9_gamma[2:6], 3)
 ```
 
 This is the list of $\gamma$ parameters that were significantly different from zero (i.e., the 95% credible intervals did not include zero).
-The full list is available table S1 in a separate file.
+The full list is available as Table S1 in a separate file.
 
-```{r}
+```{r,eval=TRUE}
 fit9_gamma |>
   filter(q2_5 * q97_5 > 0) |>
   arrange(para) |>
-  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
-  kbl(format = "html", escape = FALSE) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
 ```
 
 The columns are as follows:
@@ -172,13 +212,12 @@ This is the list of $\gamma_{k,1}$ parameters, which represents average effects 
 ```{r}
 fit9_gamma |>
   filter(trait_name == "intercept") |>
-  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
-  kbl(format = "html", escape = FALSE) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
 ```
 
 
-## Rainy
+## $\gamma$ values for rainy season
 
 ```{r}
 targets::tar_load(fit10_gamma)
@@ -186,111 +225,25 @@ fit10_gamma[2:6] <- round(fit10_gamma[2:6], 3)
 ```
 
 Details are same as in the tables above except for `c=0.24`.
-The full list is available table S2 in a separate file.
+The full list is available as Table S2 in a separate file.
 
-```{r}
+```{r,eval=FALSE}
 fit10_gamma |>
   filter(q2_5 * q97_5 > 0) |>
   arrange(para) |>
-  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
-  kbl(format = "html", escape = FALSE) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
 ```
+
+This is the list of $\gamma_{k,1}$ parameters.
 
 ```{r}
 fit10_gamma |>
   filter(trait_name == "intercept") |>
-  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
-  kbl(format = "html", escape = FALSE) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
 ```
 
-# Figs
-
-## Coeffcient plot
-
-Thick and thin lines indicate 90% and 95% credible intervals, respectively.
-Circles show posterior means of coefficients.
-Filled circles indicate significant effects and open circles indicate non-significance effects.
-
-```{r, include=FALSE}
-targets::tar_load(coef_trait_int_s_plot)
-```
-
-![](../figs/coef_trait_int_s.png)
-
-
-## $\beta$ for dry seasons
-
-```{r}
-targets::tar_load(fit9_beta)
-targets::tar_load(fit10_beta)
-targets::tar_load(fit9_gamma)
-targets::tar_load(fit10_gamma)
-targets::tar_load(dry_each_int_s)
-targets::tar_load(wet_each_int_s)
-```
-
-
-```{r}
-x <- "chl"
-y <- "cons_scaled"
-x_lab <- "Chlorophyll"
-y_lab <- "ConS~effect~"
-```
-
-```{r}
-targets::tar_load(beta_dry_cons_sdmc)
-targets::tar_load(beta_dry_cons_chl)
-targets::tar_load(beta_dry_cons_c)
-```
-
-```{r}
-beta_dry_cons_sdmc + beta_dry_cons_chl + beta_dry_cons_c
-```
-
-```{r}
-beta_dry_cons_sdmc
-```
-
-
-```{r}
-targets::tar_load(beta_dry_rain_ldmc)
-targets::tar_load(beta_dry_rain_c)
-targets::tar_load(beta_dry_rain_sla)
-```
-
-```{r}
-beta_dry_rain_ldmc + beta_dry_rain_c + beta_dry_rain_sla
-```
-
-```{r}
-targets::tar_load(beta_dry_consrain_ldmc)
-targets::tar_load(beta_dry_consrain_lt)
-targets::tar_load(beta_dry_consrain_c13)
-targets::tar_load(beta_dry_consrain_tlp)
-```
-
-```{r}
-beta_dry_consrain_ldmc + beta_dry_consrain_lt + beta_dry_consrain_c13 + beta_dry_consrain_tlp
-```
-
-## $\beta$ for wet seasons
-
-```{r}
-targets::tar_load(beta_wet_rain_n)
-targets::tar_load(beta_wet_rain_tlp)
-targets::tar_load(beta_wet_consrain_n)
-targets::tar_load(beta_wet_consrain_tlp)
-```
-
-```{r}
-beta_wet_rain_n + beta_wet_rain_tlp
-```
-
-```{r}
-beta_wet_consrain_n + beta_wet_consrain_tlp
-```
 
 # Session information
 
@@ -298,3 +251,4 @@ beta_wet_consrain_n + beta_wet_consrain_tlp
 devtools::session_info()
 ```
 
+# References
