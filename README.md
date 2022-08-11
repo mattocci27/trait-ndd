@@ -56,8 +56,7 @@ singularity run --env RENV_PATHS_CACHE=/work/home/ac3lm58jvc/renv \
 
 apptainer shell --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
-	radian.sif Rscript bash
-
+	radian.sif
 
 apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
@@ -66,7 +65,6 @@ apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
 	radian.sif make figs
-
 ```
 
 Requirements:

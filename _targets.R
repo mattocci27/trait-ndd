@@ -433,9 +433,20 @@ list(
   #   "docs/bayes_check_all.Rmd",
   #   output_format = "html_document"
   # ),
-  # tar_quarto(
-  #   bayes_check_html,
-  #   "docs/bayes_check.qmd",
+  tar_quarto(
+    bayes_check_html,
+    "docs/bayes_check.qmd",
+  ),
+  # not wokring (path issue)
+  # tar_target(
+  #   bayes_check_html, {
+  #   quarto_render(
+  #     "docs/bayes_check.qmd",
+  #     output_format = "html"
+  #   )
+  #   paste("docs/bayes_check.html")
+  #   },
+  #   format = "file"
   # ),
   # tar_quarto(
   #   test_html,
@@ -508,6 +519,14 @@ list(
     create_stan_tab(fit_10_wet_each_int_s_draws_model_ind)
   ),
   tar_target(
+    fit11_tab,
+    create_stan_tab(fit_11_dry_cn_int_s_draws_model_ind)
+  ),
+  tar_target(
+    fit12_tab,
+    create_stan_tab(fit_12_wet_cn_int_s_draws_model_ind)
+  ),
+  tar_target(
     fit1_gamma,
     create_gamma_tab(fit1_tab, dry_each_int)
   ),
@@ -540,6 +559,22 @@ list(
     create_beta_tab(fit10_tab, wet_each_int_s)
   ),
   tar_target(
+    fit11_gamma,
+    create_gamma_tab(fit11_tab, dry_cn_int_s)
+  ),
+  tar_target(
+    fit12_gamma,
+    create_gamma_tab(fit12_tab, wet_cn_int_s)
+  ),
+  tar_target(
+    fit11_beta,
+    create_beta_tab(fit11_tab, dry_cn_int_s)
+  ),
+  tar_target(
+    fit12_beta,
+    create_beta_tab(fit12_tab, wet_cn_int_s)
+  ),
+  tar_target(
     dry_gamma_csv, {
       write_csv(fit9_gamma, "data/dry_gamma.csv")
       paste("data/dry_gamma.csv")
@@ -550,6 +585,20 @@ list(
     wet_gamma_csv, {
       write_csv(fit10_gamma, "data/wet_gamma.csv")
       paste("data/wet_gamma.csv")
+    },
+    format = "file"
+  ),
+  tar_target(
+    dry_gamma_11_csv, {
+      write_csv(fit11_gamma, "data/dry_gamma_11.csv")
+      paste("data/dry_gamma_11.csv")
+    },
+    format = "file"
+  ),
+  tar_target(
+    wet_gamma_12_csv, {
+      write_csv(fit12_gamma, "data/wet_gamma_12.csv")
+      paste("data/wet_gamma_12.csv")
     },
     format = "file"
   ),
@@ -624,6 +673,24 @@ list(
         width = 6,
         height = 3)
       paste0("figs/coef_trait_noint", c(".png", ".pdf"))
+    },
+    format = "file"
+  ),
+  tar_target(
+    coef_trait_int_s_cn_plot, {
+      p <- coef_pointrange(fit11_gamma, fit12_gamma)
+      ggsave(
+        "figs/coef_trait_int_s_cn.png",
+        p,
+        dpi = 300,
+        width = 6,
+        height = 3)
+      ggsave(
+        "figs/coef_trait_int_s_cn.pdf",
+        p,
+        width = 6,
+        height = 3)
+      paste0("figs/coef_trait_int_s_cn", c(".png", ".pdf"))
     },
     format = "file"
   ),

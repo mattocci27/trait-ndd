@@ -1,5 +1,6 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|cdf1585be58ae009|||||||||||||||
+.Random.seed|object|bae9abb1f8eb463d|||||||||||||||
+bayes_check_html|stem|3676bf9b10adfabe|3a00b26446c379cb|ae9c8ebff7c67706|-192214636|docs/bayes_check.html*docs/bayes_check.qmd|t19215.1597036408s|2a7d407c777c804d|1627683|file|local|vector|||7.996||
 beta_comb_plot|function|c5e84575944d288c|||||||||||||||
 beta_dry_comb_plot|function|c5e84575944d288c|||||||||||||||
 beta_dry_cons_c|stem|bfedb66a2d294fe9|e683ed381418b3e3|29bb8a32ceaed547|-1776167563||t19212.6443981588s|a69cd574e9006d66|64241|rds|local|vector|||0.123||
@@ -39,6 +40,7 @@ coef_pointrange0|function|f8cc2d0a9117672b|||||||||||||||
 coef_ridge|function|9114335e7d5b95e8|||||||||||||||
 coef_ridge_plot|function|9114335e7d5b95e8|||||||||||||||
 coef_trait_int_plot|stem|b7947219f4c69df1|0816c8d215220a43|844356e66fcbfca8|800819603|figs/coef_trait_int.png*figs/coef_trait_int.pdf|t19208.2736095364s|6e1381b01602644e|127919|file|local|vector|||0.337||
+coef_trait_int_s_cn_plot|stem|88358b97bf1eca05|b51513a0ed42f576|dfb812d95f72844b|1884551469|figs/coef_trait_int_s_cn.png*figs/coef_trait_int_s_cn.pdf|t19215.1436138569s|97114bf6be55b00a|125026|file|local|vector|||0.386||
 coef_trait_int_s_plot|stem|e36b555a740205a2|168108a296673e35|b4fe8124dabbd5bb|-416017211|figs/coef_trait_int_s.png*figs/coef_trait_int_s.pdf|t19208.2736218515s|567fe2f7a331ac57|125278|file|local|vector|||0.266||
 coef_trait_noint_plot|stem|3ee72ded01210d39|b63f3d6f48de2d18|8e0ae92c7065b247|-1194131693|figs/coef_trait_noint.png*figs/coef_trait_noint.pdf|t19208.2736138421s|d031fc35af5466a3|86424|file|local|vector|||0.248||
 create_beta_tab|function|8925657f274dedff|||||||||||||||
@@ -52,6 +54,7 @@ dry_each_int|stem|674f4896f785e7bd|53617091786fd96b|b8039a837361ab44|-1095016196
 dry_each_int_s|stem|711d37a01d91eba5|f577cb23e7a15e1b|b8039a837361ab44|375934949||t19214.1280842953s|479dcbda8938f429|497293|rds|local|vector|||66.439||
 dry_each_noint|stem|cc14997c74a05271|123c1ea4e26dfed6|b8039a837361ab44|1716168486||t19214.1286729764s|59fe4ba95b450d0f|260040|rds|local|vector|||110.341||
 dry_each_oneint|stem|e6063e8788da6356|000f6f6e3373b1b7|b8039a837361ab44|-422468099||t19214.1287273726s|1960efa4b90252d5|337708|rds|local|vector|||113.65||
+dry_gamma_11_csv|stem|64e848b08f1d69ce|bc940b9276bf4c73|f823a8c28c84cab5|-1081097186|data/dry_gamma_11.csv|t19215.110872197s|ae051a2925b96c65|11979|file|local|vector|||0.08||
 dry_gamma_csv|stem|a22bbd39a6548efc|1871cbd325b26c58|deafbaf1dd7431c3|712007495|data/dry_gamma.csv|t19208.2736160181s|1e8079e6805045b2|13298|file|local|vector|||0.07||
 dry_loo|stem|21f86d87d2e2b6f9|e3eacb2b3a9f02b8|53fc9c9773f71b42|1959574601||t19206.0708594177s|75e8ba8775d0d4a9|7538765|rds|local|vector|||149.478|Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.|
 dry_pca_int|stem|9d60f3978eea71e8|856f68ebe4be264f|b8039a837361ab44|-1107998479||t19214.1287062623s|4913f8f2808cc163|491593|rds|local|vector|||114.832||
@@ -140,6 +143,12 @@ fit1_tab|stem|f66994ce6974b13b|689c9016409fbe88|3739bb9b2e6500e9|-423509467||t19
 fit10_beta|stem|500d4680de1271fb|ff7ff3eb914f03a9|14fbbfd04a91bd35|-39914120||t19208.3375378687s|503ec5896bee1b85|36525|rds|local|vector|||0.131||
 fit10_gamma|stem|e0a6b612b579381a|d719ca7a0a117272|4da15ac5eccbb17e|146462991||t19208.2736042585s|23d4c068c1a38c5b|5606|rds|local|vector|||0.005||
 fit10_tab|stem|2fbeae0d3c7d840c|d7e843ff27ab859c|3f048cb30d74fc01|30511509||t19208.2733301785s|ac160be82e7fd9d6|41157|rds|local|vector|||13.127||
+fit11_beta|stem|be5401c85fe46227|b6ba518ef0653fe6|af959cdd9f3cd969|-889050174||t19215.1108689099s|7799c6b186cdfe51|36517|rds|local|vector|||0.008||
+fit11_gamma|stem|2ccf9c092143ef34|d28fda42fc6baafe|68ac48c19c810c40|-1268008783||t19215.1108690025s|54e1818562f3d6cf|5118|rds|local|vector|||0.12||
+fit11_tab|stem|cb48f61cb6be7cac|0e7bef4a3b366d9d|5f8a1308bd7088da|-1429852438||t19215.1108563173s|8591b07f2dd64fb8|40686|rds|local|vector|||14.871||
+fit12_beta|stem|2907df4c87518e8f|0b69b3bbf6ebc13f|0a1ac36c6d07ab51|-103100155||t19215.1109301138s|b22f3fbc246c1772|36547|rds|local|vector|||0.004||
+fit12_gamma|stem|448197b618e15490|f52d2ad898bd69de|434ecaed72370737|-857267677||t19215.1109290027s|fdfa22659af6fc56|5119|rds|local|vector|||0.008||
+fit12_tab|stem|40ab87c52f21cf18|9e70f141cd62aa85|2b224e8874893cac|811282133||t19215.110916086s|4c983df9ffb1ff81|40683|rds|local|vector|||13.278||
 fit2_gamma|stem|f0a0484ae4e1bc46|a1ce8830c17513c0|7c60f4c50ecf5977|1734244057||t19208.2735997214s|e625827d1fc1c457|5622|rds|local|vector|||0.004||
 fit2_tab|stem|7b81238326e53dbd|3db7575ec59a5ebd|79f91607f3f14427|-1967150068||t19208.2723681194s|a8b576c4f9972bea|41036|rds|local|vector|||13.074||
 fit3_gamma|stem|0bed9f975bf6f39a|ebb3885ade55cc9a|c967b999f802851d|1767905543||t19208.2733319378s|45696c2e242ba92e|3704|rds|local|vector|||0.007||
@@ -172,6 +181,7 @@ wet_cn_int_s|stem|83f50664a1e8fc75|9fce061e0509ad6b|b8039a837361ab44|-1526299886
 wet_each_int|stem|6459b9145895c385|47eff6e74581b1d7|b8039a837361ab44|587713701||t19214.1285738134s|317b7e736e60ece7|462256|rds|local|vector|||108.693||
 wet_each_int_s|stem|870fd7e2fbcd9b3c|a9eabeb54f7cb015|b8039a837361ab44|2094073036||t19214.1281436911s|37adf3a5d2df38c5|464270|rds|local|vector|||69.086||
 wet_each_noint|stem|4a6dfbe39f9943fe|2e4eae5f5a7efdf8|b8039a837361ab44|1763462765||t19214.1287246412s|ba0333c237e4552e|240099|rds|local|vector|||108.667||
+wet_gamma_12_csv|stem|0d24c8be1dc7cad7|3d38f84b2de64dbb|7c4a616905ea3e07|-2111492986|data/wet_gamma_12.csv|t19215.1109321509s|90c02e0eeff09aab|11888|file|local|vector|||0.068||
 wet_gamma_csv|stem|89244e37f1b3aafb|4f567c503fe91912|0ac65c20dc0b54b5|-82312676|data/wet_gamma.csv|t19208.2736174996s|38fe480498ef523d|13040|file|local|vector|||0.005||
 wet_loo|stem|4bbd8526319a42b0|14b11478ef4684eb|94f24287873144d5|-1060163020||t19205.1373459772s|3ed99554555023ea|5538257|rds|local|vector|||77.717|Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.. Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.|
 wet_pca_int|stem|df40fd97ea8149f0|a4877e3b44315a5e|b8039a837361ab44|1261086687||t19214.1287130213s|8f5926c5574badd9|457919|rds|local|vector|||109.93||

@@ -64,6 +64,7 @@ targets::tar_load(dry_each_int_s)
 targets::tar_load(wet_each_int_s)
 ```
 
+
 ## Dry season
 
 ```{r}
@@ -83,6 +84,8 @@ wet_each_int_s |> str()
 ```{r, include=FALSE}
 targets::tar_load(fit_9_dry_each_int_s_summary_model_ind)
 targets::tar_load(fit_10_wet_each_int_s_summary_model_ind)
+targets::tar_load(fit_11_dry_cn_int_s_summary_model_ind)
+targets::tar_load(fit_12_wet_cn_int_s_summary_model_ind)
 ```
 
 Both models have converged (Rhat < 1.1).
@@ -90,6 +93,8 @@ Both models have converged (Rhat < 1.1).
 ```{r}
 fit_9_dry_each_int_s_summary_model_ind |> filter(rhat > 1.1)
 fit_10_wet_each_int_s_summary_model_ind |> filter(rhat > 1.1)
+fit_11_dry_cn_int_s_summary_model_ind |> filter(rhat > 1.1)
+fit_12_wet_cn_int_s_summary_model_ind |> filter(rhat > 1.1)
 ```
 
 
@@ -98,6 +103,8 @@ fit_10_wet_each_int_s_summary_model_ind |> filter(rhat > 1.1)
 ```{r, include=FALSE}
 targets::tar_load(fit_9_dry_each_int_s_diagnostics_model_ind)
 targets::tar_load(fit_10_wet_each_int_s_diagnostics_model_ind)
+targets::tar_load(fit_11_dry_cn_int_s_diagnostics_model_ind)
+targets::tar_load(fit_12_wet_cn_int_s_diagnostics_model_ind)
 ```
 
 There were no divergent transitions
@@ -110,6 +117,8 @@ div_check
 ```{r}
 div_check(fit_9_dry_each_int_s_diagnostics_model_ind)
 div_check(fit_10_wet_each_int_s_diagnostics_model_ind)
+div_check(fit_11_dry_cn_int_s_diagnostics_model_ind)
+div_check(fit_12_wet_cn_int_s_diagnostics_model_ind)
 ```
 
 
@@ -178,6 +187,32 @@ fit9_gamma |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
+## Dry CN
+
+Traits include CN but not C and N.
+
+```{r}
+targets::tar_load(fit11_gamma)
+fit11_gamma[2:6] <- round(fit11_gamma[2:6], 3)
+```
+```{r}
+fit11_gamma |>
+  filter(q2_5 * q97_5 > 0) |>
+  arrange(para) |>
+  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
+  kbl(format = "html", escape = FALSE) |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+```{r}
+fit11_gamma |>
+  filter(trait_name == "intercept") |>
+  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
+  kbl(format = "html", escape = FALSE) |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+
 
 ## Rainy
 
@@ -206,92 +241,33 @@ fit10_gamma |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-# Figs
+## Rainy CN
 
-## Coeffcient plot
-
-Thick and thin lines indicate 90% and 95% credible intervals, respectively.
-Circles show posterior means of coefficients.
-Filled circles indicate significant effects and open circles indicate non-significance effects.
-
-```{r, include=FALSE}
-targets::tar_load(coef_trait_int_s_plot)
-```
-
-![](../figs/coef_trait_int_s.png)
-
-
-## $\beta$ for dry seasons
+Traits include CN but not C and N.
 
 ```{r}
-targets::tar_load(fit9_beta)
-targets::tar_load(fit10_beta)
-targets::tar_load(fit9_gamma)
-targets::tar_load(fit10_gamma)
-targets::tar_load(dry_each_int_s)
-targets::tar_load(wet_each_int_s)
+targets::tar_load(fit12_gamma)
+fit12_gamma[2:6] <- round(fit12_gamma[2:6], 3)
+```
+
+```{r}
+fit12_gamma |>
+  filter(q2_5 * q97_5 > 0) |>
+  arrange(para) |>
+  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
+  kbl(format = "html", escape = FALSE) |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 
 ```{r}
-x <- "chl"
-y <- "cons_scaled"
-x_lab <- "Chlorophyll"
-y_lab <- "ConS~effect~"
+fit12_gamma |>
+  filter(trait_name == "intercept") |>
+  mutate(mean_ = cell_spec(mean_, "html", bold = ifelse(q2_5 * q97_5 > 0, TRUE, FALSE))) |>
+  kbl(format = "html", escape = FALSE) |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-```{r}
-targets::tar_load(beta_dry_cons_sdmc)
-targets::tar_load(beta_dry_cons_chl)
-targets::tar_load(beta_dry_cons_c)
-```
-
-```{r}
-beta_dry_cons_sdmc + beta_dry_cons_chl + beta_dry_cons_c
-```
-
-```{r}
-beta_dry_cons_sdmc
-```
-
-
-```{r}
-targets::tar_load(beta_dry_rain_ldmc)
-targets::tar_load(beta_dry_rain_c)
-targets::tar_load(beta_dry_rain_sla)
-```
-
-```{r}
-beta_dry_rain_ldmc + beta_dry_rain_c + beta_dry_rain_sla
-```
-
-```{r}
-targets::tar_load(beta_dry_consrain_ldmc)
-targets::tar_load(beta_dry_consrain_lt)
-targets::tar_load(beta_dry_consrain_c13)
-targets::tar_load(beta_dry_consrain_tlp)
-```
-
-```{r}
-beta_dry_consrain_ldmc + beta_dry_consrain_lt + beta_dry_consrain_c13 + beta_dry_consrain_tlp
-```
-
-## $\beta$ for wet seasons
-
-```{r}
-targets::tar_load(beta_wet_rain_n)
-targets::tar_load(beta_wet_rain_tlp)
-targets::tar_load(beta_wet_consrain_n)
-targets::tar_load(beta_wet_consrain_tlp)
-```
-
-```{r}
-beta_wet_rain_n + beta_wet_rain_tlp
-```
-
-```{r}
-beta_wet_consrain_n + beta_wet_consrain_tlp
-```
 
 # Session information
 
