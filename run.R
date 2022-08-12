@@ -13,7 +13,7 @@ targets::tar_make_clustermq(
 # )
 
 # For building mcmc draws, diagnostics, summary
-# this needs huge RAM
+# This saves RAM
 # targets::tar_make_clustermq(
 #   workers = 2
 # )

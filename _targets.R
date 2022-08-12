@@ -183,6 +183,19 @@ list(
       inter = TRUE, trait_set = "each",
       scaling_within_seasons = TRUE),
   ),
+  tar_target(
+    dry_cn_int_s,
+    gen_stan_dat(data_list, season = "dry",
+      inter = TRUE, trait_set = "cn",
+      scaling_within_seasons = TRUE),
+  ),
+  tar_target(
+    wet_cn_int_s,
+    gen_stan_dat(data_list, season = "rainy",
+      inter = TRUE, trait_set = "cn",
+      scaling_within_seasons = TRUE),
+  ),
+
   tar_stan_mcmc(
     fit_0_dry_each_oneint,
     "stan/model_ind.stan",
@@ -348,6 +361,36 @@ list(
     adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123),
+  tar_stan_mcmc(
+    fit_11_dry_cn_int_s,
+    "stan/model_ind.stan",
+    data = dry_cn_int_s,
+    refresh = 0,
+    chains = 4,
+    parallel_chains = getOption("mc.cores", 4),
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    draws = TRUE,
+    diagnostics = TRUE,
+    summary = TRUE,
+    adapt_delta = 0.95,
+    max_treedepth = 15,
+    seed = 123),
+  tar_stan_mcmc(
+    fit_12_wet_cn_int_s,
+    "stan/model_ind.stan",
+    data = wet_cn_int_s,
+    refresh = 0,
+    chains = 4,
+    parallel_chains = getOption("mc.cores", 4),
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    draws = TRUE,
+    diagnostics = TRUE,
+    summary = TRUE,
+    adapt_delta = 0.95,
+    max_treedepth = 15,
+    seed = 123),
   # # Better not to use `mclapply`. It requries too much RAM
   tar_target(
     dry_loo,
@@ -390,9 +433,28 @@ list(
   #   "docs/bayes_check_all.Rmd",
   #   output_format = "html_document"
   # ),
+  tar_quarto(
+    bayes_check_pdf,
+    "ms/bayes_check.qmd"
+  ),
   # tar_quarto(
   #   bayes_check_html,
-  #   "docs/bayes_check.qmd",
+  #   "ms/bayes_check.qmd"
+  # ),
+  # tar_quarto(
+  #   bayes_check_docx,
+  #   "ms/bayes_check.qmd"
+  # ),
+  # not wokring (path issue)
+  # tar_target(
+  #   bayes_check_html, {
+  #   quarto_render(
+  #     "docs/bayes_check.qmd",
+  #     output_format = "html"
+  #   )
+  #   paste("docs/bayes_check.html")
+  #   },
+  #   format = "file"
   # ),
   # tar_quarto(
   #   test_html,
@@ -465,6 +527,14 @@ list(
     create_stan_tab(fit_10_wet_each_int_s_draws_model_ind)
   ),
   tar_target(
+    fit11_tab,
+    create_stan_tab(fit_11_dry_cn_int_s_draws_model_ind)
+  ),
+  tar_target(
+    fit12_tab,
+    create_stan_tab(fit_12_wet_cn_int_s_draws_model_ind)
+  ),
+  tar_target(
     fit1_gamma,
     create_gamma_tab(fit1_tab, dry_each_int)
   ),
@@ -497,6 +567,22 @@ list(
     create_beta_tab(fit10_tab, wet_each_int_s)
   ),
   tar_target(
+    fit11_gamma,
+    create_gamma_tab(fit11_tab, dry_cn_int_s)
+  ),
+  tar_target(
+    fit12_gamma,
+    create_gamma_tab(fit12_tab, wet_cn_int_s)
+  ),
+  tar_target(
+    fit11_beta,
+    create_beta_tab(fit11_tab, dry_cn_int_s)
+  ),
+  tar_target(
+    fit12_beta,
+    create_beta_tab(fit12_tab, wet_cn_int_s)
+  ),
+  tar_target(
     dry_gamma_csv, {
       write_csv(fit9_gamma, "data/dry_gamma.csv")
       paste("data/dry_gamma.csv")
@@ -507,6 +593,20 @@ list(
     wet_gamma_csv, {
       write_csv(fit10_gamma, "data/wet_gamma.csv")
       paste("data/wet_gamma.csv")
+    },
+    format = "file"
+  ),
+  tar_target(
+    dry_gamma_11_csv, {
+      write_csv(fit11_gamma, "data/dry_gamma_11.csv")
+      paste("data/dry_gamma_11.csv")
+    },
+    format = "file"
+  ),
+  tar_target(
+    wet_gamma_12_csv, {
+      write_csv(fit12_gamma, "data/wet_gamma_12.csv")
+      paste("data/wet_gamma_12.csv")
     },
     format = "file"
   ),
@@ -581,6 +681,24 @@ list(
         width = 6,
         height = 3)
       paste0("figs/coef_trait_noint", c(".png", ".pdf"))
+    },
+    format = "file"
+  ),
+  tar_target(
+    coef_trait_int_s_cn_plot, {
+      p <- coef_pointrange(fit11_gamma, fit12_gamma)
+      ggsave(
+        "figs/coef_trait_int_s_cn.png",
+        p,
+        dpi = 300,
+        width = 6,
+        height = 3)
+      ggsave(
+        "figs/coef_trait_int_s_cn.pdf",
+        p,
+        width = 6,
+        height = 3)
+      paste0("figs/coef_trait_int_s_cn", c(".png", ".pdf"))
     },
     format = "file"
   ),

@@ -1,0 +1,1010 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.33,0.33}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.33,0.33}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.44,0.26,0.76}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.14,0.16,0.18}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.14,0.16,0.18}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.44,0.26,0.76}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.89,0.38,0.04}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{1.00,0.33,0.33}{#1}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{xr}
+\usepackage[default]{sourcesanspro}
+\usepackage{sourcecodepro}
+\usepackage{fancyhdr}
+\usepackage{fvextra}
+\pagestyle{fancy}
+\fancypagestyle{plain}{\pagestyle{fancy}}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[RE,RO]{Song \textit{et al}. --Ecology Letters-- Appendix SX}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Appendix SX: Diagnostics for posterior distributions},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Appendix SX: Diagnostics for posterior distributions}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, sharp corners, breakable, boxrule=0pt, enhanced, frame hidden, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\newpage
+
+Here we diagnose model convergence and divergent transitions for our
+Bayesian model in the main text, then we check parameters that are
+significantly different from zero. All codes are in R and Stan, and
+workflow is managed with the R \texttt{targets} package
+\href{https://github.com/ropensci/targets}{(https://github.com/ropensci/targets)}.
+Data, codes, and computing environments to reproduce this manuscript
+will be archived on zendo at https://doi.org/xxx and also available on
+Github at \url{https://github.com/mattocci27/seedling-stan}.
+
+\hypertarget{setup}{%
+\section{Setup}\label{setup}}
+
+First, we load R packages.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(here)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{source}\NormalTok{(}\FunctionTok{here}\NormalTok{(}\StringTok{"R"}\NormalTok{, }\StringTok{"stan.R"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{data}{%
+\section{Data}\label{data}}
+
+All the data and results are in the \texttt{targets} cache, which can be
+loaded using \texttt{tar\_load}.
+
+\begin{itemize}
+\item
+  \texttt{dry\_each\_int\_s}: list object that contains data for dry
+  seasons in our model
+\item
+  \texttt{wet\_each\_int\_s}: list object that contains data for rainy
+  seasons in our model
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(dry\_each\_int\_s)}
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(wet\_each\_int\_s)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{dry-season}{%
+\subsection{Dry season}\label{dry-season}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dry\_each\_int\_s }\SpecialCharTok{|\textgreater{}} \FunctionTok{str}\NormalTok{()}
+\CommentTok{\#\textgreater{} List of 15}
+\CommentTok{\#\textgreater{}  $ N     : int 29085}
+\CommentTok{\#\textgreater{}  $ J     : int 76}
+\CommentTok{\#\textgreater{}  $ K     : int 11}
+\CommentTok{\#\textgreater{}  $ S     : int 384}
+\CommentTok{\#\textgreater{}  $ T     : int 10}
+\CommentTok{\#\textgreater{}  $ M     : int 9153}
+\CommentTok{\#\textgreater{}  $ L     : int 11}
+\CommentTok{\#\textgreater{}  $ cc    : num 0.27}
+\CommentTok{\#\textgreater{}  $ suv   : num [1:29085] 0 1 0 1 1 0 0 0 1 0 ...}
+\CommentTok{\#\textgreater{}  $ plot  : int [1:29085] 267 267 267 267 267 267 267 265 265 267 ...}
+\CommentTok{\#\textgreater{}  $ census: int [1:29085] 1 1 1 7 7 1 1 8 6 1 ...}
+\CommentTok{\#\textgreater{}  $ sp    : int [1:29085] 53 53 53 12 20 53 53 53 62 53 ...}
+\CommentTok{\#\textgreater{}  $ tag   : int [1:29085] 6121 6185 6162 6138 6159 6122 6184 6070 6067 6165 ...}
+\CommentTok{\#\textgreater{}  $ x     : num [1:29085, 1:11] 1 1 1 1 1 1 1 1 1 1 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "int" "logh\_scaled" "cons\_scaled" "cona\_scaled\_c" ...}
+\CommentTok{\#\textgreater{}  $ u     : num [1:11, 1:76] 1 1.337 1.175 0.87 {-}0.414 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "intercept" "ldmc" "sdmc" "chl" ...}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\end{Highlighting}
+\end{Shaded}
+
+The elements in the object are as follows:
+
+\begin{itemize}
+\item
+  \texttt{N}: number of individuals
+\item
+  \texttt{J}: number of species
+\item
+  \texttt{K}: number of individual-level predictors (e.g., ConS)
+\item
+  \texttt{S}: number of plots
+\item
+  \texttt{T}: number of censuses
+\item
+  \texttt{M}: number of the unique seedling individuals
+\item
+  \texttt{L}: number of species-level predictors (e.g., SLA)
+\item
+  \texttt{cc}: scaling parameter for conspecific and heterospecific tree
+  densities
+\item
+  \texttt{suv}: survival data (0: dead, 1: alive)
+\item
+  \texttt{plot}: plot ID
+\item
+  \texttt{census}: census ID
+\item
+  \texttt{sp}: species ID
+\item
+  \texttt{tag}: seedling ID
+\item
+  \texttt{x}: N \(\times\) L matrix for individual-level predictors
+\item
+  \texttt{u}: N \(\times\) J matrix for species-level predictors
+\end{itemize}
+
+\hypertarget{rainy-season}{%
+\subsection{Rainy season}\label{rainy-season}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wet\_each\_int\_s }\SpecialCharTok{|\textgreater{}} \FunctionTok{str}\NormalTok{()}
+\CommentTok{\#\textgreater{} List of 15}
+\CommentTok{\#\textgreater{}  $ N     : int 26712}
+\CommentTok{\#\textgreater{}  $ J     : int 76}
+\CommentTok{\#\textgreater{}  $ K     : int 11}
+\CommentTok{\#\textgreater{}  $ S     : int 384}
+\CommentTok{\#\textgreater{}  $ T     : int 10}
+\CommentTok{\#\textgreater{}  $ M     : int 7859}
+\CommentTok{\#\textgreater{}  $ L     : int 11}
+\CommentTok{\#\textgreater{}  $ cc    : num 0.24}
+\CommentTok{\#\textgreater{}  $ suv   : num [1:26712] 1 0 1 0 1 1 0 0 0 0 ...}
+\CommentTok{\#\textgreater{}  $ plot  : int [1:26712] 265 265 265 267 267 265 266 265 265 267 ...}
+\CommentTok{\#\textgreater{}  $ census: int [1:26712] 7 8 7 8 8 7 8 8 8 8 ...}
+\CommentTok{\#\textgreater{}  $ sp    : int [1:26712] 53 53 28 53 20 62 53 53 53 53 ...}
+\CommentTok{\#\textgreater{}  $ tag   : int [1:26712] 4900 4896 4888 4946 4937 4887 4912 4894 4895 4945 ...}
+\CommentTok{\#\textgreater{}  $ x     : num [1:26712, 1:11] 1 1 1 1 1 1 1 1 1 1 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "int" "logh\_scaled" "cons\_scaled" "cona\_scaled\_c" ...}
+\CommentTok{\#\textgreater{}  $ u     : num [1:11, 1:76] 1 1.337 1.175 0.87 {-}0.414 ...}
+\CommentTok{\#\textgreater{}   ..{-} attr(*, "dimnames")=List of 2}
+\CommentTok{\#\textgreater{}   .. ..$ : chr [1:11] "intercept" "ldmc" "sdmc" "chl" ...}
+\CommentTok{\#\textgreater{}   .. ..$ : NULL}
+\end{Highlighting}
+\end{Shaded}
+
+Details are same as in the dry seasons.
+
+\hypertarget{model-stan-code}{%
+\section{Model (Stan code)}\label{model-stan-code}}
+
+Stan code for the multilevel logistic regression in the main text.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{\{}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{} N; }\CommentTok{// number of sample}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} J; }\CommentTok{// number of sp}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} K; }\CommentTok{// number of tree{-}level preditor (i.e, CONS, HETS,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} L; }\CommentTok{// number of sp{-}level predictor (i.e., interecept and WP)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} M; }\CommentTok{// number of seedling individuals (tag)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} S; }\CommentTok{// number of site}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} T; }\CommentTok{// number of census}
+  \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
+  \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{,}\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{,}\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{,}\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{,}\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} tag; }\CommentTok{// integer}
+\NormalTok{\}}
+
+\KeywordTok{parameters}\NormalTok{\{}
+  \DataTypeTok{matrix}\NormalTok{[K, L] gamma;}
+  \DataTypeTok{matrix}\NormalTok{[K, J] z;}
+  \DataTypeTok{vector}\NormalTok{[S] phi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[T] xi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[M] psi\_raw;}
+  \DataTypeTok{cholesky\_factor\_corr}\NormalTok{[K] L\_Omega;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{,}\KeywordTok{upper}\NormalTok{=pi()/}\DecValTok{2}\NormalTok{\textgreater{}[K] tau\_unif;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{,}\KeywordTok{upper}\NormalTok{=pi()/}\DecValTok{2}\NormalTok{\textgreater{}[}\DecValTok{3}\NormalTok{] sig\_unif;}
+\NormalTok{\}}
+
+\KeywordTok{transformed parameters}\NormalTok{\{}
+  \DataTypeTok{matrix}\NormalTok{[K, J] beta;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[K] tau;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[}\DecValTok{3}\NormalTok{] sig;}
+  \DataTypeTok{vector}\NormalTok{[S] phi;}
+  \DataTypeTok{vector}\NormalTok{[T] xi;}
+  \DataTypeTok{vector}\NormalTok{[M] psi;}
+  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:K) tau[k] = }\FloatTok{2.5}\NormalTok{ * tan(tau\_unif[k]);}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:}\DecValTok{3}\NormalTok{) sig[i] = }\FloatTok{2.5}\NormalTok{ * tan(sig\_unif[i]);}
+\NormalTok{  beta = gamma * u + diag\_pre\_multiply(tau, L\_Omega) * z;}
+\NormalTok{  phi = phi\_raw * sig[}\DecValTok{1}\NormalTok{];}
+\NormalTok{  xi = xi\_raw * sig[}\DecValTok{2}\NormalTok{];}
+\NormalTok{  psi = psi\_raw * sig[}\DecValTok{3}\NormalTok{];}
+\NormalTok{\}}
+
+\KeywordTok{model}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] mu;}
+\NormalTok{  to\_vector(z) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(phi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(xi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(psi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  L\_Omega \textasciitilde{} lkj\_corr\_cholesky(}\DecValTok{2}\NormalTok{);}
+\NormalTok{  to\_vector(gamma) \textasciitilde{} normal(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    mu[n] = x[n, ] * beta[, sp[n]];}
+\NormalTok{  \}}
+\NormalTok{  suv \textasciitilde{} bernoulli\_logit(mu + phi[plot] + xi[census] + psi[tag]);}
+\NormalTok{\}}
+
+\KeywordTok{generated quantities}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] log\_lik;}
+  \DataTypeTok{corr\_matrix}\NormalTok{[K] Omega;}
+\NormalTok{  Omega = multiply\_lower\_tri\_self\_transpose(L\_Omega);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    log\_lik[n] = bernoulli\_logit\_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +}
+\NormalTok{      phi[plot[n]] + xi[census[n]] + psi[tag[n]]);}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{model-validation}{%
+\section{Model validation}\label{model-validation}}
+
+Posterior distributions of all parameters were estimated using the
+Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan
+(\protect\hyperlink{ref-Carpenter2017}{Carpenter \emph{et al.} 2017};
+\protect\hyperlink{ref-StanDevelopmentTeam2022}{Stan Development Team
+2022}). Posterior estimates were obtained from 4 independent chains of
+1,000 iteraions after a warmup of 1,000 iterations. Convergence of the
+posterior distribution was assessed with the Gelman-Rubin statistic
+(\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.} 2013}) with a
+convergence threshold of 1.1 for all parameters as following.
+
+\hypertarget{convergence}{%
+\subsection{Convergence}\label{convergence}}
+
+\begin{itemize}
+\item
+  \texttt{fit\_9\_dry\_each\_int\_s\_summary\_model\_ind}: summaries of
+  posterior distributions of all the parameters for dry seasons
+\item
+  \texttt{fit\_10\_wet\_each\_int\_s\_summary\_model\_ind}: summaries of
+  posterior distributions of all the parameters for rainy seasons
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_9\_dry\_each\_int\_s\_summary\_model\_ind)}
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_10\_wet\_each\_int\_s\_summary\_model\_ind)}
+\end{Highlighting}
+\end{Shaded}
+
+There were no parameters with Rhat \textgreater{} 1.1, which indicates
+both models have converged.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_9\_dry\_each\_int\_s\_summary\_model\_ind }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(rhat }\SpecialCharTok{\textgreater{}} \FloatTok{1.1}\NormalTok{)}
+\CommentTok{\#\textgreater{} \# A tibble: 0 x 11}
+\CommentTok{\#\textgreater{} \# ... with 11 variables: variable \textless{}chr\textgreater{}, mean \textless{}dbl\textgreater{}, median \textless{}dbl\textgreater{}, sd \textless{}dbl\textgreater{},}
+\CommentTok{\#\textgreater{} \#   mad \textless{}dbl\textgreater{}, q5 \textless{}dbl\textgreater{}, q95 \textless{}dbl\textgreater{}, rhat \textless{}dbl\textgreater{}, ess\_bulk \textless{}dbl\textgreater{}, ess\_tail \textless{}dbl\textgreater{},}
+\CommentTok{\#\textgreater{} \#   .join\_data \textless{}dbl\textgreater{}}
+\NormalTok{fit\_10\_wet\_each\_int\_s\_summary\_model\_ind }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(rhat }\SpecialCharTok{\textgreater{}} \FloatTok{1.1}\NormalTok{)}
+\CommentTok{\#\textgreater{} \# A tibble: 0 x 11}
+\CommentTok{\#\textgreater{} \# ... with 11 variables: variable \textless{}chr\textgreater{}, mean \textless{}dbl\textgreater{}, median \textless{}dbl\textgreater{}, sd \textless{}dbl\textgreater{},}
+\CommentTok{\#\textgreater{} \#   mad \textless{}dbl\textgreater{}, q5 \textless{}dbl\textgreater{}, q95 \textless{}dbl\textgreater{}, rhat \textless{}dbl\textgreater{}, ess\_bulk \textless{}dbl\textgreater{}, ess\_tail \textless{}dbl\textgreater{},}
+\CommentTok{\#\textgreater{} \#   .join\_data \textless{}dbl\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{divergent-transitions}{%
+\subsection{Divergent transitions}\label{divergent-transitions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_9\_dry\_each\_int\_s\_diagnostics\_model\_ind)}
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit\_10\_wet\_each\_int\_s\_diagnostics\_model\_ind)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  \texttt{fit\_9\_dry\_each\_int\_s\_diagnostics\_model\_ind}: the
+  number of divergences during HMC for dry seasons
+\item
+  \texttt{fit\_10\_wet\_each\_int\_s\_diagnostics\_model\_ind}: the
+  number of divergences during HMC for rainy seasons
+\end{itemize}
+
+When the number of divergences is too large, posterior distributions are
+not reliable (\protect\hyperlink{ref-Betancourt2016}{Betancourt 2016}).
+
+Here is the code to check the number of divergences:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{div\_check}
+\CommentTok{\#\textgreater{} function (diags) }
+\CommentTok{\#\textgreater{} \{}
+\CommentTok{\#\textgreater{}     n1 \textless{}{-} nrow(filter(diags, divergent\_\_ == 1))}
+\CommentTok{\#\textgreater{}     n2 \textless{}{-} nrow(diags)}
+\CommentTok{\#\textgreater{}     print(paste(n1, "of", n2, "iterations ended with a divergence", }
+\CommentTok{\#\textgreater{}         n1/n2 * 100, "\%"))}
+\CommentTok{\#\textgreater{} \}}
+\end{Highlighting}
+\end{Shaded}
+
+There were no divergent transitions, suggesting that HMC trajectory
+tracked the true trajectory
+(\protect\hyperlink{ref-StanDevelopmentTeam2022}{Stan Development Team
+2022}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{div\_check}\NormalTok{(fit\_9\_dry\_each\_int\_s\_diagnostics\_model\_ind)}
+\CommentTok{\#\textgreater{} [1] "0 of 4000 iterations ended with a divergence 0 \%"}
+\FunctionTok{div\_check}\NormalTok{(fit\_10\_wet\_each\_int\_s\_diagnostics\_model\_ind)}
+\CommentTok{\#\textgreater{} [1] "0 of 4000 iterations ended with a divergence 0 \%"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{tables}{%
+\section{Tables}\label{tables}}
+
+\hypertarget{gamma-coefficients-for-dry-seasons}{%
+\subsection{\texorpdfstring{\(\gamma\) coefficients for dry
+seasons}{\textbackslash gamma coefficients for dry seasons}}\label{gamma-coefficients-for-dry-seasons}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{fit9\_gamma}: \(\gamma\) values of all the parameters for dry
+  seasons
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit9\_gamma)}
+\NormalTok{fit9\_gamma[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{] }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(fit9\_gamma[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{], }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+This is the list of \(\gamma\) parameters that were significantly
+different from zero (i.e., the 95\% credible intervals did not include
+zero). The full list is available as Table S1 in a separate file.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit9\_gamma }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(q2\_5 }\SpecialCharTok{*}\NormalTok{ q97\_5 }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{arrange}\NormalTok{(para) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{format =} \StringTok{"latex"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }\StringTok{"repeat\_header"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[t]{lrrrrrll}
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endfirsthead
+\multicolumn{8}{@{}l}{\textit{(continued)}}\\
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{gamma\_1\_1} & \cellcolor{gray!6}{2.693} & \cellcolor{gray!6}{1.818} & \cellcolor{gray!6}{1.957} & \cellcolor{gray!6}{3.302} & \cellcolor{gray!6}{3.606} & \cellcolor{gray!6}{int} & \cellcolor{gray!6}{intercept}\\
+gamma\_1\_6 & -1.148 & -2.135 & -1.977 & -0.506 & -0.143 & int & c\_mass\\
+\cellcolor{gray!6}{gamma\_2\_1} & \cellcolor{gray!6}{1.106} & \cellcolor{gray!6}{0.882} & \cellcolor{gray!6}{0.922} & \cellcolor{gray!6}{1.252} & \cellcolor{gray!6}{1.340} & \cellcolor{gray!6}{logh\_scaled} & \cellcolor{gray!6}{intercept}\\
+gamma\_3\_1 & -1.767 & -3.194 & -2.986 & -0.826 & -0.382 & cons\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_3\_3} & \cellcolor{gray!6}{1.801} & \cellcolor{gray!6}{0.018} & \cellcolor{gray!6}{0.307} & \cellcolor{gray!6}{2.989} & \cellcolor{gray!6}{3.661} & \cellcolor{gray!6}{cons\_scaled} & \cellcolor{gray!6}{sdmc}\\
+\addlinespace
+gamma\_3\_4 & -2.055 & -3.684 & -3.390 & -1.050 & -0.514 & cons\_scaled & chl\\
+\cellcolor{gray!6}{gamma\_3\_6} & \cellcolor{gray!6}{-1.928} & \cellcolor{gray!6}{-3.624} & \cellcolor{gray!6}{-3.369} & \cellcolor{gray!6}{-0.853} & \cellcolor{gray!6}{-0.260} & \cellcolor{gray!6}{cons\_scaled} & \cellcolor{gray!6}{c\_mass}\\
+gamma\_5\_1 & 0.211 & 0.058 & 0.081 & 0.325 & 0.406 & hets\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_7\_1} & \cellcolor{gray!6}{-0.587} & \cellcolor{gray!6}{-1.152} & \cellcolor{gray!6}{-1.048} & \cellcolor{gray!6}{-0.226} & \cellcolor{gray!6}{-0.042} & \cellcolor{gray!6}{rain\_scaled} & \cellcolor{gray!6}{intercept}\\
+gamma\_7\_10 & -1.100 & -1.991 & -1.844 & -0.520 & -0.149 & rain\_scaled & log\_sla\\
+\addlinespace
+\cellcolor{gray!6}{gamma\_7\_2} & \cellcolor{gray!6}{-1.296} & \cellcolor{gray!6}{-2.190} & \cellcolor{gray!6}{-2.055} & \cellcolor{gray!6}{-0.708} & \cellcolor{gray!6}{-0.377} & \cellcolor{gray!6}{rain\_scaled} & \cellcolor{gray!6}{ldmc}\\
+gamma\_7\_5 & -1.273 & -1.922 & -1.812 & -0.866 & -0.644 & rain\_scaled & c13\\
+\cellcolor{gray!6}{gamma\_8\_11} & \cellcolor{gray!6}{-1.036} & \cellcolor{gray!6}{-1.965} & \cellcolor{gray!6}{-1.796} & \cellcolor{gray!6}{-0.465} & \cellcolor{gray!6}{-0.106} & \cellcolor{gray!6}{cons\_rain} & \cellcolor{gray!6}{log\_lt}\\
+gamma\_8\_2 & -1.949 & -3.263 & -3.025 & -1.097 & -0.568 & cons\_rain & ldmc\\
+\cellcolor{gray!6}{gamma\_8\_5} & \cellcolor{gray!6}{-1.645} & \cellcolor{gray!6}{-2.643} & \cellcolor{gray!6}{-2.476} & \cellcolor{gray!6}{-0.979} & \cellcolor{gray!6}{-0.615} & \cellcolor{gray!6}{cons\_rain} & \cellcolor{gray!6}{c13}\\
+\addlinespace
+gamma\_8\_8 & 1.617 & 0.153 & 0.409 & 2.539 & 3.050 & cons\_rain & tlp\\*
+\end{longtable}
+
+The columns are as follows:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{para}: name of parameters
+\item
+  \texttt{mean\_}: posterior means
+\item
+  \texttt{q\_x}: x\% quantile of the posterior distributions. For
+  example, \texttt{q2\_5} and \texttt{q5} are 2.5\% and 5\% quantiles,
+  respectively.
+\item
+  \texttt{pred\_name}: individual-level predictors
+\item
+  \texttt{tarit\_name}: species-level predictors
+\end{itemize}
+
+Individual-level predictors are as follows:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{int}: intercept
+\item
+  \texttt{logh\_scaled}: scaled ln height
+\item
+  \texttt{cons\_scaled}: scaled conspecific seedling densities
+\item
+  \texttt{hets\_scaled}: scaled heterospecific seedling densities
+\item
+  \texttt{cona\_scaled\_c}: scaled conspecific tree densities that were
+  scaled by \texttt{c=0.27} first
+\item
+  \texttt{heta\_scaled\_c}: scaled heterospecific tree densities that
+  were scaled by \texttt{c=0.27} first
+\item
+  \texttt{rain\_scaled}: scaled rainfall
+\item
+  \texttt{cons\_rain}: interaction between \texttt{cons\_scaled} and
+  \texttt{rain\_scaled}
+\item
+  \texttt{cona\_rain}: interaction between \texttt{cona\_scaled} and
+  \texttt{rain\_scaled}
+\item
+  \texttt{hets\_rain}: interaction between \texttt{hets\_scaled} and
+  \texttt{rain\_scaled}
+\item
+  \texttt{heta\_rain}: interaction between \texttt{heta\_scaled} and
+  \texttt{rain\_scaled}
+\end{itemize}
+
+Species-level predictors are as follows:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{ldmc}: leaf dry matter contents
+\item
+  \texttt{sdmc}: stem dry matter contents
+\item
+  \texttt{chl}: chlorophyll content
+\item
+  \texttt{c13}: stable carbon isotope composition,
+\item
+  \texttt{c\_mass}: carbon concentration
+\item
+  \texttt{tlp}: leaf turgor loss point
+\item
+  \texttt{log\_sla}: natural logarithm of specific leaf area
+\item
+  \texttt{log\_lt}: natural logarithm of leaf thickness
+\end{itemize}
+
+This is the list of \(\gamma_{k,1}\) parameters, which represents
+average effects of the each individual-level predictor (e.g.,
+\emph{ConS}) across species.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit9\_gamma }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(trait\_name }\SpecialCharTok{==} \StringTok{"intercept"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{format =} \StringTok{"latex"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }\StringTok{"repeat\_header"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[t]{lrrrrrll}
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endfirsthead
+\multicolumn{8}{@{}l}{\textit{(continued)}}\\
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{gamma\_1\_1} & \cellcolor{gray!6}{2.693} & \cellcolor{gray!6}{1.818} & \cellcolor{gray!6}{1.957} & \cellcolor{gray!6}{3.302} & \cellcolor{gray!6}{3.606} & \cellcolor{gray!6}{int} & \cellcolor{gray!6}{intercept}\\
+gamma\_2\_1 & 1.106 & 0.882 & 0.922 & 1.252 & 1.340 & logh\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_3\_1} & \cellcolor{gray!6}{-1.767} & \cellcolor{gray!6}{-3.194} & \cellcolor{gray!6}{-2.986} & \cellcolor{gray!6}{-0.826} & \cellcolor{gray!6}{-0.382} & \cellcolor{gray!6}{cons\_scaled} & \cellcolor{gray!6}{intercept}\\
+gamma\_4\_1 & -0.083 & -0.627 & -0.535 & 0.271 & 0.455 & cona\_scaled\_c & intercept\\
+\cellcolor{gray!6}{gamma\_5\_1} & \cellcolor{gray!6}{0.211} & \cellcolor{gray!6}{0.058} & \cellcolor{gray!6}{0.081} & \cellcolor{gray!6}{0.325} & \cellcolor{gray!6}{0.406} & \cellcolor{gray!6}{hets\_scaled} & \cellcolor{gray!6}{intercept}\\
+\addlinespace
+gamma\_6\_1 & -0.101 & -0.298 & -0.264 & 0.026 & 0.094 & heta\_scaled\_c & intercept\\
+\cellcolor{gray!6}{gamma\_7\_1} & \cellcolor{gray!6}{-0.587} & \cellcolor{gray!6}{-1.152} & \cellcolor{gray!6}{-1.048} & \cellcolor{gray!6}{-0.226} & \cellcolor{gray!6}{-0.042} & \cellcolor{gray!6}{rain\_scaled} & \cellcolor{gray!6}{intercept}\\
+gamma\_8\_1 & -0.624 & -1.364 & -1.230 & -0.165 & 0.106 & cons\_rain & intercept\\
+\cellcolor{gray!6}{gamma\_9\_1} & \cellcolor{gray!6}{-0.238} & \cellcolor{gray!6}{-0.512} & \cellcolor{gray!6}{-0.462} & \cellcolor{gray!6}{-0.068} & \cellcolor{gray!6}{0.019} & \cellcolor{gray!6}{cona\_rain} & \cellcolor{gray!6}{intercept}\\
+gamma\_10\_1 & -0.016 & -0.151 & -0.127 & 0.066 & 0.109 & hets\_rain & intercept\\
+\addlinespace
+\cellcolor{gray!6}{gamma\_11\_1} & \cellcolor{gray!6}{-0.014} & \cellcolor{gray!6}{-0.145} & \cellcolor{gray!6}{-0.126} & \cellcolor{gray!6}{0.073} & \cellcolor{gray!6}{0.121} & \cellcolor{gray!6}{heta\_rain} & \cellcolor{gray!6}{intercept}\\*
+\end{longtable}
+
+\hypertarget{gamma-coefficients-for-rainy-seasons}{%
+\subsection{\texorpdfstring{\(\gamma\) coefficients for rainy
+seasons}{\textbackslash gamma coefficients for rainy seasons}}\label{gamma-coefficients-for-rainy-seasons}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{fit10\_gamma}: \(\gamma\) values of all the parameters for
+  rainy seasons
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{targets}\SpecialCharTok{::}\FunctionTok{tar\_load}\NormalTok{(fit10\_gamma)}
+\NormalTok{fit10\_gamma[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{] }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(fit10\_gamma[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{], }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{n\_mass}: nitrogen concentration
+\end{itemize}
+
+Other details are same as in the tables above except for
+\texttt{c=0.24}. The full list is available as Table S2 in a separate
+file.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit10\_gamma }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(q2\_5 }\SpecialCharTok{*}\NormalTok{ q97\_5 }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{arrange}\NormalTok{(para) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{format =} \StringTok{"latex"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }\StringTok{"repeat\_header"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[t]{lrrrrrll}
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endfirsthead
+\multicolumn{8}{@{}l}{\textit{(continued)}}\\
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{gamma\_1\_1} & \cellcolor{gray!6}{2.811} & \cellcolor{gray!6}{1.897} & \cellcolor{gray!6}{2.038} & \cellcolor{gray!6}{3.414} & \cellcolor{gray!6}{3.781} & \cellcolor{gray!6}{int} & \cellcolor{gray!6}{intercept}\\
+gamma\_2\_1 & 1.232 & 1.001 & 1.040 & 1.384 & 1.475 & logh\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_4\_1} & \cellcolor{gray!6}{-0.687} & \cellcolor{gray!6}{-1.231} & \cellcolor{gray!6}{-1.124} & \cellcolor{gray!6}{-0.349} & \cellcolor{gray!6}{-0.170} & \cellcolor{gray!6}{cona\_scaled\_c} & \cellcolor{gray!6}{intercept}\\
+gamma\_5\_1 & 0.176 & 0.035 & 0.057 & 0.272 & 0.328 & hets\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_7\_7} & \cellcolor{gray!6}{1.489} & \cellcolor{gray!6}{0.219} & \cellcolor{gray!6}{0.428} & \cellcolor{gray!6}{2.303} & \cellcolor{gray!6}{2.727} & \cellcolor{gray!6}{rain\_scaled} & \cellcolor{gray!6}{n\_mass}\\
+\addlinespace
+gamma\_7\_8 & 2.290 & 1.102 & 1.257 & 3.099 & 3.536 & rain\_scaled & tlp\\
+\cellcolor{gray!6}{gamma\_8\_7} & \cellcolor{gray!6}{3.245} & \cellcolor{gray!6}{0.642} & \cellcolor{gray!6}{1.070} & \cellcolor{gray!6}{4.941} & \cellcolor{gray!6}{5.819} & \cellcolor{gray!6}{cons\_rain} & \cellcolor{gray!6}{n\_mass}\\
+gamma\_8\_8 & 4.552 & 2.000 & 2.412 & 6.249 & 7.173 & cons\_rain & tlp\\*
+\end{longtable}
+
+This is the list of \(\gamma_{k,1}\) parameters.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit10\_gamma }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(trait\_name }\SpecialCharTok{==} \StringTok{"intercept"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{format =} \StringTok{"latex"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }\StringTok{"repeat\_header"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[t]{lrrrrrll}
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endfirsthead
+\multicolumn{8}{@{}l}{\textit{(continued)}}\\
+\toprule
+para & mean\_ & q2\_5 & q5 & q95 & q97\_5 & pred\_name & trait\_name\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{gamma\_1\_1} & \cellcolor{gray!6}{2.811} & \cellcolor{gray!6}{1.897} & \cellcolor{gray!6}{2.038} & \cellcolor{gray!6}{3.414} & \cellcolor{gray!6}{3.781} & \cellcolor{gray!6}{int} & \cellcolor{gray!6}{intercept}\\
+gamma\_2\_1 & 1.232 & 1.001 & 1.040 & 1.384 & 1.475 & logh\_scaled & intercept\\
+\cellcolor{gray!6}{gamma\_3\_1} & \cellcolor{gray!6}{-0.802} & \cellcolor{gray!6}{-2.499} & \cellcolor{gray!6}{-2.156} & \cellcolor{gray!6}{0.171} & \cellcolor{gray!6}{0.679} & \cellcolor{gray!6}{cons\_scaled} & \cellcolor{gray!6}{intercept}\\
+gamma\_4\_1 & -0.687 & -1.231 & -1.124 & -0.349 & -0.170 & cona\_scaled\_c & intercept\\
+\cellcolor{gray!6}{gamma\_5\_1} & \cellcolor{gray!6}{0.176} & \cellcolor{gray!6}{0.035} & \cellcolor{gray!6}{0.057} & \cellcolor{gray!6}{0.272} & \cellcolor{gray!6}{0.328} & \cellcolor{gray!6}{hets\_scaled} & \cellcolor{gray!6}{intercept}\\
+\addlinespace
+gamma\_6\_1 & 0.014 & -0.252 & -0.201 & 0.173 & 0.260 & heta\_scaled\_c & intercept\\
+\cellcolor{gray!6}{gamma\_7\_1} & \cellcolor{gray!6}{0.317} & \cellcolor{gray!6}{-0.339} & \cellcolor{gray!6}{-0.233} & \cellcolor{gray!6}{0.743} & \cellcolor{gray!6}{0.979} & \cellcolor{gray!6}{rain\_scaled} & \cellcolor{gray!6}{intercept}\\
+gamma\_8\_1 & 0.236 & -0.698 & -0.566 & 0.877 & 1.245 & cons\_rain & intercept\\
+\cellcolor{gray!6}{gamma\_9\_1} & \cellcolor{gray!6}{0.060} & \cellcolor{gray!6}{-0.249} & \cellcolor{gray!6}{-0.195} & \cellcolor{gray!6}{0.262} & \cellcolor{gray!6}{0.362} & \cellcolor{gray!6}{cona\_rain} & \cellcolor{gray!6}{intercept}\\
+gamma\_10\_1 & 0.003 & -0.113 & -0.094 & 0.078 & 0.120 & hets\_rain & intercept\\
+\addlinespace
+\cellcolor{gray!6}{gamma\_11\_1} & \cellcolor{gray!6}{0.002} & \cellcolor{gray!6}{-0.167} & \cellcolor{gray!6}{-0.137} & \cellcolor{gray!6}{0.109} & \cellcolor{gray!6}{0.177} & \cellcolor{gray!6}{heta\_rain} & \cellcolor{gray!6}{intercept}\\*
+\end{longtable}
+
+\hypertarget{r-session-information}{%
+\section{R session information}\label{r-session-information}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{session\_info}\NormalTok{()}
+\CommentTok{\#\textgreater{} {-} Session info {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\#\textgreater{}  setting  value}
+\CommentTok{\#\textgreater{}  version  R version 4.2.1 (2022{-}06{-}23)}
+\CommentTok{\#\textgreater{}  os       Ubuntu 20.04.4 LTS}
+\CommentTok{\#\textgreater{}  system   x86\_64, linux{-}gnu}
+\CommentTok{\#\textgreater{}  ui       X11}
+\CommentTok{\#\textgreater{}  language (EN)}
+\CommentTok{\#\textgreater{}  collate  en\_US.UTF{-}8}
+\CommentTok{\#\textgreater{}  ctype    en\_US.UTF{-}8}
+\CommentTok{\#\textgreater{}  tz       Etc/UTC}
+\CommentTok{\#\textgreater{}  date     2022{-}08{-}12}
+\CommentTok{\#\textgreater{}  pandoc   2.18 @ /usr/local/bin/ (via rmarkdown)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} {-} Packages {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\#\textgreater{}  ! package     * version date (UTC) lib source}
+\CommentTok{\#\textgreater{}  P assertthat    0.2.1   2019{-}03{-}21 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P backports     1.4.1   2021{-}12{-}13 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P base64url     1.4     2018{-}05{-}14 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P broom         1.0.0   2022{-}07{-}01 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P cachem        1.0.6   2021{-}08{-}19 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P callr         3.7.0   2021{-}04{-}20 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P cellranger    1.1.0   2016{-}07{-}27 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P cli           3.3.0   2022{-}04{-}25 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}    codetools     0.2{-}18  2020{-}11{-}04 [2] CRAN (R 4.2.1)}
+\CommentTok{\#\textgreater{}  P colorspace    2.0{-}3   2022{-}02{-}21 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P crayon        1.5.1   2022{-}03{-}26 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P data.table    1.14.2  2021{-}09{-}27 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P DBI           1.1.3   2022{-}06{-}18 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P dbplyr        2.2.1   2022{-}06{-}27 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P devtools      2.4.3   2021{-}11{-}30 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P digest        0.6.29  2021{-}12{-}01 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P dplyr       * 1.0.9   2022{-}04{-}28 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P ellipsis      0.3.2   2021{-}04{-}29 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P evaluate      0.15    2022{-}02{-}18 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P fansi         1.0.3   2022{-}03{-}24 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P fastmap       1.1.0   2021{-}01{-}25 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P forcats     * 0.5.1   2021{-}01{-}27 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P fs            1.5.2   2021{-}12{-}08 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}    fst           0.9.8   2022{-}02{-}08 [1] RSPM (R 4.2.1)}
+\CommentTok{\#\textgreater{}    fstcore     * 0.9.12  2022{-}03{-}23 [1] RSPM (R 4.2.1)}
+\CommentTok{\#\textgreater{}  P generics      0.1.2   2022{-}01{-}31 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P ggplot2     * 3.3.6   2022{-}05{-}03 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P glue          1.6.2   2022{-}02{-}24 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P gtable        0.3.0   2019{-}03{-}25 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P haven         2.5.0   2022{-}04{-}15 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P here        * 1.0.1   2020{-}12{-}13 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P hms           1.1.1   2021{-}09{-}26 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P htmltools     0.5.2   2021{-}08{-}25 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P httr          1.4.3   2022{-}05{-}04 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P igraph        1.3.2   2022{-}06{-}13 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P jsonlite      1.8.0   2022{-}02{-}22 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P kableExtra  * 1.3.4   2021{-}02{-}20 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P knitr       * 1.39    2022{-}04{-}26 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P lifecycle     1.0.1   2021{-}09{-}24 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P lubridate     1.8.0   2021{-}10{-}07 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P magrittr      2.0.3   2022{-}03{-}30 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P memoise       2.0.1   2021{-}11{-}26 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P modelr        0.1.8   2020{-}05{-}19 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P munsell       0.5.0   2018{-}06{-}12 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P pillar        1.7.0   2022{-}02{-}01 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P pkgbuild      1.3.1   2021{-}12{-}20 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P pkgconfig     2.0.3   2019{-}09{-}22 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P pkgload       1.3.0   2022{-}06{-}27 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P prettyunits   1.1.1   2020{-}01{-}24 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P processx      3.6.1   2022{-}06{-}17 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P ps            1.7.1   2022{-}06{-}18 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P purrr       * 0.3.4   2020{-}04{-}17 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P R6            2.5.1   2021{-}08{-}19 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P Rcpp          1.0.8.3 2022{-}03{-}17 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P readr       * 2.1.2   2022{-}01{-}30 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P readxl        1.4.0   2022{-}03{-}28 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P remotes       2.4.2   2021{-}11{-}30 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}    renv          0.15.5  2022{-}07{-}05 [1] Github (rstudio/renv@085673d)}
+\CommentTok{\#\textgreater{}  P reprex        2.0.1   2021{-}08{-}05 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P rlang         1.0.3   2022{-}06{-}27 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P rmarkdown     2.14    2022{-}04{-}25 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P rprojroot     2.0.3   2022{-}04{-}02 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P rstudioapi    0.13    2020{-}11{-}12 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P rvest         1.0.2   2021{-}10{-}16 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P scales        1.2.0   2022{-}04{-}13 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P sessioninfo   1.2.2   2021{-}12{-}06 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P stringi       1.7.6   2021{-}11{-}29 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P stringr     * 1.4.0   2019{-}02{-}10 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P svglite       2.1.0   2022{-}02{-}03 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P systemfonts   1.0.4   2022{-}02{-}11 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P targets       0.12.1  2022{-}06{-}03 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P tibble      * 3.1.7   2022{-}05{-}03 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P tidyr       * 1.2.0   2022{-}02{-}01 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P tidyselect    1.1.2   2022{-}02{-}21 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P tidyverse   * 1.3.1   2021{-}04{-}15 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P tzdb          0.3.0   2022{-}03{-}28 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P usethis       2.1.6   2022{-}05{-}25 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P utf8          1.2.2   2021{-}07{-}24 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P vctrs         0.4.1   2022{-}04{-}13 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P viridisLite   0.4.0   2021{-}04{-}13 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P webshot       0.5.3   2022{-}04{-}14 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P withr         2.5.0   2022{-}03{-}03 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P xfun          0.31    2022{-}05{-}10 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P xml2          1.3.3   2021{-}11{-}30 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{}  P yaml          2.3.5   2022{-}02{-}21 [?] RSPM (R 4.2.0)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}  [1] /home/mattocci/seedling{-}stan/renv/library/linux{-}ubuntu{-}focal/R{-}4.2/x86\_64{-}pc{-}linux{-}gnu}
+\CommentTok{\#\textgreater{}  [2] /usr/local/lib/R/library}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}  P {-}{-} Loaded and on{-}disk path mismatch.}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Betancourt2016}{}}%
+Betancourt, M. (2016).
+\href{https://doi.org/10.48550/arXiv.1604.00695}{Diagnosing {Suboptimal
+Cotangent Disintegrations} in {Hamiltonian Monte Carlo}}. \emph{arXiv}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
+Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
+Betancourt, M., \emph{et al.} (2017).
+\href{https://doi.org/10.18637/jss.v076.i01}{Stan : {A Probabilistic
+Programming Language}}. \emph{Journal of Statistical Software}, 76,
+1--32.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
+Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. \&
+Rubin, D.B. (2013). \emph{Bayesian {Data Analysis}, {Third Edition}}.
+{Chapman \& Hall/CRC}, {Boca Raton, FL, USA.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-StanDevelopmentTeam2022}{}}%
+Stan Development Team. (2022). Stan {Modeling Language Users Guide} and
+{Reference Manual}, v2.29.2.
+
+\end{CSLReferences}
+
+
+
+\end{document}

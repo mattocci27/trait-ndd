@@ -1,0 +1,300 @@
+---
+title: "Appendix SX: Diagnostics for posterior distributions"
+# author: "Masatoshi Katabuchi"
+# date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+link-citations: yes
+csl: templates/ecology-letters.csl
+bibliography: templates/seedling.bib
+format:
+  pdf:
+    toc: true
+    keep-tex: true
+    pdf-engine: pdflatex
+    highlight-style: github
+    include-in-header:
+      text: |
+        \usepackage{xr}
+        \usepackage[default]{sourcesanspro}
+        \usepackage{sourcecodepro}
+        \usepackage{fancyhdr}
+        \usepackage{fvextra}
+        \pagestyle{fancy}
+        \fancypagestyle{plain}{\pagestyle{fancy}}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[RE,RO]{Song \textit{et al}. --Ecology Letters-- Appendix SX}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+  docx:
+    toc: true
+    number-sections: false
+    highlight-style: github
+    html-math-method: katex
+---
+
+\newpage
+
+Here we diagnose model convergence and divergent transitions for our Bayesian model in the main text, then we check parameters that are significantly different from zero.
+All codes are in R and Stan, and workflow is managed with the R `targets` package [(https://github.com/ropensci/targets)](https://github.com/ropensci/targets).
+Data, codes, and computing environments to reproduce this manuscript will be archived on zendo at https://doi.org/xxx and also available on Github at [https://github.com/mattocci27/seedling-stan](https://github.com/mattocci27/seedling-stan).
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.show = "hold"
+)
+```
+
+
+# Setup
+
+First, we load R packages.
+
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(here)
+```
+
+
+```{r}
+source(here("R", "stan.R"))
+```
+
+
+# Data
+
+All the data and results are in the `targets` cache, which can be loaded using `tar_load`.
+
+- `dry_each_int_s`: list object that contains data for dry seasons in our model
+
+- `wet_each_int_s`: list object that contains data for rainy seasons in our model
+
+```{r, include=TRUE}
+targets::tar_load(dry_each_int_s)
+targets::tar_load(wet_each_int_s)
+```
+
+## Dry season
+
+```{r}
+dry_each_int_s |> str()
+```
+
+The elements in the object are as follows:
+
+- `N`: number of individuals
+
+- `J`: number of species
+
+- `K`: number of individual-level predictors (e.g., ConS)
+
+- `S`: number of plots
+
+- `T`: number of censuses
+
+- `M`: number of the unique seedling individuals
+
+- `L`: number of species-level predictors (e.g., SLA)
+
+- `cc`: scaling parameter for conspecific and heterospecific tree densities
+
+- `suv`: survival data (0: dead, 1: alive)
+
+- `plot`: plot ID
+
+- `census`: census ID
+
+- `sp`: species ID
+
+- `tag`: seedling ID
+
+- `x`: N $\times$ L matrix for individual-level predictors
+
+- `u`: N $\times$ J matrix for species-level predictors
+
+## Rainy season
+
+```{r}
+wet_each_int_s |> str()
+```
+
+Details are same as in the dry seasons.
+
+
+# Model (Stan code)
+
+Stan code for the multilevel logistic regression in the main text.
+
+```{stan, file="stan/model_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+```
+
+# Model validation
+
+Posterior distributions of all parameters were estimated using the Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan [@Carpenter2017; @StanDevelopmentTeam2022].
+Posterior estimates were obtained from 4 independent chains of 1,000 iteraions after a warmup of 1,000 iterations.
+Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic [@Gelman2013] with a convergence threshold of 1.1 for all parameters as following.
+
+
+## Convergence
+
+- `fit_9_dry_each_int_s_summary_model_ind`: summaries of posterior distributions of all the parameters for dry seasons
+
+- `fit_10_wet_each_int_s_summary_model_ind`: summaries of posterior distributions of all the parameters for rainy seasons
+
+```{r, include=TRUE}
+targets::tar_load(fit_9_dry_each_int_s_summary_model_ind)
+targets::tar_load(fit_10_wet_each_int_s_summary_model_ind)
+```
+
+There were no parameters with Rhat > 1.1, which indicates both models have converged.
+
+```{r}
+fit_9_dry_each_int_s_summary_model_ind |> filter(rhat > 1.1)
+fit_10_wet_each_int_s_summary_model_ind |> filter(rhat > 1.1)
+```
+
+
+## Divergent transitions
+
+```{r, include=TRUE}
+targets::tar_load(fit_9_dry_each_int_s_diagnostics_model_ind)
+targets::tar_load(fit_10_wet_each_int_s_diagnostics_model_ind)
+```
+
+- `fit_9_dry_each_int_s_diagnostics_model_ind`: the number of divergences during HMC for dry seasons
+
+- `fit_10_wet_each_int_s_diagnostics_model_ind`: the number of divergences during HMC for rainy seasons
+
+When the number of divergences is too large, posterior distributions are not reliable [@Betancourt2016].
+
+Here is the code to check the number of divergences:
+
+```{r}
+div_check
+```
+
+There were no divergent transitions, suggesting that HMC trajectory tracked the true trajectory [@StanDevelopmentTeam2022].
+
+```{r}
+div_check(fit_9_dry_each_int_s_diagnostics_model_ind)
+div_check(fit_10_wet_each_int_s_diagnostics_model_ind)
+```
+
+
+# Tables
+
+## $\gamma$ coefficients for dry seasons
+
+- `fit9_gamma`: $\gamma$ values of all the parameters for dry seasons
+
+```{r}
+targets::tar_load(fit9_gamma)
+fit9_gamma[2:6] <- round(fit9_gamma[2:6], 3)
+```
+
+This is the list of $\gamma$ parameters that were significantly different from zero (i.e., the 95% credible intervals did not include zero).
+The full list is available as Table S1 in a separate file.
+
+```{r,eval=TRUE}
+fit9_gamma |>
+  filter(q2_5 * q97_5 > 0) |>
+  arrange(para) |>
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
+```
+
+The columns are as follows:
+
+- `para`: name of parameters
+- `mean_`: posterior means
+- `q_x`: x% quantile of the posterior distributions.
+For example, `q2_5` and `q5` are 2.5% and 5% quantiles, respectively.
+- `pred_name`: individual-level predictors
+- `tarit_name`: species-level predictors
+
+Individual-level predictors are as follows:
+
+- `int`: intercept
+- `logh_scaled`: scaled ln height
+- `cons_scaled`: scaled conspecific seedling densities
+- `hets_scaled`: scaled heterospecific seedling densities
+- `cona_scaled_c`: scaled conspecific tree densities that were scaled by `c=0.27` first
+- `heta_scaled_c`: scaled heterospecific tree densities that were scaled by `c=0.27` first
+- `rain_scaled`: scaled rainfall
+- `cons_rain`: interaction between `cons_scaled` and `rain_scaled`
+- `cona_rain`: interaction between `cona_scaled` and `rain_scaled`
+- `hets_rain`: interaction between `hets_scaled` and `rain_scaled`
+- `heta_rain`: interaction between `heta_scaled` and `rain_scaled`
+
+Species-level predictors are as follows:
+
+- `ldmc`: leaf dry matter contents
+- `sdmc`: stem dry matter contents
+- `chl`: chlorophyll content
+- `c13`: stable carbon isotope composition,
+- `c_mass`: carbon concentration
+- `tlp`: leaf turgor loss point
+- `log_sla`: natural logarithm of specific leaf area
+- `log_lt`: natural logarithm of leaf thickness
+
+This is the list of $\gamma_{k,1}$ parameters, which represents average effects of the each individual-level predictor (e.g., *ConS*) across species.
+
+```{r}
+fit9_gamma |>
+  filter(trait_name == "intercept") |>
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
+```
+
+## $\gamma$ coefficients for rainy seasons
+
+- `fit10_gamma`: $\gamma$ values of all the parameters for rainy seasons
+
+```{r}
+targets::tar_load(fit10_gamma)
+fit10_gamma[2:6] <- round(fit10_gamma[2:6], 3)
+```
+
+- `n_mass`: nitrogen concentration
+
+Other details are same as in the tables above except for `c=0.24`.
+The full list is available as Table S2 in a separate file.
+
+```{r}
+fit10_gamma |>
+  filter(q2_5 * q97_5 > 0) |>
+  arrange(para) |>
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
+```
+
+This is the list of $\gamma_{k,1}$ parameters.
+
+```{r}
+fit10_gamma |>
+  filter(trait_name == "intercept") |>
+  kbl(booktabs = TRUE, longtable = TRUE, format = "latex") |>
+  kable_styling(latex_options = c("striped", "repeat_header"))
+```
+
+# R session information
+
+```{r}
+devtools::session_info()
+```
+
+# References
