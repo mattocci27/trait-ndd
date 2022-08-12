@@ -33,7 +33,7 @@ format:
     smooth-scroll: true
     highlight-style: github
   docx:
-    toc: false
+    toc: true
     number-sections: false
     highlight-style: github
     html-math-method: katex
@@ -77,7 +77,7 @@ source(here("R", "stan.R"))
 
 # Data
 
-All the data and results are in the `targets` cache, which can be load using `tar_load`.
+All the data and results are in the `targets` cache, which can be loaded using `tar_load`.
 
 - `dry_each_int_s`: list object that contains data for dry seasons in our model
 
@@ -247,7 +247,6 @@ Species-level predictors are as follows:
 - `chl`: chlorophyll content
 - `c13`: stable carbon isotope composition,
 - `c_mass`: carbon concentration
-- `n_mass`: nitrogen concentration
 - `tlp`: leaf turgor loss point
 - `log_sla`: natural logarithm of specific leaf area
 - `log_lt`: natural logarithm of leaf thickness
