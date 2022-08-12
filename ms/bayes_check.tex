@@ -234,7 +234,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, interior hidden, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, sharp corners, breakable, boxrule=0pt, enhanced, frame hidden, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -276,7 +276,7 @@ First, we load R packages.
 \section{Data}\label{data}}
 
 All the data and results are in the \texttt{targets} cache, which can be
-load using \texttt{tar\_load}.
+loaded using \texttt{tar\_load}.
 
 \begin{itemize}
 \item
@@ -708,8 +708,6 @@ Species-level predictors are as follows:
 \item
   \texttt{c\_mass}: carbon concentration
 \item
-  \texttt{n\_mass}: nitrogen concentration
-\item
   \texttt{tlp}: leaf turgor loss point
 \item
   \texttt{log\_sla}: natural logarithm of specific leaf area
@@ -878,7 +876,7 @@ gamma\_10\_1 & 0.003 & -0.113 & -0.094 & 0.078 & 0.120 & hets\_rain & intercept\
 \CommentTok{\#\textgreater{}  collate  en\_US.UTF{-}8}
 \CommentTok{\#\textgreater{}  ctype    en\_US.UTF{-}8}
 \CommentTok{\#\textgreater{}  tz       Etc/UTC}
-\CommentTok{\#\textgreater{}  date     2022{-}08{-}11}
+\CommentTok{\#\textgreater{}  date     2022{-}08{-}12}
 \CommentTok{\#\textgreater{}  pandoc   2.18 @ /usr/local/bin/ (via rmarkdown)}
 \CommentTok{\#\textgreater{} }
 \CommentTok{\#\textgreater{} {-} Packages {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
