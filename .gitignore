@@ -82,6 +82,5 @@ test.Rda
 *.pptx
 *.xls
 *.xlsx
-figs/*
 
 test.sh
