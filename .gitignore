@@ -70,5 +70,18 @@ model/model_inter_opencl*
 test.Rda
 *.html
 
+# binary files
+*.html
+*.ipynb
+
 *.pdf
+*.png
+*.eps
+
+*.docx
+*.pptx
+*.xls
+*.xlsx
 figs/*
+
+test.sh
