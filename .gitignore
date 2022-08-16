@@ -84,3 +84,5 @@ test.Rda
 *.xlsx
 
 test.sh
+data
+data-raw
