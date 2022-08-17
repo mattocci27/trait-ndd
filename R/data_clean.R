@@ -258,3 +258,47 @@ gen_stan_dat <- function(data_list,
        x = Xd |> as.matrix(),
        u = Ud)
 }
+
+
+seedling_archive <- function(data_list, dry = TRUE) {
+  d <- data_list[[1]]
+  if (dry) {
+    d <- d |>
+      dplyr::filter(season == "dry")
+  } else {
+    d <- d |>
+      dplyr::filter(season == "rainy")
+  }
+  d2 <- d |>
+    dplyr::select(tag, quadrat, sp_code, height, census,
+    season, survive, cons, cona, heta,hets, rainfall) |>
+    mutate(plot = quadrat |> as.character() |> as.factor() |> as.integer()) |>
+    mutate(census = census |> as.character() |> as.factor() |> as.integer()) |>
+    # mutate(sp_code = sp |> as.character() |> as.factor() |> as.integer()) |>
+    mutate(tag = tag |> as.character() |> as.factor() |> as.integer()) |>
+    mutate(cons_scaled = scale(cons) |> as.numeric()) |>
+    mutate(hets_scaled = scale(hets) |> as.numeric()) |>
+    mutate(logh_scaled = log(height) |> scale() |> as.numeric()) |>
+    mutate(rain_scaled = as.numeric(scale(rainfall))) |>
+    dplyr::select(plot, census, sp = sp_code, tag, cons_scaled, hets_scaled, cona, heta,
+      logh_scaled, rain_scaled)
+
+  if (dry) {
+    d2 |>
+    write_csv("data/seedling_dry_season.csv")
+    paste("data/seedling_dry_season.csv")
+  } else  {
+    d2 |>
+    write_csv("data/seedling_rainy_season.csv")
+    paste("data/seedling_rainy_season.csv")
+  }
+}
+
+trait_archive <- function(data_list) {
+  d <- data_list[[2]]
+  d |>
+    dplyr::select(sp, ldmc, wd, sdmc, chl, c13, c_mass, n_mass,
+    cn, tlp, log_la, log_sla, log_lt) |>
+  write_csv("data/trait.csv")
+  paste("data/trait.csv")
+}

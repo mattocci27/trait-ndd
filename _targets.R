@@ -123,6 +123,23 @@ list(
     gen_seedling(seedling_csv, trait_csv, habitat_csv, n_ab = 50)
   ),
 
+  ## for data archive
+  tar_target(
+    dry_archive_csv,
+    seedling_archive(data_list),
+    format = "file"
+  ),
+  tar_target(
+    rainy_archive_csv,
+    seedling_archive(data_list, dry = FALSE),
+    format = "file"
+  ),
+  tar_target(
+    trait_archive_csv,
+    trait_archive(data_list),
+    format = "file"
+  ),
+
   # scaling across seasons
   tar_target(
     dry_each_oneint,
