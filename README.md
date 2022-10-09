@@ -1,4 +1,4 @@
-# seedling-stan
+# Seedling survival model
 
 Research project code for seedling survival analyses using Stan.
 
@@ -14,6 +14,12 @@ To run analysis:
 # To install R packages for the first run
 # Rscript -e "renv::restore()"
 Rscript run.R
+```
+
+To generate the method descripton:
+
+```bash
+make
 ```
 
 Requirements:
@@ -49,25 +55,16 @@ To run analysis:
 apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
 	radian.sif Rscript run.R
+```
 
-singularity run --env RENV_PATHS_CACHE=/work/home/ac3lm58jvc/renv \
-	--env RENV_PATHS_PREFIX_AUTO=TRUE \
-	radian.sif
+To generate the method descripton:
 
-apptainer shell --env RENV_PATHS_CACHE=/home/mattocci/renv \
-	--env RENV_PATHS_PREFIX_AUTO=TRUE \
-	radian.sif
-
+```bash
 apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
 	--env RENV_PATHS_PREFIX_AUTO=TRUE \
-	radian.sif quarto render ms/SI.qmd --to pdf
-
-apptainer exec --env RENV_PATHS_CACHE=/home/mattocci/renv \
-	--env RENV_PATHS_PREFIX_AUTO=TRUE \
-	radian.sif make figs
+	radian.sif make
 ```
 
 Requirements:
 
 - Apptainer (or Singularity)
-- cmdstan 2.29.2 (radian.sif does not contain cmdstan)

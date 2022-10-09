@@ -1,17 +1,17 @@
 data{
-  int<lower=0> N; // number of sample
+  int<lower=1> N; // number of samples
   int<lower=1> J; // number of sp
-  int<lower=1> K; // number of tree-level preditor (i.e, CONS, HETS,...)
-  int<lower=1> L; // number of sp-level predictor (i.e., interecept and WP)
+  int<lower=1> K; // number of tree-level preditors (i.e, CONS, HETS,...)
+  int<lower=1> L; // number of sp-level predictors (i.e., interecept, SLA,...)
   int<lower=1> M; // number of seedling individuals (tag)
-  int<lower=1> S; // number of site
-  int<lower=1> T; // number of census
+  int<lower=1> S; // number of sites
+  int<lower=1> T; // number of censuses
   matrix[N, K] x; // tree-level predictor
   matrix[L, J] u; // sp-level predictor
-  array[N] int<lower=0,upper=1> suv; // 1 or 0
-  array[N] int<lower=1,upper=J> sp; // integer
-  array[N] int<lower=1,upper=S> plot; // integer
-  array[N] int<lower=1,upper=T> census; // integer
+  array[N] int<lower=0, upper=1> suv; // 1 or 0
+  array[N] int<lower=1, upper=J> sp; // integer
+  array[N] int<lower=1, upper=S> plot; // integer
+  array[N] int<lower=1, upper=T> census; // integer
   array[N] int<lower=1> tag; // integer
 }
 
@@ -22,8 +22,8 @@ parameters{
   vector[T] xi_raw;
   vector[M] psi_raw;
   cholesky_factor_corr[K] L_Omega;
-  vector<lower=0,upper=pi()/2>[K] tau_unif;
-  vector<lower=0,upper=pi()/2>[3] sig_unif;
+  vector<lower=0, upper=pi() / 2>[K] tau_unif;
+  vector<lower=0, upper=pi() / 2>[3] sig_unif;
 }
 
 transformed parameters{
@@ -48,11 +48,19 @@ model {
   to_vector(xi_raw) ~ std_normal();
   to_vector(psi_raw) ~ std_normal();
   L_Omega ~ lkj_corr_cholesky(2);
-  to_vector(gamma) ~ normal(0, 5);
+  to_vector(gamma) ~ normal(0, 2.5);
   for (n in 1:N) {
     mu[n] = x[n, ] * beta[, sp[n]];
   }
   suv ~ bernoulli_logit(mu + phi[plot] + xi[census] + psi[tag]);
 }
 
-
+generated quantities {
+  vector[N] log_lik;
+  corr_matrix[K] Omega;
+  Omega = multiply_lower_tri_self_transpose(L_Omega);
+  for (n in 1:N) {
+    log_lik[n] = bernoulli_logit_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +
+      phi[plot[n]] + xi[census[n]] + psi[tag[n]]);
+  }
+}
