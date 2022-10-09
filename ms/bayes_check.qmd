@@ -45,7 +45,7 @@ Here we diagnose model convergence and divergent transitions for our Bayesian mo
 All codes are in R and Stan, and workflow is managed with the R `targets` package [(https://github.com/ropensci/targets)](https://github.com/ropensci/targets).
 Data, codes, and computing environments to reproduce this manuscript will be archived on zendo at https://doi.org/xxx and also available on Github at [https://github.com/mattocci27/seedling-stan](https://github.com/mattocci27/seedling-stan).
 
-
+git remote set-url origin  git@github.com:mattocci27/trait-ndd.git
 ```{r global_options, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(
@@ -54,7 +54,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   cache = FALSE,
   fig.align = "center",
-  fig.show = "hold"
+  fig.show = "holdgit remote set-url origin"
 )
 ```
 
