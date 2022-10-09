@@ -21,11 +21,8 @@ tar_option_set(packages = c(
   "patchwork",
   "parallel",
   "janitor",
-  "extrafont",
   "loo",
   "jsonlite",
-  "doParallel",
-  "foreach",
   "httpgd",
   "multcompView",
   "RColorBrewer",
@@ -75,16 +72,51 @@ list(
   ),
 
   tar_map(
-    list(model = c("phy_season", "het_season", "phy_rain", "het_rain")),
-    tar_target(ab,
+    list(abund = c("ab", "ba", "both")),
+    tar_target(phy_season,
       generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = model, abund = "ab")),
-    tar_target(ba,
+       model = "phy_season", abund = abund)),
+    tar_target(phy_rain,
       generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = model, abund = "ba")),
-    tar_target(both,
+       model = "phy_rain", abund = abund)),
+    tar_target(het_season,
       generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = model, abund = "both"))
+       model = "het_season", abund = abund)),
+    tar_target(het_rain,
+      generate_stan_data(seedling_csv, trait_csv, scale_cc,
+       model = "het_rain", abund = abund))
+  ),
+
+  tar_map(
+    values = list(stan_data = rlang::syms(
+       expand_grid(model = c("phy_season", "het_season", "phy_rain", "het_rain"),
+         abund = c("ab", "ba", "both")) |>
+         mutate(model2 = str_c(model, "_", abund)) |>
+         pull(model2)
+      )),
+    tar_stan_mcmc(
+      fit,
+      "stan/multilevel_logistic.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 1),
+      iter_warmup = 1,
+      iter_sampling = 1,
+      adapt_delta = 0.9,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
   ),
 
 

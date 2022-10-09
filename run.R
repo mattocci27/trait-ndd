@@ -4,7 +4,7 @@ targets::tar_make_clustermq(
 )
 
 #For single thread
-#targets::tar_make()
+# targets::tar_make()
 
 # For HPC
 # arg = commandArgs(T)
