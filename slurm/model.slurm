@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=model
-#SBATCH --partition=wzhctest
+#SBATCH --partition=xhacnormala
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --output=log/model.out

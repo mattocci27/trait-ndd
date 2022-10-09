@@ -83,6 +83,10 @@ test.Rda
 *.xls
 *.xlsx
 
+*.err
+*.log
+*.out
+
 test.sh
 data
 data-raw
