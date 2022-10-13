@@ -1,4 +1,5 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+bayes_check_html|stem|a4cdfe48b7301ea9|fcd00cddf0c9c7fc|cba80d3e5fcbf8d6|-192214636|docs/bayes_check.html*docs/bayes_check.Rmd|t19278.2599768519s|276b20b7dce0798e|1000676|file|local|vector|||1.283||
 beta_dry_comb_plot|function|c5e84575944d288c|||||||||||||||
 beta_plot|function|9ea5b08c2c05cf8c|||||||||||||||
 beta_wet_comb_plot|function|6d18f4c46fc75568|||||||||||||||

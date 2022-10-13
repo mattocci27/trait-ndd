@@ -1,0 +1,83 @@
+---
+title: "Diagnostics for MCMC"
+author: "Masatoshi Katabuchi"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    fig_caption: yes
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    highlight: pygments #tango #kate
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    toc_float:
+     collapsed: TRUE
+     smooth_scroll: TRUE
+     toc: true
+---
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.show = "hold"
+)
+```
+
+```{r}
+library(tidyverse)
+library(targets)
+library(kableExtra)
+library(here)
+library(jsonlite)
+source(here("R", "stan.R"))
+```
+
+# MCMC diagnostics
+
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_season_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_season_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_season_both)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_het_season_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_het_season_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_het_season_both)) |>
+  div_check()
+```
+
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_rain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_rain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_rain_both)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_both)) |>
+  div_check()
+```

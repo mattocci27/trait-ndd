@@ -119,6 +119,10 @@ list(
     )
   ),
 
+  tar_render(
+    bayes_check_html,
+    "docs/bayes_check.Rmd"
+  ),
 
   NULL
  )
