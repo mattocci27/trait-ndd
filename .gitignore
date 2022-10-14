@@ -90,3 +90,7 @@ test.Rda
 test.sh
 data
 data-raw
+
+rsync.sh
+sftp.sh
+test.R

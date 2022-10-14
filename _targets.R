@@ -42,6 +42,18 @@ if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
 
 cmdstan_version()
 
+mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c("ab", "ba", "both")) |>
+  mutate(model = str_c("fit_mcmc_multilevel_logistic", a1, a2, a3, sep = "_")) |>
+  pull(model)
+
+loo_map <- tar_map(
+    values = list(mcmc = rlang::syms(mcmc_names)),
+    tar_target(
+      loo,
+      my_loo(mcmc)
+    )
+)
+
 list(
   # data cleaning ----------------------------------
   tar_target(
@@ -119,9 +131,16 @@ list(
     )
   ),
 
-  tar_render(
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
+
+  tar_quarto(
     bayes_check_html,
-    "docs/bayes_check.Rmd"
+    "docs/bayes_check.qmd"
   ),
 
   NULL

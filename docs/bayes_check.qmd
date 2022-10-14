@@ -2,20 +2,21 @@
 title: "Diagnostics for MCMC"
 author: "Masatoshi Katabuchi"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
-output:
-  html_document:
-    fig_caption: yes
-    theme: spacelab #readable #sandstone #spacelab #flatly
-    highlight: pygments #tango #kate
-    toc: TRUE
-    toc_depth: 2
-    number_sections: TRUE
-    toc_float:
-     collapsed: TRUE
-     smooth_scroll: TRUE
-     toc: true
+fontsize: 12pt
+format:
+  html:
+    theme: cosmo #readable #sandstone #spacelab #flatly
+    # highlight: pygments #tango #kate
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    smooth-scroll: true
+    # fontsize: medium
+    # toc_float:
+    #  collapsed: TRUE
+    #  smooth_scroll: TRUE
+    #  toc: true
 ---
-
 
 ```{r global_options, include=FALSE}
 library(knitr)
@@ -80,4 +81,43 @@ withr::with_dir(rprojroot::find_root('_targets.R'),
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_both)) |>
   div_check()
+```
+
+
+```{r}
+mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c("ab", "ba", "both")) |>
+  mutate(model = str_c("fit_mcmc_multilevel_logistic", a1, a2, a3, sep = "_")) |>
+  pull(model)
+
+loo_names <- str_c("loo_", mcmc_names)
+
+for (i in 1:12) {
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_names[i]))
+}
+
+loo::loo_compare(
+   loo_fit_mcmc_multilevel_logistic_het_rain_ab,
+   loo_fit_mcmc_multilevel_logistic_het_rain_ba,
+   loo_fit_mcmc_multilevel_logistic_het_rain_both,
+   loo_fit_mcmc_multilevel_logistic_phy_rain_ab,
+   loo_fit_mcmc_multilevel_logistic_phy_rain_ba,
+   loo_fit_mcmc_multilevel_logistic_phy_rain_both,
+   loo_fit_mcmc_multilevel_logistic_het_season_ab,
+   loo_fit_mcmc_multilevel_logistic_het_season_ba,
+   loo_fit_mcmc_multilevel_logistic_het_season_both,
+   loo_fit_mcmc_multilevel_logistic_phy_season_ab,
+   loo_fit_mcmc_multilevel_logistic_phy_season_ba,
+   loo_fit_mcmc_multilevel_logistic_phy_season_both) |>
+  print()
+
+loo::loo_compare(
+   het_ab = loo_fit_mcmc_multilevel_logistic_het_season_ab,
+   het_ba = loo_fit_mcmc_multilevel_logistic_het_season_ba,
+   het_both = loo_fit_mcmc_multilevel_logistic_het_season_both,
+   phy_ab = loo_fit_mcmc_multilevel_logistic_phy_season_ab,
+   phy_ba = loo_fit_mcmc_multilevel_logistic_phy_season_ba,
+   loo_fit_mcmc_multilevel_logistic_phy_season_both) |>
+  print()
+
 ```

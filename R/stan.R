@@ -11,6 +11,8 @@ div_check <- function(diags) {
   ))
 }
 
+my_loo <- function(x) x$loo(cores = parallel::detectCores())
+
 #' @title Create summary table for posteriors
 create_stan_tab <- function(draws) {
   tmp <- draws |>
