@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=model-summary
+#SBATCH --job-name=model
 #SBATCH --partition=xhacnormala
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --output=log/model.out
 #SBATCH --error=log/model.err
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=48
 #SBATCH --mem-per-cpu=3000mb
 #SBATCH --time=60:00:00
 

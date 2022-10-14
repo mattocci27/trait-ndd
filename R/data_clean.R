@@ -1,53 +1,9 @@
-#' @title write_csv for targets
+
 #' @inheritParams readr::write_csv
 my_write_csv <- function(x, path, append = FALSE, col_names = !append) {
     write_csv(x, path, append = FALSE, col_names = !append)
     paste(path)
 }
-
-seedling_archive <- function(data_list, dry = TRUE) {
-  d <- data_list[[1]]
-  if (dry) {
-    d <- d |>
-      dplyr::filter(season == "dry")
-  } else {
-    d <- d |>
-      dplyr::filter(season == "rainy")
-  }
-  d2 <- d |>
-    dplyr::select(tag, quadrat, sp_code, height, census,
-    season, survive, cons, cona, heta,hets, rainfall) |>
-    mutate(plot = quadrat |> as.character() |> as.factor() |> as.integer()) |>
-    mutate(census = census |> as.character() |> as.factor() |> as.integer()) |>
-    # mutate(sp_code = sp |> as.character() |> as.factor() |> as.integer()) |>
-    mutate(tag = tag |> as.character() |> as.factor() |> as.integer()) |>
-    mutate(cons_scaled = scale(cons) |> as.numeric()) |>
-    mutate(hets_scaled = scale(hets) |> as.numeric()) |>
-    mutate(logh_scaled = log(height) |> scale() |> as.numeric()) |>
-    mutate(rain_scaled = as.numeric(scale(rainfall))) |>
-    dplyr::select(plot, census, sp = sp_code, tag, cons_scaled, hets_scaled, cona, heta,
-      logh_scaled, rain_scaled)
-
-  if (dry) {
-    d2 |>
-    write_csv("data/seedling_dry_season.csv")
-    paste("data/seedling_dry_season.csv")
-  } else  {
-    d2 |>
-    write_csv("data/seedling_rainy_season.csv")
-    paste("data/seedling_rainy_season.csv")
-  }
-}
-
-trait_archive <- function(data_list) {
-  d <- data_list[[2]]
-  d |>
-    dplyr::select(sp, ldmc, wd, sdmc, chl, c13, c_mass, n_mass,
-    cn, tlp, log_la, log_sla, log_lt) |>
-  write_csv("data/trait.csv")
-  paste("data/trait.csv")
-}
-
 
 clean_data <- function(rda, write_trait = FALSE) {
   load(rda)
@@ -70,7 +26,9 @@ clean_data <- function(rda, write_trait = FALSE) {
   dataseedling2 <- dataseedling |>
     filter(latin %in% trait2$latin) |>
     mutate(aphy = aphy |> as.numeric()) |>
-    mutate(sphy = sphy |> as.numeric())
+    mutate(sphy = sphy |> as.numeric()) |>
+    dplyr::select(quadrat, tag, latin, h1:shet, aphy:sphy, RF) |>
+    dplyr::select(-note1, -dat)
 
   if (write_trait) {
     my_write_csv(trait2, "data/traits.csv")
@@ -111,7 +69,8 @@ calc_scale_cc <- function(seedling_csv) {
 #' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
 generate_stan_data <- function(seedling, traits, scale_cc,
                         model = c("phy_season", "het_season", "phy_rain", "het_rain"),
-                        abund = c("abund", "ba", "both")
+                        abund = c("abund", "ba", "both"),
+                        year = FALSE
                         ) {
 
   # seedling <- read_csv("data/seedling.csv") |>
@@ -225,8 +184,11 @@ generate_stan_data <- function(seedling, traits, scale_cc,
   n_sp_d <- length(unique(seedling_data$latin))
   n_para_d <- ncol(Xd)
   n_plot_d <- length(unique(seedling_data$quadrat))
-  n_census_d <- length(unique(seedling_data$census))
   n_tag_d <- length(unique(seedling_data$tag))
+
+  if (year) seedling_data$census <- seedling_data$year
+
+  n_census_d <- length(unique(seedling_data$census))
 
   list(N = nrow(seedling_data),
        J = n_sp_d,
@@ -241,7 +203,7 @@ generate_stan_data <- function(seedling, traits, scale_cc,
          as.character() |> as.factor() |> as.integer(),
        census = seedling_data$census |>
          as.character() |> as.factor() |> as.integer(),
-       sp = seedling_data$sp |>
+       sp = seedling_data$latin |>
          as.character() |> as.factor() |> as.integer(),
        tag = seedling_data$tag |>
          as.character() |> as.factor() |> as.integer(),

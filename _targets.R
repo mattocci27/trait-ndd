@@ -4,8 +4,6 @@ library(tidyverse)
 library(stantargets)
 library(cmdstanr)
 library(furrr)
-library(languageserver)
-# library(quarto)
 
 source("R/data_clean.R")
 source("R/data_check.R")
@@ -42,9 +40,12 @@ if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
 
 cmdstan_version()
 
-mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c("ab", "ba", "both")) |>
-  mutate(model = str_c("fit_mcmc_multilevel_logistic", a1, a2, a3, sep = "_")) |>
-  pull(model)
+data_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c("ab", "ba", "both")) |>
+  mutate(data = str_c(a1, a2, a3, sep = "_")) |>
+  pull(data)
+
+
+mcmc_names <- str_c("fit_mcmc_multilevel_logistic_", data_names)
 
 loo_map <- tar_map(
     values = list(mcmc = rlang::syms(mcmc_names)),
@@ -54,8 +55,8 @@ loo_map <- tar_map(
     )
 )
 
-list(
-  # data cleaning ----------------------------------
+# data cleaning ----------------------------------
+data_ <- list(
   tar_target(
     data_rda,
     "data-raw/dataCNDD.Rdata",
@@ -72,6 +73,11 @@ list(
     format = "file"
   ),
 
+  NULL
+)
+
+
+main_ <- list(
   # stan
   tar_target(
     scale_cc,
@@ -100,27 +106,22 @@ list(
   ),
 
   tar_map(
-    values = list(stan_data = rlang::syms(
-       expand_grid(model = c("phy_season", "het_season", "phy_rain", "het_rain"),
-         abund = c("ab", "ba", "both")) |>
-         mutate(model2 = str_c(model, "_", abund)) |>
-         pull(model2)
-      )),
+    values = list(stan_data = rlang::syms(data_names)),
     tar_stan_mcmc(
       fit,
       "stan/multilevel_logistic.stan",
       data = stan_data,
       refresh = 0,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1000,
-      iter_sampling = 1000,
+      chains = 1,
+      parallel_chains = getOption("mc.cores", 1),
+      iter_warmup = 1,
+      iter_sampling = 1,
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = TRUE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -131,18 +132,21 @@ list(
     )
   ),
 
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
 
-  tar_quarto(
-    bayes_check_html,
-    "docs/bayes_check.qmd"
-  ),
+  # tar_quarto(
+  #   bayes_check_html,
+  #   "docs/bayes_check.qmd"
+  # ),
 
   NULL
  )
+
+
+list(data_, main_)
 
