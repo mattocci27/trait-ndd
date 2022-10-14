@@ -121,3 +121,75 @@ loo::loo_compare(
   print()
 
 ```
+
+
+```{r, eval=FALSE}
+
+d <- read_csv("data/seedling.csv")
+
+d2 <- d |>
+  dplyr::select(RF, year, season) |> unique()
+
+model <- lm(RF ~ season, d2)
+
+
+d2   |>
+  group_by(season) |>
+  summarise(mean_ = mean(RF))
+
+ggplot(d2 |> filter(season == "rainy"), aes(x = year, y = RF, col = season)) +
+  geom_point()
+
+mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain", "cont"), a3 = c("ab", "ba", "both")) |>
+  mutate(model = str_c("fit_mcmc_multilevel_logistic", a1, a2, a3, sep = "_")) |>
+  pull(model)
+
+
+draws_df <- tar_read(fit_draws_multilevel_logistic_het_season_ba)
+post <- tar_read(fit_mcmc_multilevel_logistic_het_season_ba)
+
+d1 <- tar_read(het_season_ba)
+s1 <- tar_read(fit_summary_multilevel_logistic_het_season_ba) |>
+  mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
+
+s1 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(sig == "sig") |>
+  pull(variable)
+
+d1$x |> colnames()
+
+d1$u |> rownames()
+
+s1 |>
+  filter(str_detect(variable, "sig\\["))
+
+dim(draws)
+draws <- post$draws()
+str(draws2)
+
+color_scheme_set("mix-brightblue-gray")
+mcmc_trace(
+  draws,
+  pars = "gamma[9,2]"
+)
+
+mcmc_trace(
+  draws,
+  regex_pars = "gamma\\[7"
+)
+
+mcmc_areas(
+  draws,
+  regex_pars = "gamma\\[7"
+)
+
+d1$x |> colnames()
+d1$x |> head()
+
+d1$u[,1]
+
+apply(d1$u, 1, sd)
+
+
+```
