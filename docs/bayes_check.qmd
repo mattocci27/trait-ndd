@@ -43,50 +43,50 @@ source(here("R", "stan.R"))
 
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_season_ab)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_season_ab)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_season_ba)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_season_ba)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_season_both)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_season_both)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_het_season_ab)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_season_ab)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_het_season_ba)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_season_ba)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_het_season_both)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_season_both)) |>
   div_check()
 ```
 
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_rain_ab)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_rain_ab)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_rain_ba)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_rain_ba)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_phy_rain_both)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_rain_both)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_ab)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_rain_ab)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_ba)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_rain_ba)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_multilevel_logistic_het_rain_both)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_rain_both)) |>
   div_check()
 ```
 
 
 ```{r}
 mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c("ab", "ba", "both")) |>
-  mutate(model = str_c("fit_mcmc_multilevel_logistic", a1, a2, a3, sep = "_")) |>
+  mutate(model = str_c("fit_mcmc_logistic", a1, a2, a3, sep = "_")) |>
   pull(model)
 
 loo_names <- str_c("loo_", mcmc_names)
@@ -97,27 +97,27 @@ withr::with_dir(rprojroot::find_root('_targets.R'),
 }
 
 loo::loo_compare(
-   loo_fit_mcmc_multilevel_logistic_het_rain_ab,
-   loo_fit_mcmc_multilevel_logistic_het_rain_ba,
-   loo_fit_mcmc_multilevel_logistic_het_rain_both,
-   loo_fit_mcmc_multilevel_logistic_phy_rain_ab,
-   loo_fit_mcmc_multilevel_logistic_phy_rain_ba,
-   loo_fit_mcmc_multilevel_logistic_phy_rain_both,
-   loo_fit_mcmc_multilevel_logistic_het_season_ab,
-   loo_fit_mcmc_multilevel_logistic_het_season_ba,
-   loo_fit_mcmc_multilevel_logistic_het_season_both,
-   loo_fit_mcmc_multilevel_logistic_phy_season_ab,
-   loo_fit_mcmc_multilevel_logistic_phy_season_ba,
-   loo_fit_mcmc_multilevel_logistic_phy_season_both) |>
+   loo_fit_mcmc_logistic_het_rain_ab,
+   loo_fit_mcmc_logistic_het_rain_ba,
+   loo_fit_mcmc_logistic_het_rain_both,
+   loo_fit_mcmc_logistic_phy_rain_ab,
+   loo_fit_mcmc_logistic_phy_rain_ba,
+   loo_fit_mcmc_logistic_phy_rain_both,
+   loo_fit_mcmc_logistic_het_season_ab,
+   loo_fit_mcmc_logistic_het_season_ba,
+   loo_fit_mcmc_logistic_het_season_both,
+   loo_fit_mcmc_logistic_phy_season_ab,
+   loo_fit_mcmc_logistic_phy_season_ba,
+   loo_fit_mcmc_logistic_phy_season_both) |>
   print()
 
 loo::loo_compare(
-   het_ab = loo_fit_mcmc_multilevel_logistic_het_season_ab,
-   het_ba = loo_fit_mcmc_multilevel_logistic_het_season_ba,
-   het_both = loo_fit_mcmc_multilevel_logistic_het_season_both,
-   phy_ab = loo_fit_mcmc_multilevel_logistic_phy_season_ab,
-   phy_ba = loo_fit_mcmc_multilevel_logistic_phy_season_ba,
-   loo_fit_mcmc_multilevel_logistic_phy_season_both) |>
+   het_ab = loo_fit_mcmc_logistic_het_season_ab,
+   het_ba = loo_fit_mcmc_logistic_het_season_ba,
+   het_both = loo_fit_mcmc_logistic_het_season_both,
+   phy_ab = loo_fit_mcmc_logistic_phy_season_ab,
+   phy_ba = loo_fit_mcmc_logistic_phy_season_ba,
+   loo_fit_mcmc_logistic_phy_season_both) |>
   print()
 
 ```
@@ -141,15 +141,15 @@ ggplot(d2 |> filter(season == "rainy"), aes(x = year, y = RF, col = season)) +
   geom_point()
 
 mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain", "cont"), a3 = c("ab", "ba", "both")) |>
-  mutate(model = str_c("fit_mcmc_multilevel_logistic", a1, a2, a3, sep = "_")) |>
+  mutate(model = str_c("fit_mcmc_logistic", a1, a2, a3, sep = "_")) |>
   pull(model)
 
 
-draws_df <- tar_read(fit_draws_multilevel_logistic_het_season_ba)
-post <- tar_read(fit_mcmc_multilevel_logistic_het_season_ba)
+draws_df <- tar_read(fit_draws_logistic_het_season_ba)
+post <- tar_read(fit_mcmc_logistic_het_season_ba)
 
 d1 <- tar_read(het_season_ba)
-s1 <- tar_read(fit_summary_multilevel_logistic_het_season_ba) |>
+s1 <- tar_read(fit_summary_logistic_het_season_ba) |>
   mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
 
 s1 |>

@@ -45,7 +45,7 @@ data_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c
   pull(data)
 
 
-mcmc_names <- str_c("fit_mcmc_multilevel_logistic_", data_names)
+mcmc_names <- str_c("fit_mcmc_logistic_", data_names)
 
 loo_map <- tar_map(
     values = list(mcmc = rlang::syms(mcmc_names)),
@@ -76,17 +76,11 @@ data_ <- list(
   NULL
 )
 
-
 main_ <- list(
   # stan
   tar_target(
     scale_cc,
     calc_scale_cc(seedling_csv)
-  ),
-
-  tar_target(
-    test,
-    generate_stan_data(seedling_csv, trait_csv, scale_cc, model = "het_season", abund = "ba")
   ),
 
   tar_map(
@@ -109,13 +103,13 @@ main_ <- list(
     values = list(stan_data = rlang::syms(data_names)),
     tar_stan_mcmc(
       fit,
-      "stan/multilevel_logistic.stan",
+      "stan/logistic.stan",
       data = stan_data,
       refresh = 0,
-      chains = 1,
-      parallel_chains = getOption("mc.cores", 1),
-      iter_warmup = 1,
-      iter_sampling = 1,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 1000,
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
