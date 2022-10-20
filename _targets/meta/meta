@@ -11,7 +11,7 @@ coef_ridge|function|9114335e7d5b95e8|||||||||||||||
 create_beta_tab|function|8925657f274dedff|||||||||||||||
 create_gamma_tab|function|864b2b26b563badd|||||||||||||||
 create_stan_tab|function|6c9f81b970c47bfe|||||||||||||||
-data_|object|7d724d8fbc510a1a|||||||||||||||
+data_|object|9b4d70ccb664a573|||||||||||||||
 data_names|object|28280ccd4dde4a3c|||||||||||||||
 data_rda|stem|aa71bf66d801eb71|4cad4cb1ce23dfde|ef46db3751d8e999|1200689765|data-raw/dataCNDD.Rdata|t19274.5840740741s|8c19c18ee4425416|1084857|file|local|vector|||0.084||
 div_check|function|9913df743f96f3d8|||||||||||||||
@@ -27,6 +27,30 @@ fit_data_phy_rain_both|stem|d45cd9a21a7f8ebc|a3a4fe6cc388e713|eff9bf9edf7fa0f6|7
 fit_data_phy_season_ab|stem|db0ebe8f5b4f29f0|6e77c90714891300|637d100129530740|-1801299078||t19279.6333564815s|99bae35c3e03c12f|2454685|qs|local|vector|||0.001||
 fit_data_phy_season_ba|stem|863cdc56f8e2d3c6|b14fe5ddb6e6870f|0df576a8a9c0f1b4|-582742292||t19279.6341203704s|474309721be6e278|2454092|qs|local|vector|||0.001||
 fit_data_phy_season_both|stem|db0ebe8f5b4f29f0|36e9a73c6fbe199f|6823d72f5b642701|1771932455||t19279.6332638889s|99bae35c3e03c12f|2454685|qs|local|vector|||0.001||
+fit_diagnostics_logistic_het_rain_ab|stem|04763234f3d7f3fe|7c0b2be4f2aaa1cc|011fefe21e6ed3b2|817908642||t19285.5769444444s|0bf37bdf2764c282|61566|fst_tbl|local|vector|||0.07||
+fit_diagnostics_logistic_het_rain_ba|stem|e2ff381ad3f2831a|4f613afb51ff3b59|ef9b59f572018dde|409575685||t19285.6307638889s|71a379e1bb6a9a34|61799|fst_tbl|local|vector|||0.068||
+fit_diagnostics_logistic_het_rain_both|stem|04763234f3d7f3fe|2032cb201cac8d58|28a73393e89e6a36|-2127460899||t19285.5676851852s|0bf37bdf2764c282|61566|fst_tbl|local|vector|||0.096||
+fit_diagnostics_logistic_het_season_ab|stem|41419214f0536b95|eacd05b8c02ec994|732b5aa9ff9780c2|1891686279||t19285.6219791667s|d6c410cecabfdeb5|62246|fst_tbl|local|vector|||0.066||
+fit_diagnostics_logistic_het_season_ba|stem|e923e9bf599786af|c89dc90ebabd599b|eeb89795a66a7aa0|57475789||t19285.5951736111s|cb061a5678e78077|61962|fst_tbl|local|vector|||0.079||
+fit_diagnostics_logistic_het_season_both|stem|41419214f0536b95|c46f4517c2c18505|31abcb4053ed1b29|-373155808||t19285.6399074074s|d6c410cecabfdeb5|62246|fst_tbl|local|vector|||0.147||
+fit_diagnostics_logistic_phy_rain_ab|stem|000946306057c4bc|2851dae414391bd3|e1d4aab47a85dbac|-1772688890||t19285.5461342593s|eafb711619729f01|62040|fst_tbl|local|vector|||0.311||
+fit_diagnostics_logistic_phy_rain_ba|stem|5873c3d66071805c|39270a64985c6a71|2016a179e5e9b072|-1834359796||t19285.5858217593s|e9b324565b204bc3|62000|fst_tbl|local|vector|||0.109||
+fit_diagnostics_logistic_phy_rain_both|stem|000946306057c4bc|c234846d9ccfb97e|99ef31ba2a5ddffb|821408760||t19285.5672685185s|eafb711619729f01|62040|fst_tbl|local|vector|||0.074||
+fit_diagnostics_logistic_phy_season_ab|stem|c46a95c8318070d6|c4b8d8c6701a9861|997c1f154d24c687|-260826376||t19285.6213888889s|f2809e9f9bb79254|62041|fst_tbl|local|vector|||0.104||
+fit_diagnostics_logistic_phy_season_ba|stem|8ff8dc17cfb9780e|2378ac6c9351a902|0fbbdc0b3eea3e19|254401531||t19285.657025463s|47056e574bb5c6b6|61711|fst_tbl|local|vector|||0.002||
+fit_diagnostics_logistic_phy_season_both|stem|c46a95c8318070d6|0e815ba0cede894f|69c3a0bfbcd91e79|1793759122||t19285.5483912037s|f2809e9f9bb79254|62041|fst_tbl|local|vector|||0.271||
+fit_draws_logistic_het_rain_ab|stem|d8f332c226cef6b7|5b97fe3572e496d3|011fefe21e6ed3b2|979543186||t19285.576724537s|9355962e0c4b18e6|2566390869|fst_tbl|local|vector|||4.496||
+fit_draws_logistic_het_rain_ba|stem|6ec605e7bbd91dc6|17bc24343db35860|ef9b59f572018dde|1264730937||t19285.6396759259s|cabadaac1a8c8974|2565619252|fst_tbl|local|vector|||4.301||
+fit_draws_logistic_het_rain_both|stem|d8f332c226cef6b7|5200f7fe0189a938|28a73393e89e6a36|-1955525282||t19285.5674652778s|9355962e0c4b18e6|2566390869|fst_tbl|local|vector|||4.695||
+fit_draws_logistic_het_season_ab|stem|5f9a5d3a557a766e|8edb71f986df3c16|732b5aa9ff9780c2|1320004488||t19285.6222800926s|67eaeb5f8adf9bdf|2483473883|fst_tbl|local|vector|||4.049||
+fit_draws_logistic_het_season_ba|stem|cae6e70a80e5d1dd|57b66690233747ca|eeb89795a66a7aa0|876869081||t19285.6038773148s|e4141ff41a886fb8|2483088091|fst_tbl|local|vector|||4.271||
+fit_draws_logistic_het_season_both|stem|5f9a5d3a557a766e|6213705c4111f0d8|31abcb4053ed1b29|-1630614898||t19285.6402662037s|67eaeb5f8adf9bdf|2483473883|fst_tbl|local|vector|||4.362||
+fit_draws_logistic_phy_rain_ab|stem|7d56eb36b07651bb|bed758f5891a90f1|e1d4aab47a85dbac|-1412659376||t19285.6128819444s|2b6e4b98396b740c|2566390935|fst_tbl|local|vector|||4.269||
+fit_draws_logistic_phy_rain_ba|stem|b5fab65f6d2a81e9|a2560637bc2d8abb|2016a179e5e9b072|-1981791656||t19285.5949537037s|64133f6e458e75df|2565619234|fst_tbl|local|vector|||4.619||
+fit_draws_logistic_phy_rain_both|stem|7d56eb36b07651bb|4b612fb76cf8756b|99ef31ba2a5ddffb|2124622231||t19285.558287037s|2b6e4b98396b740c|2566390935|fst_tbl|local|vector|||4.693||
+fit_draws_logistic_phy_season_ab|stem|d58f8e56bae97944|1ed46b051a7a0fd6|997c1f154d24c687|-836162114||t19285.6217708333s|1094224f4140f594|2483474475|fst_tbl|local|vector|||4.296||
+fit_draws_logistic_phy_season_ba|stem|2f87e0c6a9ca825f|6897e8ccf9ce6359|0fbbdc0b3eea3e19|1367094014||t19285.6573148148s|669bc93764798dd5|2483086660|fst_tbl|local|vector|||4.126||
+fit_draws_logistic_phy_season_both|stem|d58f8e56bae97944|5f119a4ee025cbd1|69c3a0bfbcd91e79|-839655564||t19285.5481365741s|1094224f4140f594|2483474475|fst_tbl|local|vector|||4.993||
 fit_file_logistic_het_rain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1958363884|stan/logistic.stan|t19274.5823958333s|97db0b0639a9f22a|1953|file|local|vector|||0.001||
 fit_file_logistic_het_rain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1005701988|stan/logistic.stan|t19274.5823958333s|97db0b0639a9f22a|1953|file|local|vector|||0.001||
 fit_file_logistic_het_rain_both|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1450173155|stan/logistic.stan|t19274.5823958333s|97db0b0639a9f22a|1953|file|local|vector|||0||
@@ -51,6 +75,18 @@ fit_mcmc_logistic_phy_rain_both|stem|c6cae94d0c6efc0a|148ddc0ba415350f|15414557c
 fit_mcmc_logistic_phy_season_ab|stem|ba1ea56de5602de0|da6ec3dd6b0df080|66421d4d02a51c35|-993785662||t19282.7335300926s|b581d679873335f3|2142411346|qs|local|vector|||137480.228||
 fit_mcmc_logistic_phy_season_ba|stem|0b67811e35409803|26afcc138aa77cc1|8ebff54475be34eb|-1623343978||t19282.5632986111s|de3c6456b64ee51c|2141892940|qs|local|vector|||122764.248||
 fit_mcmc_logistic_phy_season_both|stem|1b48edbcec8e2ffe|9a2dd07468fcbe83|506a1fb9276913ef|8832228||t19282.6670138889s|8712e679fd18ffb8|2142411340|qs|local|vector|||131732.858||
+fit_summary_logistic_het_rain_ab|stem|2a18adc097366bf9|462544fd250ce2a7|6da873844c9ec7be|304376845||t19285.5857407407s|0492355ae1db5c31|8886335|fst_tbl|local|vector|||746.239||
+fit_summary_logistic_het_rain_ba|stem|890049e6a29307da|03fbdd078da6d9ba|665e3257774509f9|1299341704||t19285.6394097222s|8df55cc1488d03a5|8882763|fst_tbl|local|vector|||727.134|The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.|
+fit_summary_logistic_het_rain_both|stem|2a18adc097366bf9|959198e5c20e764a|cb0dbbb4071169be|-516935687||t19285.5765277778s|0492355ae1db5c31|8886335|fst_tbl|local|vector|||746.661||
+fit_summary_logistic_het_season_ab|stem|0eb477b53d01eb3e|66c386f96dfb4241|17df92820221358e|1276335535||t19285.6306944444s|fd4dba5801975616|8595644|fst_tbl|local|vector|||704.56||
+fit_summary_logistic_het_season_ba|stem|ee89ee44efb7056f|f05643db8d072615|a2d5930f27507b1d|-883140705||t19285.6035648148s|bc52a9240a27965a|8596633|fst_tbl|local|vector|||706.542||
+fit_summary_logistic_het_season_both|stem|0eb477b53d01eb3e|cd4b02fc105e157c|04a0999a1147845f|-1363223208||t19285.6486111111s|fd4dba5801975616|8595644|fst_tbl|local|vector|||701.851||
+fit_summary_logistic_phy_rain_ab|stem|7b93e4f8299269f7|449bad5f3e7f9db6|30fdc1b1cf5d7785|-578245580||t19285.6125231481s|39d6e2164be04e9c|8886331|fst_tbl|local|vector|||726.562|The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.|
+fit_summary_logistic_phy_rain_ba|stem|fff95905c21c3c5f|ce31db29ad4e5838|511b6fec9ba40b47|1492982055||t19285.5946643519s|3bd11a695211e31e|8882698|fst_tbl|local|vector|||746.583|The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.|
+fit_summary_logistic_phy_rain_both|stem|7b93e4f8299269f7|4177f85e63df9a7d|94890ace4a779dab|-374524833||t19285.5671180556s|39d6e2164be04e9c|8886331|fst_tbl|local|vector|||743.313|The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.|
+fit_summary_logistic_phy_season_ab|stem|82fe35f2105421fd|ee62bd016aa4a4ca|2f9735a25a887217|2078697411||t19285.62125s|0f64548ba47da74a|8595620|fst_tbl|local|vector|||703.685|The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.|
+fit_summary_logistic_phy_season_ba|stem|fa4a37eed0f07bc2|4a8f3008e02acc29|3fbee7e69c08b816|1142350797||t19285.6568287037s|056466ca3b354dea|8596613|fst_tbl|local|vector|||703.868||
+fit_summary_logistic_phy_season_both|stem|82fe35f2105421fd|e35316d56fd7a256|45b8a7e0309bcfb9|1524593932||t19285.5580902778s|0f64548ba47da74a|8595620|fst_tbl|local|vector|||724.135|The ESS has been capped to avoid unstable estimates.. The ESS has been capped to avoid unstable estimates.|
 gen_seedling|function|e28467cb1d0bfc0a|||||||||||||||
 gen_stan_dat|function|ad65bd3e8a9cbb40|||||||||||||||
 generate_beta_list|function|81d8a6288e4ae300|||||||||||||||
@@ -63,7 +99,7 @@ het_season_ba|stem|95c5bbdb6f00d35a|82c53c6321dd3fd9|a608c04ffe968c04|-186279597
 het_season_both|stem|3f98c86e422e4c16|dcf23258b06f2924|a608c04ffe968c04|1124558324||t19279.6332291667s|0b5167bf4a370d04|647276|rds|local|vector|||1.067||
 logistic_stan|stem||1caef310df881233|9d196734dea9a29a|1452024909||t19279.6683784199s||0|file|local|vector|||||_build_ target logistic_stan did not return a character. dynamic files targets with format  file must return character vectors of file or directory paths.
 loo_map|object|fa30f13844f5b359|||||||||||||||
-main_|object|b45ba2aa6359374a|||||||||||||||
+main_|object|64bd84e8b8d03dfc|||||||||||||||
 mcmc_names|object|42f20644b2e2ee01|||||||||||||||
 my_loo|function|0e3ce6a385106cbd|||||||||||||||
 my_write_csv|function|46eaaee704021b09|||||||||||||||
