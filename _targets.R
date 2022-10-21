@@ -29,7 +29,7 @@ tar_option_set(packages = c(
 
 tar_option_set(
   garbage_collection = TRUE,
-  memory = "transient"
+  memory= "transient"
 )
 
 # check if it's inside a container
@@ -44,8 +44,10 @@ data_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c
   mutate(data = str_c(a1, a2, a3, sep = "_")) |>
   pull(data)
 
+data_names_year <- data_names[str_detect(data_names, "season")]
 
 mcmc_names <- str_c("fit_mcmc_logistic_", data_names)
+mcmc_names_year <- str_c("fit_year_mcmc_logistic_", data_names)
 
 loo_map <- tar_map(
     values = list(mcmc = rlang::syms(mcmc_names)),
@@ -116,6 +118,32 @@ main_ <- list(
       return_draws = TRUE,
       return_diagnostics = TRUE,
       return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    ),
+
+  tar_map(
+    values = list(stan_data = rlang::syms(data_names_year))),
+    tar_stan_mcmc(
+      fit_year,
+      "stan/logistic.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1,
+      iter_sampling = 1,
+      adapt_delta = 0.9,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),

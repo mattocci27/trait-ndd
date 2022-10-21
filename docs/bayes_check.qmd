@@ -11,6 +11,7 @@ format:
     toc-depth: 2
     number-sections: true
     smooth-scroll: true
+    embed-resources: false
     # fontsize: medium
     # toc_float:
     #  collapsed: TRUE
@@ -33,6 +34,7 @@ knitr::opts_chunk$set(
 ```{r}
 library(tidyverse)
 library(targets)
+library(bayesplot)
 library(kableExtra)
 library(here)
 library(jsonlite)
@@ -123,15 +125,58 @@ loo::loo_compare(
 ```
 
 
-```{r, eval=FALSE}
+```{r}
+draws_df <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_draws_logistic_het_season_ba))
+mcmc <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_mcmc_logistic_het_season_ba))
+s1 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_summary_logistic_het_season_ba)) |>
+  mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
 
+s1 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(sig == "sig")
+
+s1 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(sig == "sig") |>
+  pull(variable)
+
+d1 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(het_season_ba))
+
+d1$x |> colnames()
+
+d1$u |> rownames()
+
+draws <- mcmc$draws()
+
+color_scheme_set("mix-brightblue-gray")
+mcmc_trace(
+  draws,
+  pars = "gamma[9,2]"
+)
+
+mcmc_trace(
+  draws,
+  regex_pars = "gamma\\[7"
+)
+
+mcmc_areas(
+  draws,
+  regex_pars = "gamma\\[7"
+)
+
+```
+
+```{r, eval=FALSE}
 d <- read_csv("data/seedling.csv")
 
 d2 <- d |>
   dplyr::select(RF, year, season) |> unique()
 
 model <- lm(RF ~ season, d2)
-
 
 d2   |>
   group_by(season) |>
