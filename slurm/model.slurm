@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=summary
+#SBATCH --job-name=year_mcmc
 #SBATCH --partition=xhacnormala
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --output=log/summary.out
-#SBATCH --error=log/summary.err
-#SBATCH --cpus-per-task=20
+#SBATCH --output=log/year_mcmc.out
+#SBATCH --error=log/year_mcmc.err
+#SBATCH --cpus-per-task=24
 #SBATCH --mem-per-cpu=3000mb
 #SBATCH --time=90:00:00
 
