@@ -43,134 +43,207 @@ source(here("R", "stan.R"))
 
 # MCMC diagnostics
 
+- using `census` as a random intercept is much better than using `year`.
+
+- In both cases, using `hetrospecific` neighbor is better than `phylogenetic` neighbor
+
+
 ```{r}
+
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_phy_season_ab)) |>
+  targets::tar_load(loo_list))
+
+data_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"),
+  a3 = c("census", "year"), a4 = c("ab", "ba", "both")) |>
+  mutate(data = str_c(a1, a2, a3, a4, sep = "_")) |>
+  pull(data)
+# "rain" takes time and we know the performance is not good for census
+# data_names <- data_names[!str_detect(data_names, "rain_year")]
+data_names <- data_names[!str_detect(data_names, "rain")]
+mcmc_names <- str_c("fit_mcmc_logistic_", data_names)
+
+tmp <- tibble(mcmc_names, model = str_c("model", 1:12))
+
+
+loo_all <- loo::loo_compare(
+  loo_list[[1]],
+  loo_list[[2]],
+  loo_list[[3]],
+  loo_list[[4]],
+  loo_list[[6]],
+  loo_list[[6]],
+  loo_list[[7]],
+  loo_list[[8]],
+  loo_list[[9]],
+  loo_list[[10]],
+  loo_list[[11]],
+  loo_list[[12]]
+)
+
+loo_all <- loo_all |>
+  as.data.frame() |>
+  mutate(model = rownames(loo_all)) |>
+  full_join(tmp)
+
+loo_all |>
+  filter(str_detect(mcmc_names, "census"))
+
+loo_all |>
+  filter(str_detect(mcmc_names, "year"))
+```
+
+- There are no divergent transitions
+
+```{r}
+diag_names <- str_replace_all(mcmc_names, "mcmc", "diagnostics")
+
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_phy_season_census_ab)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_phy_season_ba)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_season_census_ba)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_phy_season_both)) |>
+  targets::tar_read(fit_diagnostics_logistic_phy_season_census_both)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_het_season_ab)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_season_census_ab)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_het_season_ba)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_season_census_ba)) |>
   div_check()
 withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_het_season_both)) |>
+  targets::tar_read(fit_diagnostics_logistic_het_season_census_both)) |>
+  div_check()
+
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_phy_season_year_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_phy_season_year_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_phy_season_year_both)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_het_season_year_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_het_season_year_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_het_season_year_both)) |>
   div_check()
 ```
 
-```{r}
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_phy_rain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_phy_rain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_phy_rain_both)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_het_rain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_het_rain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_het_rain_both)) |>
-  div_check()
-```
 
+
+# Year
 
 ```{r}
-mcmc_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"), a3 = c("ab", "ba", "both")) |>
-  mutate(model = str_c("fit_mcmc_logistic", a1, a2, a3, sep = "_")) |>
-  pull(model)
-
-loo_names <- str_c("loo_", mcmc_names)
-
-for (i in 1:12) {
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_load(loo_names[i]))
-}
-
-loo::loo_compare(
-   loo_fit_mcmc_logistic_het_rain_ab,
-   loo_fit_mcmc_logistic_het_rain_ba,
-   loo_fit_mcmc_logistic_het_rain_both,
-   loo_fit_mcmc_logistic_phy_rain_ab,
-   loo_fit_mcmc_logistic_phy_rain_ba,
-   loo_fit_mcmc_logistic_phy_rain_both,
-   loo_fit_mcmc_logistic_het_season_ab,
-   loo_fit_mcmc_logistic_het_season_ba,
-   loo_fit_mcmc_logistic_het_season_both,
-   loo_fit_mcmc_logistic_phy_season_ab,
-   loo_fit_mcmc_logistic_phy_season_ba,
-   loo_fit_mcmc_logistic_phy_season_both) |>
-  print()
-
-loo::loo_compare(
-   het_ab = loo_fit_mcmc_logistic_het_season_ab,
-   het_ba = loo_fit_mcmc_logistic_het_season_ba,
-   het_both = loo_fit_mcmc_logistic_het_season_both,
-   phy_ab = loo_fit_mcmc_logistic_phy_season_ab,
-   phy_ba = loo_fit_mcmc_logistic_phy_season_ba,
-   loo_fit_mcmc_logistic_phy_season_both) |>
-  print()
-
-```
-
-
-```{r}
-draws_df <- withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_draws_logistic_het_season_ba))
-mcmc <- withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_mcmc_logistic_het_season_ba))
 s1 <- withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_summary_logistic_het_season_ba)) |>
+  targets::tar_read(fit_summary_logistic_het_season_year_ba)) |>
+  # mutate(sig = ifelse(q25 * q75 > 0, "sig", "ns"))
   mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
 
 s1 |>
   filter(str_detect(variable, "gamma")) |>
   filter(sig == "sig")
 
+d1 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(het_season_year_ba))
+
+gamma_row <- d1$x |> colnames()
+gamma_col <- d1$u |> rownames()
+
+# str_split_fixed("gamma[3,1]",  "\\[|\\]|,", 4)
+
 s1 |>
   filter(str_detect(variable, "gamma")) |>
   filter(sig == "sig") |>
-  pull(variable)
-
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(het_season_ba))
-
-d1$x |> colnames()
-
-d1$u |> rownames()
-
-draws <- mcmc$draws()
-
-color_scheme_set("mix-brightblue-gray")
-mcmc_trace(
-  draws,
-  pars = "gamma[9,2]"
-)
-
-mcmc_trace(
-  draws,
-  regex_pars = "gamma\\[7"
-)
-
-mcmc_areas(
-  draws,
-  regex_pars = "gamma\\[7"
-)
-
+  mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
+    as.numeric()) |>
+  mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
+    as.numeric()) |>
+  mutate(ind_pred = gamma_row[gamma_row_num]) |>
+  mutate(sp_pred = gamma_col[gamma_col_num]) |>
+  dplyr::select(variable, q2.5, q50, q97.5, ind_pred, sp_pred) |>
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "HOLD_position"))
 ```
 
+# Census
+
+##  95% CIs
+
+- A very few traits showed significant effects on the slopes.
+
+```{r}
+s2 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_summary_logistic_het_season_census_ba)) |>
+  mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
+
+s2 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(sig == "sig")
+
+d2 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(het_season_census_ba))
+
+gamma_row <- d2$x |> colnames()
+gamma_col <- d2$u |> rownames()
+
+s2 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(sig == "sig") |>
+  mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
+    as.numeric()) |>
+  mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
+    as.numeric()) |>
+  mutate(ind_pred = gamma_row[gamma_row_num]) |>
+  mutate(sp_pred = gamma_col[gamma_col_num]) |>
+  dplyr::select(variable, q2.5, q50, q97.5, ind_pred, sp_pred) |>
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "HOLD_position"))
+```
+
+##  50% CIs
+
+- Many traits showed significant effects on the slopes (in terms of 50% CIS).
+
+- If we use fewer traits, I guess we can see more clear relationships for some traits.
+
+```{r}
+s2 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_summary_logistic_het_season_census_ba)) |>
+  mutate(sig = ifelse(q25 * q75 > 0, "sig", "ns"))
+
+s2 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(sig == "sig") |>
+  mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
+    as.numeric()) |>
+  mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
+    as.numeric()) |>
+  mutate(ind_pred = gamma_row[gamma_row_num]) |>
+  mutate(sp_pred = gamma_col[gamma_col_num]) |>
+  dplyr::select(variable, q2.5, q25, q50, q75, q97.5, ind_pred, sp_pred) |>
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "HOLD_position"))
+```
+
+```{r}
+knit_exit()
+```
+
+
 ```{r, eval=FALSE}
+draws_df <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_draws_logistic_het_season_year_ba))
+
+mcmc <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_mcmc_logistic_het_season_year_ba))
+
 d <- read_csv("data/seedling.csv")
 
 d2 <- d |>
@@ -178,7 +251,7 @@ d2 <- d |>
 
 model <- lm(RF ~ season, d2)
 
-d2   |>
+d2 |>
   group_by(season) |>
   summarise(mean_ = mean(RF))
 
@@ -235,6 +308,29 @@ d1$x |> head()
 d1$u[,1]
 
 apply(d1$u, 1, sd)
+
+
+d1 <- withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(het_season_year_ba))
+
+
+draws <- mcmc$draws()
+
+color_scheme_set("mix-brightblue-gray")
+mcmc_trace(
+  draws,
+  pars = "gamma[3,6]"
+)
+
+mcmc_trace(
+  draws,
+  regex_pars = "gamma\\[7"
+)
+
+mcmc_areas(
+  draws,
+  regex_pars = "gamma\\[7"
+)
 
 
 ```

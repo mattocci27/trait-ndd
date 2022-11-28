@@ -11,8 +11,8 @@ menu() {
     Rscript run.R
     ;;
   2)
- 		# apptainer exec --env RENV_PATHS_CACHE=/home/${USER}/renv \
- 		singularity exec --env RENV_PATHS_CACHE=/public1/home/${USER}/renv \
+ 		# singularity exec --env RENV_PATHS_CACHE=/public1/home/${USER}/renv \
+ 		apptainer exec --env RENV_PATHS_CACHE=/home/${USER}/renv \
 		--env RENV_PATHS_PREFIX_AUTO=TRUE \
  		radian.sif Rscript run.R
     ;;

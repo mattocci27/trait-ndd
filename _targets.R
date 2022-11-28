@@ -146,12 +146,12 @@ main_ <- list(
     )
   ),
 
-  # loo_map,
-  # tar_combine(
-  #   loo_list,
-  #   loo_map,
-  #   command = list(!!!.x)
-  # ),
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
 
   # tar_quarto(
   #   bayes_check_html,
