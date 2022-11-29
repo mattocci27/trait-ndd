@@ -37,9 +37,16 @@ clean_data <- function(rda, write_trait = FALSE) {
   }
 }
 
-calc_scale_cc <- function(seedling_csv) {
+calc_scale_cc <- function(seedling_csv, wet = TRUE) {
   seedling <- read_csv(seedling_csv) |>
     janitor::clean_names()
+  if (wet) {
+    seedling <- seedling |>
+      filter(season == "rainy")
+  } else {
+    seedling <- seedling |>
+      filter(season == "dry")
+  }
   x1 <- seedling$acon
   x2 <- seedling$ahet
   z1 <- seedling$aphy
@@ -67,11 +74,12 @@ calc_scale_cc <- function(seedling_csv) {
 #targets::tar_load(data_list)
 #' @title Create data list for stan
 #' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
-generate_stan_data <- function(seedling, traits, scale_cc,
-                        model = c("phy_season", "het_season", "phy_rain", "het_rain"),
-                        abund = c("abund", "ba", "both"),
-                        year = FALSE
-                        ) {
+generate_stan_data <- function(
+  seedling, traits, scale_cc,
+  season = c("dry", "wet"),
+  het = c("phy", "het"),
+  rain = c("norain", "rain", "intrain"),
+  ab = c("ab", "ba")) {
 
   # seedling <- read_csv("data/seedling.csv") |>
   #   janitor::clean_names()
@@ -82,6 +90,24 @@ generate_stan_data <- function(seedling, traits, scale_cc,
     janitor::clean_names()
   traits <- read_csv(traits) |>
     janitor::clean_names()
+
+  if (season == "wet") {
+    seedling <- seedling |>
+      filter(season == "rainy")
+    if (het == "het") {
+      cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
+    } else {
+      cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
+    }
+  } else {
+    seedling <- seedling |>
+      filter(season == "dry")
+    if (het == "het") {
+      cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
+    } else {
+      cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
+    }
+  }
 
   traits2 <- traits |>
     mutate(log_la = log(la)) |>
@@ -95,11 +121,13 @@ generate_stan_data <- function(seedling, traits, scale_cc,
     dplyr::select(-la, -sla, -lt, -ab, -ba, -chl, -c, -n) |>
     dplyr::select(latin, ldmc, sdmc, log_la, log_sla, log_chl, log_lt, c13, log_c, log_n, tlp, log_ab, log_ba)
 
+  # dry and wet season have the same sp number
+  # so we can scale the trait data here
   traits3 <- traits2 |>
     summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
     mutate(latin = traits2$latin)
 
-  if (abund == "abund") {
+  if (abund == "ab") {
     traits4 <- traits3 |>
       dplyr::select(-log_ba)
   } else if (abund == "ba") {
@@ -128,31 +156,6 @@ generate_stan_data <- function(seedling, traits, scale_cc,
       dplyr::select(-latin) |>
       as.matrix() |> t())
 
-  ##  Use Detto et al. 2019 Ecology letters -----------------------------
-  # x1 <- seedling_data$acon
-  # x2 <- seedling_data$ahet
-  # z1 <- seedling_data$aphy
-  # y <- seedling_data$surv
-
-  # n_len <- 100
-
-  # lik <- numeric(n_len)
-  # lik2 <- numeric(n_len)
-  # for (i in 1:n_len) {
-  #   d1 <- x1^(i / n_len)
-  #   d2 <- x2^(i / n_len)
-  #   d3 <- z1^(i / n_len)
-  #   fm1 <- glm(y ~ d1 + d2, family = binomial)
-  #   fm2 <- glm(y ~ d1 + d3, family = binomial)
-  #   lik[i] <- logLik(fm1)
-  #   lik2[i] <- logLik(fm2)
-  # }
-  # cc <- which(lik == max(lik)) / n_len
-  # cc2 <- which(lik2 == max(lik2)) / n_len
-
-  cc <- scale_cc[names(scale_cc) == "het"]
-  cc2 <- scale_cc[names(scale_cc) == "phy"]
-
   seedling_data <- seedling_data |>
     mutate(scon_s = scale(scon) |> as.numeric()) |>
     mutate(shet_s = scale(shet) |> as.numeric()) |>
@@ -163,30 +166,42 @@ generate_stan_data <- function(seedling, traits, scale_cc,
     mutate(logh_s = log(h1) |> scale() |> as.numeric()) |>
     mutate(rain_s = as.numeric(scale(rf)))
 
-  if (model == "het_season") {
-    Xd <- model.matrix(surv ~ (logh_s +
-      scon_s + shet_s +
-      acon_s_c + ahet_s_c) * season, data = seedling_data)
-  } else if (model == "phy_season") {
-    Xd <- model.matrix(surv ~ (logh_s +
-      scon_s + sphy_s +
-      acon_s_c + aphy_s_c) * season, data = seedling_data)
-  } else if (model == "het_rain") {
-    Xd <- model.matrix(surv ~ (logh_s +
-      scon_s + shet_s +
-      acon_s_c + ahet_s_c) * season * rain_s, data = seedling_data)
-  } else if (model == "phy_rain") {
-    Xd <- model.matrix(surv ~ (logh_s +
-      scon_s + sphy_s +
-      acon_s_c + aphy_s_c) * season * rain_s, data = seedling_data)
-  }
+  if (rain == "norain") {
+    if (het == "het") {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + shet_s +
+        acon_s_c + ahet_s_c, data = seedling_data)
+    } else {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + sphy_s +
+        acon_s_c + aphy_s_c, data = seedling_data)
+    }
+   } else if (rain == "intrain") {
+    if (het == "het") {
+      Xd <- model.matrix(surv ~ (logh_s +
+        scon_s + shet_s +
+        acon_s_c + ahet_s_c) * rain_s, data = seedling_data)
+    } else {
+      Xd <- model.matrix(surv ~ (logh_s +
+        scon_s + sphy_s +
+        acon_s_c + aphy_s_c) * rain_s, data = seedling_data)
+    }
+   } else if (rain == "rain") {
+    if (het == "het") {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + shet_s +
+        acon_s_c + ahet_s_c + rain_s, data = seedling_data)
+    } else {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + sphy_s +
+        acon_s_c + aphy_s_c + rain_s, data = seedling_data)
+    }
+   }
 
   n_sp_d <- length(unique(seedling_data$latin))
   n_para_d <- ncol(Xd)
   n_plot_d <- length(unique(seedling_data$quadrat))
   n_tag_d <- length(unique(seedling_data$tag))
-
-  if (year) seedling_data$census <- seedling_data$year
 
   n_census_d <- length(unique(seedling_data$census))
 

@@ -40,16 +40,19 @@ if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
 
 cmdstan_version()
 
-data_names <- expand_grid(a1 = c("phy", "het"), a2 = c("season", "rain"),
-  a3 = c("census", "year"), a4 = c("ab", "ba", "both")) |>
-  mutate(data = str_c(a1, a2, a3, a4, sep = "_")) |>
-  pull(data)
+values <- expand_grid(
+  season = c("dry", "wet"),
+  het = c("phy", "het"),
+  rain = c("norain", "intrain", "rain"),
+  ab = c("ab", "ba"))
 
-# "rain" takes time and we know the performance is not good for census
-# data_names <- data_names[!str_detect(data_names, "rain_year")]
-data_names <- data_names[!str_detect(data_names, "rain")]
+data_names <- values |>
+  mutate(data_names = str_c(season, het, rain, ab, sep = "_")) |>
+  pull(data_names)
 
-mcmc_names <- str_c("fit_mcmc_logistic_", data_names)
+mcmc_names <- values |>
+  mutate(mcmc_names = str_c("fit_mcmc_logistic_", data_names)) |>
+  pull(mcmc_names)
 
 loo_map <- tar_map(
     values = list(mcmc = rlang::syms(mcmc_names)),
@@ -82,41 +85,27 @@ data_ <- list(
 
 main_ <- list(
   # stan
+  # tar_map(
+  #   values = values,
+  #   tar_target(stan_data, paste(season, het, rain, ab, sep = "_"))
+  # ),
+
   tar_target(
-    scale_cc,
-    calc_scale_cc(seedling_csv)
+    scale_wet,
+    calc_scale_cc(seedling_csv, wet = TRUE),
+  ),
+  tar_target(
+    scale_dry,
+    calc_scale_cc(seedling_csv, wet = FALSE),
   ),
 
   tar_map(
-    list(abund = c("ab", "ba", "both")),
-    tar_target(phy_season_census,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "phy_season", abund = abund, year = FALSE)),
-    tar_target(phy_rain_census,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "phy_rain", abund = abund, year = FALSE)),
-    tar_target(het_season_census,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "het_season", abund = abund, year = FALSE)),
-    tar_target(het_rain_census,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "het_rain", abund = abund, year = FALSE))
-  ),
-
-  tar_map(
-    list(abund = c("ab", "ba", "both")),
-    tar_target(phy_season_year,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "phy_season", abund = abund, year = TRUE)),
-    tar_target(phy_rain_year,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "phy_rain", abund = abund, year = TRUE)),
-    tar_target(het_season_year,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "het_season", abund = abund, year = TRUE)),
-    tar_target(het_rain_year,
-      generate_stan_data(seedling_csv, trait_csv, scale_cc,
-       model = "het_rain", abund = abund, year = TRUE))
+    values = values,
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_csv, trait_csv,
+        scale_cc = list(wet = scale_rain, dry = scale_dry),
+        season, het, rain, ab))
   ),
 
   tar_map(
@@ -128,14 +117,14 @@ main_ <- list(
       refresh = 0,
       chains = 4,
       parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1000,
-      iter_sampling = 1000,
+      iter_warmup = 1,
+      iter_sampling = 1,
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = TRUE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -146,12 +135,12 @@ main_ <- list(
     )
   ),
 
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
 
   # tar_quarto(
   #   bayes_check_html,
@@ -163,4 +152,3 @@ main_ <- list(
 
 
 list(data_, main_)
-
