@@ -10,20 +10,119 @@ coef_ridge|function|9114335e7d5b95e8|||||||||||||||
 create_beta_tab|function|8925657f274dedff|||||||||||||||
 create_gamma_tab|function|864b2b26b563badd|||||||||||||||
 create_stan_tab|function|6c9f81b970c47bfe|||||||||||||||
-data_|object|9b4d70ccb664a573|||||||||||||||
+data_|object|7d724d8fbc510a1a|||||||||||||||
 data_names|object|9d3fe7985611a2a9|||||||||||||||
+data_rda|stem|aa71bf66d801eb71|4cad4cb1ce23dfde|ef46db3751d8e999|1200689765|data-raw/dataCNDD.Rdata|t19273.3701808175s|8c19c18ee4425416|1084857|file|local|vector|||0.093||
 div_check|function|9913df743f96f3d8|||||||||||||||
 fit_data_dry_het_intrain_ba|stem||4ae7a1c3bc80adb3|b54e9e85551abcef|-1395103996||t19325.3467375568s||0|qs|local|vector|||0.08||object dry_het_intrain_ba not found
+fit_data_stan_data_dry_het_intrain_ab|stem|322b34f16b370b78|5ac1d81a3fda48a3|d6551bf424478f60|1530475548||t19325.3531545616s|440301e84bcb7848|1791212|qs|local|vector|||0||
+fit_data_stan_data_dry_het_intrain_ba|stem|f3fabe25b1e729ac|6d370557acef8273|88952fc1cf2754ee|1170206602||t19325.3531392372s|2436d36fb45a6b24|1791195|qs|local|vector|||0.001||
+fit_data_stan_data_dry_het_norain_ab|stem|416f2f47b90bc4be|3e1b30da63cead07|436e5380662f0c4f|-1675932297||t19325.3531421076s|62a7db99d143a856|779830|qs|local|vector|||0||
+fit_data_stan_data_dry_het_norain_ba|stem|fe85bfdc749a042c|35428ec8e303094b|aee1060dfaf13619|849869814||t19325.3531377557s|0ec22b15df10e9a8|779804|qs|local|vector|||0||
+fit_data_stan_data_dry_het_rain_ab|stem|56be8f69a4fc3756|73c57a4e29cb650c|fb3465925cd5198c|1451489592||t19325.3531489133s|0024a6ec3f727eee|883917|qs|local|vector|||0||
+fit_data_stan_data_dry_het_rain_ba|stem|b91ef40d76daccd0|d3a5e6469618a319|dd87ef39d2ffe5f9|-1247627676||t19325.3531364131s|2b298e3814c6d809|883908|qs|local|vector|||0.001||
+fit_data_stan_data_dry_phy_intrain_ab|stem|e4bed8a92c637f80|d165cc67e62db135|aecb1c4fc26e1c8f|1816991523||t19325.3579500159s|06fa328db0b174d6|1862544|qs|local|vector|||0.097||
+fit_data_stan_data_dry_phy_intrain_ba|stem|2d867a91d57f4ec6|c61aa0ae79ddd601|ef6fa80612ac3834|-124275938||t19325.357983998s|cb6e3416ab42ad7e|1862524|qs|local|vector|||0||
+fit_data_stan_data_dry_phy_norain_ab|stem|0b0e6e5868ebee13|c91c80c672ab95f1|6b291af944ca8a62|-152075976||t19325.3579859425s|110f45db7cf4e19e|840564|qs|local|vector|||0||
+fit_data_stan_data_dry_phy_norain_ba|stem|d06d6dddf1fe0834|acbc48f1172767b5|2aafc5807ec69a12|-357673614||t19325.3579664977s|27a37019a67a5c37|840538|qs|local|vector|||0||
+fit_data_stan_data_dry_phy_rain_ab|stem|a4ff202dae45da29|da7508300fcae351|a02fc8b303d82817|-604735068||t19325.3580021002s|3d763990c57d5f4a|941137|qs|local|vector|||0.001||
+fit_data_stan_data_dry_phy_rain_ba|stem|6da8957d7249a2a3|50fd19826f0b08b7|db86ddadbf19b2d8|-998290542||t19325.3579545994s|8883e1f0515b8254|941127|qs|local|vector|||0||
+fit_data_stan_data_wet_het_intrain_ab|stem|f15c3d7cf6fba272|b50f9e7cb34f2928|9970a5198e488520|-1773869183||t19325.3531407187s|d15078aec8f45aa3|1650609|qs|local|vector|||0||
+fit_data_stan_data_wet_het_intrain_ba|stem|4ea87ba827b0e7b4|a187fa6391b36c4c|6ab78a0cdd41132d|-1621723004||t19325.3531560894s|1995f8ccb2f58aee|1650587|qs|local|vector|||0.001||
+fit_data_stan_data_wet_het_norain_ab|stem|9ae28d23187d6979|c17e48f4f4cc0b4f|f6a7e7c694f65074|1175318560||t19325.3531334964s|d79797a1da7ef656|731583|qs|local|vector|||0||
+fit_data_stan_data_wet_het_norain_ba|stem|e1f6dc3be20a19bd|50e22481d37e47bf|3aa09300c8b0b1b2|1720561671||t19325.3531448392s|0428b3fdd85a02e1|731575|qs|local|vector|||0.001||
+fit_data_stan_data_wet_het_rain_ab|stem|4bb677cf135acb36|cde4be262e378cce|4bdc0ee65d7e54e2|84467970||t19325.3531516911s|060500c0141a08f9|810983|qs|local|vector|||0||
+fit_data_stan_data_wet_het_rain_ba|stem|edf1d35c776953cc|31399828b7b6ca7a|18140a950a8c6be6|631382896||t19325.3531503022s|66b24767b1b1376c|810981|qs|local|vector|||0.001||
+fit_data_stan_data_wet_phy_intrain_ab|stem|588e178423b8f45b|907bf73174ed5a9f|b6a0aaf2d6cc9857|192775466||t19325.357939738s|abd8e8c180473523|1715755|qs|local|vector|||0.001||
+fit_data_stan_data_wet_phy_intrain_ba|stem|a5688b49eca08a55|8a36e2324f06cbdb|655852ec222aee34|-1590181135||t19325.3579819146s|575ca958b6526d17|1715733|qs|local|vector|||0||
+fit_data_stan_data_wet_phy_norain_ab|stem|6ccff333d0afa25f|72d6bb4e87735505|72c26ef4a063a0cb|-2113013661||t19325.3579626088s|c42d40d34052d9d5|787206|qs|local|vector|||0||
+fit_data_stan_data_wet_phy_norain_ba|stem|0605250bf1fe6cc5|20192d270a5531fa|a0149ddbb56bb73d|1514284980||t19325.3580072392s|fab5e2e21661b108|787205|qs|local|vector|||0.001||
+fit_data_stan_data_wet_phy_rain_ab|stem|f2e7acc5ed9e12be|2072554a17414af3|29943d82e8747386|-2096259754||t19325.3579965908s|ea8df0a59770c631|869012|qs|local|vector|||0||
+fit_data_stan_data_wet_phy_rain_ba|stem|4fd3b03ed4ed7fdf|b483bf145b3e283d|cdc83fcb8a1ca258|-612348626||t19325.358004878s|fb05f9141f72dc80|869010|qs|local|vector|||0.001||
 fit_data_wet_phy_rain_ab|stem||e9b6910753b124d2|e1ce8a23521bad58|-1346860682||t19325.3454080813s||0|qs|local|vector|||0.097||object wet_phy_rain_ab not found
+fit_file_logistic_stan_data_dry_het_intrain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|146021486|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_het_intrain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|1636717377|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_het_norain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1691809174|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_het_norain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|586751392|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0.001||
+fit_file_logistic_stan_data_dry_het_rain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-595024352|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_het_rain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|361404811|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_phy_intrain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|133362716|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_phy_intrain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|1906525799|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_phy_norain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|1937123123|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_phy_norain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|902411815|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_phy_rain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|1566969456|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_dry_phy_rain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|1039913648|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_het_intrain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-483072830|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_het_intrain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1053122442|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_het_norain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|634017279|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_het_norain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|502809851|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_het_rain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1735482207|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_het_rain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|2080596887|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_phy_intrain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-1781653054|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_phy_intrain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-528271277|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0.001||
+fit_file_logistic_stan_data_wet_phy_norain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|155244866|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_phy_norain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|-958744549|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_phy_rain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|790073554|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_file_logistic_stan_data_wet_phy_rain_ba|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|897752116|stan/logistic.stan|t19325.3502369619s|97db0b0639a9f22a|1953|file|local|vector|||0||
 fit_file_logistic_wet_phy_rain_ab|stem|c446d4836301a6da|cf55fbfc525932d8|ef46db3751d8e999|1705348931|stan/logistic.stan|t19297.6230046997s|97db0b0639a9f22a|1953|file|local|vector|||0||
+fit_mcmc_logistic_stan_data_dry_het_intrain_ab|stem|af4b0c41224c171a|23fdf471408c9051|9afe359c1b40ebbb|1384643747||t19325.357366117s|6d05f38b3ca87f2c|1568874|qs|local|vector|||215.046|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_het_intrain_ba|stem|4ae7efee1dee49b4|d13ef75ebb31dd9c|fe319ba6597eb0ed|77750777||t19325.3573335238s|6cdb2112a46bed6a|1568645|qs|local|vector|||210.548|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_het_norain_ab|stem|18e48e14d8119ec0|d664c2a0c2eace19|89f2c38254f0d7f9|-128040196||t19325.357310792s|1f1aae0e5cb49196|1515483|qs|local|vector|||215.411|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_het_norain_ba|stem|dad38ed91066c6c8|d9134a792c0de920|7ba81251b7809bc2|1243440977||t19325.3572347721s|4ad5f71e69d3b665|1515395|qs|local|vector|||209.305|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_het_rain_ab|stem|d9ffaef7ee467cad|9e77ead5c529fd51|0e36b1f36afc0dfa|700278687||t19325.3572812081s|abe90249f7793c31|1520494|qs|local|vector|||211.541|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_het_rain_ba|stem|c86795372df57bc9|736c563df1bf685f|83d22354ee1d7367|1498270231||t19325.3572611152s|64508a295b99fa08|1519914|qs|local|vector|||207.873|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_phy_intrain_ab|stem|2d7423109588317c|13c60a6068d7aa67|e32d3bad060355d5|-1679417188||t19325.3590337398s|26cb29b51a6002c2|1568823|qs|local|vector|||93.286|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_phy_intrain_ba|stem|32c163148738d228|f26628d13cff797e|ad9c27e3911a5759|700564278||t19325.3590981393s|3e08b5cbc90558f3|1568640|qs|local|vector|||95.898|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_phy_norain_ab|stem|85b684f5d1167d38|1998387e86872b3e|d5183808f3f312ef|1841903570||t19325.3590352213s|b874ff664ab7ee30|1515629|qs|local|vector|||90.267|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_phy_norain_ba|stem|ffaac8fe6fd4dbe8|6ac6dc73fb68b268|16f353bb79ffa234|-597222732||t19325.3590310545s|4b1f64572136e80d|1515518|qs|local|vector|||91.016|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_phy_rain_ab|stem|694548284dfb4a60|cbda6d6dc607457d|0c478dcda9a86ed1|919132244||t19325.3590457771s|f6f92d5cce3097d4|1520480|qs|local|vector|||89.734|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_dry_phy_rain_ba|stem|3113948de96300c0|de1bc733813e059e|f9884e084ae9e64c|154140847||t19325.3590130449s|585455338e571a2e|1519777|qs|local|vector|||91.033|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_het_intrain_ab|stem|d2ea676ec942fa59|68becd4eb3ac80a2|8502e4699b0c65b4|-1437769047||t19325.3569501376s|b7526c0faae3c005|1413513|qs|local|vector|||184.559|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_het_intrain_ba|stem|9629c778d32d59d1|5ffd0196951bc3a4|113fbfa1083b603a|-1504650260||t19325.357260004s|54cb566eaeaa1142|1413423|qs|local|vector|||208.422|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_het_norain_ab|stem|22c9f6d465b585f4|4d2c2e5e18c68308|f8c35de933f4e70d|1851556310||t19325.3543071747s|a3066cf230212b3d|1385646|qs|local|vector|||39.6|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_het_norain_ba|stem|67a26c9473d0c953|6270e3654e3fafea|5dae98d7431084bb|-1957906282||t19325.3570586117s|b7b64045a7802e19|1368044|qs|local|vector|||185.527|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_het_rain_ab|stem|86cc048c798ce830|a3d7ee9a9546dc49|1ed86895140e34ea|-984749418||t19325.3570124072s|d076cd1644ef9bcf|1376578|qs|local|vector|||187.641|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_het_rain_ba|stem|289fa9d95ed15b74|fb6c048a10e87b71|2c98a8c608ad4c01|-613313091||t19325.3570399539s|271b65c01028703a|1376123|qs|local|vector|||190.158|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_phy_intrain_ab|stem|b89353a48de4bacc|ae3bf56c1cd1f17c|0b9754773d1d9871|-742808572||t19325.3588968388s|caf43c3708adb4ff|1413546|qs|local|vector|||82.351|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_phy_intrain_ba|stem|1a2ee3dc365b84b9|e8db019acad74347|21fae3cbdc80b272|217426935||t19325.3589376729s|516c2afc1fb8a874|1413562|qs|local|vector|||82.209|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_phy_norain_ab|stem|d7cf79a51fc06d7c|49829038ac531b95|769774ab13e3f038|205858146||t19325.3588880423s|3bf20e340a5dd511|1368162|qs|local|vector|||79.384|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_phy_norain_ba|stem|9a669e9589bf8a2a|3034eb0384786cbe|878ec52e5ceed709|-380545073||t19325.3589276727s|64d7140a2b683e6c|1368067|qs|local|vector|||78.728|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_phy_rain_ab|stem|11cd745048eff0ae|9f9085ba93a9aef2|26219a3f276e4376|325650193||t19325.358894385s|4a9f64f9f82f8538|1376557|qs|local|vector|||76.826|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
+fit_mcmc_logistic_stan_data_wet_phy_rain_ba|stem|e176267f40e69b68|bbb432cb93354105|f2088d0f4b6093f9|-1139681540||t19325.3589079501s|9cb8e9b90ae4987e|1376247|qs|local|vector|||77.413|EBFMI not computed because it is undefined for posterior chains of length less than 3.|
 generate_beta_list|function|81d8a6288e4ae300|||||||||||||||
-generate_stan_data|function|a540cd4ce73e210e|||||||||||||||
+generate_stan_data|function|396119a4ebfd0b7d|||||||||||||||
 loo_map|object|44c2cbe0f9da8a93|||||||||||||||
-main_|object|bd3a173abc290f85|||||||||||||||
+main_|object|56de47d359be97ad|||||||||||||||
 mcmc_names|object|6bb7529cbac6d075|||||||||||||||
 my_loo|function|0e3ce6a385106cbd|||||||||||||||
 my_write_csv|function|46eaaee704021b09|||||||||||||||
+scale_dry|stem|2af6b05f94744e4f|752624c823c8b00b|337718afaf0a85ab|1580422374||t19325.3505029854s|17e1813002340629|93|rds|local|vector|||15.979||
+scale_wet|stem|07ec15661f5d920a|caaebb51fe3a321c|337718afaf0a85ab|-1857632052||t19325.3506584975s|17e1813002340629|93|rds|local|vector|||13.336||
 seedling_csv|stem|f75841d37cfd28d6|63def5ef3a425fca|ed0d7f1b65ac35ae|1282184644|data/seedling.csv|t19325.3467327269s|0f4ce86f8f6ee27c|6985263|file|local|vector|||0.368||
+stan_data_dry_het_intrain_ab|stem|b14c0852dffe991c|83e67161baf3dae5|cd7ab72de270dbbe|39826062||t19325.3579613587s|7b410f2e0e973cec|559067|rds|local|vector|||0.476||
+stan_data_dry_het_intrain_ba|stem|9fc4850865e7deb7|d137ac9eda3265ce|cd7ab72de270dbbe|595850230||t19325.3579295526s|b01e77da2ce8c911|559090|rds|local|vector|||0.452||
+stan_data_dry_het_norain_ab|stem|2387cadba0b11891|631064603623df8f|cd7ab72de270dbbe|-2098211961||t19325.3579322379s|7399162ee078c0ab|237082|rds|local|vector|||0.445||
+stan_data_dry_het_norain_ba|stem|83dc9051d19c74e2|e5b94c098fc60bb5|cd7ab72de270dbbe|-1929648569||t19325.3579287193s|f36b6e8e4bd8621e|237105|rds|local|vector|||0.441||
+stan_data_dry_het_rain_ab|stem|67885078619942a5|8c62cfa14cbac791|cd7ab72de270dbbe|308452283||t19325.3579494141s|08e73e985ed1f7df|253431|rds|local|vector|||0.385||
+stan_data_dry_het_rain_ba|stem|1d66aadfb7d717ad|5c914c70647eb796|cd7ab72de270dbbe|-2055208800||t19325.3579281174s|a1a0b212037272d5|253461|rds|local|vector|||0.433||
+stan_data_dry_phy_intrain_ab|stem|82bdfa0160d1e670|c42a0deb81acd505|cd7ab72de270dbbe|1353010953||t19325.3579249229s|2ac1f4bbaef3f7d1|688308|rds|local|vector|||0.433||
+stan_data_dry_phy_intrain_ba|stem|194ac16a3e6d2e5a|be9e62d4c916f7c5|cd7ab72de270dbbe|-1616646527||t19325.3579787201s|25dcbab955005000|688331|rds|local|vector|||0.249||
+stan_data_dry_phy_norain_ab|stem|e1ea77a61177880e|451352797806803e|cd7ab72de270dbbe|1938268679||t19325.3579605254s|ce7b125fbd001b76|296289|rds|local|vector|||0.408||
+stan_data_dry_phy_norain_ba|stem|63013ab4b982d971|4ba2c57b14213335|cd7ab72de270dbbe|-170941603||t19325.3579465437s|13a922a0d38e708e|296314|rds|local|vector|||0.422||
+stan_data_dry_phy_rain_ab|stem|8feca336b9f0ee7a|03dcaee6f996eced|cd7ab72de270dbbe|1120067169||t19325.3579762201s|6e59e7818e288643|312900|rds|local|vector|||0.177||
+stan_data_dry_phy_rain_ba|stem|a109baeda91311c6|19da2dbaeaa70e93|cd7ab72de270dbbe|-482205559||t19325.3579329323s|38c3488f1c863d3c|312928|rds|local|vector|||0.422||
+stan_data_wet_het_intrain_ab|stem|94992dd3b4934729|9dc1d7560afcd247|cd7ab72de270dbbe|636475645||t19325.3579316823s|3e2e29ccd232d826|519930|rds|local|vector|||0.426||
+stan_data_wet_het_intrain_ba|stem|8eb4dddbb0c07a49|abcdff37fbdd5979|cd7ab72de270dbbe|-270601036||t19325.3579621921s|883e145967e6663c|519950|rds|local|vector|||0.476||
+stan_data_wet_het_norain_ab|stem|bf2193ee0561bfd2|aac3333d1b92f520|cd7ab72de270dbbe|1770080643||t19325.3579240896s|16627fcfa964cce1|218953|rds|local|vector|||0.497||
+stan_data_wet_het_norain_ba|stem|9e98bf6a77465176|3171ffc00606cb0a|cd7ab72de270dbbe|1836699796||t19325.3579357101s|dd1672ec80b45e70|218982|rds|local|vector|||0.398||
+stan_data_wet_het_rain_ab|stem|24bec2bc5a3dad64|9faf72a200ef9e33|cd7ab72de270dbbe|-907417099||t19325.3579599698s|0ba43ee4d17233a9|234292|rds|local|vector|||0.435||
+stan_data_wet_het_rain_ba|stem|b3763df3c040f098|ada314fff2beac7d|cd7ab72de270dbbe|1752705099||t19325.3579565901s|5894080d767dae61|234319|rds|local|vector|||0.423||
+stan_data_wet_phy_intrain_ab|stem|4f3d9e95851938fe|9bd806fc7f72413b|cd7ab72de270dbbe|-271084280||t19325.3579206636s|b10365f261f202d8|644515|rds|local|vector|||0.417||
+stan_data_wet_phy_intrain_ba|stem|b2f62fa5827a5ffc|e9f06676a22e88e5|cd7ab72de270dbbe|-235790635||t19325.3579635347s|0fddae999eef150b|644540|rds|local|vector|||0.538||
+stan_data_wet_phy_norain_ab|stem|0b1ba90eed77f044|b398dd3c62cf0c89|cd7ab72de270dbbe|313131362||t19325.3579430714s|dfd40d36ec75dc83|272883|rds|local|vector|||0.376||
+stan_data_wet_phy_norain_ba|stem|875688bb6cc51f6c|e958b82a1fe9224e|cd7ab72de270dbbe|-486204319||t19325.3579881185s|3eeff365a032ea6a|272908|rds|local|vector|||0.231||
+stan_data_wet_phy_rain_ab|stem|60bab904213141c7|ca14a02620acdefb|cd7ab72de270dbbe|77980755||t19325.3579739515s|f355ddd4b5df64ac|287892|rds|local|vector|||0.224||
+stan_data_wet_phy_rain_ba|stem|98f817887e41865d|49ed33ca0f60f0ed|cd7ab72de270dbbe|662114393||t19325.3579909426s|15fce2b8d6e98c89|287924|rds|local|vector|||0.188||
 tidy_predictions|function|4de722f36d67b4f5|||||||||||||||
 trait_csv|stem|df06d2c796b94b10|7706f60d01e5ef7b|ed0d7f1b65ac35ae|-1641971225|data/traits.csv|t19325.3467353658s|6b8e74a748b92e8d|14407|file|local|vector|||0.106||
 trait_pair|function|0cdba61849f0b6d0|||||||||||||||

@@ -94,19 +94,13 @@ generate_stan_data <- function(
   if (season == "wet") {
     seedling <- seedling |>
       filter(season == "rainy")
-    if (het == "het") {
       cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
-    } else {
       cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
-    }
   } else {
     seedling <- seedling |>
       filter(season == "dry")
-    if (het == "het") {
-      cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
-    } else {
-      cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
-    }
+      cc <- scale_cc$dry[names(scale_cc$dry) == "het"]
+      cc2 <- scale_cc$dry[names(scale_cc$dry) == "phy"]
   }
 
   traits2 <- traits |>
@@ -127,10 +121,10 @@ generate_stan_data <- function(
     summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
     mutate(latin = traits2$latin)
 
-  if (abund == "ab") {
+  if (ab == "ab") {
     traits4 <- traits3 |>
       dplyr::select(-log_ba)
-  } else if (abund == "ba") {
+  } else if (ab == "ba") {
     traits4 <- traits3 |>
       dplyr::select(-log_ab)
   } else {
@@ -204,6 +198,8 @@ generate_stan_data <- function(
   n_tag_d <- length(unique(seedling_data$tag))
 
   n_census_d <- length(unique(seedling_data$census))
+
+  if (het == "phy") cc <- cc2
 
   list(N = nrow(seedling_data),
        J = n_sp_d,

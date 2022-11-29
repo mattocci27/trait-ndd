@@ -104,12 +104,12 @@ main_ <- list(
     tar_target(stan_data,
       generate_stan_data(
         seedling_csv, trait_csv,
-        scale_cc = list(wet = scale_rain, dry = scale_dry),
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
         season, het, rain, ab))
   ),
 
   tar_map(
-    values = list(stan_data = rlang::syms(data_names)),
+    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
     tar_stan_mcmc(
       fit,
       "stan/logistic.stan",
@@ -117,8 +117,8 @@ main_ <- list(
       refresh = 0,
       chains = 4,
       parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1,
-      iter_sampling = 1,
+      iter_warmup = 1000,
+      iter_sampling = 1000,
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
