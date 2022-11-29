@@ -11,7 +11,7 @@ format:
     toc-depth: 2
     number-sections: true
     smooth-scroll: true
-    embed-resources: false
+    embed-resources: true
     # fontsize: medium
     # toc_float:
     #  collapsed: TRUE
