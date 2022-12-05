@@ -107,6 +107,14 @@ main_ <- list(
         scale_cc = list(wet = scale_wet, dry = scale_dry),
         season, het, rain, ab))
   ),
+  # compile stan model so that targets can track
+  # evetually, I need to run `_targets.R` twice.
+  tar_target(
+    logistic_stan,
+    compile_model("stan/logistic.stan"),
+    format = "file",
+    deployment = "main"
+  ),
 
   tar_map(
     values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
