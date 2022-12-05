@@ -130,9 +130,9 @@ main_ <- list(
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_draws = TRUE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
