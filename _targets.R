@@ -51,7 +51,7 @@ data_names <- values |>
   pull(data_names)
 
 mcmc_names <- values |>
-  mutate(mcmc_names = str_c("fit_mcmc_logistic_", data_names)) |>
+  mutate(mcmc_names = str_c("fit_mcmc_logistic_stan_data_", data_names)) |>
   pull(mcmc_names)
 
 loo_map <- tar_map(
@@ -143,12 +143,12 @@ main_ <- list(
     )
   ),
 
-  # loo_map,
-  # tar_combine(
-  #   loo_list,
-  #   loo_map,
-  #   command = list(!!!.x)
-  # ),
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
 
   # tar_quarto(
   #   bayes_check_html,
