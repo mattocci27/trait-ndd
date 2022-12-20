@@ -1,0 +1,72 @@
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_norain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_norain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_intrain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_intrain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_rain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_rain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_norain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_norain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_intrain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_intrain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_rain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_rain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_norain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_norain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_intrain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_intrain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_rain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_rain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_norain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_norain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_intrain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_intrain_ba)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_rain_ab)) |>
+  div_check()
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_rain_ba)) |>
+  div_check()
