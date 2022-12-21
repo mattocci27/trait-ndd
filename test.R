@@ -29,6 +29,19 @@ library(tidyverse)
   d |>
     dplyr::select(plot, tag, latin, h1:shet, aphy:sphy, RF) |>
 
+traits |>
+  pivot_longer(ldmc:tlp)  |>
+  ggplot(aes(x = value)) +
+  geom_histogram() +
+  facet_wrap(~name, scale = "free")
+
+traits |>
+  pivot_longer(ldmc:tlp)  |>
+  ggplot(aes(x = value)) +
+  geom_histogram() +
+  scale_x_log10() +
+  facet_wrap(~name, scale = "free")
+
 dplyr::select(-note1, -dat)
 
 targets::tar_read(phy_season_both) |> str()
