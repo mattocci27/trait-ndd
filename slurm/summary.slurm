@@ -17,6 +17,6 @@ module purge
 module load singularity/3.7.3
 
 # Run the tar_make_clustermq() command with the specified number of clusters
-singularity exec --env RENV_PATHS_CACHE=/public1/home/${USER}/renv --env RENV_PATHS_PREFIX_AUTO=TRUE radian.sif Rscript run.R $SLURM_CPUS_PER_TASK > log/summary.log
+singularity exec --env RENV_PATHS_CACHE=${HOME}/renv --env RENV_PATHS_PREFIX_AUTO=TRUE radian.sif Rscript R/run.R 2 > log/summary.log
 
 date

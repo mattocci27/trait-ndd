@@ -79,12 +79,17 @@ generate_stan_data <- function(
   season = c("dry", "wet"),
   het = c("phy", "het"),
   rain = c("norain", "rain", "intrain"),
-  ab = c("ab", "ba")) {
+  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")) {
 
-  # seedling <- read_csv("data/seedling.csv") |>
-  #   janitor::clean_names()
-  # traits <- read_csv("data/traits.csv") |>
-  #   janitor::clean_names()
+  # targets::tar_load(scale_wet)
+  # targets::tar_load(scale_dry)
+  # targets::tar_load(seedling)
+  # targets::tar_load(traits)
+  # scale_cc <- list(wet = scale_wet, dry = scale_dry)
+  # season <- "dry"
+  # het <- "phy"
+  # sp_pred <- "ab1ba"
+  # rain <- "intrain"
 
   seedling <- read_csv(seedling) |>
     janitor::clean_names()
@@ -109,11 +114,32 @@ generate_stan_data <- function(
     mutate(log_lt = log(lt)) |>
     mutate(log_ab = log(ab)) |>
     mutate(log_ba = log(ba)) |>
-    mutate(log_chl = log(chl)) |>
-    mutate(log_c = log(c)) |>
+    # mutate(log_chl = log(chl)) |>
+    # mutate(log_c = log(c)) |>
     mutate(log_n = log(n)) |>
-    dplyr::select(-la, -sla, -lt, -ab, -ba, -chl, -c, -n) |>
-    dplyr::select(latin, ldmc, sdmc, log_la, log_sla, log_chl, log_lt, c13, log_c, log_n, tlp, log_ab, log_ba)
+    dplyr::select(-la, -sla, -lt, -ab, -ba) |>
+    dplyr::select(latin, ldmc, sdmc, log_la, log_sla, log_lt, c13, log_n, n, tlp, log_ab, log_ba)
+
+  if (sp_pred == "nlog") {
+    traits2 <- traits2 |>
+      dplyr::select(-n, -log_ab, -log_ba)
+  } else if (sp_pred == "n") {
+    traits2 <- traits2 |>
+      dplyr::select(-log_n, -log_ab, -log_ba)
+  } else if (sp_pred == "ab") {
+    traits2 <- traits2 |>
+      dplyr::select(latin, log_ab)
+  } else if (sp_pred == "ba") {
+    traits2 <- traits2 |>
+      dplyr::select(latin, log_ba)
+  } else if (sp_pred == "ab1ba") {
+    traits2 <- traits2 |>
+      dplyr::select(latin, log_ab, log_ba)
+  } else if (sp_pred == "ab2ba") {
+    traits2 <- traits2 |>
+      dplyr::select(latin, log_ab, log_ba) |>
+      mutate(ab2ba = log_ab * log_ba)
+  }
 
   # dry and wet season have the same sp number
   # so we can scale the trait data here
@@ -121,23 +147,13 @@ generate_stan_data <- function(
     summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
     mutate(latin = traits2$latin)
 
-  if (ab == "ab") {
-    traits4 <- traits3 |>
-      dplyr::select(-log_ba)
-  } else if (ab == "ba") {
-    traits4 <- traits3 |>
-      dplyr::select(-log_ab)
-  } else {
-    traits4 <- traits3
-  }
-
   # tweak sp list for trait and seedling data
-  trait_sp <- traits4$latin |> unique()
+  trait_sp <- traits3$latin |> unique()
   seedling_sp <- seedling$latin |> unique()
   sp_c0 <- c(trait_sp, seedling_sp)
   sp_c <- sp_c0[duplicated(sp_c0)] |> unique()
 
-  trait_data <- traits4 |>
+  trait_data <- traits3 |>
     filter(latin %in% sp_c)
 
   seedling_data <- seedling |>

@@ -44,10 +44,11 @@ values <- expand_grid(
   season = c("dry", "wet"),
   het = c("phy", "het"),
   rain = c("norain", "intrain", "rain"),
-  ab = c("ab", "ba"))
+  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")
+  )
 
 data_names <- values |>
-  mutate(data_names = str_c(season, het, rain, ab, sep = "_")) |>
+  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
   pull(data_names)
 
 mcmc_names <- values |>
@@ -84,12 +85,6 @@ data_ <- list(
 )
 
 main_ <- list(
-  # stan
-  # tar_map(
-  #   values = values,
-  #   tar_target(stan_data, paste(season, het, rain, ab, sep = "_"))
-  # ),
-
   tar_target(
     scale_wet,
     calc_scale_cc(seedling_csv, wet = TRUE),
@@ -105,10 +100,10 @@ main_ <- list(
       generate_stan_data(
         seedling_csv, trait_csv,
         scale_cc = list(wet = scale_wet, dry = scale_dry),
-        season, het, rain, ab))
+        season, het, rain, sp_pred))
   ),
   # compile stan model so that targets can track
-  # evetually, I need to run `_targets.R` twice.
+  # eventually, I need to run `_targets.R` twice.
   tar_target(
     logistic_stan,
     compile_model("stan/logistic.stan"),
@@ -123,16 +118,16 @@ main_ <- list(
       "stan/logistic.stan",
       data = stan_data,
       refresh = 0,
-      chains = 4,
+      chains = 1,
       parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1000,
-      iter_sampling = 1000,
+      iter_warmup = 1,
+      iter_sampling = 1,
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = TRUE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -143,12 +138,12 @@ main_ <- list(
     )
   ),
 
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
 
   # tar_quarto(
   #   bayes_check_html,

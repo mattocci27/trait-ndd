@@ -35,6 +35,8 @@ traits |>
   geom_histogram() +
   facet_wrap(~name, scale = "free")
 
+targets::tar_read(stan_data_wet_phy_intrain_ab1ba) |> str()
+
 traits |>
   pivot_longer(ldmc:tlp)  |>
   ggplot(aes(x = value)) +
