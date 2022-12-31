@@ -32,7 +32,7 @@ menu() {
  		radian.sif bash
     ;;
   6)
- 		singularity shell --env RENV_PATHS_CACHE=${HOME}/renv \
+ 		singularity shell --env RENV_PATHS_CACHE=/work/${USER}/renv \
 		--env RENV_PATHS_PREFIX_AUTO=TRUE \
  		radian.sif bash
     ;;
