@@ -61,6 +61,115 @@ indicates the model is based on rainy season, with phylogeny and with interactio
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_list))
 
+loo_names <- names(loo_list)
+
+library(targets)
+hoge <- tar_manifest()
+
+
+
+hoge |>
+  filter(str_detect(name, "simple"))
+
+
+# loo_names[str_detect(loo_names, "dry")]
+# str_which(loo_names, "dry")
+
+loo_tbl <- tibble(model = names(loo_list)) |>
+  mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
+  mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
+  mutate(looic = map_dbl(loo_list, \(x)x$looic))
+```
+
+
+## Dry
+
+abundance
+```{r}
+loo_tbl |>
+  filter(str_detect(model, "dry")) |>
+  filter(str_detect(model, "ab|ba")) |>
+  arrange(-elpd) |>
+  DT::datatable()
+```
+
+traits
+```{r}
+loo_tbl |>
+  filter(str_detect(model, "dry")) |>
+  filter(str_detect(model, "_n$|_nlog")) |>
+  arrange(-elpd) |>
+  DT::datatable()
+```
+
+## Shade
+
+abundance
+```{r}
+loo_tbl |>
+  filter(str_detect(model, "wet")) |>
+  filter(str_detect(model, "ab|ba")) |>
+  arrange(-elpd) |>
+  DT::datatable()
+```
+
+traits
+```{r}
+loo_tbl |>
+  filter(str_detect(model, "wet")) |>
+  filter(str_detect(model, "_n$|_nlog")) |>
+  arrange(-elpd) |>
+  DT::datatable()
+```
+
+```{r, eval=FALSE}
+loo::loo_compare(
+  loo_list[[3]],
+  loo_list[[6]])
+loo_list[[3]]
+loo_list[[6]]
+tar_read(fit_summary_logistic_stan_data_dry_phy_intrain_ba) |>
+  filter(str_detect(variable, "psi")) |>
+  head(30) |>
+  DT::datatable()
+
+tar_read(test_summary_logistic_simple_stan_data_dry_het_intrain_ab) |>
+  arrange(ess_bulk) |>
+  filter(ess_bulk < 400) |>
+  DT::datatable()
+
+m1 <- tar_read(test_mcmc_logistic_simple_stan_data_dry_het_intrain_ab)
+m2 <- tar_read(fit_mcmc_logistic_stan_data_dry_het_intrain_ab)
+library(loo)
+options(mc.cores = 24)
+
+loo1 <- m1$loo()
+loo2 <- m2$loo()
+loo_compare(loo1, loo2)
+
+s1 <- tar_read(test_summary_logistic_simple_stan_data_dry_het_intrain_ab)
+d1 <- tar_read(stan_data_dry_het_intrain_ab)
+print_summary_tbl(s1, d1, alpha = 0.05)
+
+s2 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_ab)
+d2 <- tar_read(stan_data_dry_het_intrain_ab)
+print_summary_tbl(s2, d2, alpha = 0.05)
+
+
+tar_read(stan_data_dry_phy_intrain_ba) |>
+  str()
+
+# names(loo_listn)
+```
+
+```{r}
+knitr::knit_exit()
+```
+
+```{r}
+loo_fit_mcmc_logistic_stan_data_dry_het_intrain_ab
+data_names[27]
+
 values <- expand_grid(
   season = c("dry", "wet"),
   het = c("phy", "het"),
@@ -76,6 +185,8 @@ mcmc_names <- values |>
   pull(mcmc_names)
 
 tmp <- tibble(mcmc_names, model = str_c("model", 1:24))
+
+
 
 loo_dry <- loo::loo_compare(
   loo_list[[1]],

@@ -115,7 +115,7 @@ main_ <- list(
     values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
     tar_stan_mcmc(
       fit,
-      "stan/logistic.stan",
+      c("stan/logistic.stan", "stan/logistic_simple.stan"),
       data = stan_data,
       refresh = 0,
       chains = 4,
@@ -125,9 +125,9 @@ main_ <- list(
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = TRUE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -138,12 +138,12 @@ main_ <- list(
     )
   ),
 
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
 
   # tar_quarto(
   #   bayes_check_html,
