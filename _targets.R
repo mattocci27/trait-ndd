@@ -125,9 +125,9 @@ main_ <- list(
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_draws = TRUE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -138,12 +138,12 @@ main_ <- list(
     )
   ),
 
-  # loo_map,
-  # tar_combine(
-  #   loo_list,
-  #   loo_map,
-  #   command = list(!!!.x)
-  # ),
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
 
   # tar_quarto(
   #   bayes_check_html,
