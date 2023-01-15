@@ -55,8 +55,10 @@ mcmc_names <- values |>
   mutate(mcmc_names = str_c("fit_mcmc_logistic_stan_data_", data_names)) |>
   pull(mcmc_names)
 
+mcmc_names2 <- str_replace_all(mcmc_names, "_stan", "_simple_stan")
+
 loo_map <- tar_map(
-    values = list(mcmc = rlang::syms(mcmc_names)),
+    values = list(mcmc = rlang::syms(c(mcmc_names, mcmc_names2))),
     tar_target(
       loo,
       my_loo(mcmc)
