@@ -62,25 +62,25 @@ withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_list))
 
 loo_names <- names(loo_list)
-
-library(targets)
-hoge <- tar_manifest()
-
-
-
-hoge |>
-  filter(str_detect(name, "simple"))
-
-
 # loo_names[str_detect(loo_names, "dry")]
 # str_which(loo_names, "dry")
 
 loo_tbl <- tibble(model = names(loo_list)) |>
   mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
   mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
-  mutate(looic = map_dbl(loo_list, \(x)x$looic))
+  mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
+  filter(str_detect(model, "simple"))
 ```
 
+```{r, eval=FALSE}
+s1 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_ab)
+s2 <- tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_ab)
+
+d1 <- tar_read(fit_diagnostics_logistic_stan_data_dry_het_intrain_ab)
+d2 <- tar_read(fit_diagnostics_logistic_simple_stan_data_dry_het_intrain_ab)
+
+loo_compare(loo_list[[1]], loo_list[[73]])
+```
 
 ## Dry
 
@@ -147,12 +147,22 @@ loo1 <- m1$loo()
 loo2 <- m2$loo()
 loo_compare(loo1, loo2)
 
-s1 <- tar_read(test_summary_logistic_simple_stan_data_dry_het_intrain_ab)
-d1 <- tar_read(stan_data_dry_het_intrain_ab)
+s1 <- tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_n)
+d1 <- tar_read(stan_data_dry_het_intrain_n)
 print_summary_tbl(s1, d1, alpha = 0.05)
 
-s2 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_ab)
-d2 <- tar_read(stan_data_dry_het_intrain_ab)
+s2 |>
+  arrange(ess_bulk) |>
+  filter(ess_bulk < 400) |>
+  DT::datatable()
+
+s1 |>
+  arrange(ess_bulk) |>
+  filter(rhat > 1.01) |>
+  DT::datatable()
+
+s2 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_n)
+d2 <- tar_read(stan_data_dry_het_intrain_n)
 print_summary_tbl(s2, d2, alpha = 0.05)
 
 
@@ -167,26 +177,21 @@ knitr::knit_exit()
 ```
 
 ```{r}
-loo_fit_mcmc_logistic_stan_data_dry_het_intrain_ab
-data_names[27]
-
 values <- expand_grid(
   season = c("dry", "wet"),
   het = c("phy", "het"),
   rain = c("norain", "intrain", "rain"),
-  ab = c("ab", "ba"))
+  ab = c("ab", "ba", "ab1ba", "ab2ba"))
 
 data_names <- values |>
   mutate(data_names = str_c("stan_data", season, het, rain, ab, sep = "_")) |>
   pull(data_names)
 
 mcmc_names <- values |>
-  mutate(mcmc_names = str_c("fit_mcmc_logistic_", data_names)) |>
+  mutate(mcmc_names = str_c("fit_mcmc_logistic_simple", data_names)) |>
   pull(mcmc_names)
 
-tmp <- tibble(mcmc_names, model = str_c("model", 1:24))
-
-
+tmp <- tibble(mcmc_names, model = str_c("model", 1:48))
 
 loo_dry <- loo::loo_compare(
   loo_list[[1]],
@@ -200,12 +205,10 @@ loo_dry <- loo::loo_compare(
   loo_list[[9]],
   loo_list[[10]],
   loo_list[[11]],
-  loo_list[[12]])
-
-loo_wet <- loo::loo_compare(
+  loo_list[[12]],
   loo_list[[13]],
   loo_list[[14]],
-  loo_list[[16]],
+  loo_list[[15]],
   loo_list[[16]],
   loo_list[[17]],
   loo_list[[18]],
@@ -214,7 +217,33 @@ loo_wet <- loo::loo_compare(
   loo_list[[21]],
   loo_list[[22]],
   loo_list[[23]],
-  loo_list[[24]]
+  loo_list[[24]])
+
+loo_wet <- loo::loo_compare(
+  loo_list[[25]],
+  loo_list[[26]],
+  loo_list[[27]],
+  loo_list[[28]],
+  loo_list[[29]],
+  loo_list[[30]],
+  loo_list[[31]],
+  loo_list[[32]],
+  loo_list[[33]],
+  loo_list[[34]],
+  loo_list[[35]],
+  loo_list[[36]],
+  loo_list[[37]],
+  loo_list[[38]],
+  loo_list[[39]],
+  loo_list[[40]],
+  loo_list[[41]],
+  loo_list[[42]],
+  loo_list[[43]],
+  loo_list[[44]],
+  loo_list[[45]],
+  loo_list[[46]],
+  loo_list[[47]],
+  loo_list[[48]]
 )
 
 loo_dry <- loo_dry |>
