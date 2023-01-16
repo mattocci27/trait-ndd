@@ -61,25 +61,61 @@ indicates the model is based on rainy season, with phylogeny and with interactio
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_list))
 
+loo_list_ori <- loo_list
+loo_list <- loo_list_ori[str_detect(names(loo_list_ori), "het")]
+loo_list <- loo_list[str_detect(names(loo_list), "simple")]
 loo_names <- names(loo_list)
-# loo_names[str_detect(loo_names, "dry")]
-# str_which(loo_names, "dry")
+
+loo_names_split <- str_split_fixed(loo_names, "_", 11)
 
 loo_tbl <- tibble(model = names(loo_list)) |>
   mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
   mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
   mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
-  filter(str_detect(model, "simple"))
+  mutate(season = loo_names_split[, 8]) |>
+  mutate(phy = loo_names_split[, 9]) |>
+  mutate(rain = loo_names_split[, 10]) |>
+  mutate(traits = loo_names_split[, 11])
 ```
 
 ```{r, eval=FALSE}
+library(tidyverse)
+library(targets)
+load("data-raw/dataCNDD.Rdata")
+
+d <- tar_read(seedling_csv) |> read_csv()
+lm(sphy ~ shet, data = d) |> summary()
+lm(aphy ~ ahet, data = d) |> summary()
+
+lm(as.numeric(dataseedling$sphy) ~ shet, data = dataseedling) |> summary()
+lm(as.numeric(dataseedling$aphy) ~ ahet, data = dataseedling) |> summary()
+
+plot(as.numeric(dataseedling$sphy) ~ shet, data = dataseedling)
+plot(as.numeric(dataseedling$aphy) ~ ahet, data = dataseedling)
+
 s1 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_ab)
 s2 <- tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_ab)
+s3 <- tar_read(check_ess_summary_logistic)
+d3 <- tar_read(check_ess_diagnostics_logistic)
+
+hoge <- tar_manifest()
+hoge |>
+  filter(str_detect(name, "ess"))
+
+m1 <- tar_read(fit_mcmc_logistic_stan_data_dry_het_intrain_ab)
+m2 <- tar_read(fit_mcmc_logistic_simple_stan_data_dry_het_intrain_ab)
+m3 <- tar_read(check_ess_mcmc_logistic)
+color_scheme_set("viridis")
+
+bayesplot::mcmc_trace(m1$draws(), "lp__")
+bayesplot::mcmc_trace(m2$draws(), "lp__")
+bayesplot::mcmc_trace(m3$draws(), "lp__")
 
 d1 <- tar_read(fit_diagnostics_logistic_stan_data_dry_het_intrain_ab)
 d2 <- tar_read(fit_diagnostics_logistic_simple_stan_data_dry_het_intrain_ab)
 
 loo_compare(loo_list[[1]], loo_list[[73]])
+# dry_het_intrain_ab
 ```
 
 ## Dry
