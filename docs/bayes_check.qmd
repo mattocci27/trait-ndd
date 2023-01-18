@@ -342,8 +342,7 @@ dry_trait$summary |>
 ```
 
 ```{r}
-
-generate_coef_abund_data <- function(draws, data, season = "Dry") {
+generate_coef_data <- function(draws, data, abund = TRUE, season = "Dry") {
   ind_pred_tmp <- data$x |> colnames()
   sp_pred_tmp <- data$u |> rownames()
 
@@ -357,11 +356,12 @@ generate_coef_abund_data <- function(draws, data, season = "Dry") {
     mutate(sp_pred = rep(sp_pred_tmp, each = length(ind_pred_tmp))) |>
     mutate(season = season) |>
     mutate(sig = ifelse(ll * hh > 0, "sig", "ns")) |>
-    mutate(season_sig = paste0(season, "_", sig))
+    mutate(season_sig = paste0(season, "_", sig)) |>
+    filter(str_detect(parameter, "1\\]$")) |>
+    filter(parameter != "gamma[1,1]")
 
+    if (abund)  {
     intervals_data |>
-      filter(str_detect(parameter, "1\\]$")) |>
-      filter(parameter != "gamma[1,1]") |>
       mutate(para = factor(ind_pred,
         levels = c(
           "logh_s",
@@ -376,6 +376,17 @@ generate_coef_abund_data <- function(draws, data, season = "Dry") {
           "acon_s_c:rain_s",
           "ahet_s_c:rain_s"
         ) |> rev()))
+    } else {
+    intervals_data |>
+      mutate(para = factor(ind_pred,
+        levels = c(
+          "logh_s",
+          "scon_s",
+          "shet_s",
+          "acon_s_c",
+          "ahet_s_c"
+        ) |> rev()))
+    }
 }
 
 gamma_lab <- c(
@@ -395,8 +406,8 @@ gamma_lab <- c(
 my_col <- RColorBrewer::brewer.pal(5, "RdBu")
 
 bind_rows(
-  generate_coef_abund_data(dry_abund$draws, dry_abund$data, season = "Dry"),
-  generate_coef_abund_data(wet_abund$draws, wet_abund$data, season = "Rainy")) |>
+  generate_coef_data(dry_abund$draws, dry_abund$data, abund = TRUE, season = "Dry"),
+  generate_coef_data(wet_abund$draws, wet_abund$data, abund = TRUE, season = "Rainy")) |>
   ggplot(aes(y = para)) +
   geom_vline(xintercept = 0, lty = 2, col = "grey60") +
   geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
@@ -424,6 +435,36 @@ bind_rows(
     legend.position = "none")
 ```
 
+```{r}
+bind_rows(
+  generate_coef_data(dry_trait$draws, dry_trait$data, abund = FALSE, season = "Dry"),
+  generate_coef_data(wet_trait$draws, wet_trait$data, abund = FALSE, season = "Rainy")) |>
+  ggplot(aes(y = para)) +
+  geom_vline(xintercept = 0, lty = 2, col = "grey60") +
+  geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
+  geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2) +
+  geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 3) +
+  facet_grid(~season) +
+  scale_colour_manual(
+    values = c(
+      "Dry" = my_col[1],
+      "Rainy" = my_col[5]
+    )) +
+  scale_fill_manual(
+    values = c(
+      "Dry_sig" = my_col[2],
+      "Rainy_sig" = my_col[4],
+      "Dry_ns" = my_col[3],
+      "Rainy_ns" = my_col[3]
+    )
+  ) +
+  scale_y_discrete(labels = gamma_lab[1:5]) +
+  ylab("") +
+  xlab("Standardized coefficients") +
+  theme_bw() +
+  theme(
+    legend.position = "none")
+```
 
 # Abundance
 
