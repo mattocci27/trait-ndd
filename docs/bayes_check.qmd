@@ -11,7 +11,7 @@ format:
     toc-depth: 2
     number-sections: true
     smooth-scroll: true
-    embed-resources: true
+    standalone: true
 ---
 
 ```{r global_options, include=FALSE}
@@ -46,16 +46,68 @@ source(here("R", "stan.R"))
   - no interaction with rain (`rain`)
   - with interaction of rain (`intrain`)
 - Phylogeny effects (2 combinations)
-  - with phylo (`phy`)
   - without phylo (`het`)
-- The effect of abundance on NDD in all the models are based on basal area
-  - Results for numbers of individuals are not shown in this file
+  - with phylo (`phy`)
+    - but phylo is not shown in this file because the pattern is too similar
+- Species-level predictors
+  - traits (`nlog`)
+    - log-transformed traits
+  - abundance
+    - abundance (`ab`)
+    - basal area (`ba`)
+    - abundance + basal area (`ab1ba`)
+    - abundance * basal area (`ab2ba`)
 
 For example,
-`fit_summary_logistic_stan_data_wet_phy_intrain_ba`
-indicates the model is based on rainy season, with phylogeny and with interactions of rains and density effects.
+`fit_summary_logistic_stan_data_wet_het_intrain_ba`
+indicates the model is based on rainy season, without phylogeny and with interactions of rains and density effects.
 
 # MCMC diagnostics
+
+## Effective sample size (ESS)
+
+ESS < 400 suggests that MCMC is not that well convergent.
+
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_list))
+loo_names <- names(loo_list)
+tmp <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_summary")
+tmp2 <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_diagnostics")
+
+for (i in 1:length(tmp)) {
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp[i]))
+  assign(loo_names[i], tmp[i])
+  hoge <- get(tmp[i])
+
+  ess_bulk <- hoge |>
+    filter(ess_bulk < 400) |>
+    nrow()
+
+  if (ess_bulk > 0) {
+    print(paste0(tmp[i], " has ", ess_bulk, " parameters with ess < 400"))
+  }
+}
+```
+
+## Divergence
+
+```{r}
+for (i in 1:length(tmp2)) {
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp2[i]))
+  hoge2 <- get(tmp2[i])
+  divergent <- hoge2 |>
+    filter(divergent__ != 0) |>
+    nrow()
+  if (divergent > 0) {
+    print(paste0(tmp2[i], " has ", divergent, " divergences"))
+  }
+}
+```
+
+# Model selection
 
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
@@ -63,6 +115,7 @@ withr::with_dir(rprojroot::find_root('_targets.R'),
 
 loo_list_ori <- loo_list
 loo_list <- loo_list_ori[str_detect(names(loo_list_ori), "het")]
+loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
 loo_list <- loo_list[str_detect(names(loo_list), "simple")]
 loo_names <- names(loo_list)
 
@@ -118,18 +171,6 @@ loo_compare(loo_list[[1]], loo_list[[73]])
 # dry_het_intrain_ab
 ```
 
-## Dry
-
-abundance
-
-```{r}
-loo_tbl |>
-  filter(str_detect(model, "dry")) |>
-  filter(str_detect(model, "ab|ba")) |>
-  arrange(-elpd) |>
-  DT::datatable()
-```
-
 
 ```{r}
 print_summary_tbl <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01, 0.5)) {
@@ -162,7 +203,7 @@ print_summary_tbl <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01
 }
 ```
 
-```{r}
+```{r, eval=FALSE, include=FALSE}
 hoge <- loo_tbl |>
   filter(str_detect(model, "dry")) |>
   filter(str_detect(model, "ab|ba")) |>
@@ -197,14 +238,18 @@ load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
     pull(model)
   tmp_summary <- str_replace(tmp[1], "loo_fit_mcmc", "fit_summary")
   tmp_data <- str_replace(tmp_summary, "fit_summary_logistic_simple_", "")
+  tmp_draws <- str_replace(tmp[1], "loo_fit_mcmc", "fit_draws")
   withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_load(tmp_summary))
   withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_load(tmp_data))
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp_draws))
   list(
-    a = get(tmp_summary),
-    b = get(tmp_data),
-    name = tmp[1]
+    name = tmp[1],
+    data = get(tmp_data),
+    summary = get(tmp_summary),
+    draws = get(tmp_draws)
   )
 }
 
@@ -219,22 +264,29 @@ wet_abund <- load_mcmc_summary(loo_tbl, season = "wet", trait = "ab")
 #dry_trait[[1]] |> filter(ess_bulk < 400)
 ```
 
+## Dry
+
+### abundance
+
 ```{r}
-dry_abund[[3]]
-print_summary_tbl(dry_abund[[1]], dry_abund[[2]], alpha = 0.05)
-
-dry_trait[[3]]
-print_summary_tbl(dry_trait[[1]], dry_trait[[2]], alpha = 0.05)
-
-wet_abund[[3]]
-print_summary_tbl(wet_abund[[1]], wet_abund[[2]], alpha = 0.05)
-
-wet_trait[[3]]
-print_summary_tbl(wet_trait[[1]], wet_trait[[2]], alpha = 0.05)
+loo_tbl |>
+  filter(str_detect(model, "dry")) |>
+  filter(str_detect(model, "ab|ba")) |>
+  arrange(-elpd) |>
+  DT::datatable()
 ```
 
+```{r}
+dry_abund$name
+print_summary_tbl(dry_abund$summary, dry_abund$data, alpha = 0.05)
+```
 
-traits
+```{r}
+# knitr::knit_exit()
+```
+
+### traits
+
 ```{r}
 loo_tbl |>
   filter(str_detect(model, "dry")) |>
@@ -243,9 +295,17 @@ loo_tbl |>
   DT::datatable()
 ```
 
-## Shade
+```{r}
+dry_trait$name
+print_summary_tbl(dry_trait$summary, dry_trait$data, alpha = 0.05)
+```
 
-abundance
+
+
+
+## Rainy
+
+### abundance
 ```{r}
 loo_tbl |>
   filter(str_detect(model, "wet")) |>
@@ -254,7 +314,12 @@ loo_tbl |>
   DT::datatable()
 ```
 
-traits
+```{r}
+wet_abund$name
+print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
+```
+
+### traits
 ```{r}
 loo_tbl |>
   filter(str_detect(model, "wet")) |>
@@ -263,7 +328,106 @@ loo_tbl |>
   DT::datatable()
 ```
 
-```{r, eval=FALSE}
+```{r}
+wet_trait$name
+print_summary_tbl(wet_trait$summary, wet_trait$data, alpha = 0.05)
+```
+
+# Traits
+
+```{r}
+dry_trait$summary |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(str_detect(variable, "1\\]$"))
+```
+
+```{r}
+
+generate_coef_abund_data <- function(draws, data, season = "Dry") {
+  ind_pred_tmp <- data$x |> colnames()
+  sp_pred_tmp <- data$u |> rownames()
+
+  intervals_data <- mcmc_intervals_data(
+    draws,
+    regex_pars = "gamma",
+    point_est = "median",
+    prob = 0.5,
+    prob_outer = 0.95) |>
+    mutate(ind_pred = rep(ind_pred_tmp, length(sp_pred_tmp))) |>
+    mutate(sp_pred = rep(sp_pred_tmp, each = length(ind_pred_tmp))) |>
+    mutate(season = season) |>
+    mutate(sig = ifelse(ll * hh > 0, "sig", "ns")) |>
+    mutate(season_sig = paste0(season, "_", sig))
+
+    intervals_data |>
+      filter(str_detect(parameter, "1\\]$")) |>
+      filter(parameter != "gamma[1,1]") |>
+      mutate(para = factor(ind_pred,
+        levels = c(
+          "logh_s",
+          "scon_s",
+          "shet_s",
+          "acon_s_c",
+          "ahet_s_c",
+          "rain_s",
+          "logh_s:rain_s",
+          "scon_s:rain_s",
+          "shet_s:rain_s",
+          "acon_s_c:rain_s",
+          "ahet_s_c:rain_s"
+        ) |> rev()))
+}
+
+gamma_lab <- c(
+    # "(Intercept)" = expression(Intercept~(gamma["1,1"])),
+    "logh_s" = expression(ln~Height~(gamma["2,1"])),
+    "scon_s" = expression(ConS~(gamma["3,1"])),
+    "shet_s" = expression(HetS~(gamma["4,1"])),
+    "acon_s_c" = expression(ConT~(gamma["5,1"])),
+    "ahet_s_c" = expression(HetT~(gamma["6,1"])),
+    "rain_s" = expression(Rainfall~(gamma["7,1"])),
+    "logh_s:rain_s" = expression(ln~Height%*%Rainfall~(gamma["8,1"])),
+    "scon_s:rain_s" = expression(ConS%*%Rainfall~(gamma["9,1"])),
+    "shet_s:rain_s" = expression(HetS%*%Rainfall~(gamma["10,1"])),
+    "acon_s_c:rain_s" = expression(ConT%*%Rainfall~(gamma["11,1"])),
+    "ahet_s_c:rain_s" = expression(HetT%*%Rainfall~(gamma["12,1"])))
+
+my_col <- RColorBrewer::brewer.pal(5, "RdBu")
+
+bind_rows(
+  generate_coef_abund_data(dry_abund$draws, dry_abund$data, season = "Dry"),
+  generate_coef_abund_data(wet_abund$draws, wet_abund$data, season = "Rainy")) |>
+  ggplot(aes(y = para)) +
+  geom_vline(xintercept = 0, lty = 2, col = "grey60") +
+  geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
+  geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2) +
+  geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 3) +
+  facet_grid(~season) +
+  scale_colour_manual(
+    values = c(
+      "Dry" = my_col[1],
+      "Rainy" = my_col[5]
+    )) +
+  scale_fill_manual(
+    values = c(
+      "Dry_sig" = my_col[2],
+      "Rainy_sig" = my_col[4],
+      "Dry_ns" = my_col[3],
+      "Rainy_ns" = my_col[3]
+    )
+  ) +
+  scale_y_discrete(labels = gamma_lab) +
+  ylab("") +
+  xlab("Standardized coefficients") +
+  theme_bw() +
+  theme(
+    legend.position = "none")
+```
+
+
+# Abundance
+
+```{r, eval=FALSE, include=FALSE}
 loo::loo_compare(
   loo_list[[3]],
   loo_list[[6]])
