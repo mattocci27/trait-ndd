@@ -36,18 +36,19 @@ library(jsonlite)
 source(here("R", "stan.R"))
 ```
 
-# Summary
+# Notes
 
 - Abundance vs. traits
   - Abundance is the better predictor but we can show both results.
 - Rain effects
   - Model with rain interaction effects actually did not work well for model with traits (the one we used in Ecology letters).
   - If we use model with rain interaction effects, we can see more traits that seem to show significant effects, but I'm not sure if these are reliable (the pattern is slightly different from our previous version).
-- Traits and gamma
+- Trait effects
   - SDMC was the only trait that affects CNDD (`gamma[3,3]`) in dry season.
   - LDMC, SDMC and C13 directly affect the survival rates (not via NDD) in dry season.
   - In rainy season, C13 modified the effect of height on survival (`gamma[2,7]`).
-
+- Abundance effect
+  - The negative effect of abundance on the interaction between CNDD and rainfall (`gamma[11,2]`) indicates that abundant species suffer stronger CNDD (from adult trees) in wetter dry seasons (?).
 
 # Model
 
@@ -291,6 +292,26 @@ dry_trait2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_read(stan_data_dry_het_intrain_nlog))
 ```
 
+```{r, eval=FALSE, include=FALSE}
+dry_abund2_summary <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_ba))
+dry_abund2_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_ba))
+dry_abund2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(stan_data_dry_het_intrain_ba))
+
+wet_abund2_summary <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_summary_logistic_simple_stan_data_wet_het_intrain_ba))
+wet_abund2_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_draws_logistic_simple_stan_data_wet_het_intrain_ba))
+wet_abund2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(stan_data_wet_het_intrain_ba))
+
+print_summary_tbl(dry_abund2_summary, dry_abund2_data, alpha = 0.05)
+print_summary_tbl(wet_abund2_summary, wet_abund2_data, alpha = 0.05)
+```
+
+
 ## Dry
 
 ### abundance
@@ -326,7 +347,6 @@ loo_tbl |>
 dry_trait$name
 print_summary_tbl(dry_trait$summary, dry_trait$data, alpha = 0.05)
 ```
-
 
 
 
@@ -553,7 +573,9 @@ wet_trait$name
 print_summary_tbl(wet_trait$summary, wet_trait$data, alpha = 0.05)
 ```
 
-### interation with rain
+### With rain (wiht interactions)
+
+Note that these results are not that relable.
 
 ```{r}
 print_summary_tbl(dry_trait2_summary, dry_trait2_data, alpha = 0.05)
@@ -580,410 +602,3 @@ print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 ```{r}
 knitr::knit_exit()
 ```
-
-```{r}
-values <- expand_grid(
-  season = c("dry", "wet"),
-  het = c("phy", "het"),
-  rain = c("norain", "intrain", "rain"),
-  ab = c("ab", "ba", "ab1ba", "ab2ba"))
-
-data_names <- values |>
-  mutate(data_names = str_c("stan_data", season, het, rain, ab, sep = "_")) |>
-  pull(data_names)
-
-mcmc_names <- values |>
-  mutate(mcmc_names = str_c("fit_mcmc_logistic_simple", data_names)) |>
-  pull(mcmc_names)
-
-tmp <- tibble(mcmc_names, model = str_c("model", 1:48))
-
-loo_dry <- loo::loo_compare(
-  loo_list[[1]],
-  loo_list[[2]],
-  loo_list[[3]],
-  loo_list[[4]],
-  loo_list[[6]],
-  loo_list[[6]],
-  loo_list[[7]],
-  loo_list[[8]],
-  loo_list[[9]],
-  loo_list[[10]],
-  loo_list[[11]],
-  loo_list[[12]],
-  loo_list[[13]],
-  loo_list[[14]],
-  loo_list[[15]],
-  loo_list[[16]],
-  loo_list[[17]],
-  loo_list[[18]],
-  loo_list[[19]],
-  loo_list[[20]],
-  loo_list[[21]],
-  loo_list[[22]],
-  loo_list[[23]],
-  loo_list[[24]])
-
-loo_wet <- loo::loo_compare(
-  loo_list[[25]],
-  loo_list[[26]],
-  loo_list[[27]],
-  loo_list[[28]],
-  loo_list[[29]],
-  loo_list[[30]],
-  loo_list[[31]],
-  loo_list[[32]],
-  loo_list[[33]],
-  loo_list[[34]],
-  loo_list[[35]],
-  loo_list[[36]],
-  loo_list[[37]],
-  loo_list[[38]],
-  loo_list[[39]],
-  loo_list[[40]],
-  loo_list[[41]],
-  loo_list[[42]],
-  loo_list[[43]],
-  loo_list[[44]],
-  loo_list[[45]],
-  loo_list[[46]],
-  loo_list[[47]],
-  loo_list[[48]]
-)
-
-loo_dry <- loo_dry |>
-  as.data.frame() |>
-  mutate(model = rownames(loo_dry)) |>
-  full_join(tmp |> head(12))
-
-loo_wet <- loo_wet |>
-  as.data.frame() |>
-  mutate(model = rownames(loo_wet)) |>
-  full_join(tmp |> head(12)) |>
-  mutate(mcmc_names = str_replace_all(mcmc_names, "dry", "wet"))
-```
-
-## Best model for dry season
-
-Larger `elpd_loo` indicates better models.
-
-`r loo_dry |> filter(str_detect(mcmc_names, "ba")) |> head(1) |> pull(mcmc_names)`
-is the best model for the dry season.
-
-```{r}
-loo_dry |>
-  filter(str_detect(mcmc_names, "ba")) |>
-  DT::datatable()
-```
-
-## Best model for rainy season
-
-`r loo_wet |> filter(str_detect(mcmc_names, "ba")) |> head(1) |> pull(mcmc_names)`
-is the best model for the rainy season.
-
-```{r}
-loo_wet |>
-  filter(str_detect(mcmc_names, "ba")) |>
-  DT::datatable()
-```
-
-- There are no divergent transitions
-
-```{r, echo=FALSE}
-diag_names <- str_replace_all(mcmc_names, "mcmc", "diagnostics")
-
-tmp <- here("stan/diag.txt")
-for (i in 1:24) {
-  if (i == 1) {
-    write_lines(
-    "withr::with_dir(rprojroot::find_root('_targets.R'),",
-    tmp, "\n", append = FALSE)
-  } else {
-    write_lines(
-    "withr::with_dir(rprojroot::find_root('_targets.R'),",
-    tmp, "\n", append = TRUE)
-  }
-  write_lines(
-  paste0(
-  "  targets::tar_read(",
-   diag_names[i],
-  ")) |>"),
-    tmp, "\n", append = TRUE
-  )
-  write_lines("  div_check()",  tmp, "\n", append = TRUE)
-}
-```
-
-```{r}
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_norain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_norain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_intrain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_intrain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_rain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_phy_rain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_norain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_norain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_intrain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_intrain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_rain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_dry_het_rain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_norain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_norain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_intrain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_intrain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_rain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_phy_rain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_norain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_norain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_intrain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_intrain_ba)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_rain_ab)) |>
-  div_check()
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_read(fit_diagnostics_logistic_stan_data_wet_het_rain_ba)) |>
-  div_check()
-```
-
-```{r}
-# knitr::knit_exit()
-```
-
-```{r}
-print_summary_tbl <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01, 0.5)) {
-  gamma_row <- mcmc_stan_data$x |> colnames()
-  gamma_col <- mcmc_stan_data$u |> rownames()
-
-  if (alpha == 0.05) {
-    mcmc_summary <- mcmc_summary |>
-     mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
-  } else if (alpha == 0.1) {
-    mcmc_summary <- mcmc_summary |>
-     mutate(sig = ifelse(q5 * q95 > 0, "sig", "ns"))
-  } else if (alpha == 0.5) {
-    mcmc_summary <- mcmc_summary |>
-     mutate(sig = ifelse(q25 * q75 > 0, "sig", "ns"))
-  }
-
-  mcmc_summary |>
-    filter(str_detect(variable, "gamma")) |>
-    filter(sig == "sig") |>
-    mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
-      as.numeric()) |>
-    mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
-      as.numeric()) |>
-    mutate(ind_pred = gamma_row[gamma_row_num]) |>
-    mutate(sp_pred = gamma_col[gamma_col_num]) |>
-    dplyr::select(variable, ind_pred, sp_pred, q2.5, q5, q25, q50, q75, q95, q97.5) |>
-    kbl() |>
-    kable_styling(bootstrap_options = c("striped", "HOLD_position"))
-}
-```
-
-```{r, echo=FALSE}
-tmp <- here("stan/summary.txt")
-summary_names <- str_replace_all(mcmc_names, "mcmc", "summary")
-summary_names2 <- summary_names[str_detect(summary_names, "ba")]
-data_names2 <- data_names[str_detect(data_names, "ba")]
-
-for (i in 1:12) {
-  if (i == 1) {
-    write_lines(
-    paste0(
-    "## ", summary_names2[i], "\n\n",
-    "```{r}\n",
-    "s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(", summary_names2[i],"))\n",
-    "d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(", data_names2[i],"))\n",
-    "print_summary_tbl(s1, d1, alpha = 0.05)\n",
-    "print_summary_tbl(s1, d1, alpha = 0.1)\n",
-    "print_summary_tbl(s1, d1, alpha = 0.5)\n",
-    "```\n"
-    ),
-    tmp, "\n", append = FALSE)
-  } else {
-    write_lines(
-    paste0(
-    "## ", summary_names2[i], "\n\n",
-    "```{r}\n",
-    "s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(", summary_names2[i],"))\n",
-    "d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(", data_names2[i],"))\n",
-    "print_summary_tbl(s1, d1, alpha = 0.05)\n",
-    "print_summary_tbl(s1, d1, alpha = 0.1)\n",
-    "print_summary_tbl(s1, d1, alpha = 0.5)\n",
-    "```\n"
-    ),
-    tmp, "\n", append = TRUE)
-  }
-}
-```
-
-# gamma values
-
-Note: The order is not based on better models.
-
-`print_summary_tbl` with `alpha = 0.05`, `alpha = 0.1`, and `alpha = 0.5` return predictors that 95% and 90% and 50% CIs do not overlap with zero, respectively.
-
-## fit_summary_logistic_stan_data_dry_phy_norain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_dry_phy_norain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_dry_phy_norain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_dry_phy_intrain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_dry_phy_intrain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_dry_phy_intrain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_dry_phy_rain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_dry_phy_rain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_dry_phy_rain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_dry_het_norain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_dry_het_norain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_dry_het_norain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_dry_het_intrain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_dry_het_intrain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_dry_het_intrain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_dry_het_rain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_dry_het_rain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_dry_het_rain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_wet_phy_norain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_wet_phy_norain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_wet_phy_norain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_wet_phy_intrain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_wet_phy_intrain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_wet_phy_intrain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_wet_phy_rain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_wet_phy_rain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_wet_phy_rain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_wet_het_norain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_wet_het_norain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_wet_het_norain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_wet_het_intrain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_wet_het_intrain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_wet_het_intrain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
-## fit_summary_logistic_stan_data_wet_het_rain_ba
-
-```{r}
-s1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(fit_summary_logistic_stan_data_wet_het_rain_ba))
-d1 <- withr::with_dir(rprojroot::find_root('_targets.R'), targets::tar_read(stan_data_wet_het_rain_ba))
-print_summary_tbl(s1, d1, alpha = 0.05)
-print_summary_tbl(s1, d1, alpha = 0.1)
-print_summary_tbl(s1, d1, alpha = 0.5)
-```
-
