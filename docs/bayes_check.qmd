@@ -36,6 +36,19 @@ library(jsonlite)
 source(here("R", "stan.R"))
 ```
 
+# Summary
+
+- Abundance vs. traits
+  - Abundance is the better predictor but we can show both results.
+- Rain effects
+  - Model with rain interaction effects actually did not work well for model with traits (the one we used in Ecology letters).
+  - If we use model with rain interaction effects, we can see more traits that seem to show significant effects, but I'm not sure if these are reliable (the pattern is slightly different from our previous version).
+- Traits and gamma
+  - SDMC was the only trait that affects CNDD (`gamma[3,3]`) in dry season.
+  - LDMC, SDMC and C13 directly affect the survival rates (not via NDD) in dry season.
+  - In rainy season, C13 modified the effect of height on survival (`gamma[2,7]`).
+
+
 # Model
 
 - Season (2 combinations)
@@ -260,8 +273,22 @@ wet_trait <- load_mcmc_summary(loo_tbl, season = "wet", trait = "n")
 wet_abund <- load_mcmc_summary(loo_tbl, season = "wet", trait = "ab")
 ```
 
+These models with rain interactions are not good models.
+
 ```{r}
-#dry_trait[[1]] |> filter(ess_bulk < 400)
+wet_trait2_summary <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_summary_logistic_simple_stan_data_wet_het_intrain_nlog))
+wet_trait2_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_draws_logistic_simple_stan_data_wet_het_intrain_nlog))
+wet_trait2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(stan_data_wet_het_intrain_nlog))
+
+dry_trait2_summary <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_nlog))
+dry_trait2_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_nlog))
+dry_trait2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(stan_data_dry_het_intrain_nlog))
 ```
 
 ## Dry
@@ -320,6 +347,7 @@ print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 ```
 
 ### traits
+
 ```{r}
 loo_tbl |>
   filter(str_detect(model, "wet")) |>
@@ -333,9 +361,10 @@ wet_trait$name
 print_summary_tbl(wet_trait$summary, wet_trait$data, alpha = 0.05)
 ```
 
-# Traits
+# Gamma (coef plot)
 
-```{r}
+
+```{r, include=FALSE, eval=FALSE}
 dry_trait$summary |>
   filter(str_detect(variable, "gamma")) |>
   filter(str_detect(variable, "1\\]$"))
@@ -404,6 +433,11 @@ gamma_lab <- c(
     "ahet_s_c:rain_s" = expression(HetT%*%Rainfall~(gamma["12,1"])))
 
 my_col <- RColorBrewer::brewer.pal(5, "RdBu")
+```
+
+## Using abundance as individual-level predictors
+
+```{r}
 
 bind_rows(
   generate_coef_data(dry_abund$draws, dry_abund$data, abund = TRUE, season = "Dry"),
@@ -435,6 +469,8 @@ bind_rows(
     legend.position = "none")
 ```
 
+## Using traits as individual-level predictors
+
 ```{r}
 bind_rows(
   generate_coef_data(dry_trait$draws, dry_trait$data, abund = FALSE, season = "Dry"),
@@ -458,7 +494,7 @@ bind_rows(
       "Rainy_ns" = my_col[3]
     )
   ) +
-  scale_y_discrete(labels = gamma_lab[1:5]) +
+  scale_y_discrete(labels = gamma_lab) +
   ylab("") +
   xlab("Standardized coefficients") +
   theme_bw() +
@@ -466,57 +502,80 @@ bind_rows(
     legend.position = "none")
 ```
 
-# Abundance
+## Using traits as individual-level predictors (not best model)
 
-```{r, eval=FALSE, include=FALSE}
-loo::loo_compare(
-  loo_list[[3]],
-  loo_list[[6]])
-loo_list[[3]]
-loo_list[[6]]
-tar_read(fit_summary_logistic_stan_data_dry_phy_intrain_ba) |>
-  filter(str_detect(variable, "psi")) |>
-  head(30) |>
-  DT::datatable()
-
-tar_read(test_summary_logistic_simple_stan_data_dry_het_intrain_ab) |>
-  arrange(ess_bulk) |>
-  filter(ess_bulk < 400) |>
-  DT::datatable()
-
-m1 <- tar_read(test_mcmc_logistic_simple_stan_data_dry_het_intrain_ab)
-m2 <- tar_read(fit_mcmc_logistic_stan_data_dry_het_intrain_ab)
-library(loo)
-options(mc.cores = 24)
-
-loo1 <- m1$loo()
-loo2 <- m2$loo()
-loo_compare(loo1, loo2)
-
-s1 <- tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_n)
-d1 <- tar_read(stan_data_dry_het_intrain_n)
-print_summary_tbl(s1, d1, alpha = 0.05)
-
-s2 |>
-  arrange(ess_bulk) |>
-  filter(ess_bulk < 400) |>
-  DT::datatable()
-
-s1 |>
-  arrange(ess_bulk) |>
-  filter(rhat > 1.01) |>
-  DT::datatable()
-
-s2 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_n)
-d2 <- tar_read(stan_data_dry_het_intrain_n)
-print_summary_tbl(s2, d2, alpha = 0.05)
-
-
-tar_read(stan_data_dry_phy_intrain_ba) |>
-  str()
-
-# names(loo_listn)
+```{r test-coef}
+bind_rows(
+  generate_coef_data(dry_trait2_draws, dry_trait2_data, abund = TRUE, season = "Dry"),
+  generate_coef_data(wet_trait2_draws, wet_trait2_data, abund = TRUE, season = "Rainy")) |>
+  ggplot(aes(y = para)) +
+  geom_vline(xintercept = 0, lty = 2, col = "grey60") +
+  geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
+  geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2) +
+  geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 3) +
+  facet_grid(~season) +
+  scale_colour_manual(
+    values = c(
+      "Dry" = my_col[1],
+      "Rainy" = my_col[5]
+    )) +
+  scale_fill_manual(
+    values = c(
+      "Dry_sig" = my_col[2],
+      "Rainy_sig" = my_col[4],
+      "Dry_ns" = my_col[3],
+      "Rainy_ns" = my_col[3]
+    )
+  ) +
+  scale_y_discrete(labels = gamma_lab) +
+  ylab("") +
+  xlab("Standardized coefficients") +
+  theme_bw() +
+  theme(
+    legend.position = "none")
 ```
+
+
+# Species-level predictors ($\gamma$)
+
+## Traits
+
+### Without rain
+
+```{r}
+dry_trait$name
+print_summary_tbl(dry_trait$summary, dry_trait$data, alpha = 0.05)
+```
+
+
+```{r}
+wet_trait$name
+print_summary_tbl(wet_trait$summary, wet_trait$data, alpha = 0.05)
+```
+
+### interation with rain
+
+```{r}
+print_summary_tbl(dry_trait2_summary, dry_trait2_data, alpha = 0.05)
+```
+
+```{r}
+print_summary_tbl(wet_trait2_summary, wet_trait2_data, alpha = 0.05)
+```
+
+## Abundance
+
+```{r}
+dry_abund$name
+print_summary_tbl(dry_abund$summary, dry_abund$data, alpha = 0.05)
+```
+
+
+```{r}
+wet_abund$name
+print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
+```
+
 
 ```{r}
 knitr::knit_exit()
