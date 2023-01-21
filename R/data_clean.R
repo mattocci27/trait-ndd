@@ -196,6 +196,16 @@ generate_stan_data <- function(
         scon_s + sphy_s +
         acon_s_c + aphy_s_c) * rain_s, data = seedling_data)
     }
+   } else if (rain == "intrain2") {
+    if (het == "het") {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + shet_s +
+        acon_s_c + ahet_s_c + rain_s + scon_s:rain_s, data = seedling_data)
+    } else {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + sphy_s +
+        acon_s_c + aphy_s_c + rain_s + scon_s:rain_s, data = seedling_data)
+    }
    } else if (rain == "rain") {
     if (het == "het") {
       Xd <- model.matrix(surv ~ logh_s +

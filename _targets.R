@@ -46,6 +46,11 @@ values <- expand_grid(
   rain = c("norain", "intrain", "rain"),
   sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")
   )
+values_inter <- expand_grid(
+  season = c("dry", "wet"),
+  het = "het",
+  rain = "intrain2",
+  sp_pred = "nlog")
 
 data_names <- values |>
   mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
@@ -57,8 +62,12 @@ mcmc_names <- values |>
 
 mcmc_names2 <- str_replace_all(mcmc_names, "_stan", "_simple_stan")
 
+mcmc_names3 <- c(
+  "fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog",
+  "fit_mcmc_logistic_simple_stan_data_wet_het_intrain2_nlog")
+
 loo_map <- tar_map(
-    values = list(mcmc = rlang::syms(c(mcmc_names, mcmc_names2))),
+    values = list(mcmc = rlang::syms(c(mcmc_names, mcmc_names2, mcmc_names3))),
     tar_target(
       loo,
       my_loo(mcmc)
@@ -104,6 +113,14 @@ main_ <- list(
         scale_cc = list(wet = scale_wet, dry = scale_dry),
         season, het, rain, sp_pred))
   ),
+  tar_map(
+    values = values_inter,
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_csv, trait_csv,
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
+        season, het, rain, sp_pred))
+  ),
   # compile stan model so that targets can track
   # eventually, I need to run `_targets.R` twice.
   tar_target(
@@ -139,6 +156,34 @@ main_ <- list(
       )
     )
   ),
+
+  tar_map(
+    values = list(stan_data = rlang::syms(str_c("stan_data_", c("dry", "wet"), "_het_intrain2_nlog"))),
+    tar_stan_mcmc(
+      fit,
+      "stan/logistic_simple.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 1000,
+      adapt_delta = 0.9,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = TRUE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+
 
   tar_stan_mcmc(
     check_ess,
