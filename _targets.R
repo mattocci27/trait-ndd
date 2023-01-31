@@ -221,6 +221,30 @@ main_ <- list(
   #   "docs/bayes_check.qmd"
   # ),
 
+  tar_target(
+    loo_tbl,
+    generate_loo_tbl(loo_list)
+  ),
+  tar_target(
+    dry_trait,
+    load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
+  ),
+
+  tar_target(
+    dry_trait_suv_contour_plot, {
+      p <- dry_trait_suv_contour(dry_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/dry_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 17.3,
+        height = 26,
+        units = "cm"
+      )
+    },
+    format = "file"
+  ),
+
   NULL
  )
 

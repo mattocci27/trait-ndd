@@ -132,3 +132,131 @@ coef_pointrange0 <- function(fit_gamma, stan_data, title = "Dry", int = TRUE) {
     xlab("Standardized coefficients") +
     ggtitle(paste(title))
 }
+
+print_summary_tbl <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01, 0.5)) {
+  gamma_row <- mcmc_stan_data$x |> colnames()
+  gamma_col <- mcmc_stan_data$u |> rownames()
+
+  if (alpha == 0.05) {
+    mcmc_summary <- mcmc_summary |>
+     mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
+  } else if (alpha == 0.1) {
+    mcmc_summary <- mcmc_summary |>
+     mutate(sig = ifelse(q5 * q95 > 0, "sig", "ns"))
+  } else if (alpha == 0.5) {
+    mcmc_summary <- mcmc_summary |>
+     mutate(sig = ifelse(q25 * q75 > 0, "sig", "ns"))
+  }
+
+  mcmc_summary |>
+    filter(str_detect(variable, "gamma")) |>
+    filter(sig == "sig") |>
+    mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
+      as.numeric()) |>
+    mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
+      as.numeric()) |>
+    mutate(ind_pred = gamma_row[gamma_row_num]) |>
+    mutate(sp_pred = gamma_col[gamma_col_num]) |>
+    dplyr::select(variable, ind_pred, sp_pred, q2.5, q5, q25, q50, q75, q95, q97.5) |>
+    kbl() |>
+    kable_styling(bootstrap_options = c("striped", "HOLD_position"))
+}
+
+load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
+  tmp <- loo_tbl |>
+    filter(season == {{season}})
+  tmp
+  if (trait == "ab") {
+    tmp <- tmp |>
+      filter(str_detect(model, "ab|ba"))
+  } else {
+    tmp <- tmp |>
+      filter(str_detect(model, "_nlog$"))
+  }
+  tmp <- tmp |>
+    arrange(-elpd) |>
+    pull(model)
+  tmp_summary <- str_replace(tmp[1], "loo_fit_mcmc", "fit_summary")
+  tmp_data <- str_replace(tmp_summary, "fit_summary_logistic_simple_", "")
+  tmp_draws <- str_replace(tmp[1], "loo_fit_mcmc", "fit_draws")
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp_summary))
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp_data))
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp_draws))
+  list(
+    name = tmp[1],
+    data = get(tmp_data),
+    summary = get(tmp_summary),
+    draws = get(tmp_draws)
+  )
+}
+
+
+generate_coef_data <- function(draws, data, abund = TRUE, season = "Dry") {
+  ind_pred_tmp <- data$x |> colnames()
+  sp_pred_tmp <- data$u |> rownames()
+
+  intervals_data <- mcmc_intervals_data(
+    draws,
+    regex_pars = "gamma",
+    point_est = "median",
+    prob = 0.5,
+    prob_outer = 0.95) |>
+    mutate(ind_pred = rep(ind_pred_tmp, length(sp_pred_tmp))) |>
+    mutate(sp_pred = rep(sp_pred_tmp, each = length(ind_pred_tmp))) |>
+    mutate(season = season) |>
+    mutate(sig = ifelse(ll * hh > 0, "sig", "ns")) |>
+    mutate(season_sig = paste0(season, "_", sig)) |>
+    filter(str_detect(parameter, "1\\]$")) |>
+    filter(parameter != "gamma[1,1]")
+
+    if (abund)  {
+    intervals_data |>
+      mutate(para = factor(ind_pred,
+        levels = c(
+          "logh_s",
+          "scon_s",
+          "shet_s",
+          "acon_s_c",
+          "ahet_s_c",
+          "rain_s",
+          "logh_s:rain_s",
+          "scon_s:rain_s",
+          "shet_s:rain_s",
+          "acon_s_c:rain_s",
+          "ahet_s_c:rain_s"
+        ) |> rev()))
+    } else {
+    intervals_data |>
+      mutate(para = factor(ind_pred,
+        levels = c(
+          "logh_s",
+          "scon_s",
+          "shet_s",
+          "acon_s_c",
+          "ahet_s_c"
+        ) |> rev()))
+    }
+}
+
+generate_loo_tbl <- function(loo_list)  {
+  loo_list_ori <- loo_list
+  loo_list <- loo_list_ori[str_detect(names(loo_list_ori), "het")]
+  loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
+  loo_list <- loo_list[str_detect(names(loo_list), "simple")]
+  loo_names <- names(loo_list)
+
+  loo_names_split <- str_split_fixed(loo_names, "_", 11)
+
+  loo_tbl <- tibble(model = names(loo_list)) |>
+    mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
+    mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
+    mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
+    mutate(season = loo_names_split[, 8]) |>
+    mutate(phy = loo_names_split[, 9]) |>
+    mutate(rain = loo_names_split[, 10]) |>
+    mutate(traits = loo_names_split[, 11])
+  loo_tbl
+}

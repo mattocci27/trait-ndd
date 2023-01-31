@@ -1,3 +1,43 @@
+my_ggsave <- function(filename, plot, units = c("in", "cm",
+        "mm", "px"), height = NA, width = NA, dpi = 300, ...) {
+
+  ggsave(
+    filename = paste0(filename, ".png"),
+    plot = plot,
+    height = height,
+    width = width,
+    units = units,
+    dpi = dpi,
+    ...
+  )
+
+  ggsave(
+    filename = paste0(filename, ".pdf"),
+    plot = plot,
+    height = height,
+    width = width,
+    units = units,
+    dpi = dpi,
+    ...
+  )
+
+  paste0(filename, c(".png", ".pdf"))
+}
+
+my_theme <- function(){
+  theme_bw() %+replace%
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.key.size = unit(0.5, "cm"),
+    legend.spacing.y = unit(0.1, "cm"),
+    legend.text.align = 0,
+    # legend.key.height = unit(0.2, "cm"),
+    legend.text = element_text(size = 9),
+    legend.title = element_text(size = 9)
+  )
+}
+
 #' @title Create summary table for posteriors
 create_stan_tab <- function(draws) {
   tmp <- draws |>
@@ -277,4 +317,130 @@ beta_wet_comb_plot <- function(p1, p2, p3, p4){
     text = element_text(size = 8),
      plot.tag = element_text(face = "bold")
     )
+}
+
+
+logit <- function(z) 1 / (1 + exp(-z))
+
+prepare_suv_pred <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01, 0.5)) {
+  gamma_row <- mcmc_stan_data$x |> colnames()
+  gamma_col <- mcmc_stan_data$u |> rownames()
+
+  if (alpha == 0.05) {
+    mcmc_summary <- mcmc_summary |>
+     mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
+  } else if (alpha == 0.1) {
+    mcmc_summary <- mcmc_summary |>
+     mutate(sig = ifelse(q5 * q95 > 0, "sig", "ns"))
+  } else if (alpha == 0.5) {
+    mcmc_summary <- mcmc_summary |>
+     mutate(sig = ifelse(q25 * q75 > 0, "sig", "ns"))
+  }
+
+  mcmc_summary |>
+    filter(str_detect(variable, "gamma")) |>
+    # filter(sig == "sig") |>
+    mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
+      as.numeric()) |>
+    mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
+      as.numeric()) |>
+    mutate(ind_pred = gamma_row[gamma_row_num]) |>
+    mutate(sp_pred = gamma_col[gamma_col_num]) |>
+    dplyr::select(variable, ind_pred, sp_pred, q50, sig)
+}
+
+
+generate_suv_pred <- function(summary, data, alpha, trait_no) {
+  tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
+    mutate(q50 = ifelse(sig != "sig", 0, q50))
+  gamma <- matrix(tmp$q50, nrow = 8)
+  trait_m <- matrix(c(1, rep(0, 8)))
+  trait_l <- trait_m
+  trait_h <- trait_m
+  trait_l[trait_no, 1] <- qnorm(0.25)
+  trait_h[trait_no, 1] <- qnorm(0.75)
+
+  scon <- seq(-2, 2, length = 20)
+  rain <- seq(-2, 2, length = 20)
+  h <- 0
+  shet <- 0
+  acon <- 0
+  ahet <- 0
+  grid_data <- expand_grid(scon, rain)
+
+  beta_l <- gamma %*% trait_l
+  beta_m <- gamma %*% trait_m
+  beta_h <- gamma %*% trait_h
+
+  grid_data2 <- grid_data |>
+    mutate(suv_z_l = beta_l[1] +
+      beta_l[3] * scon +
+      beta_l[7] * rain +
+      beta_l[8] * rain * scon) |>
+    mutate(suv_z_m = beta_m[1] +
+      beta_m[3] * scon +
+      beta_m[7] * rain +
+      beta_m[8] * rain * scon) |>
+    mutate(suv_z_h = beta_h[1] +
+      beta_h[3] * scon +
+      beta_h[7] * rain +
+      beta_h[8] * rain * scon) |>
+    mutate(suv_p_l = logit(suv_z_l)) |>
+    mutate(suv_p_m = logit(suv_z_m)) |>
+    mutate(suv_p_h = logit(suv_z_h))
+  grid_data2
+}
+
+subplot_fun <- function(data, low = TRUE) {
+  if (low) {
+    p <- ggplot(data, aes(x = scon, y = rain, fill = suv_p_l, z = suv_p_l))
+  } else {
+    p <- ggplot(data, aes(x = scon, y = rain, fill = suv_p_h, z = suv_p_h))
+  }
+  my_col <- viridis::viridis(3, option = "B")
+  p +
+    geom_tile() +
+    geom_contour(col = "grey40") +
+    scale_fill_viridis_c(option = "B")  +
+    ylab("Rainfall") +
+    xlab("Conspecific density") +
+    labs(fill = "Probability of\nsurvival") +
+    # scale_fill_gradient2(
+    #   mid = my_col[2],
+    #   low = my_col[1],
+    #   high = my_col[3],
+    #   midpoint = 0.87
+    # ) +
+    my_theme() #+
+#    theme(legend.position = "none")
+}
+
+dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
+  p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low LDMC species")
+  p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High LDMC species")
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low SDMC species")
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High SDMC species")
+  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low LT species")
+  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High LT species")
+  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+    subplot_fun(low = TRUE) +
+    ggtitle(expression(Low~C[13]~species))
+  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+    subplot_fun(low = FALSE) +
+    ggtitle(expression(High~C[13]~species))
+
+  (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
+     plot_annotation(tag_levels = "a")
 }

@@ -12,6 +12,7 @@ format:
     number-sections: true
     smooth-scroll: true
     standalone: true
+    embed-resources: true
 ---
 
 ```{r global_options, include=FALSE}
@@ -34,19 +35,22 @@ library(kableExtra)
 library(here)
 library(jsonlite)
 source(here("R", "stan.R"))
+source(here("R", "figs.R"))
 ```
 
 # Notes
 
 - Abundance vs. traits
   - Abundance is the better predictor but we can show both results.
+- Phylogeny
+  - Because conspecific densities and phylogenetically weighted densities are too similar (*R*^2^ > 0.98), basically there are no differences between those two models.
 - Rain effects
-  - Model with rain interaction effects actually did not work well for model with traits (the one we used in Ecology letters).
-  - If we use model with rain interaction effects, we can see more traits that seem to show significant effects, but I'm not sure if these are reliable (the pattern is slightly different from our previous version).
+  - Model with rain interaction effects worked well for model with traits only in dry seasons (the one we used in Ecology letters) but not in rainy seasons.
+  - Model with rain interaction effects worked well for model with abundance.
 - Trait effects
-  - SDMC was the only trait that affects CNDD (`gamma[3,3]`) in dry season.
-  - LDMC, SDMC and C13 directly affect the survival rates (not via NDD) in dry season.
-  - In rainy season, C13 modified the effect of height on survival (`gamma[2,7]`).
+  - SDMC, LDMC and LT affect CNDD (or CNDD $\times$ rainfall) (`gamma[3,3]`, `gamma[8,2]`, `gamma[8,6]`) in dry season.
+  - LDMC, SDMC and also C13 directly affect the survival rates (not via NDD) in dry season.
+  - In rainy season, C13 modified the effect of height on survival (`gamma[2,7]`) (that's the only effect from the traits).
 - Abundance effect
   - The negative effect of abundance on the interaction between CNDD and rainfall (`gamma[11,2]`) indicates that abundant species suffer stronger CNDD (from adult trees) in wetter dry seasons (?).
 
@@ -59,6 +63,7 @@ source(here("R", "stan.R"))
   - without rain (`norain`)
   - no interaction with rain (`rain`)
   - with interaction of rain (`intrain`)
+  - with interaction of rain and conspecific seedling density (`intrain2`)
 - Phylogeny effects (2 combinations)
   - without phylo (`het`)
   - with phylo (`phy`)
@@ -123,7 +128,7 @@ for (i in 1:length(tmp2)) {
 
 # Model selection
 
-```{r}
+```{r, eval=FALSE}
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_list))
 
@@ -143,6 +148,10 @@ loo_tbl <- tibble(model = names(loo_list)) |>
   mutate(phy = loo_names_split[, 9]) |>
   mutate(rain = loo_names_split[, 10]) |>
   mutate(traits = loo_names_split[, 11])
+```
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_tbl))
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
@@ -186,37 +195,6 @@ loo_compare(loo_list[[1]], loo_list[[73]])
 ```
 
 
-```{r}
-print_summary_tbl <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01, 0.5)) {
-  gamma_row <- mcmc_stan_data$x |> colnames()
-  gamma_col <- mcmc_stan_data$u |> rownames()
-
-  if (alpha == 0.05) {
-    mcmc_summary <- mcmc_summary |>
-     mutate(sig = ifelse(q2.5 * q97.5 > 0, "sig", "ns"))
-  } else if (alpha == 0.1) {
-    mcmc_summary <- mcmc_summary |>
-     mutate(sig = ifelse(q5 * q95 > 0, "sig", "ns"))
-  } else if (alpha == 0.5) {
-    mcmc_summary <- mcmc_summary |>
-     mutate(sig = ifelse(q25 * q75 > 0, "sig", "ns"))
-  }
-
-  mcmc_summary |>
-    filter(str_detect(variable, "gamma")) |>
-    filter(sig == "sig") |>
-    mutate(gamma_row_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 2] |>
-      as.numeric()) |>
-    mutate(gamma_col_num = str_split_fixed(variable,  "\\[|\\]|,", 4)[, 3] |>
-      as.numeric()) |>
-    mutate(ind_pred = gamma_row[gamma_row_num]) |>
-    mutate(sp_pred = gamma_col[gamma_col_num]) |>
-    dplyr::select(variable, ind_pred, sp_pred, q2.5, q5, q25, q50, q75, q95, q97.5) |>
-    kbl() |>
-    kable_styling(bootstrap_options = c("striped", "HOLD_position"))
-}
-```
-
 ```{r, eval=FALSE, include=FALSE}
 hoge <- loo_tbl |>
   filter(str_detect(model, "dry")) |>
@@ -236,37 +214,6 @@ dry_ab_data <- get(tmp_data)
 ```
 
 ```{r}
-load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
-  tmp <- loo_tbl |>
-    filter(season == {{season}})
-  tmp
-  if (trait == "ab") {
-    tmp <- tmp |>
-      filter(str_detect(model, "ab|ba"))
-  } else {
-    tmp <- tmp |>
-      filter(str_detect(model, "_nlog$"))
-  }
-  tmp <- tmp |>
-    arrange(-elpd) |>
-    pull(model)
-  tmp_summary <- str_replace(tmp[1], "loo_fit_mcmc", "fit_summary")
-  tmp_data <- str_replace(tmp_summary, "fit_summary_logistic_simple_", "")
-  tmp_draws <- str_replace(tmp[1], "loo_fit_mcmc", "fit_draws")
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_summary))
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_data))
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_draws))
-  list(
-    name = tmp[1],
-    data = get(tmp_data),
-    summary = get(tmp_summary),
-    draws = get(tmp_draws)
-  )
-}
-
 dry_trait <- load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
 dry_abund <- load_mcmc_summary(loo_tbl, season = "dry", trait = "ab")
 
@@ -391,53 +338,6 @@ dry_trait$summary |>
 ```
 
 ```{r}
-generate_coef_data <- function(draws, data, abund = TRUE, season = "Dry") {
-  ind_pred_tmp <- data$x |> colnames()
-  sp_pred_tmp <- data$u |> rownames()
-
-  intervals_data <- mcmc_intervals_data(
-    draws,
-    regex_pars = "gamma",
-    point_est = "median",
-    prob = 0.5,
-    prob_outer = 0.95) |>
-    mutate(ind_pred = rep(ind_pred_tmp, length(sp_pred_tmp))) |>
-    mutate(sp_pred = rep(sp_pred_tmp, each = length(ind_pred_tmp))) |>
-    mutate(season = season) |>
-    mutate(sig = ifelse(ll * hh > 0, "sig", "ns")) |>
-    mutate(season_sig = paste0(season, "_", sig)) |>
-    filter(str_detect(parameter, "1\\]$")) |>
-    filter(parameter != "gamma[1,1]")
-
-    if (abund)  {
-    intervals_data |>
-      mutate(para = factor(ind_pred,
-        levels = c(
-          "logh_s",
-          "scon_s",
-          "shet_s",
-          "acon_s_c",
-          "ahet_s_c",
-          "rain_s",
-          "logh_s:rain_s",
-          "scon_s:rain_s",
-          "shet_s:rain_s",
-          "acon_s_c:rain_s",
-          "ahet_s_c:rain_s"
-        ) |> rev()))
-    } else {
-    intervals_data |>
-      mutate(para = factor(ind_pred,
-        levels = c(
-          "logh_s",
-          "scon_s",
-          "shet_s",
-          "acon_s_c",
-          "ahet_s_c"
-        ) |> rev()))
-    }
-}
-
 gamma_lab <- c(
     # "(Intercept)" = expression(Intercept~(gamma["1,1"])),
     "logh_s" = expression(ln~Height~(gamma["2,1"])),
@@ -458,7 +358,6 @@ my_col <- RColorBrewer::brewer.pal(5, "RdBu")
 ## Using abundance as individual-level predictors
 
 ```{r}
-
 bind_rows(
   generate_coef_data(dry_abund$draws, dry_abund$data, abund = TRUE, season = "Dry"),
   generate_coef_data(wet_abund$draws, wet_abund$data, abund = TRUE, season = "Rainy")) |>
@@ -597,6 +496,269 @@ print_summary_tbl(dry_abund$summary, dry_abund$data, alpha = 0.05)
 wet_abund$name
 print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 ```
+
+# Survival probability
+
+## Traits
+
+### Dry season
+
+![dry_tarit_suv](`r here::here("figs/dry_trait_suv_contour.png")`)
+
+- x and y axes are scaled values.
+- Low and high traits values indicate 25% and 75% quantiles of the trait values, respecitely.
+
+
+```{r}
+knitr::knit_exit()
+```
+
+```{r}
+library(patchwork)
+p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
+  subplot_fun(low = TRUE) +
+  ggtitle("Low LDMC")
+p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
+  subplot_fun(low = FALSE) +
+  ggtitle("High LDMC")
+p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+  subplot_fun(low = TRUE) +
+  ggtitle("Low SDMC")
+p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+  subplot_fun(low = FALSE) +
+  ggtitle("High SDMC")
+p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+  subplot_fun(low = TRUE) +
+  ggtitle("Low LT")
+p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+  subplot_fun(low = FALSE) +
+  ggtitle("High LT")
+p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+  subplot_fun(low = TRUE) +
+  ggtitle("Low C13")
+p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+  subplot_fun(low = FALSE) +
+  ggtitle("High C13")
+
+(p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8)
+```
+
+
+# Suv vs cons
+
+```{r, eval=FALSE}
+library(tidyverse)
+library(targets)
+library(bayesplot)
+library(kableExtra)
+library(here)
+library(jsonlite)
+source(here("R", "stan.R"))
+
+set.seed(123)
+
+d <- tar_read(seedling_csv) |> read_csv()
+trait <- tar_read(trait_csv) |> read_csv()
+
+trait |>
+  arrange(latin)
+
+pca <- prcomp(trait[,3:14], scale = TRUE)
+
+prcomp(t(dry_trait$data$u)) |> summary()
+
+plot(SDMC ~ LDMC, trait)
+plot(LT ~ LDMC, log = "y", trait)
+
+sum(d$surv) / nrow(d)
+
+dry_trait$summary |>
+  filter(str_detect(variable, "beta\\[3"))
+
+b3 <- dry_trait$draws |>
+  select(matches("beta\\[3"))
+b1 <- dry_trait$draws |>
+  select(matches("beta\\[1"))
+
+b3_long <- b3 |>
+  pivot_longer(1:ncol(b3))
+b1_long <- b1 |>
+  pivot_longer(1:ncol(b1))
+
+library(ggridges)
+# library(httpgd)
+# .vsc.attach()
+
+ggplot(b3_long, aes(x = value, y = name)) +
+  geom_density_ridges()
+
+b3_bar <- b3_long |>
+  group_by(name) |>
+  summarize(mid = median(value),
+    ll = quantile(value, 0.025),
+    l = quantile(value, 0.05),
+    h = quantile(value, 0.75),
+    hh = quantile(value, 0.975)
+  )
+
+b1_bar <- b1_long |>
+  group_by(name) |>
+  summarize(mid = median(value),
+    ll = quantile(value, 0.025),
+    l = quantile(value, 0.05),
+    h = quantile(value, 0.75),
+    hh = quantile(value, 0.975)
+  )
+
+b3_bar |>
+  ggplot(aes(x = name)) +
+  geom_errorbar(aes(ymin = ll, ymax = hh)) +
+  geom_errorbar(aes(ymin = l, ymax = h), size = 2) +
+  geom_hline(yintercept = 0)
+
+logistic <- function(z) 1 / (1 + exp(-z))
+
+scon_data <- d |>
+  mutate(scon_s = scale(scon) |> as.numeric()) |>
+  filter(season == "dry") |>
+  group_by(latin) |>
+  summarize(scon_min = min(scon_s), scon_max = max(scon_s))
+
+hoge <- tibble(b1 = b1_bar$mid,
+  b3 = b3_bar$mid) |>
+  bind_cols(scon_data)  |>
+  group_by(latin) |>
+  nest() |>
+  mutate(xx = map(data, \(x)seq(x$scon_min, x$scon_max, length = 80))) |>
+  mutate(yy = map2(data, xx, \(data, xx) data$b1 + data$b3 * xx)) |>
+  mutate(suv = map(yy, logistic))
+
+hoge2 <- hoge |>
+  unnest()
+
+ggplot(hoge2, aes(x = xx, y = suv, group = latin)) +
+  geom_line()
+
+  sp = paste0("sp", 1:73)) |>
+  ggplot() +
+  geom_abline(aes(slope = slope, intercept = int, group = sp))
+
+```
+
+```{r}
+dry_trait$summary
+
+dry_trait$summary |>
+  filter(q2.5 * q97.5 > 0) |>
+  filter(str_detect(variable, "gamma")) |>
+  dplyr::select(variable, q50)
+
+```
+
+```{r, eval=FALSE}
+g11 <- 2.33
+g31 <- -1.48
+g33 <- 1.95
+#g33 <-  0.57
+g12 <- -1.3
+g72 <- -0.8
+g82 <- -1.23
+g73 <- 0.49
+
+cons <- seq(-2, 2, length = 20)
+rain <- seq(-2, 2, length = 20)
+tmp <- expand_grid(cons, rain)
+
+# high SDMC
+tu <- t(dry_trait$data$u)
+ldmc_v <- tu[,2]
+sdmc_v <- tu[,3]
+
+sdmc <- sdmc_v[3]
+ldmc <- ldmc_v[3]
+
+#sdmc <- 1
+beta_cons <- g31 + g33 * sdmc
+beta_rain <- g73 * sdmc
+beta_int <- g11
+suv <- beta_int + beta_cons * cons + beta_rain * rain
+
+# ldmc <- -2
+# beta_rain <- g72 * ldmc
+# beta_cons_rain <- g82 * ldmc
+# beta_cons <- g31
+# beta_int <- g11 + g12 * ldmc
+# suv <- beta_int + beta_cons * cons + beta_rain * rain + beta_cons_rain * cons * rain
+
+#ldmc <- -2
+beta_rain <- g73 * sdmc + g72 * ldmc
+beta_cons_rain <- g82 * ldmc
+beta_cons <- g31 + g33 * sdmc
+beta_int <- g11 + g12 * ldmc
+suv <- beta_int + beta_cons * cons + beta_rain * rain + beta_cons_rain * cons * rain
+logit <- function(z) 1 / (1 + exp(-z))
+
+tmp2 <- tmp |>
+  mutate(suv_z = g11 + beta_cons * cons + beta_rain * rain)  |>
+  mutate(suv_p = logit(suv_z))
+
+ggplot(tmp2, aes(x = cons, y = rain, fill = suv_p, z = suv_p)) +
+  geom_tile() +
+  geom_contour() +
+  # scale_fill_viridis_c()
+  scale_fill_gradient2(
+    # low = "blue",
+    # high = "yellow",
+    midpoint = 0.86)
+
+```
+
+```{r}
+
+prepare_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05) |>
+  filter(sig == "sig") |>
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "HOLD_position"))
+
+gamma <- matrix(tmp$q50, nrow = 8)
+
+
+tmp <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7)
+
+p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
+  subplot_fun()
+p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+  subplot_fun()
+p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+  subplot_fun()
+p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+  subplot_fun()
+
+p1 / p2 / p3 / p4
+
+p1 <- ggplot(tmp, aes(x = scon, y = rain, fill = suv_p_l, z = suv_p_l)) +
+  geom_tile() +
+  geom_contour(col = "grey40") +
+  scale_fill_viridis_c(option = "B")  +
+  theme(legend.position = "none")
+p2 <- ggplot(tmp, aes(x = scon, y = rain, fill = suv_p_m, z = suv_p_m)) +
+  geom_tile() +
+  geom_contour(col = "grey40") +
+  scale_fill_viridis_c(option = "B") +
+  theme(legend.position = "none")
+p3 <- ggplot(tmp, aes(x = scon, y = rain, fill = suv_p_h, z = suv_p_h)) +
+  geom_tile() +
+  geom_contour(col = "grey40") +
+  scale_fill_viridis_c(option = "B") +
+  theme(legend.position = "none")
+p1 + p3
+
+library(viridis)
+colors <- viridis(3)
+rgb(colors)
+
+```
+
 
 
 ```{r}
