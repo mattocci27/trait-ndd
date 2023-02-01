@@ -36,8 +36,8 @@ data_names|object|3b90ce6073737659|||||||||||||||
 data_rda|stem|aa71bf66d801eb71|4cad4cb1ce23dfde|ef46db3751d8e999|1200689765|data-raw/dataCNDD.Rdata|t19273.3701808175s|8c19c18ee4425416|1084857|file|local|vector|||0.178||
 div_check|function|9913df743f96f3d8|||||||||||||||
 dry_trait|stem|8b6cc9705346d30a|0bddab8d7718e0ef|0e02224184211517|1857450943||t19388.3048045753s|9cae4b3602adf4ca|807766915|rds|local|vector|||1.412||
-dry_trait_suv_contour|function|c0a93417598555aa|||||||||||||||
-dry_trait_suv_contour_plot|stem|6c2d0399822a558d|6e775d3af91e62ac|89b56d94070adec7|-1081961804|figs/dry_trait_suv_contour.png*figs/dry_trait_suv_contour.pdf|t19389.4151697891s|3cd20187971f921f|619578|file|local|vector|||2.16||
+dry_trait_suv_contour|function|edb72d732019483a|||||||||||||||
+dry_trait_suv_contour_plot|stem|b86b81c17dabb11f|6e775d3af91e62ac|08a3c88080cda823|-1081961804|figs/dry_trait_suv_contour.png*figs/dry_trait_suv_contour.pdf|t19389.4219616543s|2a5cc3babf2afe47|613531|file|local|vector|||2.166||
 fit_data_stan_data_dry_het_intrain_ab|stem|afe3505078c54925|5ac1d81a3fda48a3|081aac9ef741ceb9|1530475548||t19372.2924587274s|a3710101bd1789eb|1784972|qs|local|vector|||0||
 fit_data_stan_data_dry_het_intrain_ab1ba|stem|63237cc230beed27|a410737476fdcb27|e0c0d8b3627a9332|-1892457749||t19372.2924752091s|5ecad0ae7f2f7255|1785663|qs|local|vector|||0.001||
 fit_data_stan_data_dry_het_intrain_ab2ba|stem|a25d13db8afce439|e0e855ee39cfb8e5|c8bb431887f03ce4|-1097116831||t19372.2924934501s|021818415a76463e|1786334|qs|local|vector|||0.001||
@@ -846,7 +846,7 @@ generate_beta_list|function|66b35e34f12b5be1|||||||||||||||
 generate_coef_data|function|cbe766b4e5ef4454|||||||||||||||
 generate_loo_tbl|function|0d4c743682b5cbe7|||||||||||||||
 generate_stan_data|function|895d0e11f549df6d|||||||||||||||
-generate_suv_pred|function|6568c9e3e4f37a06|||||||||||||||
+generate_suv_pred|function|f04b7840c8e19a9f|||||||||||||||
 load_mcmc_summary|function|bd258463b2b81f18|||||||||||||||
 logistic_stan|stem|c446d4836301a6da|15661a7c28883b9a|d08213f484b3e9b9|1452024909|stan/logistic.stan|t19358.3800917809s|97db0b0639a9f22a|1953|file|local|vector|||0.359||
 logit|function|803bbf0205a605f8|||||||||||||||

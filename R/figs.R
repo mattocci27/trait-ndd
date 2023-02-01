@@ -368,7 +368,7 @@ generate_suv_pred <- function(summary, data, alpha, trait_no) {
   quantile(scon_tmp, 0.9)
   quantile(scon_tmp, 0.99)
   # max(scon_tmp)
-  scon <- seq(min(scon_tmp), quantile(scon_tmp, 0.75), length = 20)
+  scon <- seq(min(scon_tmp), quantile(scon_tmp, 0.9), length = 20)
   rain <- seq(min(rain_tmp), max(rain_tmp), length = 20)
 
   h <- 0
