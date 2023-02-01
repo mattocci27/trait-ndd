@@ -359,9 +359,18 @@ generate_suv_pred <- function(summary, data, alpha, trait_no) {
   trait_h <- trait_m
   trait_l[trait_no, 1] <- qnorm(0.25)
   trait_h[trait_no, 1] <- qnorm(0.75)
+#  dry_trait$data$x %>% str()
 
-  scon <- seq(-2, 2, length = 20)
-  rain <- seq(-2, 2, length = 20)
+  scon_tmp <- data$x[, 3]
+  rain_tmp <- data$x[, 7]
+  median(scon_tmp)
+  quantile(scon_tmp, 0.75)
+  quantile(scon_tmp, 0.9)
+  quantile(scon_tmp, 0.99)
+  # max(scon_tmp)
+  scon <- seq(min(scon_tmp), quantile(scon_tmp, 0.75), length = 20)
+  rain <- seq(min(rain_tmp), max(rain_tmp), length = 20)
+
   h <- 0
   shet <- 0
   acon <- 0
