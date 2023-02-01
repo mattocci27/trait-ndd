@@ -359,8 +359,8 @@ my_col <- RColorBrewer::brewer.pal(5, "RdBu")
 
 ```{r}
 bind_rows(
-  generate_coef_data(dry_abund$draws, dry_abund$data, abund = TRUE, season = "Dry"),
-  generate_coef_data(wet_abund$draws, wet_abund$data, abund = TRUE, season = "Rainy")) |>
+  generate_coef_data(dry_abund$draws, dry_abund$data, season = "Dry"),
+  generate_coef_data(wet_abund$draws, wet_abund$data, season = "Rainy")) |>
   ggplot(aes(y = para)) +
   geom_vline(xintercept = 0, lty = 2, col = "grey60") +
   geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
@@ -392,8 +392,8 @@ bind_rows(
 
 ```{r}
 bind_rows(
-  generate_coef_data(dry_trait$draws, dry_trait$data, abund = FALSE, season = "Dry"),
-  generate_coef_data(wet_trait$draws, wet_trait$data, abund = FALSE, season = "Rainy")) |>
+  generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry"),
+  generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy")) |>
   ggplot(aes(y = para)) +
   geom_vline(xintercept = 0, lty = 2, col = "grey60") +
   geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
@@ -425,8 +425,8 @@ bind_rows(
 
 ```{r test-coef}
 bind_rows(
-  generate_coef_data(dry_trait2_draws, dry_trait2_data, abund = TRUE, season = "Dry"),
-  generate_coef_data(wet_trait2_draws, wet_trait2_data, abund = TRUE, season = "Rainy")) |>
+  generate_coef_data(dry_trait2_draws, dry_trait2_data, season = "Dry"),
+  generate_coef_data(wet_trait2_draws, wet_trait2_data, season = "Rainy")) |>
   ggplot(aes(y = para)) +
   geom_vline(xintercept = 0, lty = 2, col = "grey60") +
   geom_linerange(aes(xmin = ll, xmax = hh, col = season)) +
@@ -459,6 +459,8 @@ bind_rows(
 ## Traits
 
 ### Best models
+
+- Only variables that do not overlap with the zero are shown.
 
 ```{r}
 dry_trait$name
@@ -509,10 +511,9 @@ print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 
 ![](`r here::here("figs/beta_raw_dry_traits.png")`)
 
-- The is the same as the previous figure in our previous manucscript.
+- The is same as the figure in our previous manucscript.
 - $\beta_k$  vs. $x_l$
 - These are multiple regression but the effects from other predictors are not controlled for each point, that's why points and lines do not match.
-
 
 ### Rainy season
 
@@ -521,7 +522,6 @@ print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 ## Abundance
 
 - [There are no trait effects on CNDD from seedlings.](#abundance-2)
-
 
 # Survival probability
 

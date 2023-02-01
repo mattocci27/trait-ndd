@@ -194,7 +194,7 @@ load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
 }
 
 
-generate_coef_data <- function(draws, data, abund = TRUE, season = "Dry") {
+generate_coef_data <- function(draws, data, season = "Dry") {
   ind_pred_tmp <- data$x |> colnames()
   sp_pred_tmp <- data$u |> rownames()
 
@@ -212,7 +212,6 @@ generate_coef_data <- function(draws, data, abund = TRUE, season = "Dry") {
     filter(str_detect(parameter, "1\\]$")) |>
     filter(parameter != "gamma[1,1]")
 
-    if (abund)  {
     intervals_data |>
       mutate(para = factor(ind_pred,
         levels = c(
@@ -228,17 +227,6 @@ generate_coef_data <- function(draws, data, abund = TRUE, season = "Dry") {
           "acon_s_c:rain_s",
           "ahet_s_c:rain_s"
         ) |> rev()))
-    } else {
-    intervals_data |>
-      mutate(para = factor(ind_pred,
-        levels = c(
-          "logh_s",
-          "scon_s",
-          "shet_s",
-          "acon_s_c",
-          "ahet_s_c"
-        ) |> rev()))
-    }
 }
 
 generate_loo_tbl <- function(loo_list)  {
