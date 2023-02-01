@@ -454,31 +454,25 @@ bind_rows(
     legend.position = "none")
 ```
 
-
-# Species-level predictors ($\gamma$)
+# Species-level predictors ($\gamma$) - tables
 
 ## Traits
 
-### Without rain
+### Best models
 
 ```{r}
 dry_trait$name
 print_summary_tbl(dry_trait$summary, dry_trait$data, alpha = 0.05)
 ```
 
-
 ```{r}
 wet_trait$name
 print_summary_tbl(wet_trait$summary, wet_trait$data, alpha = 0.05)
 ```
 
-### With rain (wiht interactions)
+### With rain (with interactions)
 
-Note that these results are not that relable.
-
-```{r}
-print_summary_tbl(dry_trait2_summary, dry_trait2_data, alpha = 0.05)
-```
+Note that this table is not that relable.
 
 ```{r}
 print_summary_tbl(wet_trait2_summary, wet_trait2_data, alpha = 0.05)
@@ -497,17 +491,117 @@ wet_abund$name
 print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 ```
 
+# Species-level predictors ($\gamma$) - figures
+
+![](`r here::here("figs/beta_dry_traits.png")`)
+
+```{r,eval=FALSE}
+dry_trait_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_nlog))
+
+dry_trait_mcmc <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_mcmc_logistic_simple_stan_data_dry_het_intrain_nlog))
+
+mcmc_stan_data <- dry_trait$data
+
+y_lab <- "Cons~effect"
+x_lab <- "SDMC"
+
+tar_load(loo_tbl)
+dry_trait <- load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
+
+gamma_row <- mcmc_stan_data$x |> colnames()
+gamma_col <- mcmc_stan_data$u |> rownames()
+
+ind_pred <- 8
+sp_pred <- 6
+print(gamma_row[ind_pred])
+print(gamma_col[sp_pred])
+
+trait <- mcmc_stan_data$u[sp_pred, ]
+
+# scon
+beta <- dry_trait_draws |>
+  dplyr::select(contains(str_c("beta[", ind_pred))) |>
+  as.matrix()
+# scon
+gamma <- dry_trait_draws |>
+  dplyr::select(contains(str_c("gamma[", ind_pred))) |>
+  as.matrix()
+
+par_res <- NULL
+for (i in 1:4000) {
+  res <- beta[i, ] - gamma[i, ] %*% mcmc_stan_data$u
+  res <- as.numeric(res)
+  pred <- gamma[i, 1] + gamma[i, sp_pred] * trait
+  par_res_tmp <- res + pred
+  par_res <- rbind(par_res, par_res_tmp)
+}
+
+res_m <- apply(par_res, 2, median)
+res_l <- apply(par_res, 2, quantile, 0.025)
+res_h <- apply(par_res, 2, quantile, 0.975)
+
+res_data <- tibble(res_m, res_l, res_h) |>
+  mutate(trait)
+
+x_steps <- seq(min(trait), max(trait), length = 80)
+
+tmp2 <- NULL
+for (i in 1:4000) {
+  tmp <- gamma[i, 1] + gamma[i, sp_pred] * x_steps
+  tmp2 <- rbind(tmp2, tmp)
+}
+
+gamma_m <- apply(tmp2, 2, median)
+gamma_ll <- apply(tmp2, 2, quantile, 0.025)
+gamma_hh <- apply(tmp2, 2, quantile, 0.975)
+gamma_l <- apply(tmp2, 2, quantile, 0.25)
+gamma_h <- apply(tmp2, 2, quantile, 0.75)
+
+pred_data <- data.frame(
+  trait = x_steps,
+  m = gamma_m,
+  l = gamma_l,
+  ll = gamma_ll,
+  h = gamma_h,
+  hh = gamma_hh
+)
+
+y_lab_parse <- str_c("expression(", y_lab ,"~(beta[paste(", ind_pred, ",',',", "j)]))")
+
+my_col <- RColorBrewer::brewer.pal(5, "RdBu")
+
+ggplot(pred_data, aes(x = trait))  +
+  geom_line(aes(y = m), col = my_col[1])  +
+  geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
+  geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
+  geom_point(data = res_data, aes(y = res_m), col = my_col[1]) +
+  ylab(eval(parse(text = y_lab_parse))) +
+  xlab(x_lab) +
+  my_theme()
+  # geom_errorbar(data = res_data, aes(ymin = res_l, ymax = res_h))
+
+```
+
 # Survival probability
 
 ## Traits
 
 ### Dry season
 
-![dry_tarit_suv](`r here::here("figs/dry_trait_suv_contour.png")`)
+![](`r here::here("figs/dry_trait_suv_contour.png")`)
 
 - x and y axes are scaled values.
 - Low and high traits values indicate 25% and 75% quantiles of the trait values, respecitely.
 
+### Rainy season
+
+- [There are no trait effects on CNDD from seedlings.](#without-rain)
+
+## Abundance
+
+- [There are no trait effects on CNDD from seedlings.](#abundance-2)
 
 ```{r}
 knitr::knit_exit()
@@ -652,7 +746,6 @@ dry_trait$summary |>
   filter(q2.5 * q97.5 > 0) |>
   filter(str_detect(variable, "gamma")) |>
   dplyr::select(variable, q50)
-
 ```
 
 ```{r, eval=FALSE}
@@ -695,7 +788,7 @@ beta_rain <- g73 * sdmc + g72 * ldmc
 beta_cons_rain <- g82 * ldmc
 beta_cons <- g31 + g33 * sdmc
 beta_int <- g11 + g12 * ldmc
-suv <- beta_int + beta_cons * cons + beta_rain * rain + beta_cons_rain * cons * rain
+suv <- beta_int + beta_cons * cons + beta_rain * rain + beta_cons_rain * cons * rainjkk
 logit <- function(z) 1 / (1 + exp(-z))
 
 tmp2 <- tmp |>

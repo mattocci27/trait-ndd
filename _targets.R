@@ -237,9 +237,107 @@ main_ <- list(
         "figs/dry_trait_suv_contour",
         p,
         dpi = 300,
-        width = 17.3,
-        height = 26,
-        units = "cm"
+        width = 173,
+        height = 260,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+
+  tar_target(
+    beta_rain_ldmc,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = "LDMC",
+      y_lab = "Rain~effect",
+      ind_pred = 7,
+      sp_pred = 2)
+  ),
+  tar_target(
+    beta_consrain_ldmc,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = "LDMC",
+      y_lab  = "ConS%*%Rainfall~effect",
+      ind_pred = 8,
+      sp_pred = 2)
+  ),
+  tar_target(
+    beta_rain_sdmc,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = "SDMC",
+      y_lab = "Rain~effect",
+      ind_pred = 7,
+      sp_pred = 3)
+  ),
+  tar_target(
+    beta_cons_sdmc,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = "SDMC",
+      y_lab  = "ConS~effect",
+      ind_pred = 3,
+      sp_pred = 3)
+  ),
+  tar_target(
+    beta_rain_lt,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = "LT",
+      y_lab = "Rain~effect",
+      ind_pred = 7,
+      sp_pred = 6)
+  ),
+  tar_target(
+    beta_consrain_lt,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = "LT",
+      y_lab  = "ConS%*%Rainfall~effect",
+      ind_pred = 8,
+      sp_pred = 6)
+  ),
+  tar_target(
+    beta_rain_c13,
+    generate_beta_list(
+      dry_trait$draws,
+      dry_trait$data,
+      x_lab = expression(delta*C[13]),
+      y_lab = "Rain~effect",
+      ind_pred = 7,
+      sp_pred = 7)
+  ),
+
+  tar_target(
+    beta_dry_traits, {
+      p <- beta_plot(beta_cons_sdmc) +
+        beta_plot(beta_rain_sdmc) +
+        beta_plot(beta_rain_ldmc) +
+        beta_plot(beta_rain_lt) +
+        beta_plot(beta_rain_c13) +
+        beta_plot(beta_consrain_ldmc) +
+        beta_plot(beta_consrain_lt) +
+        plot_spacer() +
+        plot_layout(ncol = 4, nrow = 2) +
+        plot_annotation(tag_levels = "a") &
+        theme(
+          text = element_text(size = 8),
+          plot.tag = element_text(face = "bold"))
+      my_ggsave(
+        "figs/beta1",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 85,
+        units = "mm"
       )
     },
     format = "file"

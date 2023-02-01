@@ -27,8 +27,8 @@ my_ggsave <- function(filename, plot, units = c("in", "cm",
 my_theme <- function(){
   theme_bw() %+replace%
   theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
+    # panel.grid.major = element_blank(),
+    # panel.grid.minor = element_blank(),
     legend.key.size = unit(0.5, "cm"),
     legend.spacing.y = unit(0.1, "cm"),
     legend.text.align = 0,
@@ -167,99 +167,99 @@ coef_ridge <- function(fit_tab, stan_dat, draws) {
     theme_bw()
 }
 
-#' @title generate beta plot data (takes time)
-generate_beta_list <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_lab, y_lab) {
-  tmp_beta <- fit_beta |>
-    filter(pred_name == paste(y))
-  gamma_slope <- fit_gamma |>
-    filter(pred_name == paste(y)) |>
-    filter(trait_name == paste(x))
-  gamma_int <- fit_gamma |>
-    filter(pred_name == paste(y)) |>
-    filter(trait_name == "intercept")
-  trait <- stan_data$u[paste(x), ]
+# #' @title generate beta plot data (takes time)
+# generate_beta_list <- function(fit_beta, fit_gamma, stan_data, draws, x, y, x_lab, y_lab) {
+#   tmp_beta <- fit_beta |>
+#     filter(pred_name == paste(y))
+#   gamma_slope <- fit_gamma |>
+#     filter(pred_name == paste(y)) |>
+#     filter(trait_name == paste(x))
+#   gamma_int <- fit_gamma |>
+#     filter(pred_name == paste(y)) |>
+#     filter(trait_name == "intercept")
+#   trait <- stan_data$u[paste(x), ]
 
-  tmp_para <- gamma_slope |>
-    pull(para) |>
-    str_split_fixed("_", 3)
+#   tmp_para <- gamma_slope |>
+#     pull(para) |>
+#     str_split_fixed("_", 3)
 
-  beta_k <- tmp_beta$para |> str_split_fixed("_", 3)
-  k <- beta_k[, 2] |> unique()
+#   beta_k <- tmp_beta$para |> str_split_fixed("_", 3)
+#   k <- beta_k[, 2] |> unique()
 
-  y_lab_parse <- paste0("expression(", y_lab ,"(beta[paste(", k, ",',',", "j)]))")
+#   y_lab_parse <- paste0("expression(", y_lab ,"(beta[paste(", k, ",',',", "j)]))")
 
-  beta_trait <- bind_cols(tmp_beta, trait = trait)
+#   beta_trait <- bind_cols(tmp_beta, trait = trait)
 
-  x_steps <- seq(min(beta_trait$trait), max(beta_trait$trait), length = 80)
-  new_data <- tibble(
-    observation = seq_along(x_steps) |> as.character(),
-    x_lt = x_steps)
+#   x_steps <- seq(min(beta_trait$trait), max(beta_trait$trait), length = 80)
+#   new_data <- tibble(
+#     observation = seq_along(x_steps) |> as.character(),
+#     x_lt = x_steps)
 
-#  tic()
-  tmp <- draws |>
-    janitor::clean_names() |>
-    dplyr::select(
-      gamma_int |> pull(para),
-      gamma_slope |> pull(para))
-#  toc()
+# #  tic()
+#   tmp <- draws |>
+#     janitor::clean_names() |>
+#     dplyr::select(
+#       gamma_int |> pull(para),
+#       gamma_slope |> pull(para))
+# #  toc()
 
-  colnames(tmp) <- c("gamma_int_draw", "gamma_slope_draw")
+#   colnames(tmp) <- c("gamma_int_draw", "gamma_slope_draw")
 
-  tmp2 <- tmp |>
-    mutate(rep = paste0("rep", 1:nrow(tmp))) |>
-    nest(data = c(gamma_int_draw, gamma_slope_draw)) |>
-    mutate(x = list(new_data$x_lt)) |>
-    mutate(y = map2(x, data, \(x, data) {data$gamma_int_draw + data$gamma_slope_draw * x}))
+#   tmp2 <- tmp |>
+#     mutate(rep = paste0("rep", 1:nrow(tmp))) |>
+#     nest(data = c(gamma_int_draw, gamma_slope_draw)) |>
+#     mutate(x = list(new_data$x_lt)) |>
+#     mutate(y = map2(x, data, \(x, data) {data$gamma_int_draw + data$gamma_slope_draw * x}))
 
-  pred_lin <- matrix(unlist(tmp2$y), ncol = nrow(draws), byrow = FALSE) |> t()
-  # dim(pred_lin)
-  df_pred_lin <- tidy_predictions(pred_lin, new_data)
+#   pred_lin <- matrix(unlist(tmp2$y), ncol = nrow(draws), byrow = FALSE) |> t()
+#   # dim(pred_lin)
+#   df_pred_lin <- tidy_predictions(pred_lin, new_data)
 
-  list(
-    beta_trait = beta_trait,
-    df_pred_lin = df_pred_lin,
-    x_lab  = x_lab,
-    y_lab  = y_lab_parse
-    )
-}
+#   list(
+#     beta_trait = beta_trait,
+#     df_pred_lin = df_pred_lin,
+#     x_lab  = x_lab,
+#     y_lab  = y_lab_parse
+#     )
+# }
 
 
-#' @title beta
-beta_plot <- function(list_data, rain = FALSE) {
-  my_col <- brewer.pal(5, "RdBu")
-  if (!rain) {
-    my_col1 <- my_col[1]
-    my_col2 <- my_col[2]
-  } else {
-    my_col1 <- my_col[5]
-    my_col2 <- my_col[4]
-  }
-  ggplot(list_data$beta_trait) +
-    geom_ribbon(
-      data = list_data$df_pred_lin,
-      aes(ymin = lower, ymax = upper, x = x_lt),
-      alpha = 0.4,
-      #fill = "grey60"
-      fill = my_col2
-    ) +
-    geom_line(
-      aes(y = mean, x = x_lt),
-      data = list_data$df_pred_lin,
-      colour = my_col1,
-      size = 0.5
-    ) +
-    geom_point(aes(x = trait, y = mean_),
-      colour = my_col1,
-      size = 0.5
-      ) +
-    geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5),
-      colour = my_col1,
-      size = 0.2
-      ) +
-    xlab(list_data$x_lab) +
-    ylab(eval(parse(text = list_data$y_lab))) +
-    theme_bw()
-}
+# #' @title beta
+# beta_plot <- function(list_data, rain = FALSE) {
+#   my_col <- brewer.pal(5, "RdBu")
+#   if (!rain) {
+#     my_col1 <- my_col[1]
+#     my_col2 <- my_col[2]
+#   } else {
+#     my_col1 <- my_col[5]
+#     my_col2 <- my_col[4]
+#   }
+#   ggplot(list_data$beta_trait) +
+#     geom_ribbon(
+#       data = list_data$df_pred_lin,
+#       aes(ymin = lower, ymax = upper, x = x_lt),
+#       alpha = 0.4,
+#       #fill = "grey60"
+#       fill = my_col2
+#     ) +
+#     geom_line(
+#       aes(y = mean, x = x_lt),
+#       data = list_data$df_pred_lin,
+#       colour = my_col1,
+#       size = 0.5
+#     ) +
+#     geom_point(aes(x = trait, y = mean_),
+#       colour = my_col1,
+#       size = 0.5
+#       ) +
+#     geom_errorbar(aes(x = trait, ymin = q2_5, ymax = q97_5),
+#       colour = my_col1,
+#       size = 0.2
+#       ) +
+#     xlab(list_data$x_lab) +
+#     ylab(eval(parse(text = list_data$y_lab))) +
+#     theme_bw()
+# }
 
 #' @title predicitons for beta
 #' @para mat_pred dataframe for MCMC draws of mean predictions (n.mcmc x 80)
@@ -436,11 +436,85 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
     ggtitle("High LT species")
   p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
     subplot_fun(low = TRUE) +
-    ggtitle(expression(Low~C[13]~species))
+    ggtitle(expression(Low~delta*C[13]~species))
   p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
     subplot_fun(low = FALSE) +
-    ggtitle(expression(High~C[13]~species))
+    ggtitle(expression(High~delta*C[13]~species))
 
   (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
-     plot_annotation(tag_levels = "a")
+     plot_annotation(tag_levels = "a") &
+     theme(
+      text = element_text(size = 8),
+      plot.tag = element_text(face = "bold"))
+}
+
+generate_beta_list <- function(draws, stan_data, x_lab, y_lab, ind_pred, sp_pred) {
+  gamma_row <- stan_data$x |> colnames()
+  gamma_col <- stan_data$u |> rownames()
+  print(gamma_row[ind_pred])
+  print(gamma_col[sp_pred])
+
+  trait <- stan_data$u[sp_pred, ]
+
+  beta <- draws |>
+    dplyr::select(contains(str_c("beta[", ind_pred))) |>
+    as.matrix()
+  gamma <- draws |>
+    dplyr::select(contains(str_c("gamma[", ind_pred))) |>
+    as.matrix()
+
+  par_res <- NULL
+  for (i in 1:4000) {
+    res <- beta[i, ] - gamma[i, ] %*% stan_data$u
+    res <- as.numeric(res)
+    pred <- gamma[i, 1] + gamma[i, sp_pred] * trait
+    par_res_tmp <- res + pred
+    par_res <- rbind(par_res, par_res_tmp)
+  }
+
+  res_data <- tibble(
+    res_m = apply(par_res, 2, quantile, 0.5),
+    res_l = apply(par_res, 2, quantile, 0.025),
+    res_h = apply(par_res, 2, quantile, 0.975)) |>
+    mutate(trait)
+
+  x_steps <- seq(min(trait), max(trait), length = 80)
+
+  tmp2 <- NULL
+  for (i in 1:4000) {
+    tmp <- gamma[i, 1] + gamma[i, sp_pred] * x_steps
+    tmp2 <- rbind(tmp2, tmp)
+  }
+
+  pred_data <- data.frame(
+    trait = x_steps,
+    ll = apply(tmp2, 2, quantile, 0.025),
+    l = apply(tmp2, 2, quantile, 0.25),
+    m = apply(tmp2, 2, quantile, 0.5),
+    h = apply(tmp2, 2, quantile, 0.75),
+    hh = apply(tmp2, 2, quantile, 0.975))
+
+  y_lab_parse <- str_c("expression(", y_lab ,"~(beta[paste(", ind_pred, ",',',", "j)]))")
+
+  list(
+    pred_data = pred_data,
+    res_data = res_data,
+    x_lab  = x_lab,
+    y_lab  = y_lab_parse
+    )
+}
+
+beta_plot <- function(beta_list) {
+  my_col <- RColorBrewer::brewer.pal(5, "RdBu")
+
+  ggplot(beta_list$pred_data, aes(x = trait))  +
+    geom_line(aes(y = m), col = my_col[1])  +
+    geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
+    geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
+    geom_point(data = beta_list$res_data, aes(y = res_m), col = my_col[1]) +
+    ylab(eval(parse(text = beta_list$y_lab))) +
+    xlab(beta_list$x_lab) +
+    theme_bw()
+    # my_theme()
+    # geom_errorbar(data = res_data, aes(ymin = res_l, ymax = res_h))
 }
