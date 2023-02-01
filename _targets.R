@@ -317,7 +317,7 @@ main_ <- list(
   ),
 
   tar_target(
-    beta_dry_traits, {
+    beta_par_dry_traits, {
       p <- beta_plot(beta_cons_sdmc) +
         beta_plot(beta_rain_sdmc) +
         beta_plot(beta_rain_ldmc) +
@@ -332,7 +332,7 @@ main_ <- list(
           text = element_text(size = 8),
           plot.tag = element_text(face = "bold"))
       my_ggsave(
-        "figs/beta1",
+        "figs/beta_par_dry_traits",
         p,
         dpi = 300,
         width = 173,
@@ -342,6 +342,37 @@ main_ <- list(
     },
     format = "file"
   ),
+  tar_target(
+    beta_raw_dry_traits, {
+      p <- beta_plot(beta_cons_sdmc, partial = FALSE) +
+        beta_plot(beta_rain_sdmc, partial = FALSE) +
+        beta_plot(beta_rain_ldmc, partial = FALSE) +
+        beta_plot(beta_rain_lt, partial = FALSE) +
+        beta_plot(beta_rain_c13, partial = FALSE) +
+        beta_plot(beta_consrain_ldmc, partial = FALSE) +
+        beta_plot(beta_consrain_lt, partial = FALSE) +
+        plot_spacer() +
+        plot_layout(ncol = 4, nrow = 2) +
+        plot_annotation(tag_levels = "a") &
+        theme(
+          text = element_text(size = 8),
+          plot.tag = element_text(face = "bold"))
+      my_ggsave(
+        "figs/beta_raw_dry_traits",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 85,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+
+  # tar_quarto(
+  #   bayes_check_html,
+  #   "docs/bayes_check.qmd",
+  # ),
 
   NULL
  )

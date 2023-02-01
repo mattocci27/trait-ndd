@@ -493,96 +493,35 @@ print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 
 # Species-level predictors ($\gamma$) - figures
 
-![](`r here::here("figs/beta_dry_traits.png")`)
+## Traits
 
-```{r,eval=FALSE}
-dry_trait_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_nlog))
+### Dry season
 
-dry_trait_mcmc <- withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_read(fit_mcmc_logistic_simple_stan_data_dry_het_intrain_nlog))
+![](`r here::here("figs/beta_par_dry_traits.png")`)
 
-mcmc_stan_data <- dry_trait$data
+- Partial residual plot
+- $\boldsymbol{\beta_k} - \boldsymbol{\gamma_k} \cdot \boldsymbol{x} + \gamma_l \cdot x_l$ vs. $x_l$
+- k: kth individual-level predictor
+- l: lth species-level predictor
+- $\boldsymbol{\beta_k} - \boldsymbol{\gamma_k} \cdot \boldsymbol{x}$ indicates residulas.
+- $\gamma_l \cdot x_l$ indicates the predicted lines.
+- **This doesn't look good because residuals are simply aligned on the lines. Should we just draw lines and ignore points?**
 
-y_lab <- "Cons~effect"
-x_lab <- "SDMC"
+![](`r here::here("figs/beta_raw_dry_traits.png")`)
 
-tar_load(loo_tbl)
-dry_trait <- load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
+- The is the same as the previous figure in our previous manucscript.
+- $\beta_k$  vs. $x_l$
+- These are multiple regression but the effects from other predictors are not controlled for each point, that's why points and lines do not match.
 
-gamma_row <- mcmc_stan_data$x |> colnames()
-gamma_col <- mcmc_stan_data$u |> rownames()
 
-ind_pred <- 8
-sp_pred <- 6
-print(gamma_row[ind_pred])
-print(gamma_col[sp_pred])
+### Rainy season
 
-trait <- mcmc_stan_data$u[sp_pred, ]
+- [There are no trait effects on CNDD from seedlings.](#without-rain)
 
-# scon
-beta <- dry_trait_draws |>
-  dplyr::select(contains(str_c("beta[", ind_pred))) |>
-  as.matrix()
-# scon
-gamma <- dry_trait_draws |>
-  dplyr::select(contains(str_c("gamma[", ind_pred))) |>
-  as.matrix()
+## Abundance
 
-par_res <- NULL
-for (i in 1:4000) {
-  res <- beta[i, ] - gamma[i, ] %*% mcmc_stan_data$u
-  res <- as.numeric(res)
-  pred <- gamma[i, 1] + gamma[i, sp_pred] * trait
-  par_res_tmp <- res + pred
-  par_res <- rbind(par_res, par_res_tmp)
-}
+- [There are no trait effects on CNDD from seedlings.](#abundance-2)
 
-res_m <- apply(par_res, 2, median)
-res_l <- apply(par_res, 2, quantile, 0.025)
-res_h <- apply(par_res, 2, quantile, 0.975)
-
-res_data <- tibble(res_m, res_l, res_h) |>
-  mutate(trait)
-
-x_steps <- seq(min(trait), max(trait), length = 80)
-
-tmp2 <- NULL
-for (i in 1:4000) {
-  tmp <- gamma[i, 1] + gamma[i, sp_pred] * x_steps
-  tmp2 <- rbind(tmp2, tmp)
-}
-
-gamma_m <- apply(tmp2, 2, median)
-gamma_ll <- apply(tmp2, 2, quantile, 0.025)
-gamma_hh <- apply(tmp2, 2, quantile, 0.975)
-gamma_l <- apply(tmp2, 2, quantile, 0.25)
-gamma_h <- apply(tmp2, 2, quantile, 0.75)
-
-pred_data <- data.frame(
-  trait = x_steps,
-  m = gamma_m,
-  l = gamma_l,
-  ll = gamma_ll,
-  h = gamma_h,
-  hh = gamma_hh
-)
-
-y_lab_parse <- str_c("expression(", y_lab ,"~(beta[paste(", ind_pred, ",',',", "j)]))")
-
-my_col <- RColorBrewer::brewer.pal(5, "RdBu")
-
-ggplot(pred_data, aes(x = trait))  +
-  geom_line(aes(y = m), col = my_col[1])  +
-  geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
-  geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
-  geom_point(data = res_data, aes(y = res_m), col = my_col[1]) +
-  ylab(eval(parse(text = y_lab_parse))) +
-  xlab(x_lab) +
-  my_theme()
-  # geom_errorbar(data = res_data, aes(ymin = res_l, ymax = res_h))
-
-```
 
 # Survival probability
 
@@ -605,36 +544,6 @@ ggplot(pred_data, aes(x = trait))  +
 
 ```{r}
 knitr::knit_exit()
-```
-
-```{r}
-library(patchwork)
-p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
-  subplot_fun(low = TRUE) +
-  ggtitle("Low LDMC")
-p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
-  subplot_fun(low = FALSE) +
-  ggtitle("High LDMC")
-p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-  subplot_fun(low = TRUE) +
-  ggtitle("Low SDMC")
-p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-  subplot_fun(low = FALSE) +
-  ggtitle("High SDMC")
-p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-  subplot_fun(low = TRUE) +
-  ggtitle("Low LT")
-p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-  subplot_fun(low = FALSE) +
-  ggtitle("High LT")
-p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
-  subplot_fun(low = TRUE) +
-  ggtitle("Low C13")
-p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
-  subplot_fun(low = FALSE) +
-  ggtitle("High C13")
-
-(p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8)
 ```
 
 
@@ -804,56 +713,22 @@ ggplot(tmp2, aes(x = cons, y = rain, fill = suv_p, z = suv_p)) +
     # high = "yellow",
     midpoint = 0.86)
 
-```
-
-```{r}
-
-prepare_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05) |>
-  filter(sig == "sig") |>
-  kbl() |>
-  kable_styling(bootstrap_options = c("striped", "HOLD_position"))
-
-gamma <- matrix(tmp$q50, nrow = 8)
 
 
-tmp <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7)
+draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_nlog))
 
-p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
-  subplot_fun()
-p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-  subplot_fun()
-p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-  subplot_fun()
-p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
-  subplot_fun()
+ind_pred <- 7
+sp_pred <- 3
 
-p1 / p2 / p3 / p4
+beta <- draws |>
+  dplyr::select(contains(str_c("beta[", ind_pred))) |>
+  as.matrix()
+apply(beta, 1, sd) |> mean()
 
-p1 <- ggplot(tmp, aes(x = scon, y = rain, fill = suv_p_l, z = suv_p_l)) +
-  geom_tile() +
-  geom_contour(col = "grey40") +
-  scale_fill_viridis_c(option = "B")  +
-  theme(legend.position = "none")
-p2 <- ggplot(tmp, aes(x = scon, y = rain, fill = suv_p_m, z = suv_p_m)) +
-  geom_tile() +
-  geom_contour(col = "grey40") +
-  scale_fill_viridis_c(option = "B") +
-  theme(legend.position = "none")
-p3 <- ggplot(tmp, aes(x = scon, y = rain, fill = suv_p_h, z = suv_p_h)) +
-  geom_tile() +
-  geom_contour(col = "grey40") +
-  scale_fill_viridis_c(option = "B") +
-  theme(legend.position = "none")
-p1 + p3
-
-library(viridis)
-colors <- viridis(3)
-rgb(colors)
+gamma <- draws |>
+  dplyr::select(contains(str_c("gamma[", ind_pred))) |>
+  as.matrix()
 
 ```
 
-
-
-```{r}
-knitr::knit_exit()
-```

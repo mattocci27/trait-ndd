@@ -473,6 +473,7 @@ generate_beta_list <- function(draws, stan_data, x_lab, y_lab, ind_pred, sp_pred
   }
 
   res_data <- tibble(
+    beta_m = apply(beta, 2, quantile, 0.5),
     res_m = apply(par_res, 2, quantile, 0.5),
     res_l = apply(par_res, 2, quantile, 0.025),
     res_h = apply(par_res, 2, quantile, 0.975)) |>
@@ -504,17 +505,24 @@ generate_beta_list <- function(draws, stan_data, x_lab, y_lab, ind_pred, sp_pred
     )
 }
 
-beta_plot <- function(beta_list) {
+beta_plot <- function(beta_list, partial = TRUE ) {
   my_col <- RColorBrewer::brewer.pal(5, "RdBu")
-
+  if (!partial) {
+    beta_list$res_data <- beta_list$res_data |>
+      mutate(res_m = beta_m)
+  }
   ggplot(beta_list$pred_data, aes(x = trait))  +
-    geom_line(aes(y = m), col = my_col[1])  +
-    geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
-    geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
-    geom_point(data = beta_list$res_data, aes(y = res_m), col = my_col[1]) +
+    geom_line(aes(y = m))  +
+    geom_ribbon(aes(ymin = l, ymax = h), alpha = 0.5) +
+    geom_ribbon(aes(ymin = ll, ymax = hh), alpha = 0.4) +
+    geom_point(data = beta_list$res_data, aes(y = res_m), size = 0.5) +
+    # geom_line(aes(y = m), col = my_col[1])  +
+    # geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
+    # geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
+    # geom_point(data = beta_list$res_data, aes(y = res_m), col = my_col[1]) +
+    # geom_errorbar(data = beta_list$res_data, aes(ymin = res_l, ymax = res_h)) +
     ylab(eval(parse(text = beta_list$y_lab))) +
     xlab(beta_list$x_lab) +
     theme_bw()
     # my_theme()
-    # geom_errorbar(data = res_data, aes(ymin = res_l, ymax = res_h))
 }
