@@ -234,6 +234,8 @@ generate_loo_tbl <- function(loo_list)  {
   loo_list <- loo_list_ori[str_detect(names(loo_list_ori), "het")]
   loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
   loo_list <- loo_list[str_detect(names(loo_list), "simple")]
+  loo_list <- loo_list[!str_detect(names(loo_list), "wet_het_rain_nlog")]
+  loo_list <- loo_list[!str_detect(names(loo_list), "wet_het_norain_nlog")]
   loo_names <- names(loo_list)
 
   loo_names_split <- str_split_fixed(loo_names, "_", 11)

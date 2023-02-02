@@ -110,6 +110,8 @@ for (i in 1:length(tmp)) {
 }
 ```
 
+Note: `fit_summary_logistic_simple_stan_data_wet_het_norain_nlog` and `fit_summary_logistic_simple_stan_data_wet_het_rain_nlog` show bad convergence.
+
 ## Divergence
 
 ```{r}
@@ -128,27 +130,6 @@ for (i in 1:length(tmp2)) {
 
 # Model selection
 
-```{r, eval=FALSE}
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_load(loo_list))
-
-loo_list_ori <- loo_list
-loo_list <- loo_list_ori[str_detect(names(loo_list_ori), "het")]
-loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
-loo_list <- loo_list[str_detect(names(loo_list), "simple")]
-loo_names <- names(loo_list)
-
-loo_names_split <- str_split_fixed(loo_names, "_", 11)
-
-loo_tbl <- tibble(model = names(loo_list)) |>
-  mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
-  mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
-  mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
-  mutate(season = loo_names_split[, 8]) |>
-  mutate(phy = loo_names_split[, 9]) |>
-  mutate(rain = loo_names_split[, 10]) |>
-  mutate(traits = loo_names_split[, 11])
-```
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_tbl))
