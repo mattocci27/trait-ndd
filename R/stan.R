@@ -178,18 +178,19 @@ load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
     pull(model)
   tmp_summary <- str_replace(tmp[1], "loo_fit_mcmc", "fit_summary")
   tmp_data <- str_replace(tmp_summary, "fit_summary_logistic_simple_", "")
-  tmp_draws <- str_replace(tmp[1], "loo_fit_mcmc", "fit_draws")
+  tmp_mcmc <- str_replace(tmp[1], "loo_fit_mcmc", "fit_mcmc")
   withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_load(tmp_summary))
   withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_load(tmp_data))
   withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_draws))
+    targets::tar_load(tmp_mcmc))
+  mcmc <- get(tmp_mcmc)
   list(
     name = tmp[1],
     data = get(tmp_data),
     summary = get(tmp_summary),
-    draws = get(tmp_draws)
+    draws = posterior::as_draws_df(mcmc)
   )
 }
 

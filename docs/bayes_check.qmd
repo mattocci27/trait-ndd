@@ -699,7 +699,6 @@ ggplot(tmp2, aes(x = cons, y = rain, fill = suv_p, z = suv_p)) +
     midpoint = 0.86)
 
 
-
 draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_nlog))
 
@@ -715,5 +714,9 @@ gamma <- draws |>
   dplyr::select(contains(str_c("gamma[", ind_pred))) |>
   as.matrix()
 
+  posterior::as_draws_df(fit$draws())
+m <- tar_read(fit_mcmc_logistic_simple_stan_data_dry_het_intrain_ab)
+
+m2 <- posterior::as_draws_df(m)
 ```
 

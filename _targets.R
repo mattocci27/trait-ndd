@@ -144,7 +144,7 @@ main_ <- list(
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = TRUE,
+      return_draws = FALSE,
       return_diagnostics = TRUE,
       return_summary = TRUE,
       summaries = list(
@@ -171,7 +171,7 @@ main_ <- list(
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
-      return_draws = TRUE,
+      return_draws = FALSE,
       return_diagnostics = TRUE,
       return_summary = TRUE,
       summaries = list(
