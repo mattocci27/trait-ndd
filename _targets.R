@@ -229,6 +229,10 @@ main_ <- list(
     dry_trait,
     load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
   ),
+  tar_target(
+    wet_trait,
+    load_mcmc_summary(loo_tbl, season = "wet", trait = "n")
+  ),
 
   tar_target(
     dry_trait_suv_contour_plot, {
@@ -244,9 +248,76 @@ main_ <- list(
     },
     format = "file"
   ),
+  tar_target(
+    wet_trait_suv_contour_plot, {
+      p <- wet_trait_suv_contour(wet_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/wet_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 130,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+
 
   tar_target(
-    beta_rain_ldmc,
+    beta_wet_rain_n,
+    generate_beta_list(
+      wet_trait$draws,
+      wet_trait$data,
+      x_lab = "N",
+      y_lab = "Rain~effect",
+      ind_pred = 7,
+      sp_pred = 8)
+  ),
+  tar_target(
+    beta_wet_rain_tlp,
+    generate_beta_list(
+      wet_trait$draws,
+      wet_trait$data,
+      x_lab = expression(pi[tlp]),
+      y_lab = "Rain~effect",
+      ind_pred = 7,
+      sp_pred = 9)
+  ),
+
+  tar_target(
+    beta_wet_consrain_sla,
+    generate_beta_list(
+      wet_trait$draws,
+      wet_trait$data,
+      x_lab = "SLA",
+      y_lab  = "ConS%*%Rainfall~effect",
+      ind_pred = 8,
+      sp_pred = 5)
+  ),
+  tar_target(
+    beta_wet_consrain_n,
+    generate_beta_list(
+      wet_trait$draws,
+      wet_trait$data,
+      x_lab = "LDMC",
+      y_lab  = "ConS%*%Rainfall~effect",
+      ind_pred = 8,
+      sp_pred = 8)
+  ),
+  tar_target(
+    beta_wet_consrain_tlp,
+    generate_beta_list(
+      wet_trait$draws,
+      wet_trait$data,
+      x_lab = expression(pi[tlp]),
+      y_lab  = "ConS%*%Rainfall~effect",
+      ind_pred = 8,
+      sp_pred = 9)
+  ),
+
+  tar_target(
+    beta_dry_rain_ldmc,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -256,7 +327,7 @@ main_ <- list(
       sp_pred = 2)
   ),
   tar_target(
-    beta_consrain_ldmc,
+    beta_dry_consrain_ldmc,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -266,7 +337,7 @@ main_ <- list(
       sp_pred = 2)
   ),
   tar_target(
-    beta_rain_sdmc,
+    beta_dry_rain_sdmc,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -276,7 +347,7 @@ main_ <- list(
       sp_pred = 3)
   ),
   tar_target(
-    beta_cons_sdmc,
+    beta_dry_cons_sdmc,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -286,7 +357,7 @@ main_ <- list(
       sp_pred = 3)
   ),
   tar_target(
-    beta_rain_lt,
+    beta_dry_rain_lt,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -296,7 +367,7 @@ main_ <- list(
       sp_pred = 6)
   ),
   tar_target(
-    beta_consrain_lt,
+    beta_dry_consrain_lt,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -306,7 +377,7 @@ main_ <- list(
       sp_pred = 6)
   ),
   tar_target(
-    beta_rain_c13,
+    beta_dry_rain_c13,
     generate_beta_list(
       dry_trait$draws,
       dry_trait$data,
@@ -317,14 +388,63 @@ main_ <- list(
   ),
 
   tar_target(
+    beta_par_wet_traits, {
+      p <- beta_plot(beta_wet_rain_n) +
+        beta_plot(beta_wet_rain_tlp) +
+        plot_spacer() +
+        beta_plot(beta_wet_consrain_sla) +
+        beta_plot(beta_wet_consrain_n) +
+        beta_plot(beta_wet_consrain_tlp) +
+        plot_layout(ncol = 3, nrow = 2) +
+        plot_annotation(tag_levels = "a") &
+        theme(
+          text = element_text(size = 8),
+          plot.tag = element_text(face = "bold"))
+      my_ggsave(
+        "figs/beta_par_wet_traits",
+        p,
+        dpi = 300,
+        width = 110,
+        height = 75,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    beta_raw_wet_traits, {
+      p <- beta_plot(beta_wet_rain_n, partial = FALSE) +
+        beta_plot(beta_wet_rain_tlp, partial = FALSE) +
+        plot_spacer() +
+        beta_plot(beta_wet_consrain_sla, partial = FALSE) +
+        beta_plot(beta_wet_consrain_n, partial = FALSE) +
+        beta_plot(beta_wet_consrain_tlp, partial = FALSE) +
+        plot_layout(ncol = 3, nrow = 2) +
+        plot_annotation(tag_levels = "a") &
+        theme(
+          text = element_text(size = 8),
+          plot.tag = element_text(face = "bold"))
+      my_ggsave(
+        "figs/beta_raw_wet_traits",
+        p,
+        dpi = 300,
+        width = 110,
+        height = 75,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+
+  tar_target(
     beta_par_dry_traits, {
-      p <- beta_plot(beta_cons_sdmc) +
-        beta_plot(beta_rain_sdmc) +
-        beta_plot(beta_rain_ldmc) +
-        beta_plot(beta_rain_lt) +
-        beta_plot(beta_rain_c13) +
-        beta_plot(beta_consrain_ldmc) +
-        beta_plot(beta_consrain_lt) +
+      p <- beta_plot(beta_dry_cons_sdmc) +
+        beta_plot(beta_dry_rain_sdmc) +
+        beta_plot(beta_dry_rain_ldmc) +
+        beta_plot(beta_dry_rain_lt) +
+        beta_plot(beta_dry_rain_c13) +
+        beta_plot(beta_dry_consrain_ldmc) +
+        beta_plot(beta_dry_consrain_lt) +
         plot_spacer() +
         plot_layout(ncol = 4, nrow = 2) +
         plot_annotation(tag_levels = "a") &
@@ -344,13 +464,13 @@ main_ <- list(
   ),
   tar_target(
     beta_raw_dry_traits, {
-      p <- beta_plot(beta_cons_sdmc, partial = FALSE) +
-        beta_plot(beta_rain_sdmc, partial = FALSE) +
-        beta_plot(beta_rain_ldmc, partial = FALSE) +
-        beta_plot(beta_rain_lt, partial = FALSE) +
-        beta_plot(beta_rain_c13, partial = FALSE) +
-        beta_plot(beta_consrain_ldmc, partial = FALSE) +
-        beta_plot(beta_consrain_lt, partial = FALSE) +
+      p <- beta_plot(beta_dry_cons_sdmc, partial = FALSE) +
+        beta_plot(beta_dry_rain_sdmc, partial = FALSE) +
+        beta_plot(beta_dry_rain_ldmc, partial = FALSE) +
+        beta_plot(beta_dry_rain_lt, partial = FALSE) +
+        beta_plot(beta_dry_rain_c13, partial = FALSE) +
+        beta_plot(beta_dry_consrain_ldmc, partial = FALSE) +
+        beta_plot(beta_dry_consrain_lt, partial = FALSE) +
         plot_spacer() +
         plot_layout(ncol = 4, nrow = 2) +
         plot_annotation(tag_levels = "a") &

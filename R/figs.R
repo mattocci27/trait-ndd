@@ -457,6 +457,27 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
       plot.tag = element_text(face = "bold"))
 }
 
+wet_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
+  p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low N species")
+  p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High N species")
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
+    subplot_fun(low = TRUE) +
+    ggtitle(expression(Low~pi[tlp]~species))
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
+    subplot_fun(low = FALSE) +
+    ggtitle(expression(High~pi[tlp]~species))
+
+  (p1 + p2) / (p3 + p4) +
+     plot_annotation(tag_levels = "a") &
+     theme(
+      text = element_text(size = 8),
+      plot.tag = element_text(face = "bold"))
+}
+
 generate_beta_list <- function(draws, stan_data, x_lab, y_lab, ind_pred, sp_pred) {
   gamma_row <- stan_data$x |> colnames()
   gamma_col <- stan_data$u |> rownames()
