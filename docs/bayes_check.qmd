@@ -208,14 +208,16 @@ These models with rain interactions are not good models.
 wet_trait2_summary <- withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_read(fit_summary_logistic_simple_stan_data_wet_het_intrain_nlog))
 wet_trait2_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_read(fit_draws_logistic_simple_stan_data_wet_het_intrain_nlog))
+    targets::tar_read(fit_mcmc_logistic_simple_stan_data_wet_het_intrain_nlog)) |>
+    posterior::as_draws_df()
 wet_trait2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_read(stan_data_wet_het_intrain_nlog))
 
 dry_trait2_summary <- withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain_nlog))
 dry_trait2_draws <- withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_read(fit_draws_logistic_simple_stan_data_dry_het_intrain_nlog))
+    targets::tar_read(fit_mcmc_logistic_simple_stan_data_dry_het_intrain_nlog)) |>
+    posterior::as_draws_df()
 dry_trait2_data <- withr::with_dir(rprojroot::find_root('_targets.R'),
     targets::tar_read(stan_data_dry_het_intrain_nlog))
 ```

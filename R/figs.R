@@ -458,20 +458,27 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
 }
 
 wet_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
-  p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
+  p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low SLA species")
+  p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High SLA species")
+
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low N species")
-  p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
     subplot_fun(low = FALSE) +
     ggtitle("High N species")
-  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
+  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~pi[tlp]~species))
-  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
+  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~pi[tlp]~species))
 
-  (p1 + p2) / (p3 + p4) +
+  (p1 + p2) / (p3 + p4) / (p5 + p6) +
      plot_annotation(tag_levels = "a") &
      theme(
       text = element_text(size = 8),

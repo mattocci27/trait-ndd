@@ -256,7 +256,7 @@ main_ <- list(
         p,
         dpi = 300,
         width = 173,
-        height = 130,
+        height = 180,
         units = "mm"
       )
     },
@@ -300,7 +300,7 @@ main_ <- list(
     generate_beta_list(
       wet_trait$draws,
       wet_trait$data,
-      x_lab = "LDMC",
+      x_lab = "N",
       y_lab  = "ConS%*%Rainfall~effect",
       ind_pred = 8,
       sp_pred = 8)
