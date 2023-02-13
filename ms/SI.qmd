@@ -52,6 +52,169 @@ source(here("R", "stan.R"))
 source(here("R", "render.R"))
 ```
 
+# `r s_append("method")` - Extended methods
+
+# `r s_append("model_selection")` - Model selection
+
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_list))
+
+generate_loo_tbl2 <- function(loo_list)  {
+  loo_list_ori <- loo_list
+  loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
+  loo_list <- loo_list[str_detect(names(loo_list), "simple")]
+  loo_names <- names(loo_list)
+
+  loo_names_split <- str_split_fixed(loo_names, "_", 11)
+
+  loo_tbl <- tibble(model = names(loo_list)) |>
+    mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
+    mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
+    mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
+    mutate(season = loo_names_split[, 8]) |>
+    mutate(phy = loo_names_split[, 9]) |>
+    mutate(rain = loo_names_split[, 10]) |>
+    mutate(traits = loo_names_split[, 11])
+  loo_tbl
+}
+
+loo_tbl <- generate_loo_tbl2(loo_list)
+
+loo_names <- names(loo_list)
+tmp <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_summary")
+tmp2 <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_diagnostics")
+
+n_ess <- NULL
+n_div <- NULL
+for (i in 1:length(tmp)) {
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp[i]))
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp2[i]))
+  assign(loo_names[i], tmp[i])
+  hoge <- get(tmp[i])
+  ess_tail <- hoge |>
+    filter(ess_tail < 400) |>
+    nrow()
+  n_ess[i] <- ess_tail
+
+  hoge2 <- get(tmp2[i])
+  divergent <- hoge2 |>
+    filter(divergent__ != 0) |>
+    nrow()
+  n_div[i] <- divergent
+}
+
+diagnostics_tbl <- tibble(model = loo_names, n_ess, n_div)
+
+
+write_diagnostic_tables <- function(loo_tbl, diagnostics_tbl, season, abund = FALSE) {
+  if(abund) {
+    tmp <- left_join(loo_tbl, diagnostics_tbl) |>
+        filter(traits != "nlog")
+  } else {
+    tmp <- left_join(loo_tbl, diagnostics_tbl) |>
+        filter(traits == "nlog")
+  }
+
+  tmp <- tmp  |>
+    filter(season == {{season}}) |>
+    arrange(desc(elpd)) |>
+    mutate(traits = case_when(
+      traits == "ab" ~ "Abundance",
+      traits == "ba" ~ "Basal area",
+      traits == "ab1ba" ~ "Abundance + Basal area",
+      traits == "ab2ba" ~ "Abundance $\\times$ Basal area",
+    )) |>
+    mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
+    mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
+    mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
+    mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
+    mutate(rain = case_when(
+      rain == "norain" ~ "No rain",
+      rain == "rain" ~ "Rain without interactions",
+      rain == "intrain" ~ "Rain with all the interactions",
+      rain == "intrain2" ~ "Rain with an interaction of conspecific densities",
+    )) |>
+    mutate(
+      across(1:10,
+      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div > 0, "gray", "black"))
+    ))
+
+  if (abund)  {
+    tmp <- tmp |>
+      dplyr::select(`Seedling densities` = phy,
+        `Rainfall` = rain,
+        `Abundance` = traits,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  } else {
+    tmp <- tmp |>
+      dplyr::select(`Seedling densities` = phy,
+        `Rainfall` = rain,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  }
+
+  tmp  |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = FALSE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = FALSE) #k|>
+}
+
+```
+
+
+# `r s_table("dry_traits_diagnostics")`
+
+Model selection and diagnostics for models with traits in the dry season.
+ELPD: expected log pointwise predictive density (larger values indicate better a model fit),
+LOOIC: leave-one-out deviance information criterion (smaller values indicate a better model fit),
+N_ESS: number of variables that showed effective sample size less than 400,
+N_Div: number of divergent transitions.
+Models that did not converge well are shown in gray (N_ESS > 0 or N_Div > 0).
+
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "dry", abund = FALSE)
+```
+
+\newpage
+
+# `r s_table("wet_traits_diagnostics")`
+
+Model selection and diagnostics for models with traits in the rainy season.
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = FALSE)
+```
+\newpage
+
+# `r s_table("dry_abund_diagnostics")`
+
+Model selection and diagnostics for models with abundance in the dry season.
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "dry", abund = TRUE)
+```
+
+\newpage
+
+# `r s_table("wet_abund_diagnostics")`
+
+Model selection and diagnostics for models with abundance in the rainy season.
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = TRUE)
+```
+
+\newpage
+
+
+
 ```{r, include=FALSE}
 dry_traits_gamma <- read_csv(here("data", "dry_traits_gamma.csv"))
 dry_traits_gamma |>
@@ -165,6 +328,8 @@ wet_traits_gamma |>
 gen_si_tab(wet_traits_gamma)
 ```
 
+\newpage
+
 # `r s_table("dry_abund_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
@@ -183,6 +348,7 @@ dry_abund_gamma |>
 gen_si_tab(dry_abund_gamma)
 ```
 
+\newpage
 
 # `r s_table("wet_abund_gamma")`
 
