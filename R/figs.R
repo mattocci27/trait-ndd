@@ -349,7 +349,10 @@ prepare_suv_pred <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01,
     dplyr::select(variable, ind_pred, sp_pred, q50, sig)
 }
 
-
+# summary <- wet_trait$summary
+# data <- wet_trait$data
+# alpha <- 0.05
+# trait_no <- 3
 generate_suv_pred <- function(summary, data, alpha, trait_no) {
   tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
     mutate(q50 = ifelse(sig != "sig", 0, q50))

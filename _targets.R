@@ -489,6 +489,42 @@ main_ <- list(
     format = "file"
   ),
 
+# best models
+tar_map(
+  values = list(
+    x = rlang::syms(c(
+      "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
+      "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
+      "fit_summary_logistic_simple_stan_data_wet_het_intrain_ab",
+      "fit_summary_logistic_simple_stan_data_wet_het_intrain2_nlog")),
+    stan_data = rlang::syms(c(
+      "stan_data_dry_het_intrain_ab",
+      "stan_data_dry_het_intrain2_nlog",
+      "stan_data_wet_het_intrain_ab",
+      "stan_data_wet_het_intrain2_nlog")),
+    path =
+      str_c(
+      "data/",
+       c("dry_abund", "dry_traits", "wet_abund", "wet_traits"),
+      "_gamma.csv")),
+  tar_target(
+    gamma_out_csv, {
+      create_gamma_tab(x, stan_data)  |>
+        my_write_csv(path)
+    },
+    format = "file"
+  )
+),
+
+
+  # tar_target(
+  #   wet_gamma_csv, {
+  #     write_csv(fit10_gamma, "data/wet_gamma.csv")
+  #     paste("data/wet_gamma.csv")
+  #   },
+  #   format = "file"
+  # ),
+
   # tar_quarto(
   #   bayes_check_html,
   #   "docs/bayes_check.qmd",

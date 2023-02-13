@@ -66,16 +66,17 @@ create_gamma_tab <- function(fit_tab, stan_dat) {
   x_name <- colnames(stan_dat$x)
   u_name <- rownames(stan_dat$u)
   fit_tab |>
-    filter(str_detect(para, "gamma")) |>
+    filter(str_detect(variable, "gamma")) |>
     mutate(pred_name = rep(x_name,  length(u_name))) |>
     mutate(trait_name = rep(u_name, each = length(x_name)))# |>
 }
+
 #' @title clean tabs
 create_beta_tab <- function(fit_tab, stan_dat) {
   x_name <- colnames(stan_dat$x)
   sp_name <- paste0("sp_",1:stan_dat$J)
   fit_tab |>
-    filter(str_detect(para, "beta")) |>
+    filter(str_detect(variable, "beta")) |>
     mutate(pred_name = rep(x_name, length(sp_name))) |>
     mutate(sp_name = rep(sp_name, each = length(x_name)))
 }

@@ -523,8 +523,6 @@ print_summary_tbl(wet_abund$summary, wet_abund$data, alpha = 0.05)
 
 ![](`r here::here("figs/wet_trait_suv_contour.png")`)
 
-Note: the effect of conspecific density ($\beta_3$) is not significant in the rainy season but it is included in this figure.
-
 ## Abundance
 
 - [There are no trait effects on CNDD from seedlings.](#abundance-2)

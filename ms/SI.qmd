@@ -17,6 +17,7 @@ format:
     self-contained: true
     smooth-scroll: true
     highlight-style: github
+    embed-resources: true
   docx:
     toc: false
     number-sections: false
@@ -48,20 +49,21 @@ library(kableExtra)
 
 ```{r}
 source(here("R", "stan.R"))
+source(here("R", "render.R"))
 ```
 
 ```{r, include=FALSE}
-dry_gamma <- read_csv(here("data", "dry_gamma.csv"))
-dry_gamma |>
-  filter(q2_5 * q97_5 > 0)
-dry_gamma |>
+dry_traits_gamma <- read_csv(here("data", "dry_traits_gamma.csv"))
+dry_traits_gamma |>
+  filter(q2.5 * q97.5 > 0)
+dry_traits_gamma |>
   filter(trait_name == "intercept")
 ```
 
-# Table S1
+# `r s_table("dry_traits_gamma")`
 
-Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the dry seasons.
-Bold values are significantly different from zero (the 95% CIs do not include zero).
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons.
+Bold values differ significantly from zero (the 95% CIs do not include zero).
 ConS/HetS: conspecific/heterospecific seedling density,
 ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27),
 LDMC: leaf dry matter content,
@@ -79,17 +81,19 @@ LT: leaf thickness.
 gen_si_tab <- function(data) {
   data |>
     mutate(pred_name = case_when(
-      pred_name == "int" ~ "Intercept",
-      pred_name == "logh_scaled" ~ "ln Height",
-      pred_name == "cons_scaled" ~ "ConS",
-      pred_name == "cona_scaled_c" ~ "ConT",
-      pred_name == "hets_scaled" ~ "HetS",
-      pred_name == "heta_scaled_c" ~ "HetT",
-      pred_name == "rain_scaled" ~ "Rainfall",
-      pred_name == "cons_rain" ~ "ConS $\\times$ Rainfall",
-      pred_name == "cona_rain" ~ "ConT $\\times$ Rainfall",
-      pred_name == "hets_rain" ~ "HetS $\\times$ Rainfall",
-      pred_name == "heta_rain" ~ "HetT $\\times$ Rainfall"
+      pred_name == "(Intercept)" ~ "Intercept",
+      pred_name == "logh_s" ~ "ln Height",
+      pred_name == "scon_s" ~ "ConS",
+      pred_name == "acon_s_c" ~ "ConT",
+      pred_name == "shet_s" ~ "HetS",
+      pred_name == "ahet_s_c" ~ "HetT",
+      pred_name == "rain_s" ~ "Rainfall",
+      pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
+      pred_name == "acon_s_c:rain_s" ~ "ConT $\\times$ Rainfall",
+      pred_name == "shet_s:rain_s" ~ "HetS $\\times$ Rainfall",
+      pred_name == "ahet_s_c:rain_s" ~ "HetT $\\times$ Rainfall",
+      pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
+      pred_name == "logh_s:rain_s" ~ "ln Height $\\times$ Rainfall",
     )) |>
     mutate(trait_name = case_when(
       trait_name == "intercept" ~ "Intercept",
@@ -97,37 +101,35 @@ gen_si_tab <- function(data) {
       trait_name == "sdmc" ~ "SDMC",
       trait_name == "chl" ~ "Chl",
       trait_name == "c13" ~ "$\\delta \\mathrm{C_{13}}$",
-      trait_name == "c_mass" ~ "C",
-      trait_name == "n_mass" ~ "N",
+      # trait_name == "c_mass" ~ "C",
+      trait_name == "log_n" ~ "ln N",
       trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
       trait_name == "log_la" ~ "ln LA",
       trait_name == "log_sla" ~ "ln SLA",
-      trait_name == "log_lt" ~ "ln LT")) |>
-    mutate(mean_ = round(mean_, 3)) |>
-    mutate(mean_ = cell_spec(mean_, bold= ifelse(q2_5 * q97_5 > 0, TRUE,FALSE))) |>
-    mutate(q2_5 = round(q2_5, 3)) |>
-    mutate(q5 = round(q5, 3)) |>
-    mutate(q95 = round(q95, 3)) |>
-    mutate(q97_5 = round(q97_5, 3)) |>
+      trait_name == "log_lt" ~ "ln LT",
+      trait_name == "log_ab" ~ "ln Abundance",
+      )) |>
+    mutate_if(is.numeric, round, 3) |>
+    mutate(q50 = cell_spec(q50, bold= ifelse(q2.5 * q97.5 > 0, TRUE,FALSE))) |>
     mutate(`90\\% CI` = paste0("[", q5, ", ", q95, "]")) |>
-    mutate(`95\\% CI` = paste0("[", q2_5, ", ", q97_5, "]")) |>
-    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(q2_5 * q97_5 > 0, TRUE,FALSE))) |>
-    mutate(para = paste0(
+    mutate(`95\\% CI` = paste0("[", q2.5, ", ", q97.5, "]")) |>
+    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(q2.5 * q97.5 > 0, TRUE,FALSE))) |>
+    mutate(variable = paste0(
       "$\\gamma_{",
-      str_split_fixed(data$para, "_" ,3)[,2],
+      str_split_fixed(data$variable, ",|\\[|\\]" ,4)[,2],
       ",",
-      str_split_fixed(data$para, "_" ,3)[,3],
+      str_split_fixed(data$variable, ",|\\[|\\]" ,4)[,3],
       "}$")) |>
-    rename(Parameter = para) |>
-    rename(Mean = mean_) |>
-    rename(`Lower 2.5\\% CI` = q2_5) |>
+    rename(Parameter = variable) |>
+    rename(Median = q50) |>
+    rename(`Lower 2.5\\% CI` = q2.5) |>
     rename(`Lower 5\\% CI` = q5) |>
     rename(`Upper 95\\% CI` = q95) |>
-    rename(`Upper 97.5\\% CI` = q97_5) |>
+    rename(`Upper 97.5\\% CI` = q97.5) |>
     rename(`Individual-level predictor` = pred_name) |>
     rename(`Species-level predictor` = trait_name) |>
     # kable(format = "latex") #|>
-    dplyr::select(Parameter, Mean,
+    dplyr::select(Parameter, Median,
     # `Lower 2.5\\% CI`#,
     #`90\\% CI`,
     `95\\% CI`,
@@ -136,34 +138,66 @@ gen_si_tab <- function(data) {
     ) |>
     kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
     kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
-    #kable_styling()
 }
 ```
 
 ```{r}
-gen_si_tab(dry_gamma)
+gen_si_tab(dry_traits_gamma)
 ```
 
 \newpage
 
-```{r, include=FALSE}
-s_table_full <- captioner::captioner(prefix = "Table S", auto_space = FALSE)
-s_table <- pryr::partial(s_table_full, display = "cite", caption = "blank")
-```
+# `r s_table("wet_traits_gamma")`
 
-# Table S2
-
-Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the rainy seasons.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
 Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
-Other details as for Table S1.
+Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_gamma <- read_csv(here("data", "wet_gamma.csv"))
-wet_gamma |>
-  filter(q2_5 * q97_5 > 0)
-wet_gamma |>
+wet_traits_gamma <- read_csv(here("data", "wet_traits_gamma.csv"))
+wet_traits_gamma |>
+  filter(q2.5 * q97.5 > 0)
+wet_traits_gamma |>
   filter(trait_name == "intercept")
 ```
+
 ```{r}
-gen_si_tab(wet_gamma)
+gen_si_tab(wet_traits_gamma)
+```
+
+# `r s_table("dry_abund_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
+Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.27.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+dry_abund_gamma <- read_csv(here("data", "dry_abund_gamma.csv"))
+dry_abund_gamma |>
+  filter(q2.5 * q97.5 > 0)
+dry_abund_gamma |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab(dry_abund_gamma)
+```
+
+
+# `r s_table("wet_abund_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
+Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Other details as for `r s_table("dry_abund_gamma")`.
+
+```{r, include=FALSE}
+wet_abund_gamma <- read_csv(here("data", "wet_abund_gamma.csv"))
+wet_abund_gamma |>
+  filter(q2.5 * q97.5 > 0)
+wet_abund_gamma |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab(wet_abund_gamma)
 ```
