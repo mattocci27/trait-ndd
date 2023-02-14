@@ -100,6 +100,20 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{xr}
 \usepackage[default]{sourcesanspro}
 \usepackage{sourcecodepro}
@@ -175,7 +189,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, sharp corners, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, sharp corners, breakable]}{\end{tcolorbox}}\fi
 
 \hypertarget{model}{%
 \section{Model}\label{model}}
@@ -231,11 +245,11 @@ phylogenetic density effects instead of heterospecific density effects.
 In the species-level regression, the row vector of coefficients
 (\(\boldsymbol{\beta_{1-K}}\)) of each species \emph{j} were assumed to
 have a multivariate normal distribution through the Cholesky
-factorization (\protect\hyperlink{ref-StanDevelopmentTeam2021}{Stan
-Development Team 2021}),
+factorization (Stan Development Team
+(\protect\hyperlink{ref-StanDevelopmentTeam2021}{2021}); Appendix S1),
 
 \[
-\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\sigma})\cdot \boldsymbol{L} \cdot \boldsymbol{z},
+\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \boldsymbol{\Sigma}
 \]
 
 where
@@ -245,18 +259,14 @@ is the row vector of predictors of size \emph{L} for species \emph{j},
 of traits including an intercept),
 \(\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]\)
 is the coefficient \emph{L}-vector for \emph{k}th predictor in the
-individual-level regression, \(\mathrm{diag}(\boldsymbol{\sigma})\) is
-the diagonal matrix with the diagonal vector of coefficient scales,
-\(\boldsymbol{L}\) is the Cholesky factor of the original correlation
-matrix which can be derived using a Cholesky decomposition for the
-covariance matrix of the original multivariate normal distribution,
-\(\boldsymbol{z}\) is a \emph{K} \(\times\) \emph{J} matrix of latent
-Gaussian variables, and \emph{J} is the number of species. The set of
+individual-level regression, and \(\boldsymbol{\Sigma}\) is the
+covariance matrix of the multivariate normal distribution. We modeled
+five different sets of species-level predictors separately. The set of
 species-level predictor variables (\(\boldsymbol{u_j}\)) includes 1)
 LDMC, SDMC, LA, SLA, Chl, LT, \(\delta\)C\textsubscript{13}, C, N, and
 \(\pi\)\textsubscript{tlp}, 2) abundance, 3) basal area, 4) abundance
-and basal area, and 5) abundance, basal area and their interactions. The
-row vector \(\gamma_{k,1}\) represents average effects of the each
+and basal area, and 5) abundance, basal area, and their interactions.
+The row vector \(\gamma_{k,1}\) represents average effects of the each
 individual-level predictor (e.g., \emph{ConS}) across species, whereas
 \(\gamma_{k, l}\) (\(l \ne 1\)), represents the effects of the
 \emph{l}-th individual-level predictor (e.g., SLA) on the variation in
@@ -280,9 +290,13 @@ effective sample sizes \textgreater{} 400
 all parameters. All statistical analyses were conducted in R version
 4.2.1 (\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using
 the R package \emph{targets} version 0.13.5 for workflow management
-(\protect\hyperlink{ref-Landau2021}{Landau 2021}). Codes and datasets
-are available at https://github.com/mattocci27/trait-ndd and XXXX,
-respectively.
+(\protect\hyperlink{ref-Landau2021}{Landau 2021}). For further details,
+see Appendix S1. Codes and datasets are available at
+https://github.com/mattocci27/trait-ndd and XXXX, respectively.
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}

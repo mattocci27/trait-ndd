@@ -59,7 +59,7 @@ source(here("R", "stan.R"))
 source(here("R", "render.R"))
 ```
 
-# `r s_append("method")` - Extended methods
+# `r s_append("method")` - Extended model description
 
 We modeled the seedling survival for the dry and rainy seasons separately.
 Since the effect of tree neighbors on seedling survival is nonlinear on a logistic scale [@Detto2019], we performed a grid-search for the scaling parameter *c* between 0 and 1 in 0.01 increments that maximized the likelihood of the following survival model,
@@ -100,16 +100,17 @@ We also considered models with phylogenetic density effects instead of heterospe
 In the species-level regression, the row vector of coefficients ($\boldsymbol{\beta_{1-K}}$) of each species *j* were assumed to have a multivariate normal distribution through the Cholesky factorization [@StanDevelopmentTeam2021],
 
 $$
-\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\sigma})\cdot \boldsymbol{L} \cdot \boldsymbol{z},
+\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\tau})\cdot \boldsymbol{\Omega_L} \cdot \boldsymbol{z},
 $$
 
 where $\boldsymbol{u_{j}} = \left[u_{1,j}, u_{2,j}, \ldots, u_{L,j} \right]$ is the row vector of predictors of size *L* for species *j*,
 *L* is the number of predictors for each species (i.e., the number of traits including an intercept),
 $\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]$ is the coefficient *L*-vector for *k*th predictor in the individual-level regression,
-$\mathrm{diag}(\boldsymbol{\sigma})$ is the diagonal matrix with the diagonal vector of coefficient scales,
-$\boldsymbol{L}$ is the Cholesky factor of the original correlation matrix which can be derived using a Cholesky decomposition for the covariance matrix of the original multivariate normal distribution,
+$\mathrm{diag}(\boldsymbol{\tau})$ is the diagonal matrix with the diagonal vector of coefficient scales,
+$\boldsymbol{\Omega_L}$ is the Cholesky factor of the original correlation matrix, which can be derived using a Cholesky decomposition for the covariance matrix of the original multivariate normal distribution,
 $\boldsymbol{z}$ is a *K* $\times$ *J* matrix of latent Gaussian variables, and
 *J* is the number of species.
+We modeled five different sets of species-level predictors separately.
 The set of species-level predictor variables ($\boldsymbol{u_j}$) includes
 1)
 LDMC,
@@ -131,13 +132,26 @@ whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th indivi
 To allow comparisons among parameter estimates, the individual-level predictors ($\boldsymbol{x_i}$) and the species-level predictors ($\boldsymbol{u_j}$) were scaled to a mean of 0 and standard deviation of 1 within each season and across species, respectively.
 
 Posterior distributions of all parameters were estimated using the Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
+Prior distributions for the species-level predictors ($\boldsymbol{\gamma_k}$) were independent normal distributions with a mean of 0 and standard deviation of 2.5;
+prior distributions for the latent Gaussian variables ($\boldsymbol{z}$) were independent standard normal distributions.
+A prior distribution for the Cholesky factor of the correlation matrix ($\boldsymbol{\Omega_L}$) was the Cholesky LKJ correlation distribution with a parameter of 2 (which indicates matrices with smaller correlations).
 Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013] and effective sample sizes > 400 [@Vehtari2021] for all parameters.
+
 All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.13.5 for workflow management [@Landau2021].
 Codes and datasets are available at
 https://github.com/mattocci27/trait-ndd
 and
 XXXX,
 respectively.
+
+\newpage
+
+# `r s_append("code")` - Stan code
+
+Stan code for the multilevel logistic regression in the main text.
+
+```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+```
 
 \newpage
 
@@ -455,12 +469,6 @@ wet_abund_gamma |>
 gen_si_tab(wet_abund_gamma)
 ```
 
-
-# Model (Stan code)
-
-Stan code for the multilevel logistic regression in the main text.
-
-```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
-```
+\newpage
 
 # References

@@ -234,11 +234,11 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, frame hidden, boxrule=0pt, enhanced, breakable, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
-\hypertarget{appendix-s1---extended-methods}{%
-\section{Appendix S1 - Extended
-methods}\label{appendix-s1---extended-methods}}
+\hypertarget{appendix-s1---extended-model-description}{%
+\section{Appendix S1 - Extended model
+description}\label{appendix-s1---extended-model-description}}
 
 We modeled the seedling survival for the dry and rainy seasons
 separately. Since the effect of tree neighbors on seedling survival is
@@ -295,7 +295,7 @@ factorization (\protect\hyperlink{ref-StanDevelopmentTeam2021}{Stan
 Development Team 2021}),
 
 \[
-\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\sigma})\cdot \boldsymbol{L} \cdot \boldsymbol{z},
+\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\tau})\cdot \boldsymbol{\Omega_L} \cdot \boldsymbol{z},
 \]
 
 where
@@ -305,44 +305,127 @@ is the row vector of predictors of size \emph{L} for species \emph{j},
 of traits including an intercept),
 \(\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]\)
 is the coefficient \emph{L}-vector for \emph{k}th predictor in the
-individual-level regression, \(\mathrm{diag}(\boldsymbol{\sigma})\) is
-the diagonal matrix with the diagonal vector of coefficient scales,
-\(\boldsymbol{L}\) is the Cholesky factor of the original correlation
-matrix which can be derived using a Cholesky decomposition for the
-covariance matrix of the original multivariate normal distribution,
-\(\boldsymbol{z}\) is a \emph{K} \(\times\) \emph{J} matrix of latent
-Gaussian variables, and \emph{J} is the number of species. The set of
-species-level predictor variables (\(\boldsymbol{u_j}\)) includes 1)
-LDMC, SDMC, LA, SLA, Chl, LT, \(\delta\)C\textsubscript{13}, C, N, and
-\(\pi\)\textsubscript{tlp}, 2) abundance, 3) basal area, 4) abundance
-and basal area, and 5) abundance, basal area and their interactions. The
-row vector \(\gamma_{k,1}\) represents average effects of the each
-individual-level predictor (e.g., \emph{ConS}) across species, whereas
-\(\gamma_{k, l}\) (\(l \ne 1\)), represents the effects of the
-\emph{l}-th individual-level predictor (e.g., SLA) on the variation in
-the strength of the each individual-level predictor (e.g., variation in
-the strength of \emph{ConS} among species). To allow comparisons among
-parameter estimates, the individual-level predictors
-(\(\boldsymbol{x_i}\)) and the species-level predictors
-(\(\boldsymbol{u_j}\)) were scaled to a mean of 0 and standard deviation
-of 1 within each season and across species, respectively.
+individual-level regression, \(\mathrm{diag}(\boldsymbol{\tau})\) is the
+diagonal matrix with the diagonal vector of coefficient scales,
+\(\boldsymbol{\Omega_L}\) is the Cholesky factor of the original
+correlation matrix, which can be derived using a Cholesky decomposition
+for the covariance matrix of the original multivariate normal
+distribution, \(\boldsymbol{z}\) is a \emph{K} \(\times\) \emph{J}
+matrix of latent Gaussian variables, and \emph{J} is the number of
+species. We modeled five different sets of species-level predictors
+separately. The set of species-level predictor variables
+(\(\boldsymbol{u_j}\)) includes 1) LDMC, SDMC, LA, SLA, Chl, LT,
+\(\delta\)C\textsubscript{13}, C, N, and \(\pi\)\textsubscript{tlp}, 2)
+abundance, 3) basal area, 4) abundance and basal area, and 5) abundance,
+basal area and their interactions. The row vector \(\gamma_{k,1}\)
+represents average effects of the each individual-level predictor (e.g.,
+\emph{ConS}) across species, whereas \(\gamma_{k, l}\) (\(l \ne 1\)),
+represents the effects of the \emph{l}-th individual-level predictor
+(e.g., SLA) on the variation in the strength of the each
+individual-level predictor (e.g., variation in the strength of
+\emph{ConS} among species). To allow comparisons among parameter
+estimates, the individual-level predictors (\(\boldsymbol{x_i}\)) and
+the species-level predictors (\(\boldsymbol{u_j}\)) were scaled to a
+mean of 0 and standard deviation of 1 within each season and across
+species, respectively.
 
 Posterior distributions of all parameters were estimated using the
 Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan
 (\protect\hyperlink{ref-Carpenter2017}{Carpenter \emph{et al.} 2017})
 using the weakly-informative priors
-(\protect\hyperlink{ref-Gelman2008}{Gelman \emph{et al.} 2008}).
-Convergence of the posterior distribution was assessed with the
-Gelman-Rubin statistic with a convergence threshold of 1.1
-(\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.} 2013}) and
-effective sample sizes \textgreater{} 400
+(\protect\hyperlink{ref-Gelman2008}{Gelman \emph{et al.} 2008}). Prior
+distributions for the species-level predictors
+(\(\boldsymbol{\gamma_k}\)) were independent normal distributions with a
+mean of 0 and standard deviation of 2.5; prior distributions for the
+latent Gaussian variables (\(\boldsymbol{z}\)) were independent standard
+normal distributions. A prior distribution for the Cholesky factor of
+the correlation matrix (\(\boldsymbol{\Omega_L}\)) was the Cholesky LKJ
+correlation distribution with a parameter of 2 (which indicates matrices
+with smaller correlations). Convergence of the posterior distribution
+was assessed with the Gelman-Rubin statistic with a convergence
+threshold of 1.1 (\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et
+al.} 2013}) and effective sample sizes \textgreater{} 400
 (\protect\hyperlink{ref-Vehtari2021}{Vehtari \emph{et al.} 2021}) for
-all parameters. All statistical analyses were conducted in R version
-4.2.1 (\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using
-the R package \emph{targets} version 0.13.5 for workflow management
-(\protect\hyperlink{ref-Landau2021}{Landau 2021}). For further details,
-see Appendix S1. Codes and datasets are available at
-https://github.com/mattocci27/trait-ndd and XXXX, respectively.
+all parameters.
+
+All statistical analyses were conducted in R version 4.2.1
+(\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using the R
+package \emph{targets} version 0.13.5 for workflow management
+(\protect\hyperlink{ref-Landau2021}{Landau 2021}). Codes and datasets
+are available at https://github.com/mattocci27/trait-ndd and XXXX,
+respectively.
+
+\newpage
+
+\hypertarget{appendix-s2---stan-code}{%
+\section{Appendix S2 - Stan code}\label{appendix-s2---stan-code}}
+
+Stan code for the multilevel logistic regression in the main text.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{\{}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} N; }\CommentTok{// number of samples}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} J; }\CommentTok{// number of sp}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} K; }\CommentTok{// number of tree{-}level preditors (i.e, CONS, HETS,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} L; }\CommentTok{// number of sp{-}level predictors (i.e., interecept, SLA,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} S; }\CommentTok{// number of sites}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} T; }\CommentTok{// number of censuses}
+  \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
+  \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
+\NormalTok{\}}
+
+\KeywordTok{parameters}\NormalTok{\{}
+  \DataTypeTok{matrix}\NormalTok{[K, L] gamma;}
+  \DataTypeTok{matrix}\NormalTok{[K, J] z;}
+  \DataTypeTok{vector}\NormalTok{[S] phi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[T] xi\_raw;}
+  \DataTypeTok{cholesky\_factor\_corr}\NormalTok{[K] L\_Omega;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[K] tau\_unif;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[}\DecValTok{2}\NormalTok{] sig\_unif;}
+\NormalTok{\}}
+
+\KeywordTok{transformed parameters}\NormalTok{\{}
+  \DataTypeTok{matrix}\NormalTok{[K, J] beta;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[K] tau;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[}\DecValTok{2}\NormalTok{] sig;}
+  \DataTypeTok{vector}\NormalTok{[S] phi;}
+  \DataTypeTok{vector}\NormalTok{[T] xi;}
+  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:K) tau[k] = }\FloatTok{2.5}\NormalTok{ * tan(tau\_unif[k]);}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:}\DecValTok{2}\NormalTok{) sig[i] = }\FloatTok{2.5}\NormalTok{ * tan(sig\_unif[i]);}
+\NormalTok{  beta = gamma * u + diag\_pre\_multiply(tau, L\_Omega) * z;}
+\NormalTok{  phi = phi\_raw * sig[}\DecValTok{1}\NormalTok{];}
+\NormalTok{  xi = xi\_raw * sig[}\DecValTok{2}\NormalTok{];}
+\NormalTok{\}}
+
+\KeywordTok{model}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] mu;}
+\NormalTok{  to\_vector(z) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(phi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(xi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  L\_Omega \textasciitilde{} lkj\_corr\_cholesky(}\DecValTok{2}\NormalTok{);}
+\NormalTok{  to\_vector(gamma) \textasciitilde{} normal(}\DecValTok{0}\NormalTok{, }\FloatTok{2.5}\NormalTok{);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    mu[n] = x[n, ] * beta[, sp[n]];}
+\NormalTok{  \}}
+\NormalTok{  suv \textasciitilde{} bernoulli\_logit(mu + phi[plot] + xi[census]);}
+\NormalTok{\}}
+
+\KeywordTok{generated quantities}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] log\_lik;}
+  \DataTypeTok{corr\_matrix}\NormalTok{[K] Omega;}
+\NormalTok{  Omega = multiply\_lower\_tri\_self\_transpose(L\_Omega);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    log\_lik[n] = bernoulli\_logit\_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +}
+\NormalTok{      phi[plot[n]] + xi[census[n]]);}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 \newpage
 
@@ -839,75 +922,7 @@ $\gamma_{10,2}$ & -0.001 & {}[-0.064, 0.063] & HetS $\times$ Rainfall & ln Abund
 $\gamma_{12,2}$ & 0.054 & {}[-0.04, 0.154] & HetT $\times$ Rainfall & ln Abundance\\*
 \end{longtable}
 
-\hypertarget{model-stan-code}{%
-\section{Model (Stan code)}\label{model-stan-code}}
-
-Stan code for the multilevel logistic regression in the main text.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{data}\NormalTok{\{}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} N; }\CommentTok{// number of samples}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} J; }\CommentTok{// number of sp}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} K; }\CommentTok{// number of tree{-}level preditors (i.e, CONS, HETS,...)}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} L; }\CommentTok{// number of sp{-}level predictors (i.e., interecept, SLA,...)}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} S; }\CommentTok{// number of sites}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} T; }\CommentTok{// number of censuses}
-  \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
-  \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
-\NormalTok{\}}
-
-\KeywordTok{parameters}\NormalTok{\{}
-  \DataTypeTok{matrix}\NormalTok{[K, L] gamma;}
-  \DataTypeTok{matrix}\NormalTok{[K, J] z;}
-  \DataTypeTok{vector}\NormalTok{[S] phi\_raw;}
-  \DataTypeTok{vector}\NormalTok{[T] xi\_raw;}
-  \DataTypeTok{cholesky\_factor\_corr}\NormalTok{[K] L\_Omega;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[K] tau\_unif;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[}\DecValTok{2}\NormalTok{] sig\_unif;}
-\NormalTok{\}}
-
-\KeywordTok{transformed parameters}\NormalTok{\{}
-  \DataTypeTok{matrix}\NormalTok{[K, J] beta;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[K] tau;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[}\DecValTok{2}\NormalTok{] sig;}
-  \DataTypeTok{vector}\NormalTok{[S] phi;}
-  \DataTypeTok{vector}\NormalTok{[T] xi;}
-  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:K) tau[k] = }\FloatTok{2.5}\NormalTok{ * tan(tau\_unif[k]);}
-  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:}\DecValTok{2}\NormalTok{) sig[i] = }\FloatTok{2.5}\NormalTok{ * tan(sig\_unif[i]);}
-\NormalTok{  beta = gamma * u + diag\_pre\_multiply(tau, L\_Omega) * z;}
-\NormalTok{  phi = phi\_raw * sig[}\DecValTok{1}\NormalTok{];}
-\NormalTok{  xi = xi\_raw * sig[}\DecValTok{2}\NormalTok{];}
-\NormalTok{\}}
-
-\KeywordTok{model}\NormalTok{ \{}
-  \DataTypeTok{vector}\NormalTok{[N] mu;}
-\NormalTok{  to\_vector(z) \textasciitilde{} std\_normal();}
-\NormalTok{  to\_vector(phi\_raw) \textasciitilde{} std\_normal();}
-\NormalTok{  to\_vector(xi\_raw) \textasciitilde{} std\_normal();}
-\NormalTok{  L\_Omega \textasciitilde{} lkj\_corr\_cholesky(}\DecValTok{2}\NormalTok{);}
-\NormalTok{  to\_vector(gamma) \textasciitilde{} normal(}\DecValTok{0}\NormalTok{, }\FloatTok{2.5}\NormalTok{);}
-  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
-\NormalTok{    mu[n] = x[n, ] * beta[, sp[n]];}
-\NormalTok{  \}}
-\NormalTok{  suv \textasciitilde{} bernoulli\_logit(mu + phi[plot] + xi[census]);}
-\NormalTok{\}}
-
-\KeywordTok{generated quantities}\NormalTok{ \{}
-  \DataTypeTok{vector}\NormalTok{[N] log\_lik;}
-  \DataTypeTok{corr\_matrix}\NormalTok{[K] Omega;}
-\NormalTok{  Omega = multiply\_lower\_tri\_self\_transpose(L\_Omega);}
-  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
-\NormalTok{    log\_lik[n] = bernoulli\_logit\_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +}
-\NormalTok{      phi[plot[n]] + xi[census[n]]);}
-\NormalTok{  \}}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
+\newpage
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
