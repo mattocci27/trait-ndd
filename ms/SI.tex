@@ -234,7 +234,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, boxrule=0pt, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, frame hidden, boxrule=0pt, enhanced, breakable, sharp corners]}{\end{tcolorbox}}\fi
 
 \hypertarget{appendix-s1---extended-methods}{%
 \section{Appendix S1 - Extended
@@ -264,11 +264,11 @@ individual \emph{m} for species \emph{j} in census \emph{t} in plot
 \emph{p} was modeled using the Bernoulli distribution (\(\mathcal{B}\)):
 
 \[
-s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, m, t, p}),
+s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, t, p}),
 \]
 
 \[
-\mathrm{logit}(p_{i,j,m,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \phi_p + \omega_t + \psi_m,
+\mathrm{logit}(p_{i,j,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \phi_p + \omega_t,
 \]
 
 where
@@ -277,16 +277,16 @@ is the coefficient row \emph{K}-vector for species \emph{j}, \emph{K} is
 the number of predictors for an individual seedling,
 \(\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]\) is
 the vector of predictors of size \emph{K} for an individual seedling,
-\(\phi_p\) is the random effect for seedling plots, \(\omega_t\) is the
-random effect for different census, and \(\psi_m\) is the random effect
-for the repeated observations of the same individuals (note that
-\(\cdot\) denotes dot product). The set of predictor variables
-(\(\boldsymbol{x_i}\)) includes intercept, log of seedling heights,
-rainfall, densities of conspecific (\emph{ConS}) and heterospecific
-(\emph{HetS}) seedlings, densities of conspecific (\emph{ConA}) and
-heterospecific (\emph{HetA}) trees that are scaled by 0.27 for the dry
-season or 0.24 for the rainy season, and the interactions of rains with
-\emph{ConS}, with \emph{HetS}, with \emph{ConA} and with \emph{HetA}.
+\(\phi_p\) is the random effect for seedling plots, and \(\omega_t\) is
+the random effect for different census (note that \(\cdot\) denotes dot
+product). The set of predictor variables (\(\boldsymbol{x_i}\)) includes
+intercept, log of seedling heights, rainfall, densities of conspecific
+(\emph{ConS}) and heterospecific (\emph{HetS}) seedlings, densities of
+conspecific (\emph{ConA}) and heterospecific (\emph{HetA}) trees that
+are scaled by 0.27 for the dry season or 0.24 for the rainy season, and
+the interactions of rains with \emph{ConS}, with \emph{HetS}, with
+\emph{ConA} and with \emph{HetA}. We also considered models with
+phylogenetic density effects instead of heterospecific density effects.
 
 In the species-level regression, the row vector of coefficients
 (\(\boldsymbol{\beta_{1-K}}\)) of each species \emph{j} were assumed to
@@ -312,19 +312,20 @@ matrix which can be derived using a Cholesky decomposition for the
 covariance matrix of the original multivariate normal distribution,
 \(\boldsymbol{z}\) is a \emph{K} \(\times\) \emph{J} matrix of latent
 Gaussian variables, and \emph{J} is the number of species. The set of
-species-level predictor variables (\(\boldsymbol{u_j}\)) includes LDMC,
-SDMC, LA, SLA, Chl, LT, \(\delta\)C\textsubscript{13}, C, N, and
-\(\pi\)\textsubscript{tlp}. The row vector \(\gamma_{k,1}\) represents
-average effects of the each individual-level predictor (e.g.,
-\emph{ConS}) across species, whereas \(\gamma_{k, l}\) (\(l \ne 1\)),
-represents the effects of the \emph{l}-th individual-level predictor
-(e.g., SLA) on the variation in the strength of the each
-individual-level predictor (e.g., variation in the strength of
-\emph{ConS} among species). To allow comparisons among parameter
-estimates, the individual-level predictors (\(\boldsymbol{x_i}\)) and
-the species-level predictors (\(\boldsymbol{u_j}\)) were scaled to a
-mean of 0 and standard deviation of 1 within each season and across
-species, respectively.
+species-level predictor variables (\(\boldsymbol{u_j}\)) includes 1)
+LDMC, SDMC, LA, SLA, Chl, LT, \(\delta\)C\textsubscript{13}, C, N, and
+\(\pi\)\textsubscript{tlp}, 2) abundance, 3) basal area, 4) abundance
+and basal area, and 5) abundance, basal area and their interactions. The
+row vector \(\gamma_{k,1}\) represents average effects of the each
+individual-level predictor (e.g., \emph{ConS}) across species, whereas
+\(\gamma_{k, l}\) (\(l \ne 1\)), represents the effects of the
+\emph{l}-th individual-level predictor (e.g., SLA) on the variation in
+the strength of the each individual-level predictor (e.g., variation in
+the strength of \emph{ConS} among species). To allow comparisons among
+parameter estimates, the individual-level predictors
+(\(\boldsymbol{x_i}\)) and the species-level predictors
+(\(\boldsymbol{u_j}\)) were scaled to a mean of 0 and standard deviation
+of 1 within each season and across species, respectively.
 
 Posterior distributions of all parameters were estimated using the
 Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan
@@ -332,12 +333,16 @@ Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan
 using the weakly-informative priors
 (\protect\hyperlink{ref-Gelman2008}{Gelman \emph{et al.} 2008}).
 Convergence of the posterior distribution was assessed with the
-Gelman-Rubin statistic with a convergence threshold of 1.1 for all
-parameters (\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.}
-2013}). All statistical analyses were conducted in R version 4.2.1
-(\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using the R
-package \emph{targets} version 0.12.1 for workflow management
-(\protect\hyperlink{ref-Landau2021}{Landau 2021}).
+Gelman-Rubin statistic with a convergence threshold of 1.1
+(\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.} 2013}) and
+effective sample sizes \textgreater{} 400
+(\protect\hyperlink{ref-Vehtari2021}{Vehtari \emph{et al.} 2021}) for
+all parameters. All statistical analyses were conducted in R version
+4.2.1 (\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using
+the R package \emph{targets} version 0.13.5 for workflow management
+(\protect\hyperlink{ref-Landau2021}{Landau 2021}). For further details,
+see Appendix S1. Codes and datasets are available at
+https://github.com/mattocci27/trait-ndd and XXXX, respectively.
 
 \newpage
 
@@ -904,6 +909,10 @@ Stan code for the multilevel logistic regression in the main text.
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
 \leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
@@ -921,8 +930,10 @@ Letters}, 22, 1923--1939.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
 Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. \&
-Rubin, D.B. (2013). \emph{Bayesian {Data Analysis}, {Third Edition}}.
-{Chapman \& Hall/CRC}, {Boca Raton, FL, USA.}
+Rubin, D.B. (2013).
+\emph{\href{https://books.google.com.pa/books?id=eSHSBQAAQBAJ}{Bayesian
+{Data Analysis}, {Third Edition}}}. {Chapman \& Hall/CRC}, {Boca Raton,
+FL, USA.}
 
 \leavevmode\vadjust pre{\hypertarget{ref-Gelman2008}{}}%
 Gelman, A., Jakulin, A., Pittau, M.G. \& Su, Y.S. (2008).
@@ -937,13 +948,21 @@ toolkit for reproducibility and high-performance computing}.
 \emph{Journal of Open Source Software}, 6, 2959.
 
 \leavevmode\vadjust pre{\hypertarget{ref-RCoreTeam2022}{}}%
-R Core Team. (2022). \emph{R: {A} language and environment for
-statistical computing}. Manual. {R Foundation for Statistical
-Computing}, {Vienna, Austria}.
+R Core Team. (2022). \emph{\href{https://www.R-project.org/}{R: {A}
+language and environment for statistical computing}}. manual. {R
+Foundation for Statistical Computing}, {Vienna, Austria}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-StanDevelopmentTeam2021}{}}%
-Stan Development Team. (2021). Stan user's guide v2.28 ({Accesed
-December} 16 2021).
+Stan Development Team. (2021). \emph{Stan user's guide v2.28 ({Accesed
+December} 16 2021)}. Available at:
+\href{https://mc-stan.org/docs/2_28/reference-manual/index.html}{https://mc-stan.org/docs/2\_28/reference-manual/index.html.}
+Last accessed.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Vehtari2021}{}}%
+Vehtari, A., Gelman, A., Simpson, D., Carpenter, B. \& Bürkner, P.-C.
+(2021). \href{https://doi.org/10.1214/20-BA1221}{Rank-{Normalization},
+{Folding}, and {Localization}: {An Improved Rˆ} for {Assessing
+Convergence} of {MCMC} (with {Discussion})}. \emph{ba}, 16, 667--718.
 
 \end{CSLReferences}
 

@@ -75,19 +75,18 @@ We built Bayesian hierarchical models that include variation among species in th
 Survival ($s$) of seedling record *i* of individual *m* for species *j* in census *t* in plot *p* was modeled using the Bernoulli distribution ($\mathcal{B}$):
 
 $$
-s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, m, t, p}),
+s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, t, p}),
 $$
 
 $$
-\mathrm{logit}(p_{i,j,m,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \phi_p + \omega_t + \psi_m,
+\mathrm{logit}(p_{i,j,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \phi_p + \omega_t,
 $$
 
 where $\boldsymbol{\beta_{j}} = \left[\beta_{1,j}, \beta_{2,j}, \ldots, \beta_{K,j} \right]$ is the coefficient row *K*-vector for species *j*,
 *K* is the number of predictors for an individual seedling,
 $\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]$ is the vector of predictors of size *K* for an individual seedling,
-$\phi_p$ is the random effect for seedling plots,
-$\omega_t$ is the random effect for different census, and
-$\psi_m$ is the random effect for the repeated observations of the same individuals
+$\phi_p$ is the random effect for seedling plots, and
+$\omega_t$ is the random effect for different census
 (note that $\cdot$ denotes dot product).
 The set of predictor variables ($\boldsymbol{x_i}$) includes
 intercept,
@@ -96,6 +95,7 @@ rainfall,
 densities of conspecific (*ConS*) and heterospecific (*HetS*) seedlings,
 densities of conspecific (*ConA*) and heterospecific (*HetA*) trees that are scaled by 0.27 for the dry season or 0.24 for the rainy season,
 and the interactions of rains with *ConS*, with *HetS*, with *ConA* and with *HetA*.
+We also considered models with phylogenetic density effects instead of heterospecific density effects.
 
 In the species-level regression, the row vector of coefficients ($\boldsymbol{\beta_{1-K}}$) of each species *j* were assumed to have a multivariate normal distribution through the Cholesky factorization [@StanDevelopmentTeam2021],
 
@@ -111,6 +111,7 @@ $\boldsymbol{L}$ is the Cholesky factor of the original correlation matrix which
 $\boldsymbol{z}$ is a *K* $\times$ *J* matrix of latent Gaussian variables, and
 *J* is the number of species.
 The set of species-level predictor variables ($\boldsymbol{u_j}$) includes
+1)
 LDMC,
 SDMC,
 LA,
@@ -120,15 +121,23 @@ LT,
 $\delta$C~13~,
 C,
 N, and
-$\pi$~tlp~.
+$\pi$~tlp~,
+2) abundance,
+3) basal area,
+4) abundance and basal area, and
+5) abundance, basal area and their interactions.
 The row vector $\gamma_{k,1}$ represents average effects of the each individual-level predictor (e.g., *ConS*) across species,
 whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th individual-level predictor (e.g., SLA) on the variation in the strength of the each individual-level predictor (e.g., variation in the strength of *ConS* among species).
 To allow comparisons among parameter estimates, the individual-level predictors ($\boldsymbol{x_i}$) and the species-level predictors ($\boldsymbol{u_j}$) were scaled to a mean of 0 and standard deviation of 1 within each season and across species, respectively.
 
 Posterior distributions of all parameters were estimated using the Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
-Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 for all parameters [@Gelman2013].
-All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.12.1 for workflow management [@Landau2021].
-
+Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013] and effective sample sizes > 400 [@Vehtari2021] for all parameters.
+All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.13.5 for workflow management [@Landau2021].
+Codes and datasets are available at
+https://github.com/mattocci27/trait-ndd
+and
+XXXX,
+respectively.
 
 \newpage
 
@@ -183,7 +192,6 @@ for (i in 1:length(tmp)) {
 }
 
 diagnostics_tbl <- tibble(model = loo_names, n_ess, n_div)
-
 
 write_diagnostic_tables <- function(loo_tbl, diagnostics_tbl, season, abund = FALSE) {
   if(abund) {
@@ -454,3 +462,5 @@ Stan code for the multilevel logistic regression in the main text.
 
 ```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```
+
+# References
