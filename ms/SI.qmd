@@ -2,8 +2,8 @@
 fontsize: 12pt
 geometry: margin=1in
 link-citations: yes
-# csl: templates/ecology-letters.csl
-# bibliography: templates/seedling.bib
+csl: templates/ecology-letters.csl
+bibliography: templates/seedling.bib
 crossref:
   fig-title: Fig.
   fig-prefix: Fig.
@@ -17,6 +17,7 @@ format:
     self-contained: true
     smooth-scroll: true
     highlight-style: github
+    embed-resources: true
   docx:
     toc: false
     number-sections: false
@@ -31,6 +32,13 @@ format:
         \usepackage{xr}
         \usepackage[default]{sourcesanspro}
         \usepackage{sourcecodepro}
+        \usepackage{fancyhdr}
+        \usepackage{fvextra}
+        \pagestyle{fancy}
+        \fancypagestyle{plain}{\pagestyle{fancy}}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist?-- Appendix X}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 
 ```{r global_options, include=FALSE}
@@ -48,20 +56,301 @@ library(kableExtra)
 
 ```{r}
 source(here("R", "stan.R"))
+source(here("R", "render.R"))
 ```
 
+# `r s_fig("site_info")`
+
+Plot location in Xishuangbanna, China (A) and topography map (B) of the 20-ha plot and the components of a census station.
+The numbers in the contour map are elevation (m), and the squares represent the locations of the 150 seed traps (B).
+Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C).
+
+![](`r here::here("data-raw/site_info.jpg")`)
+
+\newpage
+
+# `r s_fig("rainfall")`
+
+Seasonal rainfall pattern in this area (data from November 2007- November 2017), November to April is the dry season (red bars), and May to October is the rainy season (blue bars).
+
+![](`r here::here("data-raw/rainfall.jpg")`)
+
+\newpage
+
+
+# `r s_append("method")` - Extended model description
+
+We modeled the seedling survival for the dry and rainy seasons separately.
+Since the effect of tree neighbors on seedling survival is nonlinear on a logistic scale [@Detto2019], we performed a grid-search for the scaling parameter *c* between 0 and 1 in 0.01 increments that maximized the likelihood of the following survival model,
+
+$$
+\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c,
+$$
+
+where $p_i$ is the individual survival probability in the *i*th census interval, and $Z_1$ and $Z_2$ are distance-weighted sums of basal areas of conspecifics and heterospecifics respectively.
+We found that $c$ = 0.27 for the dry season and $c$ = 0.24 for the rainy season were the best estimates for our dataset.
+
+We built Bayesian hierarchical models that include variation among species in the effects of conspecific and heterospecific neighbours, and rainfall on survival.
+Survival ($s$) of seedling record *i* of individual *m* for species *j* in census *t* in plot *p* was modeled using the Bernoulli distribution ($\mathcal{B}$):
+
+$$
+s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, t, p}),
+$$
+
+$$
+\mathrm{logit}(p_{i,j,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \phi_p + \omega_t,
+$$
+
+where $\boldsymbol{\beta_{j}} = \left[\beta_{1,j}, \beta_{2,j}, \ldots, \beta_{K,j} \right]$ is the coefficient row *K*-vector for species *j*,
+*K* is the number of predictors for an individual seedling,
+$\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]$ is the vector of predictors of size *K* for an individual seedling,
+$\phi_p$ is the random effect for seedling plots, and
+$\omega_t$ is the random effect for different census
+(note that $\cdot$ denotes dot product).
+The set of predictor variables ($\boldsymbol{x_i}$) includes
+intercept,
+log of seedling heights,
+rainfall,
+densities of conspecific (*ConS*) and heterospecific (*HetS*) seedlings,
+densities of conspecific (*ConA*) and heterospecific (*HetA*) trees that are scaled by 0.27 for the dry season or 0.24 for the rainy season,
+and the interactions of rains with *ConS*, with *HetS*, with *ConA* and with *HetA*.
+We also considered models with phylogenetic density effects instead of heterospecific density effects.
+
+In the species-level regression, the row vector of coefficients ($\boldsymbol{\beta_{1-K}}$) of each species *j* were assumed to have a multivariate normal distribution through the Cholesky factorization [@StanDevelopmentTeam2021],
+
+$$
+\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\tau})\cdot \boldsymbol{\Omega_L} \cdot \boldsymbol{z},
+$$
+
+where $\boldsymbol{u_{j}} = \left[u_{1,j}, u_{2,j}, \ldots, u_{L,j} \right]$ is the row vector of predictors of size *L* for species *j*,
+*L* is the number of predictors for each species (i.e., the number of traits including an intercept),
+$\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]$ is the coefficient *L*-vector for *k*th predictor in the individual-level regression,
+$\mathrm{diag}(\boldsymbol{\tau})$ is the diagonal matrix with the diagonal vector of coefficient scales,
+$\boldsymbol{\Omega_L}$ is the Cholesky factor of the original correlation matrix, which can be derived using a Cholesky decomposition for the covariance matrix of the original multivariate normal distribution,
+$\boldsymbol{z}$ is a *K* $\times$ *J* matrix of latent Gaussian variables, and
+*J* is the number of species.
+We modeled five different sets of species-level predictors separately.
+The set of species-level predictor variables ($\boldsymbol{u_j}$) includes
+1)
+LDMC,
+SDMC,
+LA,
+SLA,
+Chl,
+LT,
+$\delta$C~13~,
+C,
+N, and
+$\pi$~tlp~,
+2) abundance,
+3) basal area,
+4) abundance and basal area, and
+5) abundance, basal area and their interactions.
+The row vector $\gamma_{k,1}$ represents average effects of the each individual-level predictor (e.g., *ConS*) across species,
+whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th individual-level predictor (e.g., SLA) on the variation in the strength of the each individual-level predictor (e.g., variation in the strength of *ConS* among species).
+To allow comparisons among parameter estimates, the individual-level predictors ($\boldsymbol{x_i}$) and the species-level predictors ($\boldsymbol{u_j}$) were scaled to a mean of 0 and standard deviation of 1 within each season and across species, respectively.
+
+Posterior distributions of all parameters were estimated using the
+No-U-Turn Sampler (NUTS), an adaptive variant of the Hamiltonian Monte Carlo (HMC), algorithm implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
+The HMC algorithm uses gradient information to propose new states in the Markov chain, leading to a more efficient exploration of the target distribution than traditional Markov chain Monte Carlo (MCMC) methods that rely on random proposals [@Carpenter2017].
+The NUTS algorithm automatically determines the number of Hamiltonian dynamics simulation steps needed to propose a new state in the Markov chain without requiring the user to manually set a fixed number of steps [@Hoffman2014].
+Prior distributions for the species-level predictors ($\boldsymbol{\gamma_k}$) were independent normal distributions with a mean of 0 and standard deviation of 2.5;
+prior distributions for the latent Gaussian variables ($\boldsymbol{z}$) were independent standard normal distributions.
+A prior distribution for the Cholesky factor of the correlation matrix ($\boldsymbol{\Omega_L}$) was the Cholesky LKJ correlation distribution with a parameter of 2 (which indicates matrices with smaller correlations).
+Four independent chains were run for 1,000 iterations for each model with a warm-up of 1,000 iterations.
+Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013] and effective sample sizes > 400 [@Vehtari2021] for all parameters.
+
+All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.13.5 for workflow management [@Landau2021].
+Codes and datasets are available at
+https://github.com/mattocci27/trait-ndd
+and
+XXXX,
+respectively.
+
+\newpage
+
+# `r s_append("code")` - Stan code
+
+Stan code for the multilevel logistic regression in the main text.
+
+```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+```
+
+\newpage
+
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_list))
+
+generate_loo_tbl2 <- function(loo_list)  {
+  loo_list_ori <- loo_list
+  loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
+  loo_list <- loo_list[str_detect(names(loo_list), "simple")]
+  loo_names <- names(loo_list)
+
+  loo_names_split <- str_split_fixed(loo_names, "_", 11)
+
+  loo_tbl <- tibble(model = names(loo_list)) |>
+    mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
+    mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
+    mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
+    mutate(season = loo_names_split[, 8]) |>
+    mutate(phy = loo_names_split[, 9]) |>
+    mutate(rain = loo_names_split[, 10]) |>
+    mutate(traits = loo_names_split[, 11])
+  loo_tbl
+}
+
+loo_tbl <- generate_loo_tbl2(loo_list)
+
+loo_names <- names(loo_list)
+tmp <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_summary")
+tmp2 <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_diagnostics")
+
+n_ess <- NULL
+n_div <- NULL
+for (i in 1:length(tmp)) {
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp[i]))
+  withr::with_dir(rprojroot::find_root('_targets.R'),
+    targets::tar_load(tmp2[i]))
+  assign(loo_names[i], tmp[i])
+  hoge <- get(tmp[i])
+  ess_tail <- hoge |>
+    filter(ess_tail < 400) |>
+    nrow()
+  n_ess[i] <- ess_tail
+
+  hoge2 <- get(tmp2[i])
+  divergent <- hoge2 |>
+    filter(divergent__ != 0) |>
+    nrow()
+  n_div[i] <- divergent
+}
+
+diagnostics_tbl <- tibble(model = loo_names, n_ess, n_div)
+
+write_diagnostic_tables <- function(loo_tbl, diagnostics_tbl, season, abund = FALSE) {
+  if(abund) {
+    tmp <- left_join(loo_tbl, diagnostics_tbl) |>
+        filter(traits != "nlog")
+  } else {
+    tmp <- left_join(loo_tbl, diagnostics_tbl) |>
+        filter(traits == "nlog")
+  }
+
+  tmp <- tmp  |>
+    filter(season == {{season}}) |>
+    arrange(desc(elpd)) |>
+    mutate(traits = case_when(
+      traits == "ab" ~ "Abundance",
+      traits == "ba" ~ "Basal area",
+      traits == "ab1ba" ~ "Abundance + Basal area",
+      traits == "ab2ba" ~ "Abundance $\\times$ Basal area",
+    )) |>
+    mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
+    mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
+    mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
+    mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
+    mutate(rain = case_when(
+      rain == "norain" ~ "No rain",
+      rain == "rain" ~ "Rain without interactions",
+      rain == "intrain" ~ "Rain with all the interactions",
+      rain == "intrain2" ~ "Rain with an interaction of conspecific densities",
+    )) |>
+    mutate(
+      across(1:10,
+      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div > 0, "gray", "black"))
+    ))
+
+  if (abund)  {
+    tmp <- tmp |>
+      dplyr::select(`Seedling densities` = phy,
+        `Rainfall` = rain,
+        `Abundance` = traits,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  } else {
+    tmp <- tmp |>
+      dplyr::select(`Seedling densities` = phy,
+        `Rainfall` = rain,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  }
+
+  tmp  |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = FALSE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = FALSE) #k|>
+}
+
+```
+
+
+# `r s_table("dry_traits_diagnostics")`
+
+Model selection and diagnostics for models with traits in the dry season.
+ELPD: expected log pointwise predictive density (larger values indicate better a model fit),
+LOOIC: leave-one-out deviance information criterion (smaller values indicate a better model fit),
+N_ESS: number of variables that showed effective sample size less than 400,
+N_Div: number of divergent transitions,
+Models that did not converge well are shown in gray (N_ESS > 0 or N_Div > 0).
+
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "dry", abund = FALSE)
+```
+
+\newpage
+
+# `r s_table("wet_traits_diagnostics")`
+
+Model selection and diagnostics for models with traits in the rainy season.
+Details as for `r s_table("dry_traits_diagnostics")`.
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = FALSE)
+```
+\newpage
+
+# `r s_table("dry_abund_diagnostics")`
+
+Model selection and diagnostics for models with abundance in the dry season.
+Details as for `r s_table("dry_traits_diagnostics")`.
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "dry", abund = TRUE)
+```
+
+\newpage
+
+# `r s_table("wet_abund_diagnostics")`
+
+Model selection and diagnostics for models with abundance in the rainy season.
+Details as for `r s_table("dry_traits_diagnostics")`.
+
+```{r}
+write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = TRUE)
+```
+
+\newpage
+
+
 ```{r, include=FALSE}
-dry_gamma <- read_csv(here("data", "dry_gamma.csv"))
-dry_gamma |>
-  filter(q2_5 * q97_5 > 0)
-dry_gamma |>
+dry_traits_gamma <- read_csv(here("data", "dry_traits_gamma.csv"))
+dry_traits_gamma |>
+  filter(q2.5 * q97.5 > 0)
+dry_traits_gamma |>
   filter(trait_name == "intercept")
 ```
 
-# Table S1
+# `r s_table("dry_traits_gamma")`
 
-Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the dry seasons.
-Bold values are significantly different from zero (the 95% CIs do not include zero).
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons.
+Bold values differ significantly from zero (the 95% CIs do not include zero).
 ConS/HetS: conspecific/heterospecific seedling density,
 ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27),
 LDMC: leaf dry matter content,
@@ -79,17 +368,19 @@ LT: leaf thickness.
 gen_si_tab <- function(data) {
   data |>
     mutate(pred_name = case_when(
-      pred_name == "int" ~ "Intercept",
-      pred_name == "logh_scaled" ~ "ln Height",
-      pred_name == "cons_scaled" ~ "ConS",
-      pred_name == "cona_scaled_c" ~ "ConT",
-      pred_name == "hets_scaled" ~ "HetS",
-      pred_name == "heta_scaled_c" ~ "HetT",
-      pred_name == "rain_scaled" ~ "Rainfall",
-      pred_name == "cons_rain" ~ "ConS $\\times$ Rainfall",
-      pred_name == "cona_rain" ~ "ConT $\\times$ Rainfall",
-      pred_name == "hets_rain" ~ "HetS $\\times$ Rainfall",
-      pred_name == "heta_rain" ~ "HetT $\\times$ Rainfall"
+      pred_name == "(Intercept)" ~ "Intercept",
+      pred_name == "logh_s" ~ "ln Height",
+      pred_name == "scon_s" ~ "ConS",
+      pred_name == "acon_s_c" ~ "ConT",
+      pred_name == "shet_s" ~ "HetS",
+      pred_name == "ahet_s_c" ~ "HetT",
+      pred_name == "rain_s" ~ "Rainfall",
+      pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
+      pred_name == "acon_s_c:rain_s" ~ "ConT $\\times$ Rainfall",
+      pred_name == "shet_s:rain_s" ~ "HetS $\\times$ Rainfall",
+      pred_name == "ahet_s_c:rain_s" ~ "HetT $\\times$ Rainfall",
+      pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
+      pred_name == "logh_s:rain_s" ~ "ln Height $\\times$ Rainfall",
     )) |>
     mutate(trait_name = case_when(
       trait_name == "intercept" ~ "Intercept",
@@ -97,37 +388,35 @@ gen_si_tab <- function(data) {
       trait_name == "sdmc" ~ "SDMC",
       trait_name == "chl" ~ "Chl",
       trait_name == "c13" ~ "$\\delta \\mathrm{C_{13}}$",
-      trait_name == "c_mass" ~ "C",
-      trait_name == "n_mass" ~ "N",
+      # trait_name == "c_mass" ~ "C",
+      trait_name == "log_n" ~ "ln N",
       trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
       trait_name == "log_la" ~ "ln LA",
       trait_name == "log_sla" ~ "ln SLA",
-      trait_name == "log_lt" ~ "ln LT")) |>
-    mutate(mean_ = round(mean_, 3)) |>
-    mutate(mean_ = cell_spec(mean_, bold= ifelse(q2_5 * q97_5 > 0, TRUE,FALSE))) |>
-    mutate(q2_5 = round(q2_5, 3)) |>
-    mutate(q5 = round(q5, 3)) |>
-    mutate(q95 = round(q95, 3)) |>
-    mutate(q97_5 = round(q97_5, 3)) |>
+      trait_name == "log_lt" ~ "ln LT",
+      trait_name == "log_ab" ~ "ln Abundance",
+      )) |>
+    mutate_if(is.numeric, round, 3) |>
+    mutate(q50 = cell_spec(q50, bold = ifelse(q2.5 * q97.5 > 0, TRUE, FALSE))) |>
     mutate(`90\\% CI` = paste0("[", q5, ", ", q95, "]")) |>
-    mutate(`95\\% CI` = paste0("[", q2_5, ", ", q97_5, "]")) |>
-    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(q2_5 * q97_5 > 0, TRUE,FALSE))) |>
-    mutate(para = paste0(
+    mutate(`95\\% CI` = paste0("[", q2.5, ", ", q97.5, "]")) |>
+    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold = ifelse(q2.5 * q97.5 > 0, TRUE,FALSE))) |>
+    mutate(variable = paste0(
       "$\\gamma_{",
-      str_split_fixed(data$para, "_" ,3)[,2],
+      str_split_fixed(data$variable, ",|\\[|\\]" ,4)[,2],
       ",",
-      str_split_fixed(data$para, "_" ,3)[,3],
+      str_split_fixed(data$variable, ",|\\[|\\]" ,4)[,3],
       "}$")) |>
-    rename(Parameter = para) |>
-    rename(Mean = mean_) |>
-    rename(`Lower 2.5\\% CI` = q2_5) |>
+    rename(Parameter = variable) |>
+    rename(Median = q50) |>
+    rename(`Lower 2.5\\% CI` = q2.5) |>
     rename(`Lower 5\\% CI` = q5) |>
     rename(`Upper 95\\% CI` = q95) |>
-    rename(`Upper 97.5\\% CI` = q97_5) |>
+    rename(`Upper 97.5\\% CI` = q97.5) |>
     rename(`Individual-level predictor` = pred_name) |>
     rename(`Species-level predictor` = trait_name) |>
     # kable(format = "latex") #|>
-    dplyr::select(Parameter, Mean,
+    dplyr::select(Parameter, Median,
     # `Lower 2.5\\% CI`#,
     #`90\\% CI`,
     `95\\% CI`,
@@ -136,34 +425,73 @@ gen_si_tab <- function(data) {
     ) |>
     kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
     kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
-    #kable_styling()
 }
 ```
 
 ```{r}
-gen_si_tab(dry_gamma)
+gen_si_tab(dry_traits_gamma)
 ```
 
 \newpage
 
-```{r, include=FALSE}
-s_table_full <- captioner::captioner(prefix = "Table S", auto_space = FALSE)
-s_table <- pryr::partial(s_table_full, display = "cite", caption = "blank")
-```
+# `r s_table("wet_traits_gamma")`
 
-# Table S2
-
-Posterior means and 95% credible intervals (CIs) of the effects of species-level predcitors on indivdiual-level precitors ($\gamma$) in the rainy seasons.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
 Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
-Other details as for Table S1.
+Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_gamma <- read_csv(here("data", "wet_gamma.csv"))
-wet_gamma |>
-  filter(q2_5 * q97_5 > 0)
-wet_gamma |>
+wet_traits_gamma <- read_csv(here("data", "wet_traits_gamma.csv"))
+wet_traits_gamma |>
+  filter(q2.5 * q97.5 > 0)
+wet_traits_gamma |>
   filter(trait_name == "intercept")
 ```
+
 ```{r}
-gen_si_tab(wet_gamma)
+gen_si_tab(wet_traits_gamma)
 ```
+
+\newpage
+
+# `r s_table("dry_abund_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
+Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.27.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+dry_abund_gamma <- read_csv(here("data", "dry_abund_gamma.csv"))
+dry_abund_gamma |>
+  filter(q2.5 * q97.5 > 0)
+dry_abund_gamma |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab(dry_abund_gamma)
+```
+
+\newpage
+
+# `r s_table("wet_abund_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
+Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Other details as for `r s_table("dry_abund_gamma")`.
+
+```{r, include=FALSE}
+wet_abund_gamma <- read_csv(here("data", "wet_abund_gamma.csv"))
+wet_abund_gamma |>
+  filter(q2.5 * q97.5 > 0)
+wet_abund_gamma |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab(wet_abund_gamma)
+```
+
+\newpage
+
+# References

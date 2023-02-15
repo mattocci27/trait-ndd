@@ -51,6 +51,46 @@
   \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
 
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
@@ -76,6 +116,29 @@
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -94,6 +157,13 @@
 \usepackage{xr}
 \usepackage[default]{sourcesanspro}
 \usepackage{sourcecodepro}
+\usepackage{fancyhdr}
+\usepackage{fvextra}
+\pagestyle{fancy}
+\fancypagestyle{plain}{\pagestyle{fancy}}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist?-- Appendix X}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 \KOMAoption{captions}{tableheading}
 \makeatletter
 \makeatother
@@ -164,353 +234,794 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, interior hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, sharp corners, breakable, frame hidden, interior hidden]}{\end{tcolorbox}}\fi
+
+\hypertarget{fig.-s1}{%
+\section{Fig. S1}\label{fig.-s1}}
+
+Plot location in Xishuangbanna, China (A) and topography map (B) of the
+20-ha plot and the components of a census station. The numbers in the
+contour map are elevation (m), and the squares represent the locations
+of the 150 seed traps (B). Each of the three 1-m2 seedling plots is 2 m
+away from the central seed trap (C).
+
+\includegraphics{/home/mattocci/seedling-stan/data-raw/site_info.jpg}
+
+\newpage
+
+\hypertarget{fig.-s2}{%
+\section{Fig. S2}\label{fig.-s2}}
+
+Seasonal rainfall pattern in this area (data from November 2007-
+November 2017), November to April is the dry season (red bars), and May
+to October is the rainy season (blue bars).
+
+\includegraphics{/home/mattocci/seedling-stan/data-raw/rainfall.jpg}
+
+\newpage
+
+\hypertarget{appendix-s1---extended-model-description}{%
+\section{Appendix S1 - Extended model
+description}\label{appendix-s1---extended-model-description}}
+
+We modeled the seedling survival for the dry and rainy seasons
+separately. Since the effect of tree neighbors on seedling survival is
+nonlinear on a logistic scale (\protect\hyperlink{ref-Detto2019}{Detto
+\emph{et al.} 2019}), we performed a grid-search for the scaling
+parameter \emph{c} between 0 and 1 in 0.01 increments that maximized the
+likelihood of the following survival model,
+
+\[
+\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c,
+\]
+
+where \(p_i\) is the individual survival probability in the \emph{i}th
+census interval, and \(Z_1\) and \(Z_2\) are distance-weighted sums of
+basal areas of conspecifics and heterospecifics respectively. We found
+that \(c\) = 0.27 for the dry season and \(c\) = 0.24 for the rainy
+season were the best estimates for our dataset.
+
+We built Bayesian hierarchical models that include variation among
+species in the effects of conspecific and heterospecific neighbours, and
+rainfall on survival. Survival (\(s\)) of seedling record \emph{i} of
+individual \emph{m} for species \emph{j} in census \emph{t} in plot
+\emph{p} was modeled using the Bernoulli distribution (\(\mathcal{B}\)):
+
+\[
+s_{i,j,m,t,p} \sim \mathcal{B}(p_{i, j, t, p}),
+\]
+
+\[
+\mathrm{logit}(p_{i,j,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \phi_p + \omega_t,
+\]
+
+where
+\(\boldsymbol{\beta_{j}} = \left[\beta_{1,j}, \beta_{2,j}, \ldots, \beta_{K,j} \right]\)
+is the coefficient row \emph{K}-vector for species \emph{j}, \emph{K} is
+the number of predictors for an individual seedling,
+\(\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]\) is
+the vector of predictors of size \emph{K} for an individual seedling,
+\(\phi_p\) is the random effect for seedling plots, and \(\omega_t\) is
+the random effect for different census (note that \(\cdot\) denotes dot
+product). The set of predictor variables (\(\boldsymbol{x_i}\)) includes
+intercept, log of seedling heights, rainfall, densities of conspecific
+(\emph{ConS}) and heterospecific (\emph{HetS}) seedlings, densities of
+conspecific (\emph{ConA}) and heterospecific (\emph{HetA}) trees that
+are scaled by 0.27 for the dry season or 0.24 for the rainy season, and
+the interactions of rains with \emph{ConS}, with \emph{HetS}, with
+\emph{ConA} and with \emph{HetA}. We also considered models with
+phylogenetic density effects instead of heterospecific density effects.
+
+In the species-level regression, the row vector of coefficients
+(\(\boldsymbol{\beta_{1-K}}\)) of each species \emph{j} were assumed to
+have a multivariate normal distribution through the Cholesky
+factorization (\protect\hyperlink{ref-StanDevelopmentTeam2021}{Stan
+Development Team 2021}),
+
+\[
+\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \mathrm{diag}(\boldsymbol{\tau})\cdot \boldsymbol{\Omega_L} \cdot \boldsymbol{z},
+\]
+
+where
+\(\boldsymbol{u_{j}} = \left[u_{1,j}, u_{2,j}, \ldots, u_{L,j} \right]\)
+is the row vector of predictors of size \emph{L} for species \emph{j},
+\emph{L} is the number of predictors for each species (i.e., the number
+of traits including an intercept),
+\(\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]\)
+is the coefficient \emph{L}-vector for \emph{k}th predictor in the
+individual-level regression, \(\mathrm{diag}(\boldsymbol{\tau})\) is the
+diagonal matrix with the diagonal vector of coefficient scales,
+\(\boldsymbol{\Omega_L}\) is the Cholesky factor of the original
+correlation matrix, which can be derived using a Cholesky decomposition
+for the covariance matrix of the original multivariate normal
+distribution, \(\boldsymbol{z}\) is a \emph{K} \(\times\) \emph{J}
+matrix of latent Gaussian variables, and \emph{J} is the number of
+species. We modeled five different sets of species-level predictors
+separately. The set of species-level predictor variables
+(\(\boldsymbol{u_j}\)) includes 1) LDMC, SDMC, LA, SLA, Chl, LT,
+\(\delta\)C\textsubscript{13}, C, N, and \(\pi\)\textsubscript{tlp}, 2)
+abundance, 3) basal area, 4) abundance and basal area, and 5) abundance,
+basal area and their interactions. The row vector \(\gamma_{k,1}\)
+represents average effects of the each individual-level predictor (e.g.,
+\emph{ConS}) across species, whereas \(\gamma_{k, l}\) (\(l \ne 1\)),
+represents the effects of the \emph{l}-th individual-level predictor
+(e.g., SLA) on the variation in the strength of the each
+individual-level predictor (e.g., variation in the strength of
+\emph{ConS} among species). To allow comparisons among parameter
+estimates, the individual-level predictors (\(\boldsymbol{x_i}\)) and
+the species-level predictors (\(\boldsymbol{u_j}\)) were scaled to a
+mean of 0 and standard deviation of 1 within each season and across
+species, respectively.
+
+Posterior distributions of all parameters were estimated using the
+No-U-Turn Sampler (NUTS), an adaptive variant of the Hamiltonian Monte
+Carlo (HMC), algorithm implemented in Stan
+(\protect\hyperlink{ref-Carpenter2017}{Carpenter \emph{et al.} 2017})
+using the weakly-informative priors
+(\protect\hyperlink{ref-Gelman2008}{Gelman \emph{et al.} 2008}). The HMC
+algorithm uses gradient information to propose new states in the Markov
+chain, leading to a more efficient exploration of the target
+distribution than traditional Markov chain Monte Carlo (MCMC) methods
+that rely on random proposals
+(\protect\hyperlink{ref-Carpenter2017}{Carpenter \emph{et al.} 2017}).
+The NUTS algorithm automatically determines the number of Hamiltonian
+dynamics simulation steps needed to propose a new state in the Markov
+chain without requiring the user to manually set a fixed number of steps
+(\protect\hyperlink{ref-Hoffman2014}{Hoffman \emph{et al.} 2014}). Prior
+distributions for the species-level predictors
+(\(\boldsymbol{\gamma_k}\)) were independent normal distributions with a
+mean of 0 and standard deviation of 2.5; prior distributions for the
+latent Gaussian variables (\(\boldsymbol{z}\)) were independent standard
+normal distributions. A prior distribution for the Cholesky factor of
+the correlation matrix (\(\boldsymbol{\Omega_L}\)) was the Cholesky LKJ
+correlation distribution with a parameter of 2 (which indicates matrices
+with smaller correlations). Four independent chains were run for 1,000
+iterations for each model with a warm-up of 1,000 iterations.
+Convergence of the posterior distribution was assessed with the
+Gelman-Rubin statistic with a convergence threshold of 1.1
+(\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.} 2013}) and
+effective sample sizes \textgreater{} 400
+(\protect\hyperlink{ref-Vehtari2021}{Vehtari \emph{et al.} 2021}) for
+all parameters.
+
+All statistical analyses were conducted in R version 4.2.1
+(\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using the R
+package \emph{targets} version 0.13.5 for workflow management
+(\protect\hyperlink{ref-Landau2021}{Landau 2021}). Codes and datasets
+are available at https://github.com/mattocci27/trait-ndd and XXXX,
+respectively.
+
+\newpage
+
+\hypertarget{appendix-s2---stan-code}{%
+\section{Appendix S2 - Stan code}\label{appendix-s2---stan-code}}
+
+Stan code for the multilevel logistic regression in the main text.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{\{}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} N; }\CommentTok{// number of samples}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} J; }\CommentTok{// number of sp}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} K; }\CommentTok{// number of tree{-}level preditors (i.e, CONS, HETS,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} L; }\CommentTok{// number of sp{-}level predictors (i.e., interecept, SLA,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} S; }\CommentTok{// number of sites}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} T; }\CommentTok{// number of censuses}
+  \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
+  \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
+\NormalTok{\}}
+
+\KeywordTok{parameters}\NormalTok{\{}
+  \DataTypeTok{matrix}\NormalTok{[K, L] gamma;}
+  \DataTypeTok{matrix}\NormalTok{[K, J] z;}
+  \DataTypeTok{vector}\NormalTok{[S] phi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[T] xi\_raw;}
+  \DataTypeTok{cholesky\_factor\_corr}\NormalTok{[K] L\_Omega;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[K] tau\_unif;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[}\DecValTok{2}\NormalTok{] sig\_unif;}
+\NormalTok{\}}
+
+\KeywordTok{transformed parameters}\NormalTok{\{}
+  \DataTypeTok{matrix}\NormalTok{[K, J] beta;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[K] tau;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[}\DecValTok{2}\NormalTok{] sig;}
+  \DataTypeTok{vector}\NormalTok{[S] phi;}
+  \DataTypeTok{vector}\NormalTok{[T] xi;}
+  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:K) tau[k] = }\FloatTok{2.5}\NormalTok{ * tan(tau\_unif[k]);}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:}\DecValTok{2}\NormalTok{) sig[i] = }\FloatTok{2.5}\NormalTok{ * tan(sig\_unif[i]);}
+\NormalTok{  beta = gamma * u + diag\_pre\_multiply(tau, L\_Omega) * z;}
+\NormalTok{  phi = phi\_raw * sig[}\DecValTok{1}\NormalTok{];}
+\NormalTok{  xi = xi\_raw * sig[}\DecValTok{2}\NormalTok{];}
+\NormalTok{\}}
+
+\KeywordTok{model}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] mu;}
+\NormalTok{  to\_vector(z) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(phi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(xi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  L\_Omega \textasciitilde{} lkj\_corr\_cholesky(}\DecValTok{2}\NormalTok{);}
+\NormalTok{  to\_vector(gamma) \textasciitilde{} normal(}\DecValTok{0}\NormalTok{, }\FloatTok{2.5}\NormalTok{);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    mu[n] = x[n, ] * beta[, sp[n]];}
+\NormalTok{  \}}
+\NormalTok{  suv \textasciitilde{} bernoulli\_logit(mu + phi[plot] + xi[census]);}
+\NormalTok{\}}
+
+\KeywordTok{generated quantities}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] log\_lik;}
+  \DataTypeTok{corr\_matrix}\NormalTok{[K] Omega;}
+\NormalTok{  Omega = multiply\_lower\_tri\_self\_transpose(L\_Omega);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    log\_lik[n] = bernoulli\_logit\_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +}
+\NormalTok{      phi[plot[n]] + xi[census[n]]);}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
 
 \hypertarget{table-s1}{%
 \section{Table S1}\label{table-s1}}
 
-Posterior means and 95\% credible intervals (CIs) of the effects of
-species-level predcitors on indivdiual-level precitors (\(\gamma\)) in
-the dry seasons. Bold values are significantly different from zero (the
-95\% CIs do not include zero). ConS/HetS: conspecific/heterospecific
-seedling density, ConT/HetT: conspecific/heterospecific tree density
-(scaled by 0.27), LDMC: leaf dry matter content, SDMC: stem dry matter
-content, Chl: chlorophyll content, \(\delta\)C\textsubscript{13}: stable
-carbon isotope composition, C: carbon concentration, N: nitrogen
-concentration, \(\pi\)\textsubscript{tlp}: leaf turgor loss point, LA:
-leaf area, SLA: specific leaf area, LT: leaf thickness.
+Model selection and diagnostics for models with traits in the dry
+season. ELPD: expected log pointwise predictive density (larger values
+indicate better a model fit), LOOIC: leave-one-out deviance information
+criterion (smaller values indicate a better model fit), N\_ESS: number
+of variables that showed effective sample size less than 400, N\_Div:
+number of divergent transitions, Models that did not converge well are
+shown in gray (N\_ESS \textgreater{} 0 or N\_Div \textgreater{} 0).
 
-\begin{longtable}[t]{lllll}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llllll}
 \toprule
-Parameter & Mean & 95\% CI & Individual-level predictor & Species-level predictor\\
+Seedling densities & Rainfall & ELPD & LOOIC & N\_ESS & N\_Div\\
 \midrule
-\endfirsthead
-\multicolumn{5}{@{}l}{\textit{(continued)}}\\
-\toprule
-Parameter & Mean & 95\% CI & Individual-level predictor & Species-level predictor\\
-\midrule
-\endhead
-
-\endfoot
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with an interaction of conspecific densities}} & \cellcolor{gray!6}{\textcolor{black}{-9023.7}} & \cellcolor{gray!6}{\textcolor{black}{18047.5}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{-9025.0} & \textcolor{black}{18050.0} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{-9026.9}} & \cellcolor{gray!6}{\textcolor{black}{18053.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{-9027.4} & \textcolor{black}{18054.8} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{-9028.2}} & \cellcolor{gray!6}{\textcolor{black}{18056.3}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\addlinespace
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain with all the interactions} & \textcolor{gray}{-9039.8} & \textcolor{gray}{18079.6} & \textcolor{gray}{2} & \textcolor{gray}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{-9041.7}} & \cellcolor{gray!6}{\textcolor{black}{18083.3}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \bottomrule
-\endlastfoot
-\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{\textbf{2.693}} & \cellcolor{gray!6}{\textbf{[1.818, 3.606]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{2,1}$ & \textbf{1.106} & \textbf{[0.882, 1.34]} & ln Height & Intercept\\
-\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{\textbf{-1.767}} & \cellcolor{gray!6}{\textbf{[-3.194, -0.382]}} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{4,1}$ & -0.083 & {}[-0.627, 0.455] & ConT & Intercept\\
-\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{\textbf{0.211}} & \cellcolor{gray!6}{\textbf{[0.058, 0.406]}} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{Intercept}\\
-\addlinespace
-$\gamma_{6,1}$ & -0.101 & {}[-0.298, 0.094] & HetT & Intercept\\
-\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{\textbf{-0.587}} & \cellcolor{gray!6}{\textbf{[-1.152, -0.042]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{8,1}$ & -0.624 & {}[-1.364, 0.106] & ConS $\times$ Rainfall & Intercept\\
-\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{-0.238} & \cellcolor{gray!6}{{}[-0.512, 0.019]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{10,1}$ & -0.016 & {}[-0.151, 0.109] & HetS $\times$ Rainfall & Intercept\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{-0.014} & \cellcolor{gray!6}{{}[-0.145, 0.121]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{1,2}$ & -1.191 & {}[-2.617, 0.155] & Intercept & LDMC\\
-\cellcolor{gray!6}{$\gamma_{2,2}$} & \cellcolor{gray!6}{0.004} & \cellcolor{gray!6}{{}[-0.359, 0.352]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{3,2}$ & -1.487 & {}[-3.61, 0.701] & ConS & LDMC\\
-\cellcolor{gray!6}{$\gamma_{4,2}$} & \cellcolor{gray!6}{-0.313} & \cellcolor{gray!6}{{}[-1.145, 0.519]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{LDMC}\\
-\addlinespace
-$\gamma_{5,2}$ & -0.013 & {}[-0.278, 0.221] & HetS & LDMC\\
-\cellcolor{gray!6}{$\gamma_{6,2}$} & \cellcolor{gray!6}{0.049} & \cellcolor{gray!6}{{}[-0.231, 0.334]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{7,2}$ & \textbf{-1.296} & \textbf{[-2.19, -0.377]} & Rainfall & LDMC\\
-\cellcolor{gray!6}{$\gamma_{8,2}$} & \cellcolor{gray!6}{\textbf{-1.949}} & \cellcolor{gray!6}{\textbf{[-3.263, -0.568]}} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{9,2}$ & -0.027 & {}[-0.502, 0.431] & ConT $\times$ Rainfall & LDMC\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{10,2}$} & \cellcolor{gray!6}{-0.053} & \cellcolor{gray!6}{{}[-0.242, 0.135]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{11,2}$ & 0.014 & {}[-0.186, 0.217] & HetT $\times$ Rainfall & LDMC\\
-\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{1.016} & \cellcolor{gray!6}{{}[-0.012, 2.06]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{2,3}$ & 0.081 & {}[-0.224, 0.391] & ln Height & SDMC\\
-\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{\textbf{1.801}} & \cellcolor{gray!6}{\textbf{[0.018, 3.661]}} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{SDMC}\\
-\addlinespace
-$\gamma_{4,3}$ & -0.043 & {}[-0.654, 0.567] & ConT & SDMC\\
-\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{-0.077} & \cellcolor{gray!6}{{}[-0.285, 0.132]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{6,3}$ & -0.068 & {}[-0.32, 0.173] & HetT & SDMC\\
-\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{0.443} & \cellcolor{gray!6}{{}[-0.241, 1.119]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{8,3}$ & 0.799 & {}[-0.322, 1.971] & ConS $\times$ Rainfall & SDMC\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{9,3}$} & \cellcolor{gray!6}{-0.083} & \cellcolor{gray!6}{{}[-0.429, 0.247]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{10,3}$ & 0.024 & {}[-0.142, 0.189] & HetS $\times$ Rainfall & SDMC\\
-\cellcolor{gray!6}{$\gamma_{11,3}$} & \cellcolor{gray!6}{0.069} & \cellcolor{gray!6}{{}[-0.108, 0.244]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{1,4}$ & -0.628 & {}[-1.591, 0.358] & Intercept & Chl\\
-\cellcolor{gray!6}{$\gamma_{2,4}$} & \cellcolor{gray!6}{0.175} & \cellcolor{gray!6}{{}[-0.15, 0.505]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{Chl}\\
-\addlinespace
-$\gamma_{3,4}$ & \textbf{-2.055} & \textbf{[-3.684, -0.514]} & ConS & Chl\\
-\cellcolor{gray!6}{$\gamma_{4,4}$} & \cellcolor{gray!6}{0.17} & \cellcolor{gray!6}{{}[-0.581, 0.916]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{5,4}$ & 0.075 & {}[-0.136, 0.322] & HetS & Chl\\
-\cellcolor{gray!6}{$\gamma_{6,4}$} & \cellcolor{gray!6}{-0.202} & \cellcolor{gray!6}{{}[-0.492, 0.071]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{7,4}$ & -0.437 & {}[-1.19, 0.345] & Rainfall & Chl\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{8,4}$} & \cellcolor{gray!6}{-0.137} & \cellcolor{gray!6}{{}[-1.377, 1.118]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{9,4}$ & -0.299 & {}[-0.686, 0.074] & ConT $\times$ Rainfall & Chl\\
-\cellcolor{gray!6}{$\gamma_{10,4}$} & \cellcolor{gray!6}{-0.112} & \cellcolor{gray!6}{{}[-0.3, 0.065]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{11,4}$ & 0.139 & {}[-0.069, 0.347] & HetT $\times$ Rainfall & Chl\\
-\cellcolor{gray!6}{$\gamma_{1,5}$} & \cellcolor{gray!6}{-0.705} & \cellcolor{gray!6}{{}[-1.584, 0.114]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-\addlinespace
-$\gamma_{2,5}$ & -0.089 & {}[-0.346, 0.166] & ln Height & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{3,5}$} & \cellcolor{gray!6}{-1.047} & \cellcolor{gray!6}{{}[-2.365, 0.31]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{4,5}$ & -0.012 & {}[-0.534, 0.507] & ConT & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{5,5}$} & \cellcolor{gray!6}{0.026} & \cellcolor{gray!6}{{}[-0.141, 0.21]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{6,5}$ & -0.124 & {}[-0.353, 0.093] & HetT & $\delta \mathrm{C_{13}}$\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{7,5}$} & \cellcolor{gray!6}{\textbf{-1.273}} & \cellcolor{gray!6}{\textbf{[-1.922, -0.644]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{8,5}$ & \textbf{-1.645} & \textbf{[-2.643, -0.615]} & ConS $\times$ Rainfall & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{9,5}$} & \cellcolor{gray!6}{-0.232} & \cellcolor{gray!6}{{}[-0.514, 0.04]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{10,5}$ & -0.037 & {}[-0.175, 0.093] & HetS $\times$ Rainfall & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{11,5}$} & \cellcolor{gray!6}{0.065} & \cellcolor{gray!6}{{}[-0.094, 0.232]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-\addlinespace
-$\gamma_{1,6}$ & \textbf{-1.148} & \textbf{[-2.135, -0.143]} & Intercept & C\\
-\cellcolor{gray!6}{$\gamma_{2,6}$} & \cellcolor{gray!6}{0.033} & \cellcolor{gray!6}{{}[-0.233, 0.289]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{C}\\
-$\gamma_{3,6}$ & \textbf{-1.928} & \textbf{[-3.624, -0.26]} & ConS & C\\
-\cellcolor{gray!6}{$\gamma_{4,6}$} & \cellcolor{gray!6}{0.211} & \cellcolor{gray!6}{{}[-0.308, 0.76]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{C}\\
-$\gamma_{5,6}$ & 0.089 & {}[-0.097, 0.285] & HetS & C\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{6,6}$} & \cellcolor{gray!6}{-0.039} & \cellcolor{gray!6}{{}[-0.274, 0.194]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{C}\\
-$\gamma_{7,6}$ & 0.744 & {}[-0.092, 1.584] & Rainfall & C\\
-\cellcolor{gray!6}{$\gamma_{8,6}$} & \cellcolor{gray!6}{1.166} & \cellcolor{gray!6}{{}[-0.2, 2.543]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{C}\\
-$\gamma_{9,6}$ & 0.071 & {}[-0.186, 0.335] & ConT $\times$ Rainfall & C\\
-\cellcolor{gray!6}{$\gamma_{10,6}$} & \cellcolor{gray!6}{-0.019} & \cellcolor{gray!6}{{}[-0.164, 0.121]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{C}\\
-\addlinespace
-$\gamma_{11,6}$ & 0.087 & {}[-0.084, 0.256] & HetT $\times$ Rainfall & C\\
-\cellcolor{gray!6}{$\gamma_{1,7}$} & \cellcolor{gray!6}{0.062} & \cellcolor{gray!6}{{}[-1.654, 1.561]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{N}\\
-$\gamma_{2,7}$ & -0.107 & {}[-0.441, 0.211] & ln Height & N\\
-\cellcolor{gray!6}{$\gamma_{3,7}$} & \cellcolor{gray!6}{0.013} & \cellcolor{gray!6}{{}[-2.484, 2.441]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{N}\\
-$\gamma_{4,7}$ & 0.146 & {}[-0.624, 0.879] & ConT & N\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{5,7}$} & \cellcolor{gray!6}{0.023} & \cellcolor{gray!6}{{}[-0.279, 0.261]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{N}\\
-$\gamma_{6,7}$ & 0.004 & {}[-0.235, 0.262] & HetT & N\\
-\cellcolor{gray!6}{$\gamma_{7,7}$} & \cellcolor{gray!6}{0.678} & \cellcolor{gray!6}{{}[-0.322, 1.64]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{N}\\
-$\gamma_{8,7}$ & 0.875 & {}[-0.64, 2.321] & ConS $\times$ Rainfall & N\\
-\cellcolor{gray!6}{$\gamma_{9,7}$} & \cellcolor{gray!6}{0.223} & \cellcolor{gray!6}{{}[-0.171, 0.638]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{N}\\
-\addlinespace
-$\gamma_{10,7}$ & 0.157 & {}[-0.025, 0.356] & HetS $\times$ Rainfall & N\\
-\cellcolor{gray!6}{$\gamma_{11,7}$} & \cellcolor{gray!6}{-0.015} & \cellcolor{gray!6}{{}[-0.199, 0.169]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{N}\\
-$\gamma_{1,8}$ & 0.061 & {}[-1.096, 1.274] & Intercept & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{2,8}$} & \cellcolor{gray!6}{-0.016} & \cellcolor{gray!6}{{}[-0.288, 0.263]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{3,8}$ & -0.266 & {}[-2.072, 1.59] & ConS & $\pi_\mathrm{{tlp}}$\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{4,8}$} & \cellcolor{gray!6}{0.335} & \cellcolor{gray!6}{{}[-0.208, 0.896]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{5,8}$ & 0.044 & {}[-0.15, 0.234] & HetS & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{6,8}$} & \cellcolor{gray!6}{-0.067} & \cellcolor{gray!6}{{}[-0.343, 0.195]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{7,8}$ & 0.68 & {}[-0.209, 1.521] & Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{8,8}$} & \cellcolor{gray!6}{\textbf{1.617}} & \cellcolor{gray!6}{\textbf{[0.153, 3.05]}} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-\addlinespace
-$\gamma_{9,8}$ & -0.167 & {}[-0.466, 0.134] & ConT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{10,8}$} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.255, 0.087]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{11,8}$ & 0.022 & {}[-0.167, 0.213] & HetT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{-0.834} & \cellcolor{gray!6}{{}[-1.653, 0.009]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{2,9}$ & -0.12 & {}[-0.378, 0.133] & ln Height & ln LA\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{-1.185} & \cellcolor{gray!6}{{}[-2.64, 0.193]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{4,9}$ & -0.226 & {}[-0.705, 0.266] & ConT & ln LA\\
-\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{-0.111} & \cellcolor{gray!6}{{}[-0.333, 0.08]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{6,9}$ & 0.14 & {}[-0.106, 0.389] & HetT & ln LA\\
-\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{-0.231} & \cellcolor{gray!6}{{}[-0.818, 0.346]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LA}\\
-\addlinespace
-$\gamma_{8,9}$ & -0.346 & {}[-1.303, 0.588] & ConS $\times$ Rainfall & ln LA\\
-\cellcolor{gray!6}{$\gamma_{9,9}$} & \cellcolor{gray!6}{-0.007} & \cellcolor{gray!6}{{}[-0.281, 0.254]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{10,9}$ & -0.063 & {}[-0.205, 0.074] & HetS $\times$ Rainfall & ln LA\\
-\cellcolor{gray!6}{$\gamma_{11,9}$} & \cellcolor{gray!6}{0.092} & \cellcolor{gray!6}{{}[-0.083, 0.268]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{1,10}$ & -0.116 & {}[-1.417, 1.336] & Intercept & ln SLA\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{2,10}$} & \cellcolor{gray!6}{0.117} & \cellcolor{gray!6}{{}[-0.301, 0.553]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{3,10}$ & -1.015 & {}[-3.3, 1.297] & ConS & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{4,10}$} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{{}[-0.894, 0.94]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{5,10}$ & -0.061 & {}[-0.358, 0.287] & HetS & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{6,10}$} & \cellcolor{gray!6}{-0.238} & \cellcolor{gray!6}{{}[-0.589, 0.081]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{ln SLA}\\
-\addlinespace
-$\gamma_{7,10}$ & \textbf{-1.1} & \textbf{[-1.991, -0.149]} & Rainfall & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{8,10}$} & \cellcolor{gray!6}{-1.035} & \cellcolor{gray!6}{{}[-2.548, 0.572]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{9,10}$ & -0.38 & {}[-0.823, 0.071] & ConT $\times$ Rainfall & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{10,10}$} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.332, 0.131]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{11,10}$ & 0.082 & {}[-0.157, 0.33] & HetT $\times$ Rainfall & ln SLA\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{1,11}$} & \cellcolor{gray!6}{-0.199} & \cellcolor{gray!6}{{}[-1.216, 0.741]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{2,11}$ & -0.01 & {}[-0.324, 0.292] & ln Height & ln LT\\
-\cellcolor{gray!6}{$\gamma_{3,11}$} & \cellcolor{gray!6}{-0.496} & \cellcolor{gray!6}{{}[-2.008, 1.108]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{4,11}$ & -0.216 & {}[-0.997, 0.488] & ConT & ln LT\\
-\cellcolor{gray!6}{$\gamma_{5,11}$} & \cellcolor{gray!6}{-0.062} & \cellcolor{gray!6}{{}[-0.287, 0.153]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LT}\\
-\addlinespace
-$\gamma_{6,11}$ & 0.038 & {}[-0.204, 0.278] & HetT & ln LT\\
-\cellcolor{gray!6}{$\gamma_{7,11}$} & \cellcolor{gray!6}{-0.508} & \cellcolor{gray!6}{{}[-1.089, 0.106]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{8,11}$ & \textbf{-1.036} & \textbf{[-1.965, -0.106]} & ConS $\times$ Rainfall & ln LT\\
-\cellcolor{gray!6}{$\gamma_{9,11}$} & \cellcolor{gray!6}{0.146} & \cellcolor{gray!6}{{}[-0.209, 0.53]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{10,11}$ & 0.053 & {}[-0.1, 0.207] & HetS $\times$ Rainfall & ln LT\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{11,11}$} & \cellcolor{gray!6}{-0.004} & \cellcolor{gray!6}{{}[-0.161, 0.16]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\*
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 \newpage
 
 \hypertarget{table-s2}{%
 \section{Table S2}\label{table-s2}}
 
-Posterior means and 95\% credible intervals (CIs) of the effects of
-species-level predcitors on indivdiual-level precitors (\(\gamma\)) in
-the rainy seasons. Densities of conspecific (ConT) and heterospecific
-(HetT) trees are scaled by 0.24. Other details as for Table S1.
+Model selection and diagnostics for models with traits in the rainy
+season. Details as for Table S1.
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llllll}
+\toprule
+Seedling densities & Rainfall & ELPD & LOOIC & N\_ESS & N\_Div\\
+\midrule
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{-7937.2}} & \cellcolor{gray!6}{\textcolor{gray}{15874.4}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{-7939.6} & \textcolor{gray}{15879.3} & \textcolor{gray}{2} & \textcolor{gray}{1}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{-7940.0}} & \cellcolor{gray!6}{\textcolor{black}{15879.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{-7940.6} & \textcolor{gray}{15881.3} & \textcolor{gray}{0} & \textcolor{gray}{3}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with an interaction of conspecific densities}} & \cellcolor{gray!6}{\textcolor{black}{-7941.5}} & \cellcolor{gray!6}{\textcolor{black}{15883.0}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\addlinespace
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{-7954.0} & \textcolor{black}{15907.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{-7954.4}} & \cellcolor{gray!6}{\textcolor{black}{15908.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\newpage
+
+\hypertarget{table-s3}{%
+\section{Table S3}\label{table-s3}}
+
+Model selection and diagnostics for models with abundance in the dry
+season. Details as for Table S1.
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lllllll}
+\toprule
+Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
+\midrule
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-8999.5}} & \cellcolor{gray!6}{\textcolor{black}{17999.0}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance} & \textcolor{black}{-8999.8} & \textcolor{black}{17999.7} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9002.7}} & \cellcolor{gray!6}{\textcolor{black}{18005.5}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Basal area} & \textcolor{black}{-9003.2} & \textcolor{black}{18006.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9003.6}} & \cellcolor{gray!6}{\textcolor{black}{18007.1}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\addlinespace
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance + Basal area} & \textcolor{black}{-9003.6} & \textcolor{black}{18007.3} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance \$\textbackslash{}times\$ Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-9005.0}} & \cellcolor{gray!6}{\textcolor{gray}{18010.1}} & \cellcolor{gray!6}{\textcolor{gray}{2}} & \cellcolor{gray!6}{\textcolor{gray}{0}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9005.3} & \textcolor{black}{18010.6} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-9005.4}} & \cellcolor{gray!6}{\textcolor{black}{18010.7}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9005.7} & \textcolor{black}{18011.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\addlinespace
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-9005.8}} & \cellcolor{gray!6}{\textcolor{black}{18011.6}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Basal area} & \textcolor{black}{-9006.1} & \textcolor{black}{18012.2} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9006.9}} & \cellcolor{gray!6}{\textcolor{black}{18013.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9007.2} & \textcolor{black}{18014.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9007.2}} & \cellcolor{gray!6}{\textcolor{black}{18014.4}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\addlinespace
+\textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Basal area} & \textcolor{black}{-9007.5} & \textcolor{black}{18014.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9007.5}} & \cellcolor{gray!6}{\textcolor{black}{18014.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Basal area} & \textcolor{black}{-9007.8} & \textcolor{black}{18015.6} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-9007.9}} & \cellcolor{gray!6}{\textcolor{black}{18015.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance} & \textcolor{black}{-9008.5} & \textcolor{black}{18016.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\addlinespace
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9009.0}} & \cellcolor{gray!6}{\textcolor{black}{18017.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9009.8} & \textcolor{black}{18019.5} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9010.0}} & \cellcolor{gray!6}{\textcolor{black}{18020.1}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9010.4} & \textcolor{black}{18020.8} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\newpage
+
+\hypertarget{table-s4}{%
+\section{Table S4}\label{table-s4}}
+
+Model selection and diagnostics for models with abundance in the rainy
+season. Details as for Table S1.
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lllllll}
+\toprule
+Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
+\midrule
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-7921.7}} & \cellcolor{gray!6}{\textcolor{black}{15843.5}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{gray}{Phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{Abundance} & \textcolor{gray}{-7921.8} & \textcolor{gray}{15843.6} & \textcolor{gray}{0} & \textcolor{gray}{1}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7922.4}} & \cellcolor{gray!6}{\textcolor{black}{15844.7}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance} & \textcolor{black}{-7922.5} & \textcolor{black}{15845.0} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7923.1}} & \cellcolor{gray!6}{\textcolor{black}{15846.1}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\addlinespace
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Basal area} & \textcolor{black}{-7923.3} & \textcolor{black}{15846.6} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7923.4}} & \cellcolor{gray!6}{\textcolor{gray}{15846.8}} & \cellcolor{gray!6}{\textcolor{gray}{1651}} & \cellcolor{gray!6}{\textcolor{gray}{6}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance} & \textcolor{black}{-7923.4} & \textcolor{black}{15846.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance}} & \cellcolor{gray!6}{\textcolor{gray}{-7924.2}} & \cellcolor{gray!6}{\textcolor{gray}{15848.4}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance} & \textcolor{black}{-7924.7} & \textcolor{black}{15849.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\addlinespace
+\cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7924.8}} & \cellcolor{gray!6}{\textcolor{gray}{15849.7}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{4}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{Abundance + Basal area} & \textcolor{gray}{-7925.4} & \textcolor{gray}{15850.8} & \textcolor{gray}{0} & \textcolor{gray}{1}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7925.5}} & \cellcolor{gray!6}{\textcolor{gray}{15851.1}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance + Basal area} & \textcolor{black}{-7925.9} & \textcolor{black}{15851.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7926.3}} & \cellcolor{gray!6}{\textcolor{black}{15852.5}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\addlinespace
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-7926.4} & \textcolor{black}{15852.7} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7926.9}} & \cellcolor{gray!6}{\textcolor{gray}{15853.9}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{2}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{Abundance + Basal area} & \textcolor{gray}{-7927.1} & \textcolor{gray}{15854.3} & \textcolor{gray}{4622} & \textcolor{gray}{365}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7927.6}} & \cellcolor{gray!6}{\textcolor{gray}{15855.3}} & \cellcolor{gray!6}{\textcolor{gray}{2938}} & \cellcolor{gray!6}{\textcolor{gray}{108}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-7928.3} & \textcolor{black}{15856.7} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\addlinespace
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7928.4}} & \cellcolor{gray!6}{\textcolor{black}{15856.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-7928.5} & \textcolor{black}{15857.0} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7929.1}} & \cellcolor{gray!6}{\textcolor{black}{15858.1}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-7929.4} & \textcolor{black}{15858.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\newpage
+
+\hypertarget{table-s5}{%
+\section{Table S5}\label{table-s5}}
+
+Posterior medians and 95\% credible intervals (CIs) of the effects of
+species-level predictors (traits) on individual-level predictors
+(\(\gamma\)) in the dry seasons. Bold values differ significantly from
+zero (the 95\% CIs do not include zero). ConS/HetS:
+conspecific/heterospecific seedling density, ConT/HetT:
+conspecific/heterospecific tree density (scaled by 0.27), LDMC: leaf dry
+matter content, SDMC: stem dry matter content, Chl: chlorophyll content,
+\(\delta\)C\textsubscript{13}: stable carbon isotope composition, C:
+carbon concentration, N: nitrogen concentration,
+\(\pi\)\textsubscript{tlp}: leaf turgor loss point, LA: leaf area, SLA:
+specific leaf area, LT: leaf thickness.
 
 \begin{longtable}[t]{lllll}
 \toprule
-Parameter & Mean & 95\% CI & Individual-level predictor & Species-level predictor\\
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
 \midrule
 \endfirsthead
 \multicolumn{5}{@{}l}{\textit{(continued)}}\\
 \toprule
-Parameter & Mean & 95\% CI & Individual-level predictor & Species-level predictor\\
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
 \midrule
 \endhead
 
 \endfoot
 \bottomrule
 \endlastfoot
-\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{\textbf{2.811}} & \cellcolor{gray!6}{\textbf{[1.897, 3.781]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{2,1}$ & \textbf{1.232} & \textbf{[1.001, 1.475]} & ln Height & Intercept\\
-\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{-0.802} & \cellcolor{gray!6}{{}[-2.499, 0.679]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{4,1}$ & \textbf{-0.687} & \textbf{[-1.231, -0.17]} & ConT & Intercept\\
-\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{\textbf{0.176}} & \cellcolor{gray!6}{\textbf{[0.035, 0.328]}} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{Intercept}\\
+\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{\textbf{2.333}} & \cellcolor{gray!6}{\textbf{[1.587, 3.169]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{2,1}$ & \textbf{0.963} & \textbf{[0.776, 1.164]} & ln Height & Intercept\\
+\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{\textbf{-1.488}} & \cellcolor{gray!6}{\textbf{[-2.652, -0.373]}} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{4,1}$ & \textbf{0.149} & \textbf{[0.02, 0.284]} & HetS & Intercept\\
+\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{-0.186} & \cellcolor{gray!6}{{}[-0.655, 0.243]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept}\\
 \addlinespace
-$\gamma_{6,1}$ & 0.014 & {}[-0.252, 0.26] & HetT & Intercept\\
-\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{0.317} & \cellcolor{gray!6}{{}[-0.339, 0.979]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{8,1}$ & 0.236 & {}[-0.698, 1.245] & ConS $\times$ Rainfall & Intercept\\
-\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{0.06} & \cellcolor{gray!6}{{}[-0.249, 0.362]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{10,1}$ & 0.003 & {}[-0.113, 0.12] & HetS $\times$ Rainfall & Intercept\\
+$\gamma_{6,1}$ & -0.053 & {}[-0.225, 0.118] & HetT & Intercept\\
+\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{-0.253} & \cellcolor{gray!6}{{}[-0.578, 0.102]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{8,1}$ & -0.43 & {}[-0.898, 0.042] & ConS $\times$ Rainfall & Intercept\\
+\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{\textbf{-1.302}} & \cellcolor{gray!6}{\textbf{[-2.427, -0.166]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{LDMC}\\
+$\gamma_{2,2}$ & 0.052 & {}[-0.259, 0.338] & ln Height & LDMC\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{0.002} & \cellcolor{gray!6}{{}[-0.167, 0.177]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
-$\gamma_{1,2}$ & -0.383 & {}[-1.759, 0.998] & Intercept & LDMC\\
-\cellcolor{gray!6}{$\gamma_{2,2}$} & \cellcolor{gray!6}{0.166} & \cellcolor{gray!6}{{}[-0.238, 0.525]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{3,2}$ & 0.213 & {}[-2.325, 2.693] & ConS & LDMC\\
-\cellcolor{gray!6}{$\gamma_{4,2}$} & \cellcolor{gray!6}{-0.106} & \cellcolor{gray!6}{{}[-0.961, 0.756]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{LDMC}\\
+\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{-1.693} & \cellcolor{gray!6}{{}[-3.339, 0.066]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{LDMC}\\
+$\gamma_{4,2}$ & -0.005 & {}[-0.197, 0.163] & HetS & LDMC\\
+\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{-0.246} & \cellcolor{gray!6}{{}[-0.912, 0.421]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{LDMC}\\
+$\gamma_{6,2}$ & 0.026 & {}[-0.192, 0.256] & HetT & LDMC\\
+\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{\textbf{-0.814}} & \cellcolor{gray!6}{\textbf{[-1.408, -0.22]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{LDMC}\\
 \addlinespace
-$\gamma_{5,2}$ & 0.09 & {}[-0.13, 0.312] & HetS & LDMC\\
-\cellcolor{gray!6}{$\gamma_{6,2}$} & \cellcolor{gray!6}{0.212} & \cellcolor{gray!6}{{}[-0.143, 0.58]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{7,2}$ & 0.724 & {}[-0.465, 1.897] & Rainfall & LDMC\\
-\cellcolor{gray!6}{$\gamma_{8,2}$} & \cellcolor{gray!6}{1.782} & \cellcolor{gray!6}{{}[-0.584, 4.155]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{9,2}$ & -0.088 & {}[-0.613, 0.429] & ConT $\times$ Rainfall & LDMC\\
+$\gamma_{8,2}$ & \textbf{-1.239} & \textbf{[-2.264, -0.232]} & ConS $\times$ Rainfall & LDMC\\
+\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{\textbf{1.118}} & \cellcolor{gray!6}{\textbf{[0.242, 1.962]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{2,3}$ & 0.101 & {}[-0.148, 0.377] & ln Height & SDMC\\
+\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{\textbf{1.955}} & \cellcolor{gray!6}{\textbf{[0.579, 3.327]}} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{4,3}$ & -0.066 & {}[-0.225, 0.095] & HetS & SDMC\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{10,2}$} & \cellcolor{gray!6}{0.003} & \cellcolor{gray!6}{{}[-0.181, 0.183]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{LDMC}\\
-$\gamma_{11,2}$ & 0.12 & {}[-0.16, 0.407] & HetT $\times$ Rainfall & LDMC\\
-\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{0.761} & \cellcolor{gray!6}{{}[-0.343, 1.856]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{2,3}$ & 0.034 & {}[-0.286, 0.372] & ln Height & SDMC\\
-\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{0.953} & \cellcolor{gray!6}{{}[-1.232, 3.161]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{SDMC}\\
+\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{0.02} & \cellcolor{gray!6}{{}[-0.464, 0.494]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{6,3}$ & -0.062 & {}[-0.283, 0.141] & HetT & SDMC\\
+\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{\textbf{0.495}} & \cellcolor{gray!6}{\textbf{[0.023, 0.972]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{8,3}$ & 0.722 & {}[-0.11, 1.569] & ConS $\times$ Rainfall & SDMC\\
+\cellcolor{gray!6}{$\gamma_{1,4}$} & \cellcolor{gray!6}{-0.503} & \cellcolor{gray!6}{{}[-1.266, 0.231]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LA}\\
 \addlinespace
-$\gamma_{4,3}$ & 0.143 & {}[-0.495, 0.789] & ConT & SDMC\\
-\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{-0.025} & \cellcolor{gray!6}{{}[-0.204, 0.163]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{6,3}$ & -0.161 & {}[-0.47, 0.152] & HetT & SDMC\\
-\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{0.013} & \cellcolor{gray!6}{{}[-0.869, 0.904]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{8,3}$ & -0.499 & {}[-2.412, 1.239] & ConS $\times$ Rainfall & SDMC\\
+$\gamma_{2,4}$ & -0.149 & {}[-0.397, 0.079] & ln Height & ln LA\\
+\cellcolor{gray!6}{$\gamma_{3,4}$} & \cellcolor{gray!6}{-0.45} & \cellcolor{gray!6}{{}[-1.597, 0.678]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{4,4}$ & -0.05 & {}[-0.223, 0.088] & HetS & ln LA\\
+\cellcolor{gray!6}{$\gamma_{5,4}$} & \cellcolor{gray!6}{-0.251} & \cellcolor{gray!6}{{}[-0.69, 0.174]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{6,4}$ & 0.132 & {}[-0.07, 0.339] & HetT & ln LA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{9,3}$} & \cellcolor{gray!6}{0.172} & \cellcolor{gray!6}{{}[-0.228, 0.584]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{10,3}$ & -0.123 & {}[-0.275, 0.035] & HetS $\times$ Rainfall & SDMC\\
-\cellcolor{gray!6}{$\gamma_{11,3}$} & \cellcolor{gray!6}{-0.005} & \cellcolor{gray!6}{{}[-0.254, 0.231]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{SDMC}\\
-$\gamma_{1,4}$ & -0.101 & {}[-1.313, 1.134] & Intercept & Chl\\
-\cellcolor{gray!6}{$\gamma_{2,4}$} & \cellcolor{gray!6}{0.005} & \cellcolor{gray!6}{{}[-0.347, 0.355]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{Chl}\\
+\cellcolor{gray!6}{$\gamma_{7,4}$} & \cellcolor{gray!6}{-0.116} & \cellcolor{gray!6}{{}[-0.503, 0.265]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{8,4}$ & -0.186 & {}[-0.889, 0.521] & ConS $\times$ Rainfall & ln LA\\
+\cellcolor{gray!6}{$\gamma_{1,5}$} & \cellcolor{gray!6}{0.14} & \cellcolor{gray!6}{{}[-0.928, 1.27]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{2,5}$ & -0.001 & {}[-0.323, 0.341] & ln Height & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{3,5}$} & \cellcolor{gray!6}{0.338} & \cellcolor{gray!6}{{}[-1.164, 1.907]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln SLA}\\
 \addlinespace
-$\gamma_{3,4}$ & -1.542 & {}[-3.971, 0.859] & ConS & Chl\\
-\cellcolor{gray!6}{$\gamma_{4,4}$} & \cellcolor{gray!6}{0.212} & \cellcolor{gray!6}{{}[-0.504, 0.98]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{5,4}$ & 0.142 & {}[-0.054, 0.346] & HetS & Chl\\
-\cellcolor{gray!6}{$\gamma_{6,4}$} & \cellcolor{gray!6}{-0.132} & \cellcolor{gray!6}{{}[-0.476, 0.199]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{7,4}$ & 0.904 & {}[-0.012, 1.856] & Rainfall & Chl\\
+$\gamma_{4,5}$ & -0.082 & {}[-0.256, 0.111] & HetS & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{5,5}$} & \cellcolor{gray!6}{-0.039} & \cellcolor{gray!6}{{}[-0.699, 0.625]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{6,5}$ & -0.057 & {}[-0.295, 0.172] & HetT & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{7,5}$} & \cellcolor{gray!6}{-0.112} & \cellcolor{gray!6}{{}[-0.526, 0.308]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{8,5}$ & -0.114 & {}[-0.869, 0.647] & ConS $\times$ Rainfall & ln SLA\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{8,4}$} & \cellcolor{gray!6}{1.477} & \cellcolor{gray!6}{{}[-0.544, 3.517]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{9,4}$ & 0.066 & {}[-0.359, 0.489] & ConT $\times$ Rainfall & Chl\\
-\cellcolor{gray!6}{$\gamma_{10,4}$} & \cellcolor{gray!6}{-0.002} & \cellcolor{gray!6}{{}[-0.162, 0.171]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{Chl}\\
-$\gamma_{11,4}$ & 0.019 & {}[-0.233, 0.275] & HetT $\times$ Rainfall & Chl\\
-\cellcolor{gray!6}{$\gamma_{1,5}$} & \cellcolor{gray!6}{-0.436} & \cellcolor{gray!6}{{}[-1.431, 0.55]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+\cellcolor{gray!6}{$\gamma_{1,6}$} & \cellcolor{gray!6}{-0.162} & \cellcolor{gray!6}{{}[-0.998, 0.663]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{2,6}$ & 0.053 & {}[-0.223, 0.334] & ln Height & ln LT\\
+\cellcolor{gray!6}{$\gamma_{3,6}$} & \cellcolor{gray!6}{-0.556} & \cellcolor{gray!6}{{}[-1.899, 0.84]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{4,6}$ & -0.058 & {}[-0.19, 0.105] & HetS & ln LT\\
+\cellcolor{gray!6}{$\gamma_{5,6}$} & \cellcolor{gray!6}{-0.182} & \cellcolor{gray!6}{{}[-0.79, 0.36]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln LT}\\
 \addlinespace
-$\gamma_{2,5}$ & -0.209 & {}[-0.499, 0.072] & ln Height & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{3,5}$} & \cellcolor{gray!6}{-0.327} & \cellcolor{gray!6}{{}[-2.342, 1.688]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{4,5}$ & -0.091 & {}[-0.666, 0.461] & ConT & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{5,5}$} & \cellcolor{gray!6}{-0.017} & \cellcolor{gray!6}{{}[-0.166, 0.129]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{6,5}$ & 0.066 & {}[-0.203, 0.335] & HetT & $\delta \mathrm{C_{13}}$\\
+$\gamma_{6,6}$ & -0.015 & {}[-0.211, 0.172] & HetT & ln LT\\
+\cellcolor{gray!6}{$\gamma_{7,6}$} & \cellcolor{gray!6}{\textbf{-0.652}} & \cellcolor{gray!6}{\textbf{[-1.06, -0.248]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{8,6}$ & \textbf{-1.054} & \textbf{[-1.779, -0.354]} & ConS $\times$ Rainfall & ln LT\\
+\cellcolor{gray!6}{$\gamma_{1,7}$} & \cellcolor{gray!6}{\textbf{-0.807}} & \cellcolor{gray!6}{\textbf{[-1.475, -0.163]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+$\gamma_{2,7}$ & -0.11 & {}[-0.308, 0.086] & ln Height & $\delta \mathrm{C_{13}}$\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{7,5}$} & \cellcolor{gray!6}{0.654} & \cellcolor{gray!6}{{}[-0.123, 1.478]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{8,5}$ & 1.115 & {}[-0.56, 2.856] & ConS $\times$ Rainfall & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{9,5}$} & \cellcolor{gray!6}{0.104} & \cellcolor{gray!6}{{}[-0.218, 0.414]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
-$\gamma_{10,5}$ & 0.002 & {}[-0.125, 0.13] & HetS $\times$ Rainfall & $\delta \mathrm{C_{13}}$\\
-\cellcolor{gray!6}{$\gamma_{11,5}$} & \cellcolor{gray!6}{0.02} & \cellcolor{gray!6}{{}[-0.188, 0.225]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+\cellcolor{gray!6}{$\gamma_{3,7}$} & \cellcolor{gray!6}{-0.94} & \cellcolor{gray!6}{{}[-1.929, 0.086]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+$\gamma_{4,7}$ & 0.001 & {}[-0.114, 0.122] & HetS & $\delta \mathrm{C_{13}}$\\
+\cellcolor{gray!6}{$\gamma_{5,7}$} & \cellcolor{gray!6}{0.027} & \cellcolor{gray!6}{{}[-0.337, 0.415]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+$\gamma_{6,7}$ & -0.078 & {}[-0.25, 0.085] & HetT & $\delta \mathrm{C_{13}}$\\
+\cellcolor{gray!6}{$\gamma_{7,7}$} & \cellcolor{gray!6}{\textbf{-0.417}} & \cellcolor{gray!6}{\textbf{[-0.822, -0.042]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
 \addlinespace
-$\gamma_{1,6}$ & -1.207 & {}[-2.463, 0.102] & Intercept & C\\
-\cellcolor{gray!6}{$\gamma_{2,6}$} & \cellcolor{gray!6}{0.009} & \cellcolor{gray!6}{{}[-0.271, 0.291]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{C}\\
-$\gamma_{3,6}$ & -1.885 & {}[-4.521, 0.782] & ConS & C\\
-\cellcolor{gray!6}{$\gamma_{4,6}$} & \cellcolor{gray!6}{-0.287} & \cellcolor{gray!6}{{}[-0.812, 0.241]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{C}\\
-$\gamma_{5,6}$ & 0.094 & {}[-0.069, 0.253] & HetS & C\\
+$\gamma_{8,7}$ & -0.632 & {}[-1.325, 0.003] & ConS $\times$ Rainfall & $\delta \mathrm{C_{13}}$\\
+\cellcolor{gray!6}{$\gamma_{1,8}$} & \cellcolor{gray!6}{0.09} & \cellcolor{gray!6}{{}[-1.066, 1.242]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{2,8}$ & -0.02 & {}[-0.291, 0.233] & ln Height & ln N\\
+\cellcolor{gray!6}{$\gamma_{3,8}$} & \cellcolor{gray!6}{-0.245} & \cellcolor{gray!6}{{}[-1.919, 1.546]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{4,8}$ & 0.034 & {}[-0.155, 0.189] & HetS & ln N\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{6,6}$} & \cellcolor{gray!6}{-0.044} & \cellcolor{gray!6}{{}[-0.32, 0.242]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{C}\\
-$\gamma_{7,6}$ & 0.505 & {}[-0.603, 1.579] & Rainfall & C\\
-\cellcolor{gray!6}{$\gamma_{8,6}$} & \cellcolor{gray!6}{0.767} & \cellcolor{gray!6}{{}[-1.601, 3.032]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{C}\\
-$\gamma_{9,6}$ & 0.024 & {}[-0.268, 0.319] & ConT $\times$ Rainfall & C\\
-\cellcolor{gray!6}{$\gamma_{10,6}$} & \cellcolor{gray!6}{0.095} & \cellcolor{gray!6}{{}[-0.038, 0.23]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{C}\\
+\cellcolor{gray!6}{$\gamma_{5,8}$} & \cellcolor{gray!6}{0.089} & \cellcolor{gray!6}{{}[-0.462, 0.608]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{6,8}$ & -0.096 & {}[-0.287, 0.098] & HetT & ln N\\
+\cellcolor{gray!6}{$\gamma_{7,8}$} & \cellcolor{gray!6}{-0.224} & \cellcolor{gray!6}{{}[-0.734, 0.267]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{8,8}$ & -0.326 & {}[-1.175, 0.513] & ConS $\times$ Rainfall & ln N\\
+\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{0.227} & \cellcolor{gray!6}{{}[-0.777, 1.164]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
 \addlinespace
-$\gamma_{11,6}$ & -0.081 & {}[-0.31, 0.15] & HetT $\times$ Rainfall & C\\
-\cellcolor{gray!6}{$\gamma_{1,7}$} & \cellcolor{gray!6}{0.326} & \cellcolor{gray!6}{{}[-1.292, 1.923]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{N}\\
-$\gamma_{2,7}$ & -0.123 & {}[-0.466, 0.218] & ln Height & N\\
-\cellcolor{gray!6}{$\gamma_{3,7}$} & \cellcolor{gray!6}{0.081} & \cellcolor{gray!6}{{}[-2.815, 3.093]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{N}\\
-$\gamma_{4,7}$ & 0.345 & {}[-0.438, 1.061] & ConT & N\\
+$\gamma_{2,9}$ & -0.034 & {}[-0.258, 0.192] & ln Height & $\pi_\mathrm{{tlp}}$\\
+\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{0.069} & \cellcolor{gray!6}{{}[-1.357, 1.537]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+$\gamma_{4,9}$ & -0.01 & {}[-0.155, 0.138] & HetS & $\pi_\mathrm{{tlp}}$\\
+\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{0.276} & \cellcolor{gray!6}{{}[-0.169, 0.726]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+$\gamma_{6,9}$ & -0.037 & {}[-0.247, 0.159] & HetT & $\pi_\mathrm{{tlp}}$\\
 \addlinespace
-\cellcolor{gray!6}{$\gamma_{5,7}$} & \cellcolor{gray!6}{0.067} & \cellcolor{gray!6}{{}[-0.153, 0.277]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{N}\\
-$\gamma_{6,7}$ & 0.049 & {}[-0.261, 0.339] & HetT & N\\
-\cellcolor{gray!6}{$\gamma_{7,7}$} & \cellcolor{gray!6}{\textbf{1.489}} & \cellcolor{gray!6}{\textbf{[0.219, 2.727]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{N}\\
-$\gamma_{8,7}$ & \textbf{3.245} & \textbf{[0.642, 5.819]} & ConS $\times$ Rainfall & N\\
-\cellcolor{gray!6}{$\gamma_{9,7}$} & \cellcolor{gray!6}{0.077} & \cellcolor{gray!6}{{}[-0.351, 0.521]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{N}\\
-\addlinespace
-$\gamma_{10,7}$ & -0.077 & {}[-0.253, 0.098] & HetS $\times$ Rainfall & N\\
-\cellcolor{gray!6}{$\gamma_{11,7}$} & \cellcolor{gray!6}{0.044} & \cellcolor{gray!6}{{}[-0.205, 0.278]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{N}\\
-$\gamma_{1,8}$ & -0.519 & {}[-1.951, 0.927] & Intercept & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{2,8}$} & \cellcolor{gray!6}{-0.035} & \cellcolor{gray!6}{{}[-0.325, 0.265]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{3,8}$ & -0.577 & {}[-3.441, 2.483] & ConS & $\pi_\mathrm{{tlp}}$\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{4,8}$} & \cellcolor{gray!6}{0.205} & \cellcolor{gray!6}{{}[-0.369, 0.79]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{5,8}$ & 0.158 & {}[-0.025, 0.343] & HetS & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{6,8}$} & \cellcolor{gray!6}{0.247} & \cellcolor{gray!6}{{}[-0.074, 0.573]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{7,8}$ & \textbf{2.29} & \textbf{[1.102, 3.536]} & Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{8,8}$} & \cellcolor{gray!6}{\textbf{4.552}} & \cellcolor{gray!6}{\textbf{[2, 7.173]}} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-\addlinespace
-$\gamma_{9,8}$ & 0.039 & {}[-0.307, 0.366] & ConT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{10,8}$} & \cellcolor{gray!6}{-0.082} & \cellcolor{gray!6}{{}[-0.241, 0.075]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
-$\gamma_{11,8}$ & 0.033 & {}[-0.216, 0.28] & HetT $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\
-\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{0.007} & \cellcolor{gray!6}{{}[-0.949, 1.029]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{2,9}$ & -0.016 & {}[-0.311, 0.267] & ln Height & ln LA\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{-0.146} & \cellcolor{gray!6}{{}[-2.103, 1.69]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{4,9}$ & -0.164 & {}[-0.71, 0.372] & ConT & ln LA\\
-\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{-0.009} & \cellcolor{gray!6}{{}[-0.183, 0.155]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{6,9}$ & -0.009 & {}[-0.314, 0.301] & HetT & ln LA\\
-\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{-0.375} & \cellcolor{gray!6}{{}[-1.076, 0.314]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LA}\\
-\addlinespace
-$\gamma_{8,9}$ & -0.464 & {}[-1.944, 0.95] & ConS $\times$ Rainfall & ln LA\\
-\cellcolor{gray!6}{$\gamma_{9,9}$} & \cellcolor{gray!6}{-0.127} & \cellcolor{gray!6}{{}[-0.45, 0.196]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{10,9}$ & 0.061 & {}[-0.078, 0.204] & HetS $\times$ Rainfall & ln LA\\
-\cellcolor{gray!6}{$\gamma_{11,9}$} & \cellcolor{gray!6}{0.196} & \cellcolor{gray!6}{{}[-0.042, 0.433]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LA}\\
-$\gamma_{1,10}$ & -0.494 & {}[-2.134, 1.174] & Intercept & ln SLA\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{2,10}$} & \cellcolor{gray!6}{0.124} & \cellcolor{gray!6}{{}[-0.365, 0.596]} & \cellcolor{gray!6}{ln Height} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{3,10}$ & -0.583 & {}[-3.763, 2.46] & ConS & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{4,10}$} & \cellcolor{gray!6}{-0.42} & \cellcolor{gray!6}{{}[-1.401, 0.567]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{5,10}$ & 0.065 & {}[-0.206, 0.336] & HetS & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{6,10}$} & \cellcolor{gray!6}{0.07} & \cellcolor{gray!6}{{}[-0.355, 0.51]} & \cellcolor{gray!6}{HetT} & \cellcolor{gray!6}{ln SLA}\\
-\addlinespace
-$\gamma_{7,10}$ & -0.016 & {}[-1.121, 1.093] & Rainfall & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{8,10}$} & \cellcolor{gray!6}{-0.623} & \cellcolor{gray!6}{{}[-2.947, 1.787]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{9,10}$ & 0.05 & {}[-0.502, 0.595] & ConT $\times$ Rainfall & ln SLA\\
-\cellcolor{gray!6}{$\gamma_{10,10}$} & \cellcolor{gray!6}{0.018} & \cellcolor{gray!6}{{}[-0.204, 0.259]} & \cellcolor{gray!6}{HetS $\times$ Rainfall} & \cellcolor{gray!6}{ln SLA}\\
-$\gamma_{11,10}$ & -0.11 & {}[-0.426, 0.209] & HetT $\times$ Rainfall & ln SLA\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{1,11}$} & \cellcolor{gray!6}{-0.27} & \cellcolor{gray!6}{{}[-1.14, 0.611]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{2,11}$ & 0.004 & {}[-0.318, 0.32] & ln Height & ln LT\\
-\cellcolor{gray!6}{$\gamma_{3,11}$} & \cellcolor{gray!6}{0.117} & \cellcolor{gray!6}{{}[-1.362, 1.639]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{4,11}$ & -0.213 & {}[-0.947, 0.504] & ConT & ln LT\\
-\cellcolor{gray!6}{$\gamma_{5,11}$} & \cellcolor{gray!6}{-0.015} & \cellcolor{gray!6}{{}[-0.196, 0.17]} & \cellcolor{gray!6}{HetS} & \cellcolor{gray!6}{ln LT}\\
-\addlinespace
-$\gamma_{6,11}$ & 0.151 & {}[-0.136, 0.475] & HetT & ln LT\\
-\cellcolor{gray!6}{$\gamma_{7,11}$} & \cellcolor{gray!6}{0.167} & \cellcolor{gray!6}{{}[-0.52, 0.889]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{8,11}$ & 0.572 & {}[-0.806, 1.975] & ConS $\times$ Rainfall & ln LT\\
-\cellcolor{gray!6}{$\gamma_{9,11}$} & \cellcolor{gray!6}{-0.054} & \cellcolor{gray!6}{{}[-0.499, 0.396]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\
-$\gamma_{10,11}$ & 0.089 & {}[-0.064, 0.241] & HetS $\times$ Rainfall & ln LT\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{11,11}$} & \cellcolor{gray!6}{-0.024} & \cellcolor{gray!6}{{}[-0.243, 0.198]} & \cellcolor{gray!6}{HetT $\times$ Rainfall} & \cellcolor{gray!6}{ln LT}\\*
+\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{0.148} & \cellcolor{gray!6}{{}[-0.378, 0.678]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+$\gamma_{8,9}$ & 0.408 & {}[-0.522, 1.299] & ConS $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\*
 \end{longtable}
+
+\newpage
+
+\hypertarget{table-s6}{%
+\section{Table S6}\label{table-s6}}
+
+Posterior medians and 95\% credible intervals (CIs) of the effects of
+species-level predictors (traits) on individual-level predictors
+(\(\gamma\)) in the rainy seasons. Densities of conspecific (ConT) and
+heterospecific (HetT) trees are scaled by 0.24. Other details as for
+Table S5.
+
+\begin{longtable}[t]{lllll}
+\toprule
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
+\midrule
+\endfirsthead
+\multicolumn{5}{@{}l}{\textit{(continued)}}\\
+\toprule
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{\textbf{2.223}} & \cellcolor{gray!6}{\textbf{[1.578, 2.863]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{2,1}$ & \textbf{1.032} & \textbf{[0.855, 1.213]} & ln Height & Intercept\\
+\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{-0.885} & \cellcolor{gray!6}{{}[-2.178, 0.044]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{4,1}$ & 0.058 & {}[-0.042, 0.171] & HetS & Intercept\\
+\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{\textbf{-0.582}} & \cellcolor{gray!6}{\textbf{[-0.969, -0.211]}} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept}\\
+\addlinespace
+$\gamma_{6,1}$ & 0.024 & {}[-0.164, 0.204] & HetT & Intercept\\
+\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{{}[-0.338, 0.397]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{8,1}$ & -0.133 & {}[-0.8, 0.582] & ConS $\times$ Rainfall & Intercept\\
+\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{-0.244} & \cellcolor{gray!6}{{}[-1.253, 0.717]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{LDMC}\\
+$\gamma_{2,2}$ & 0.141 & {}[-0.166, 0.411] & ln Height & LDMC\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{-0.04} & \cellcolor{gray!6}{{}[-1.721, 1.597]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{LDMC}\\
+$\gamma_{4,2}$ & 0.068 & {}[-0.098, 0.224] & HetS & LDMC\\
+\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{0.055} & \cellcolor{gray!6}{{}[-0.536, 0.664]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{LDMC}\\
+$\gamma_{6,2}$ & 0.131 & {}[-0.115, 0.38] & HetT & LDMC\\
+\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{0.656} & \cellcolor{gray!6}{{}[-0.066, 1.395]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{LDMC}\\
+\addlinespace
+$\gamma_{8,2}$ & 1.322 & {}[-0.255, 2.884] & ConS $\times$ Rainfall & LDMC\\
+\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{0.505} & \cellcolor{gray!6}{{}[-0.266, 1.323]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{2,3}$ & 0.055 & {}[-0.18, 0.309] & ln Height & SDMC\\
+\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{0.772} & \cellcolor{gray!6}{{}[-0.804, 2.353]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{4,3}$ & -0.019 & {}[-0.135, 0.099] & HetS & SDMC\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{0} & \cellcolor{gray!6}{{}[-0.459, 0.431]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{6,3}$ & -0.136 & {}[-0.345, 0.067] & HetT & SDMC\\
+\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{-0.273} & \cellcolor{gray!6}{{}[-0.918, 0.305]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{SDMC}\\
+$\gamma_{8,3}$ & -0.698 & {}[-2.105, 0.576] & ConS $\times$ Rainfall & SDMC\\
+\cellcolor{gray!6}{$\gamma_{1,4}$} & \cellcolor{gray!6}{0.005} & \cellcolor{gray!6}{{}[-0.724, 0.71]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LA}\\
+\addlinespace
+$\gamma_{2,4}$ & -0.005 & {}[-0.233, 0.205] & ln Height & ln LA\\
+\cellcolor{gray!6}{$\gamma_{3,4}$} & \cellcolor{gray!6}{0.112} & \cellcolor{gray!6}{{}[-1.205, 1.393]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{4,4}$ & -0.014 & {}[-0.145, 0.099] & HetS & ln LA\\
+\cellcolor{gray!6}{$\gamma_{5,4}$} & \cellcolor{gray!6}{-0.17} & \cellcolor{gray!6}{{}[-0.566, 0.212]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{6,4}$ & -0.032 & {}[-0.235, 0.189] & HetT & ln LA\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{7,4}$} & \cellcolor{gray!6}{-0.394} & \cellcolor{gray!6}{{}[-0.883, 0.077]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LA}\\
+$\gamma_{8,4}$ & -0.743 & {}[-1.83, 0.297] & ConS $\times$ Rainfall & ln LA\\
+\cellcolor{gray!6}{$\gamma_{1,5}$} & \cellcolor{gray!6}{-0.469} & \cellcolor{gray!6}{{}[-1.418, 0.566]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{2,5}$ & 0.088 & {}[-0.241, 0.403] & ln Height & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{3,5}$} & \cellcolor{gray!6}{0.087} & \cellcolor{gray!6}{{}[-1.596, 1.56]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln SLA}\\
+\addlinespace
+$\gamma_{4,5}$ & 0.031 & {}[-0.132, 0.197] & HetS & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{5,5}$} & \cellcolor{gray!6}{-0.401} & \cellcolor{gray!6}{{}[-0.988, 0.227]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{6,5}$ & 0.032 & {}[-0.228, 0.304] & HetT & ln SLA\\
+\cellcolor{gray!6}{$\gamma_{7,5}$} & \cellcolor{gray!6}{-0.501} & \cellcolor{gray!6}{{}[-1.059, 0.038]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln SLA}\\
+$\gamma_{8,5}$ & \textbf{-1.356} & \textbf{[-2.565, -0.128]} & ConS $\times$ Rainfall & ln SLA\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{1,6}$} & \cellcolor{gray!6}{0.04} & \cellcolor{gray!6}{{}[-0.606, 0.671]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{2,6}$ & 0.017 & {}[-0.22, 0.256] & ln Height & ln LT\\
+\cellcolor{gray!6}{$\gamma_{3,6}$} & \cellcolor{gray!6}{-0.003} & \cellcolor{gray!6}{{}[-1.057, 1.044]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{4,6}$ & 0.031 & {}[-0.092, 0.162] & HetS & ln LT\\
+\cellcolor{gray!6}{$\gamma_{5,6}$} & \cellcolor{gray!6}{0.056} & \cellcolor{gray!6}{{}[-0.455, 0.569]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln LT}\\
+\addlinespace
+$\gamma_{6,6}$ & 0.023 & {}[-0.173, 0.255] & HetT & ln LT\\
+\cellcolor{gray!6}{$\gamma_{7,6}$} & \cellcolor{gray!6}{0.278} & \cellcolor{gray!6}{{}[-0.175, 0.739]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln LT}\\
+$\gamma_{8,6}$ & 0.566 & {}[-0.451, 1.596] & ConS $\times$ Rainfall & ln LT\\
+\cellcolor{gray!6}{$\gamma_{1,7}$} & \cellcolor{gray!6}{-0.52} & \cellcolor{gray!6}{{}[-1.057, 0.078]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+$\gamma_{2,7}$ & \textbf{-0.195} & \textbf{[-0.396, -0.006]} & ln Height & $\delta \mathrm{C_{13}}$\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{3,7}$} & \cellcolor{gray!6}{-0.266} & \cellcolor{gray!6}{{}[-1.332, 0.745]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+$\gamma_{4,7}$ & -0.051 & {}[-0.141, 0.05] & HetS & $\delta \mathrm{C_{13}}$\\
+\cellcolor{gray!6}{$\gamma_{5,7}$} & \cellcolor{gray!6}{-0.129} & \cellcolor{gray!6}{{}[-0.472, 0.233]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+$\gamma_{6,7}$ & 0.067 & {}[-0.112, 0.237] & HetT & $\delta \mathrm{C_{13}}$\\
+\cellcolor{gray!6}{$\gamma_{7,7}$} & \cellcolor{gray!6}{0.247} & \cellcolor{gray!6}{{}[-0.155, 0.645]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{$\delta \mathrm{C_{13}}$}\\
+\addlinespace
+$\gamma_{8,7}$ & 0.449 & {}[-0.454, 1.311] & ConS $\times$ Rainfall & $\delta \mathrm{C_{13}}$\\
+\cellcolor{gray!6}{$\gamma_{1,8}$} & \cellcolor{gray!6}{0.464} & \cellcolor{gray!6}{{}[-0.451, 1.409]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{2,8}$ & -0.083 & {}[-0.339, 0.158] & ln Height & ln N\\
+\cellcolor{gray!6}{$\gamma_{3,8}$} & \cellcolor{gray!6}{0.101} & \cellcolor{gray!6}{{}[-1.393, 1.652]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{4,8}$ & 0.053 & {}[-0.096, 0.182] & HetS & ln N\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{5,8}$} & \cellcolor{gray!6}{0.372} & \cellcolor{gray!6}{{}[-0.126, 0.818]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{6,8}$ & 0.051 & {}[-0.162, 0.259] & HetT & ln N\\
+\cellcolor{gray!6}{$\gamma_{7,8}$} & \cellcolor{gray!6}{\textbf{0.97}} & \cellcolor{gray!6}{\textbf{[0.382, 1.599]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln N}\\
+$\gamma_{8,8}$ & \textbf{2.249} & \textbf{[0.955, 3.567]} & ConS $\times$ Rainfall & ln N\\
+\cellcolor{gray!6}{$\gamma_{1,9}$} & \cellcolor{gray!6}{0.232} & \cellcolor{gray!6}{{}[-0.617, 1.117]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+\addlinespace
+$\gamma_{2,9}$ & -0.065 & {}[-0.284, 0.142] & ln Height & $\pi_\mathrm{{tlp}}$\\
+\cellcolor{gray!6}{$\gamma_{3,9}$} & \cellcolor{gray!6}{0.622} & \cellcolor{gray!6}{{}[-1.116, 2.31]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+$\gamma_{4,9}$ & 0.107 & {}[-0.03, 0.238] & HetS & $\pi_\mathrm{{tlp}}$\\
+\cellcolor{gray!6}{$\gamma_{5,9}$} & \cellcolor{gray!6}{0.208} & \cellcolor{gray!6}{{}[-0.166, 0.594]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+$\gamma_{6,9}$ & 0.192 & {}[-0.015, 0.401] & HetT & $\pi_\mathrm{{tlp}}$\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{7,9}$} & \cellcolor{gray!6}{\textbf{1.218}} & \cellcolor{gray!6}{\textbf{[0.539, 1.933]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{$\pi_\mathrm{{tlp}}$}\\
+$\gamma_{8,9}$ & \textbf{2.369} & \textbf{[0.91, 3.897]} & ConS $\times$ Rainfall & $\pi_\mathrm{{tlp}}$\\*
+\end{longtable}
+
+\newpage
+
+\hypertarget{table-s7}{%
+\section{Table S7}\label{table-s7}}
+
+Posterior medians and 95\% credible intervals (CIs) of the effects of
+species-level predictors (abundance) on individual-level predictors
+(\(\gamma\)) in the dry seasons. Densities of conspecific (ConT) and
+heterospecific (HetT) trees are scaled by 0.27. Other details as for
+Table S5.
+
+\begin{longtable}[t]{lllll}
+\toprule
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
+\midrule
+\endfirsthead
+\multicolumn{5}{@{}l}{\textit{(continued)}}\\
+\toprule
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{\textbf{2.183}} & \cellcolor{gray!6}{\textbf{[1.524, 2.926]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{2,1}$ & \textbf{0.958} & \textbf{[0.78, 1.14]} & ln Height & Intercept\\
+\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{\textbf{-1.621}} & \cellcolor{gray!6}{\textbf{[-2.613, -0.694]}} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{4,1}$ & 0.105 & {}[-0.002, 0.229] & HetS & Intercept\\
+\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{-0.198} & \cellcolor{gray!6}{{}[-0.616, 0.193]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept}\\
+\addlinespace
+$\gamma_{6,1}$ & -0.125 & {}[-0.278, 0.029] & HetT & Intercept\\
+\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{0.102} & \cellcolor{gray!6}{{}[-0.198, 0.423]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{8,1}$ & -0.03 & {}[-0.138, 0.079] & ln Height $\times$ Rainfall & Intercept\\
+\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{-0.015} & \cellcolor{gray!6}{{}[-0.258, 0.252]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{10,1}$ & -0.02 & {}[-0.115, 0.078] & HetS $\times$ Rainfall & Intercept\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{0.079} & \cellcolor{gray!6}{{}[-0.091, 0.238]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{12,1}$ & 0.009 & {}[-0.097, 0.106] & HetT $\times$ Rainfall & Intercept\\
+\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{0.197} & \cellcolor{gray!6}{{}[-0.375, 0.714]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{2,2}$ & \textbf{0.158} & \textbf{[0.01, 0.306]} & ln Height & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{0.722} & \cellcolor{gray!6}{{}[-0.013, 1.563]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln Abundance}\\
+\addlinespace
+$\gamma_{4,2}$ & 0.051 & {}[-0.037, 0.158] & HetS & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{-0.16} & \cellcolor{gray!6}{{}[-0.5, 0.173]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{6,2}$ & 0.082 & {}[-0.021, 0.186] & HetT & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{\textbf{-0.157}} & \cellcolor{gray!6}{\textbf{[-0.325, -0.004]}} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{8,2}$ & -0.003 & {}[-0.091, 0.08] & ln Height $\times$ Rainfall & ln Abundance\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{9,2}$} & \cellcolor{gray!6}{-0.058} & \cellcolor{gray!6}{{}[-0.279, 0.121]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{10,2}$ & -0.005 & {}[-0.079, 0.072] & HetS $\times$ Rainfall & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{11,2}$} & \cellcolor{gray!6}{\textbf{-0.158}} & \cellcolor{gray!6}{\textbf{[-0.27, -0.045]}} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{12,2}$ & -0.021 & {}[-0.094, 0.048] & HetT $\times$ Rainfall & ln Abundance\\*
+\end{longtable}
+
+\newpage
+
+\hypertarget{table-s8}{%
+\section{Table S8}\label{table-s8}}
+
+Posterior medians and 95\% credible intervals (CIs) of the effects of
+species-level predictors (abundance) on individual-level predictors
+(\(\gamma\)) in the dry seasons. Densities of conspecific (ConT) and
+heterospecific (HetT) trees are scaled by 0.24. Other details as for
+Table S7.
+
+\begin{longtable}[t]{lllll}
+\toprule
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
+\midrule
+\endfirsthead
+\multicolumn{5}{@{}l}{\textit{(continued)}}\\
+\toprule
+Parameter & Median & 95\% CI & Individual-level predictor & Species-level predictor\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{\textbf{2.614}} & \cellcolor{gray!6}{\textbf{[2.031, 3.178]}} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{2,1}$ & \textbf{1.015} & \textbf{[0.852, 1.195]} & ln Height & Intercept\\
+\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{-0.197} & \cellcolor{gray!6}{{}[-1.156, 0.298]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{4,1}$ & 0.074 & {}[-0.028, 0.19] & HetS & Intercept\\
+\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{\textbf{-0.468}} & \cellcolor{gray!6}{\textbf{[-0.828, -0.116]}} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept}\\
+\addlinespace
+$\gamma_{6,1}$ & -0.137 & {}[-0.313, 0.033] & HetT & Intercept\\
+\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{0.149} & \cellcolor{gray!6}{{}[-0.18, 0.487]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{8,1}$ & \textbf{-0.139} & \textbf{[-0.287, -0.006]} & ln Height $\times$ Rainfall & Intercept\\
+\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{-0.033} & \cellcolor{gray!6}{{}[-0.435, 0.5]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{10,1}$ & -0.015 & {}[-0.096, 0.068] & HetS $\times$ Rainfall & Intercept\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{0.092} & \cellcolor{gray!6}{{}[-0.114, 0.284]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept}\\
+$\gamma_{12,1}$ & -0.043 & {}[-0.181, 0.091] & HetT $\times$ Rainfall & Intercept\\
+\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{0.063} & \cellcolor{gray!6}{{}[-0.41, 0.51]} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{2,2}$ & \textbf{0.183} & \textbf{[0.032, 0.328]} & ln Height & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{0.125} & \cellcolor{gray!6}{{}[-0.3, 0.639]} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{ln Abundance}\\
+\addlinespace
+$\gamma_{4,2}$ & -0.001 & {}[-0.094, 0.083] & HetS & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{0.013} & \cellcolor{gray!6}{{}[-0.314, 0.331]} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{6,2}$ & 0.106 & {}[-0.013, 0.247] & HetT & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{-0.069} & \cellcolor{gray!6}{{}[-0.296, 0.112]} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{8,2}$ & -0.027 & {}[-0.153, 0.077] & ln Height $\times$ Rainfall & ln Abundance\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{9,2}$} & \cellcolor{gray!6}{-0.009} & \cellcolor{gray!6}{{}[-0.423, 0.295]} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{10,2}$ & -0.001 & {}[-0.064, 0.063] & HetS $\times$ Rainfall & ln Abundance\\
+\cellcolor{gray!6}{$\gamma_{11,2}$} & \cellcolor{gray!6}{-0.061} & \cellcolor{gray!6}{{}[-0.214, 0.078]} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{ln Abundance}\\
+$\gamma_{12,2}$ & 0.054 & {}[-0.04, 0.154] & HetT $\times$ Rainfall & ln Abundance\\*
+\end{longtable}
+
+\newpage
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
+Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
+Betancourt, M., \emph{et al.} (2017).
+\href{https://doi.org/10.18637/jss.v076.i01}{Stan : {A Probabilistic
+Programming Language}}. \emph{Journal of Statistical Software}, 76,
+1--32.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Detto2019}{}}%
+Detto, M., Visser, M.D., Wright, S.J. \& Pacala, S.W. (2019).
+\href{https://doi.org/10.1111/ele.13372}{Bias in the detection of
+negative density dependence in plant communities}. \emph{Ecology
+Letters}, 22, 1923--1939.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
+Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. \&
+Rubin, D.B. (2013).
+\emph{\href{https://books.google.com.pa/books?id=eSHSBQAAQBAJ}{Bayesian
+{Data Analysis}, {Third Edition}}}. {Chapman \& Hall/CRC}, {Boca Raton,
+FL, USA.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2008}{}}%
+Gelman, A., Jakulin, A., Pittau, M.G. \& Su, Y.S. (2008).
+\href{https://doi.org/10.1214/08-AOAS191}{A weakly informative default
+prior distribution for logistic and other regression models}.
+\emph{Annals of Applied Statistics}, 2, 1360--1383.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Hoffman2014}{}}%
+Hoffman, M.D., Gelman, A., \emph{et al.} (2014). The no-{U-turn}
+sampler: Adaptively setting path lengths in hamiltonian monte carlo.
+\emph{J. Mach. Learn. Res.}, 15, 1593--1623.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Landau2021}{}}%
+Landau, W.M. (2021). \href{https://doi.org/10.21105/joss.02959}{The
+targets {R} package: A dynamic {Make-like} function-oriented pipeline
+toolkit for reproducibility and high-performance computing}.
+\emph{Journal of Open Source Software}, 6, 2959.
+
+\leavevmode\vadjust pre{\hypertarget{ref-RCoreTeam2022}{}}%
+R Core Team. (2022). \emph{\href{https://www.R-project.org/}{R: {A}
+language and environment for statistical computing}}. manual. {R
+Foundation for Statistical Computing}, {Vienna, Austria}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-StanDevelopmentTeam2021}{}}%
+Stan Development Team. (2021). \emph{Stan user's guide v2.28 ({Accesed
+December} 16 2021)}. Available at:
+\href{https://mc-stan.org/docs/2_28/reference-manual/index.html}{https://mc-stan.org/docs/2\_28/reference-manual/index.html.}
+Last accessed.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Vehtari2021}{}}%
+Vehtari, A., Gelman, A., Simpson, D., Carpenter, B. \& Bürkner, P.-C.
+(2021). \href{https://doi.org/10.1214/20-BA1221}{Rank-{Normalization},
+{Folding}, and {Localization}: {An Improved Rˆ} for {Assessing
+Convergence} of {MCMC} (with {Discussion})}. \emph{Bayesian Analysis},
+16, 667--718.
+
+\end{CSLReferences}
 
 
 
