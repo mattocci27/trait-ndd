@@ -21,7 +21,7 @@ Run `./make_renviron.sh` to create `.Renviron` first to use renv's cache in your
 
 Run `./run.sh` to run the analysis.
 
-```bash
+```
 # To install R packages for the first run
 # Rscript -e "renv::restore()"
 
