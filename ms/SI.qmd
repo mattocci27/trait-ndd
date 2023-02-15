@@ -159,6 +159,8 @@ prior distributions for the latent Gaussian variables ($\boldsymbol{z}$) were in
 A prior distribution for the Cholesky factor of the correlation matrix ($\boldsymbol{\Omega_L}$) was the Cholesky LKJ correlation distribution with a parameter of 2 (which indicates matrices with smaller correlations).
 Four independent chains were run for 1,000 iterations for each model with a warm-up of 1,000 iterations.
 Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013] and effective sample sizes > 400 [@Vehtari2021] for all parameters.
+Divergent transitions were also monitored.
+The existence of divergent transitions suggest that estimates are based on the incomplete exploration of the simulated Hamiltonian trajectory and are not trusted [@Betancourt2016].
 
 All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.13.5 for workflow management [@Landau2021].
 Codes and datasets are available at

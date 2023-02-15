@@ -234,7 +234,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, sharp corners, breakable, frame hidden, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, boxrule=0pt, enhanced, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
 
 \hypertarget{fig.-s1}{%
 \section{Fig. S1}\label{fig.-s1}}
@@ -382,7 +382,10 @@ Gelman-Rubin statistic with a convergence threshold of 1.1
 (\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.} 2013}) and
 effective sample sizes \textgreater{} 400
 (\protect\hyperlink{ref-Vehtari2021}{Vehtari \emph{et al.} 2021}) for
-all parameters.
+all parameters. Divergent transitions were also monitored. The existence
+of divergent transitions suggest that estimates are based on the
+incomplete exploration of the simulated Hamiltonian trajectory and are
+not trusted (\protect\hyperlink{ref-Betancourt2016}{Betancourt 2016}).
 
 All statistical analyses were conducted in R version 4.2.1
 (\protect\hyperlink{ref-RCoreTeam2022}{R Core Team 2022}) using the R
@@ -966,6 +969,11 @@ $\gamma_{12,2}$ & 0.054 & {}[-0.04, 0.154] & HetT $\times$ Rainfall & ln Abundan
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Betancourt2016}{}}%
+Betancourt, M. (2016).
+\href{https://doi.org/10.48550/arXiv.1604.00695}{Diagnosing {Suboptimal
+Cotangent Disintegrations} in {Hamiltonian Monte Carlo}}. \emph{arXiv}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
 Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
 Betancourt, M., \emph{et al.} (2017).
