@@ -59,6 +59,25 @@ source(here("R", "stan.R"))
 source(here("R", "render.R"))
 ```
 
+# `r s_fig("site_info")`
+
+Plot location in Xishuangbanna, China (A) and topography map (B) of the 20-ha plot and the components of a census station.
+The numbers in the contour map are elevation (m), and the squares represent the locations of the 150 seed traps (B).
+Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C).
+
+![](`r here::here("data-raw/site_info.jpg")`)
+
+\newpage
+
+# `r s_fig("rainfall")`
+
+Seasonal rainfall pattern in this area (data from November 2007- November 2017), November to April is the dry season (red bars), and May to October is the rainy season (blue bars).
+
+![](`r here::here("data-raw/rainfall.jpg")`)
+
+\newpage
+
+
 # `r s_append("method")` - Extended model description
 
 We modeled the seedling survival for the dry and rainy seasons separately.
@@ -131,10 +150,14 @@ The row vector $\gamma_{k,1}$ represents average effects of the each individual-
 whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th individual-level predictor (e.g., SLA) on the variation in the strength of the each individual-level predictor (e.g., variation in the strength of *ConS* among species).
 To allow comparisons among parameter estimates, the individual-level predictors ($\boldsymbol{x_i}$) and the species-level predictors ($\boldsymbol{u_j}$) were scaled to a mean of 0 and standard deviation of 1 within each season and across species, respectively.
 
-Posterior distributions of all parameters were estimated using the Hamiltonian Monte Carlo algorithm (HMC) implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
+Posterior distributions of all parameters were estimated using the
+No-U-Turn Sampler (NUTS), an adaptive variant of the Hamiltonian Monte Carlo (HMC), algorithm implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
+The HMC algorithm uses gradient information to propose new states in the Markov chain, leading to a more efficient exploration of the target distribution than traditional Markov chain Monte Carlo (MCMC) methods that rely on random proposals [@Carpenter2017].
+The NUTS algorithm automatically determines the number of Hamiltonian dynamics simulation steps needed to propose a new state in the Markov chain without requiring the user to manually set a fixed number of steps [@Hoffman2014].
 Prior distributions for the species-level predictors ($\boldsymbol{\gamma_k}$) were independent normal distributions with a mean of 0 and standard deviation of 2.5;
 prior distributions for the latent Gaussian variables ($\boldsymbol{z}$) were independent standard normal distributions.
 A prior distribution for the Cholesky factor of the correlation matrix ($\boldsymbol{\Omega_L}$) was the Cholesky LKJ correlation distribution with a parameter of 2 (which indicates matrices with smaller correlations).
+Four independent chains were run for 1,000 iterations for each model with a warm-up of 1,000 iterations.
 Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013] and effective sample sizes > 400 [@Vehtari2021] for all parameters.
 
 All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.13.5 for workflow management [@Landau2021].
@@ -374,10 +397,10 @@ gen_si_tab <- function(data) {
       trait_name == "log_ab" ~ "ln Abundance",
       )) |>
     mutate_if(is.numeric, round, 3) |>
-    mutate(q50 = cell_spec(q50, bold= ifelse(q2.5 * q97.5 > 0, TRUE,FALSE))) |>
+    mutate(q50 = cell_spec(q50, bold = ifelse(q2.5 * q97.5 > 0, TRUE, FALSE))) |>
     mutate(`90\\% CI` = paste0("[", q5, ", ", q95, "]")) |>
     mutate(`95\\% CI` = paste0("[", q2.5, ", ", q97.5, "]")) |>
-    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold= ifelse(q2.5 * q97.5 > 0, TRUE,FALSE))) |>
+    mutate(`95\\% CI` = cell_spec(`95\\% CI`, bold = ifelse(q2.5 * q97.5 > 0, TRUE,FALSE))) |>
     mutate(variable = paste0(
       "$\\gamma_{",
       str_split_fixed(data$variable, ",|\\[|\\]" ,4)[,2],
