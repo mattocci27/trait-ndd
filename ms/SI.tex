@@ -234,7 +234,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, boxrule=0pt, enhanced, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
 
 \hypertarget{fig.-s1}{%
 \section{Fig. S1}\label{fig.-s1}}
@@ -477,7 +477,7 @@ indicate better a model fit), LOOIC: leave-one-out deviance information
 criterion (smaller values indicate a better model fit), N\_ESS: number
 of variables that showed effective sample size less than 400, N\_Div:
 number of divergent transitions, Models that did not converge well are
-shown in gray (N\_ESS \textgreater{} 0 or N\_Div \textgreater{} 0).
+shown in gray (N\_ESS \textgreater{} 0 or N\_Div \(\geq\) 4).
 
 \begin{table}[H]
 \centering
@@ -490,10 +490,10 @@ Seedling densities & Rainfall & ELPD & LOOIC & N\_ESS & N\_Div\\
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{-9025.0} & \textcolor{black}{18050.0} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{-9026.9}} & \cellcolor{gray!6}{\textcolor{black}{18053.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{-9027.4} & \textcolor{black}{18054.8} & \textcolor{black}{0} & \textcolor{black}{0}\\
-\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{-9028.2}} & \cellcolor{gray!6}{\textcolor{black}{18056.3}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{gray}{-9028.2}} & \cellcolor{gray!6}{\textcolor{gray}{18056.3}} & \cellcolor{gray!6}{\textcolor{gray}{3}} & \cellcolor{gray!6}{\textcolor{gray}{0}}\\
 \addlinespace
-\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain with all the interactions} & \textcolor{gray}{-9039.8} & \textcolor{gray}{18079.6} & \textcolor{gray}{2} & \textcolor{gray}{0}\\
-\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{-9041.7}} & \cellcolor{gray!6}{\textcolor{black}{18083.3}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain with all the interactions} & \textcolor{gray}{-9039.8} & \textcolor{gray}{18079.6} & \textcolor{gray}{3} & \textcolor{gray}{0}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{gray}{-9041.7}} & \cellcolor{gray!6}{\textcolor{gray}{18083.3}} & \cellcolor{gray!6}{\textcolor{gray}{2}} & \cellcolor{gray!6}{\textcolor{gray}{0}}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -513,10 +513,10 @@ season. Details as for Table S1.
 \toprule
 Seedling densities & Rainfall & ELPD & LOOIC & N\_ESS & N\_Div\\
 \midrule
-\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{-7937.2}} & \cellcolor{gray!6}{\textcolor{gray}{15874.4}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
-\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{-7939.6} & \textcolor{gray}{15879.3} & \textcolor{gray}{2} & \textcolor{gray}{1}\\
-\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{-7940.0}} & \cellcolor{gray!6}{\textcolor{black}{15879.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
-\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{-7940.6} & \textcolor{gray}{15881.3} & \textcolor{gray}{0} & \textcolor{gray}{3}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{-7937.2}} & \cellcolor{gray!6}{\textcolor{gray}{15874.4}} & \cellcolor{gray!6}{\textcolor{gray}{2}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{-7939.6} & \textcolor{gray}{15879.3} & \textcolor{gray}{9} & \textcolor{gray}{1}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{gray}{-7940.0}} & \cellcolor{gray!6}{\textcolor{gray}{15879.9}} & \cellcolor{gray!6}{\textcolor{gray}{2}} & \cellcolor{gray!6}{\textcolor{gray}{0}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{-7940.6} & \textcolor{black}{15881.3} & \textcolor{black}{0} & \textcolor{black}{3}\\
 \cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with an interaction of conspecific densities}} & \cellcolor{gray!6}{\textcolor{black}{-7941.5}} & \cellcolor{gray!6}{\textcolor{black}{15883.0}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \addlinespace
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{-7954.0} & \textcolor{black}{15907.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
@@ -549,11 +549,11 @@ Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance + Basal area} & \textcolor{black}{-9003.6} & \textcolor{black}{18007.3} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance \$\textbackslash{}times\$ Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-9005.0}} & \cellcolor{gray!6}{\textcolor{gray}{18010.1}} & \cellcolor{gray!6}{\textcolor{gray}{2}} & \cellcolor{gray!6}{\textcolor{gray}{0}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9005.3} & \textcolor{black}{18010.6} & \textcolor{black}{0} & \textcolor{black}{0}\\
-\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-9005.4}} & \cellcolor{gray!6}{\textcolor{black}{18010.7}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
+\cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance}} & \cellcolor{gray!6}{\textcolor{gray}{-9005.4}} & \cellcolor{gray!6}{\textcolor{gray}{18010.7}} & \cellcolor{gray!6}{\textcolor{gray}{2}} & \cellcolor{gray!6}{\textcolor{gray}{0}}\\
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9005.7} & \textcolor{black}{18011.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \addlinespace
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-9005.8}} & \cellcolor{gray!6}{\textcolor{black}{18011.6}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
-\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Basal area} & \textcolor{black}{-9006.1} & \textcolor{black}{18012.2} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{Basal area} & \textcolor{gray}{-9006.1} & \textcolor{gray}{18012.2} & \textcolor{gray}{2} & \textcolor{gray}{0}\\
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9006.9}} & \cellcolor{gray!6}{\textcolor{black}{18013.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9007.2} & \textcolor{black}{18014.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9007.2}} & \cellcolor{gray!6}{\textcolor{black}{18014.4}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
@@ -562,7 +562,7 @@ Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9007.5}} & \cellcolor{gray!6}{\textcolor{black}{18014.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Basal area} & \textcolor{black}{-9007.8} & \textcolor{black}{18015.6} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-9007.9}} & \cellcolor{gray!6}{\textcolor{black}{18015.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
-\textcolor{black}{Non-phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance} & \textcolor{black}{-9008.5} & \textcolor{black}{18016.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{Abundance} & \textcolor{gray}{-9008.5} & \textcolor{gray}{18016.9} & \textcolor{gray}{2} & \textcolor{gray}{0}\\
 \addlinespace
 \cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-9009.0}} & \cellcolor{gray!6}{\textcolor{black}{18017.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-9009.8} & \textcolor{black}{18019.5} & \textcolor{black}{0} & \textcolor{black}{0}\\
@@ -588,7 +588,7 @@ season. Details as for Table S1.
 Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
 \midrule
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-7921.7}} & \cellcolor{gray!6}{\textcolor{black}{15843.5}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
-\textcolor{gray}{Phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{Abundance} & \textcolor{gray}{-7921.8} & \textcolor{gray}{15843.6} & \textcolor{gray}{0} & \textcolor{gray}{1}\\
+\textcolor{black}{Phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance} & \textcolor{black}{-7921.8} & \textcolor{black}{15843.6} & \textcolor{black}{0} & \textcolor{black}{1}\\
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7922.4}} & \cellcolor{gray!6}{\textcolor{black}{15844.7}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Abundance} & \textcolor{black}{-7922.5} & \textcolor{black}{15845.0} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7923.1}} & \cellcolor{gray!6}{\textcolor{black}{15846.1}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
@@ -596,19 +596,19 @@ Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain with all the interactions} & \textcolor{black}{Basal area} & \textcolor{black}{-7923.3} & \textcolor{black}{15846.6} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7923.4}} & \cellcolor{gray!6}{\textcolor{gray}{15846.8}} & \cellcolor{gray!6}{\textcolor{gray}{1651}} & \cellcolor{gray!6}{\textcolor{gray}{6}}\\
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance} & \textcolor{black}{-7923.4} & \textcolor{black}{15846.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
-\cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance}} & \cellcolor{gray!6}{\textcolor{gray}{-7924.2}} & \cellcolor{gray!6}{\textcolor{gray}{15848.4}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
+\cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Abundance}} & \cellcolor{gray!6}{\textcolor{black}{-7924.2}} & \cellcolor{gray!6}{\textcolor{black}{15848.4}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{1}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance} & \textcolor{black}{-7924.7} & \textcolor{black}{15849.4} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \addlinespace
 \cellcolor{gray!6}{\textcolor{gray}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7924.8}} & \cellcolor{gray!6}{\textcolor{gray}{15849.7}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{4}}\\
-\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{Rain without interactions} & \textcolor{gray}{Abundance + Basal area} & \textcolor{gray}{-7925.4} & \textcolor{gray}{15850.8} & \textcolor{gray}{0} & \textcolor{gray}{1}\\
-\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7925.5}} & \cellcolor{gray!6}{\textcolor{gray}{15851.1}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{1}}\\
+\textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance + Basal area} & \textcolor{black}{-7925.4} & \textcolor{black}{15850.8} & \textcolor{black}{0} & \textcolor{black}{1}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{No rain}} & \cellcolor{gray!6}{\textcolor{black}{Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7925.5}} & \cellcolor{gray!6}{\textcolor{black}{15851.1}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{1}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance + Basal area} & \textcolor{black}{-7925.9} & \textcolor{black}{15851.9} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain without interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7926.3}} & \cellcolor{gray!6}{\textcolor{black}{15852.5}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\
 \addlinespace
 \textcolor{black}{Non-phylogenetic} & \textcolor{black}{Rain without interactions} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-7926.4} & \textcolor{black}{15852.7} & \textcolor{black}{0} & \textcolor{black}{0}\\
-\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7926.9}} & \cellcolor{gray!6}{\textcolor{gray}{15853.9}} & \cellcolor{gray!6}{\textcolor{gray}{0}} & \cellcolor{gray!6}{\textcolor{gray}{2}}\\
-\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{Abundance + Basal area} & \textcolor{gray}{-7927.1} & \textcolor{gray}{15854.3} & \textcolor{gray}{4622} & \textcolor{gray}{365}\\
-\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7927.6}} & \cellcolor{gray!6}{\textcolor{gray}{15855.3}} & \cellcolor{gray!6}{\textcolor{gray}{2938}} & \cellcolor{gray!6}{\textcolor{gray}{108}}\\
+\cellcolor{gray!6}{\textcolor{black}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7926.9}} & \cellcolor{gray!6}{\textcolor{black}{15853.9}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{2}}\\
+\textcolor{gray}{Non-phylogenetic} & \textcolor{gray}{No rain} & \textcolor{gray}{Abundance + Basal area} & \textcolor{gray}{-7927.1} & \textcolor{gray}{15854.3} & \textcolor{gray}{17823} & \textcolor{gray}{365}\\
+\cellcolor{gray!6}{\textcolor{gray}{Phylogenetic}} & \cellcolor{gray!6}{\textcolor{gray}{No rain}} & \cellcolor{gray!6}{\textcolor{gray}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{gray}{-7927.6}} & \cellcolor{gray!6}{\textcolor{gray}{15855.3}} & \cellcolor{gray!6}{\textcolor{gray}{6266}} & \cellcolor{gray!6}{\textcolor{gray}{108}}\\
 \textcolor{black}{Phylogenetic} & \textcolor{black}{No rain} & \textcolor{black}{Abundance \$\textbackslash{}times\$ Basal area} & \textcolor{black}{-7928.3} & \textcolor{black}{15856.7} & \textcolor{black}{0} & \textcolor{black}{0}\\
 \addlinespace
 \cellcolor{gray!6}{\textcolor{black}{Non-phylogenetic}} & \cellcolor{gray!6}{\textcolor{black}{Rain with all the interactions}} & \cellcolor{gray!6}{\textcolor{black}{Abundance + Basal area}} & \cellcolor{gray!6}{\textcolor{black}{-7928.4}} & \cellcolor{gray!6}{\textcolor{black}{15856.8}} & \cellcolor{gray!6}{\textcolor{black}{0}} & \cellcolor{gray!6}{\textcolor{black}{0}}\\

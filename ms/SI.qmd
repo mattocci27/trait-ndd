@@ -218,10 +218,12 @@ for (i in 1:length(tmp)) {
     targets::tar_load(tmp2[i]))
   assign(loo_names[i], tmp[i])
   hoge <- get(tmp[i])
-  ess_tail <- hoge |>
-    filter(ess_tail < 400) |>
+
+  ess <- hoge |>
+    filter(ess_tail < 400 | ess_bulk < 400) |>
     nrow()
-  n_ess[i] <- ess_tail
+
+  n_ess[i] <- ess
 
   hoge2 <- get(tmp2[i])
   divergent <- hoge2 |>
@@ -262,7 +264,7 @@ write_diagnostic_tables <- function(loo_tbl, diagnostics_tbl, season, abund = FA
     )) |>
     mutate(
       across(1:10,
-      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div > 0, "gray", "black"))
+      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div >= 4, "gray", "black"))
     ))
 
   if (abund)  {
@@ -299,7 +301,7 @@ ELPD: expected log pointwise predictive density (larger values indicate better a
 LOOIC: leave-one-out deviance information criterion (smaller values indicate a better model fit),
 N_ESS: number of variables that showed effective sample size less than 400,
 N_Div: number of divergent transitions,
-Models that did not converge well are shown in gray (N_ESS > 0 or N_Div > 0).
+Models that did not converge well are shown in gray (N_ESS > 0 or N_Div $\geq$ 4).
 
 
 ```{r}
