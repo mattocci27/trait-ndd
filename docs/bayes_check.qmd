@@ -279,7 +279,6 @@ print_summary_tbl(dry_trait$summary, dry_trait$data, alpha = 0.05)
 ```
 
 
-
 ## Rainy
 
 ### abundance
@@ -718,5 +717,143 @@ gamma <- draws |>
 m <- tar_read(fit_mcmc_logistic_simple_stan_data_dry_het_intrain_ab)
 
 m2 <- posterior::as_draws_df(m)
+
+tar_load(wet_het_trait)
+tar_load(wet_trait)
+
+ind_pred_tmp <- wet_het_trait$data$x |> colnames()
+sp_pred_tmp <- wet_het_trait$data$u |> rownames()
+
+wet_het_trait$summary |>
+  filter(str_detect(variable, "gamma")) |>
+  mutate(ind_pred = rep(ind_pred_tmp, length(sp_pred_tmp))) |>
+  mutate(sp_pred = rep(sp_pred_tmp, each = length(ind_pred_tmp))) |>
+  filter(q2.5 * q97.5 > 0)
+
+values <- expand_grid(
+  season = c("dry", "wet"),
+  het = c("phy", "het"),
+  rain = c("norain", "intrain", "rain"),
+  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")
+  )
+values
+
+values <- expand_grid(
+  season = c("dry", "wet"),
+  het = c("phy", "het"),
+  rain = c("norain", "intrain", "intrain2", "rain"),
+  sp_pred = c("nlog", "ab", "ba", "ab1ba")
+  )
+values
+
+64 * 4
+
+values <- expand_grid(
+  season = c("dry", "wet"),
+  het = c("phy", "het"),
+  rain = c("norain", "intrain", "intrain2", "rain")
+  )
+values
+
+
+s <- tar_read(fit_summary_logistic_simple_stan_data_wet_het_norain_nlog)
+# s <- tar_read(fit_summary_logistic_simple_stan_data_wet_het_intrain2_nlog)
+
+s <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain_ab)
+
+s <- tar_read(fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog)
+s <- tar_read(fit_summary_logistic_simple_stan_data_wet_het_norain_nlog)
+
+s <- tar_read(fit_summary_logistic_stan_data_wet_het_norain_nlog)
+s |>
+  arrange(ess_tail)
+
+  filter(rhat > 1.01)
+
+d <- read_csv("data/seedling.csv")
+
+plot(aphy ~ ahet, data = d)
+lm(aphy ~ ahet, data = d) |> summary()
+
+s1 <- tar_read(fit_summary_logistic_simple_stan_data_wet_het_norain_nlog)
+s2 <- tar_read(fit2_summary_logistic_simple)
+d2 <- tar_read(fit2_diagnostics_logistic_simple)
+
+s1 <- tar_read(fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog)
+s3 <- tar_read(fit_summary_logistic_stan_data_dry_het_intrain2_nlog)
+
+s2 <- tar_read(check_ess_summary_logistic)
+
+d2 <- tar_read(check_ess_diagnostics_logistic)
+
+s1 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(q2.5 * q97.5 > 0)
+s3 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(q2.5 * q97.5 > 0)
+s2 |>
+  filter(str_detect(variable, "gamma")) |>
+  filter(q2.5 * q97.5 > 0)
+
+
+s3 |>
+  arrange(ess_tail)
+
 ```
 
+
+# Phy
+```{r}
+d <- read_csv(here("data", "seedling.csv"))
+
+d |>
+  pivot_longer(cols = c(aphy, sphy), names_to = "tmp", values_to = "phy") |>
+  pivot_longer(cols = c(ahet, shet), names_to = "tmp2", values_to = "het")
+
+
+seedling <- d |>
+  dplyr::select(het = shet, phy = sphy) |>
+  mutate(group = "Seedlings")
+adult <- d |>
+  dplyr::select(het = ahet, phy = aphy) |>
+  mutate(group = "Adults")
+
+bind_rows(seedling, adult) |>
+ggplot(aes(x = het, y = phy)) +
+   geom_point() +
+   facet_wrap(~group, scale = "free") +
+   xlab("Heterospecific densities") +
+   ylab("Phylogenetic densities")
+
+library(targets)
+library(tidyverse)
+s1 <- tar_read(fit2_summary_logistic_simple_stan_data_wet_phy_norain_nlog)
+s2 <- tar_read(fit2_summary_logistic_simple_stan_data_wet_het_norain_nlog)
+s3 <- tar_read(fit2_summary_logistic_simple_stan_data_wet_phy_rain_nlog)
+
+d1 <- tar_read(fit2_summary_logistic_simple_stan_data_wet_phy_norain_nlog)
+d2 <- tar_read(fit2_summary_logistic_simple_stan_data_wet_het_norain_nlog)
+
+s2 |>
+  filter(ess_tail < 400 | ess_bulk < 400)
+
+
+d1 <- tar_read(fit2_diagnostics_logistic_simple_stan_data_wet_phy_norain_nlog)
+d2 <- tar_read(fit2_diagnostics_logistic_simple_stan_data_wet_het_norain_nlog)
+
+summary(d1)
+summary(d2)
+
+hoge <- tar_manifest()
+
+hoge |>
+  filter(str_detect(name, "fit2_summary"))
+
+
+```
+
+# Pair
+
+```{r}
+```

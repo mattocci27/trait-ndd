@@ -48,6 +48,14 @@ quiet <- function(code) {
 
 my_loo <- function(x) x$loo(cores = parallel::detectCores())
 
+generate_mcmc_summary <- function(summary, mcmc, data) {
+  list(
+    data = data,
+    summary = summary,
+    draws = posterior::as_draws_df(mcmc)
+  )
+}
+
 #' @title Create summary table for posteriors
 create_stan_tab <- function(draws) {
   tmp <- draws |>
