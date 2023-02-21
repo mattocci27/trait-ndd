@@ -64,7 +64,10 @@ mcmc_names2 <- str_replace_all(mcmc_names, "_stan", "_simple_stan")
 
 mcmc_names3 <- c(
   "fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog",
-  "fit_mcmc_logistic_simple_stan_data_wet_het_intrain2_nlog")
+  "fit_mcmc_logistic_simple_stan_data_wet_het_intrain2_nlog",
+  "fit2_mcmc_logistic_simple_stan_data_wet_het_norain_nlog",
+  "fit2_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog",
+  "fit2_mcmc_logistic_simple_stan_data_wet_phy_rain_nlog")
 
 loo_map <- tar_map(
     values = list(mcmc = rlang::syms(c(mcmc_names, mcmc_names2, mcmc_names3))),
@@ -103,6 +106,29 @@ main_ <- list(
   tar_target(
     scale_dry,
     calc_scale_cc(seedling_csv, wet = FALSE),
+  ),
+  tar_target(
+    wet_cc_data,
+    generate_cc_data(seedling_csv, wet = TRUE),
+  ),
+  tar_target(
+    dry_cc_data,
+    generate_cc_data(seedling_csv, wet = FALSE),
+  ),
+
+  tar_target(
+    cc_line_plot, {
+      p <- cc_line(wet = wet_cc_data, dry = dry_cc_data)
+      my_ggsave(
+        "figs/cc_line",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 173,
+        units = "mm"
+      )
+    },
+    format = "file"
   ),
 
   tar_map(

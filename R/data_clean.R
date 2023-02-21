@@ -98,7 +98,7 @@ generate_cc_data <- function(seedling_csv, wet = TRUE) {
     lik[i] <- logLik(fm1)
     lik2[i] <- logLik(fm2)
   }
-  tibble(cc = 1:n_len, het = lik, phy = lik2)
+  tibble(cc = (1:n_len) / n_len, het = lik, phy = lik2)
 }
 
 #targets::tar_load(data_list)
