@@ -234,7 +234,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, sharp corners, enhanced, frame hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden, enhanced, breakable, frame hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \hypertarget{fig.-s1}{%
 \section{Fig. S1}\label{fig.-s1}}
@@ -376,7 +376,7 @@ normal distributions. A prior distribution for the Cholesky factor of
 the correlation matrix (\(\boldsymbol{\Omega_L}\)) was the Cholesky LKJ
 correlation distribution with a parameter of 2 (which indicates matrices
 with smaller correlations). Four independent chains were run for 1,000
-iterations for each model with a warm-up of 1,000 iterations.
+iterations for each model with a warm-up of 1,000 - 2,000 iterations.
 Convergence of the posterior distribution was assessed with the
 Gelman-Rubin statistic with a convergence threshold of 1.1
 (\protect\hyperlink{ref-Gelman2013}{Gelman \emph{et al.} 2013}) and

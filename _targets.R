@@ -48,11 +48,15 @@ values <- expand_grid(
   )
 values_inter <- expand_grid(
   season = c("dry", "wet"),
-  het = "het",
+  het = c("phy", "het"),
   rain = "intrain2",
   sp_pred = "nlog")
 
 data_names <- values |>
+  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
+  pull(data_names)
+
+data_names_inter <- values_inter |>
   mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
   pull(data_names)
 
@@ -184,7 +188,7 @@ main_ <- list(
   ),
 
   tar_map(
-    values = list(stan_data = rlang::syms(str_c("stan_data_", c("dry", "wet"), "_het_intrain2_nlog"))),
+    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names_inter))),
     tar_stan_mcmc(
       fit,
       "stan/logistic_simple.stan",
@@ -198,8 +202,8 @@ main_ <- list(
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -284,6 +288,36 @@ main_ <- list(
   tar_target(
     wet_trait,
     load_mcmc_summary(loo_tbl, season = "wet", trait = "n")
+  ),
+
+  # best models
+  # tar_target(
+  #   dry_het_intrain2_trait,
+  #   generate_mcmc_summary(
+  #     fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog,
+  #     fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog,
+  #     stan_data_dry_het_intrain2_nlog)
+  # ),
+  tar_target(
+    wet_phy_norain_trait,
+    generate_mcmc_summary(
+      fit2_summary_logistic_simple_stan_data_wet_phy_norain_nlog,
+      fit2_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog,
+      stan_data_wet_phy_norain_nlog)
+  ),
+  tar_target(
+    dry_phy_intrain_abund,
+    generate_mcmc_summary(
+      fit_summary_logistic_simple_stan_data_dry_phy_intrain_ab,
+      fit_mcmc_logistic_simple_stan_data_dry_phy_intrain_ab,
+      stan_data_dry_phy_intrain_ab)
+  ),
+  tar_target(
+    wet_phy_intrain_abund,
+    generate_mcmc_summary(
+      fit_summary_logistic_simple_stan_data_wet_phy_intrain_ab,
+      fit_mcmc_logistic_simple_stan_data_wet_phy_intrain_ab,
+      stan_data_wet_phy_intrain_ab)
   ),
 
   tar_target(
@@ -542,31 +576,31 @@ main_ <- list(
   ),
 
 # best models
-tar_map(
-  values = list(
-    x = rlang::syms(c(
-      "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
-      "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
-      "fit_summary_logistic_simple_stan_data_wet_het_intrain_ab",
-      "fit_summary_logistic_simple_stan_data_wet_het_intrain2_nlog")),
-    stan_data = rlang::syms(c(
-      "stan_data_dry_het_intrain_ab",
-      "stan_data_dry_het_intrain2_nlog",
-      "stan_data_wet_het_intrain_ab",
-      "stan_data_wet_het_intrain2_nlog")),
-    path =
-      str_c(
-      "data/",
-       c("dry_abund", "dry_traits", "wet_abund", "wet_traits"),
-      "_gamma.csv")),
-  tar_target(
-    gamma_out_csv, {
-      create_gamma_tab(x, stan_data)  |>
-        my_write_csv(path)
-    },
-    format = "file"
-  )
-),
+# tar_map(
+#   values = list(
+#     x = rlang::syms(c(
+#       "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
+#       "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
+#       "fit_summary_logistic_simple_stan_data_wet_het_intrain_ab",
+#       "fit_summary_logistic_simple_stan_data_wet_het_intrain2_nlog")),
+#     stan_data = rlang::syms(c(
+#       "stan_data_dry_het_intrain_ab",
+#       "stan_data_dry_het_intrain2_nlog",
+#       "stan_data_wet_het_intrain_ab",
+#       "stan_data_wet_het_intrain2_nlog")),
+#     path =
+#       str_c(
+#       "data/",
+#        c("dry_abund", "dry_traits", "wet_abund", "wet_traits"),
+#       "_gamma.csv")),
+#   tar_target(
+#     gamma_out_csv, {
+#       create_gamma_tab(x, stan_data)  |>
+#         my_write_csv(path)
+#     },
+#     format = "file"
+#   )
+# ),
 
 
   # tar_target(
