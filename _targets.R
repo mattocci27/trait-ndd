@@ -69,6 +69,8 @@ mcmc_names2 <- str_replace_all(mcmc_names, "_stan", "_simple_stan")
 mcmc_names3 <- c(
   "fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog",
   "fit_mcmc_logistic_simple_stan_data_wet_het_intrain2_nlog",
+  "fit_mcmc_logistic_simple_stan_data_dry_phy_intrain2_nlog",
+  "fit_mcmc_logistic_simple_stan_data_wet_phy_intrain2_nlog",
   "fit2_mcmc_logistic_simple_stan_data_wet_het_norain_nlog",
   "fit2_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog",
   "fit2_mcmc_logistic_simple_stan_data_wet_phy_rain_nlog")
@@ -202,8 +204,8 @@ main_ <- list(
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -291,13 +293,13 @@ main_ <- list(
   ),
 
   # best models
-  # tar_target(
-  #   dry_het_intrain2_trait,
-  #   generate_mcmc_summary(
-  #     fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog,
-  #     fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog,
-  #     stan_data_dry_het_intrain2_nlog)
-  # ),
+  tar_target(
+    dry_het_intrain2_trait,
+    generate_mcmc_summary(
+      fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog,
+      fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog,
+      stan_data_dry_het_intrain2_nlog)
+  ),
   tar_target(
     wet_phy_norain_trait,
     generate_mcmc_summary(
@@ -321,10 +323,10 @@ main_ <- list(
   ),
 
   tar_target(
-    dry_trait_suv_contour_plot, {
-      p <- dry_trait_suv_contour(dry_trait, alpha = 0.05)
+    dry_het_intrain2_trait_suv_contour_plot, {
+      p <- dry_trait_suv_contour(dry_het_intrain2_trait, alpha = 0.05)
       my_ggsave(
-        "figs/dry_trait_suv_contour",
+        "figs/dry_het_intrain2_trait_suv_contour",
         p,
         dpi = 300,
         width = 173,
@@ -334,20 +336,20 @@ main_ <- list(
     },
     format = "file"
   ),
-  tar_target(
-    wet_trait_suv_contour_plot, {
-      p <- wet_trait_suv_contour(wet_trait, alpha = 0.05)
-      my_ggsave(
-        "figs/wet_trait_suv_contour",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 180,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
+  # tar_target(
+  #   wet_phy_norain_trait_suv_contour_plot, {
+  #     p <- wet_trait_suv_contour(wet_phy_norain_trait, alpha = 0.05)
+  #     my_ggsave(
+  #       "figs/wet_phy_norain_trait_suv_contour",
+  #       p,
+  #       dpi = 300,
+  #       width = 173,
+  #       height = 180,
+  #       units = "mm"
+  #     )
+  #   },
+  #   format = "file"
+  # ),
 
 
   tar_target(
@@ -576,32 +578,34 @@ main_ <- list(
   ),
 
 # best models
-# tar_map(
-#   values = list(
-#     x = rlang::syms(c(
-#       "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
-#       "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
-#       "fit_summary_logistic_simple_stan_data_wet_het_intrain_ab",
-#       "fit_summary_logistic_simple_stan_data_wet_het_intrain2_nlog")),
-#     stan_data = rlang::syms(c(
-#       "stan_data_dry_het_intrain_ab",
-#       "stan_data_dry_het_intrain2_nlog",
-#       "stan_data_wet_het_intrain_ab",
-#       "stan_data_wet_het_intrain2_nlog")),
-#     path =
-#       str_c(
-#       "data/",
-#        c("dry_abund", "dry_traits", "wet_abund", "wet_traits"),
-#       "_gamma.csv")),
-#   tar_target(
-#     gamma_out_csv, {
-#       create_gamma_tab(x, stan_data)  |>
-#         my_write_csv(path)
-#     },
-#     format = "file"
-#   )
-# ),
-
+tar_map(
+  values = list(
+    x = rlang::syms(c(
+      "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
+      "fit2_summary_logistic_simple_stan_data_wet_phy_norain_nlog",
+      "fit_summary_logistic_simple_stan_data_dry_phy_intrain_ab",
+      "fit_summary_logistic_simple_stan_data_wet_het_intrain_ab")),
+    stan_data = rlang::syms(c(
+      "stan_data_dry_het_intrain2_nlog",
+      "stan_data_wet_phy_norain_nlog",
+      "stan_data_dry_phy_intrain_ab",
+      "stan_data_wet_het_intrain_ab")),
+    path =
+      str_c(
+      "data/",
+       c("dry_het_intrain2_traits",
+        "wet_phy_norain_traits",
+        "dry_phy_intrain_abund",
+        "wet_phy_intrain_abund"),
+      "_gamma.csv")),
+  tar_target(
+    gamma_out_csv, {
+      create_gamma_tab(x, stan_data)  |>
+        my_write_csv(path)
+    },
+    format = "file"
+  )
+),
 
   # tar_target(
   #   wet_gamma_csv, {

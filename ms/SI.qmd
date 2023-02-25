@@ -352,7 +352,7 @@ write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = TRUE)
 
 
 ```{r, include=FALSE}
-dry_traits_gamma <- read_csv(here("data", "dry_traits_gamma.csv"))
+dry_traits_gamma <- read_csv(here("data", "dry_het_intrain2_traits_gamma.csv"))
 dry_traits_gamma |>
   filter(q2.5 * q97.5 > 0)
 dry_traits_gamma |>
@@ -386,11 +386,15 @@ gen_si_tab <- function(data) {
       pred_name == "acon_s_c" ~ "ConT",
       pred_name == "shet_s" ~ "HetS",
       pred_name == "ahet_s_c" ~ "HetT",
+      pred_name == "sphy_s" ~ "PhyS",
+      pred_name == "aphy_s_c" ~ "PhyT",
       pred_name == "rain_s" ~ "Rainfall",
       pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
       pred_name == "acon_s_c:rain_s" ~ "ConT $\\times$ Rainfall",
       pred_name == "shet_s:rain_s" ~ "HetS $\\times$ Rainfall",
       pred_name == "ahet_s_c:rain_s" ~ "HetT $\\times$ Rainfall",
+      pred_name == "sphy_s:rain_s" ~ "PhyS $\\times$ Rainfall",
+      pred_name == "aphy_s_c:rain_s" ~ "PhyT $\\times$ Rainfall",
       pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
       pred_name == "logh_s:rain_s" ~ "ln Height $\\times$ Rainfall",
     )) |>
@@ -400,7 +404,6 @@ gen_si_tab <- function(data) {
       trait_name == "sdmc" ~ "SDMC",
       trait_name == "chl" ~ "Chl",
       trait_name == "c13" ~ "$\\delta \\mathrm{C_{13}}$",
-      # trait_name == "c_mass" ~ "C",
       trait_name == "log_n" ~ "ln N",
       trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
       trait_name == "log_la" ~ "ln LA",
@@ -427,7 +430,6 @@ gen_si_tab <- function(data) {
     rename(`Upper 97.5\\% CI` = q97.5) |>
     rename(`Individual-level predictor` = pred_name) |>
     rename(`Species-level predictor` = trait_name) |>
-    # kable(format = "latex") #|>
     dplyr::select(Parameter, Median,
     # `Lower 2.5\\% CI`#,
     #`90\\% CI`,
@@ -453,7 +455,7 @@ Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_traits_gamma <- read_csv(here("data", "wet_traits_gamma.csv"))
+wet_traits_gamma <- read_csv(here("data", "wet_phy_norain_traits_gamma.csv"))
 wet_traits_gamma |>
   filter(q2.5 * q97.5 > 0)
 wet_traits_gamma |>
@@ -473,7 +475,7 @@ Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_abund_gamma <- read_csv(here("data", "dry_abund_gamma.csv"))
+dry_abund_gamma <- read_csv(here("data", "dry_phy_intrain_abund_gamma.csv"))
 dry_abund_gamma |>
   filter(q2.5 * q97.5 > 0)
 dry_abund_gamma |>
@@ -493,7 +495,7 @@ Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.
 Other details as for `r s_table("dry_abund_gamma")`.
 
 ```{r, include=FALSE}
-wet_abund_gamma <- read_csv(here("data", "wet_abund_gamma.csv"))
+wet_abund_gamma <- read_csv(here("data", "wet_phy_intrain_abund_gamma.csv"))
 wet_abund_gamma |>
   filter(q2.5 * q97.5 > 0)
 wet_abund_gamma |>

@@ -356,8 +356,9 @@ prepare_suv_pred <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01,
 generate_suv_pred <- function(summary, data, alpha, trait_no) {
   tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
     mutate(q50 = ifelse(sig != "sig", 0, q50))
-  gamma <- matrix(tmp$q50, nrow = 8)
-  trait_m <- matrix(c(1, rep(0, 8)))
+  l <- ncol(data$x)
+  gamma <- matrix(tmp$q50, nrow = l)
+  trait_m <- matrix(c(1, rep(0, l)))
   trait_l <- trait_m
   trait_h <- trait_m
   trait_l[trait_no, 1] <- qnorm(0.25)
