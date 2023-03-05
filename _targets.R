@@ -141,8 +141,8 @@ main_ <- list(
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
