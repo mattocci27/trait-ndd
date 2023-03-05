@@ -108,7 +108,7 @@ generate_stan_data <- function(
   seedling, traits, scale_cc,
   season = c("dry", "wet"),
   het = c("phy", "het"),
-  rain = c("norain", "rain", "intrain"),
+  rain = c("norain", "rain", "intrain", "intrain2"),
   sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")) {
 
   # targets::tar_load(scale_wet)

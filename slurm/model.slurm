@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --output=log/model.out
 #SBATCH --error=log/model.err
-#SBATCH --cpus-per-task=72
+#SBATCH --cpus-per-task=64
 #SBATCH --mem-per-cpu=3000mb
 #SBATCH --time=80:00:00
 
