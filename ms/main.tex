@@ -189,7 +189,7 @@
 \date{}
 
 \begin{document}
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, frame hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, sharp corners, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{model}{%
 \section{Model}\label{model}}
@@ -209,7 +209,7 @@ where \(p_i\) is the individual survival probability in the \emph{i}th
 census interval, and \(Z_1\) and \(Z_2\) are distance-weighted sums of
 basal areas of conspecifics and heterospecifics respectively. We found
 that \(c\) = 0.27 for the dry season and \(c\) = 0.24 for the rainy
-season were the best estimates for our dataset.
+season were the best estimates for our dataset (Fig. S3).
 
 We built Bayesian hierarchical models that include variation among
 species in the effects of conspecific and heterospecific neighbours, and
@@ -232,15 +232,16 @@ the number of predictors for an individual seedling,
 \(\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]\) is
 the vector of predictors of size \emph{K} for an individual seedling,
 \(\phi_p\) is the random effect for seedling plots, and \(\omega_t\) is
-the random effect for different census (note that \(\cdot\) denotes dot
-product). The set of predictor variables (\(\boldsymbol{x_i}\)) includes
-intercept, log of seedling heights, rainfall, densities of conspecific
-(\emph{ConS}) and heterospecific (\emph{HetS}) seedlings, densities of
-conspecific (\emph{ConA}) and heterospecific (\emph{HetA}) trees that
-are scaled by 0.27 for the dry season or 0.24 for the rainy season, and
-the interactions of rains with \emph{ConS}, with \emph{HetS}, with
-\emph{ConA} and with \emph{HetA}. We also considered models with
-phylogenetic density effects instead of heterospecific density effects.
+the random effect for different censuses (note that \(\cdot\) denotes
+dot product). The set of predictor variables (\(\boldsymbol{x_i}\))
+includes intercepts, log of seedling heights, rainfall, densities of
+conspecific (\emph{ConS}) and heterospecific (\emph{HetS}) seedlings,
+densities of conspecific (\emph{ConA}) and heterospecific (\emph{HetA})
+trees that are scaled by 0.27 for the dry season or 0.24 for the rainy
+season, and the interactions of rains with \emph{ConS}, with
+\emph{HetS}, with \emph{ConA} and with \emph{HetA}. We also considered
+models with phylogenetic density effects instead of heterospecific
+density effects.
 
 In the species-level regression, the row vector of coefficients
 (\(\boldsymbol{\beta_{1-K}}\)) of each species \emph{j} were assumed to
@@ -264,15 +265,14 @@ covariance matrix of the multivariate normal distribution. We modeled
 five different sets of species-level predictors separately. The set of
 species-level predictor variables (\(\boldsymbol{u_j}\)) includes 1)
 LDMC, SDMC, LA, SLA, Chl, LT, \(\delta\)C\textsubscript{13}, C, N, and
-\(\pi\)\textsubscript{tlp}, 2) abundance, 3) basal area, 4) abundance
-and basal area, and 5) abundance, basal area, and their interactions.
-The row vector \(\gamma_{k,1}\) represents average effects of the each
-individual-level predictor (e.g., \emph{ConS}) across species, whereas
-\(\gamma_{k, l}\) (\(l \ne 1\)), represents the effects of the
-\emph{l}-th individual-level predictor (e.g., SLA) on the variation in
-the strength of the each individual-level predictor (e.g., variation in
-the strength of \emph{ConS} among species). To allow comparisons among
-parameter estimates, the individual-level predictors
+\(\pi\)\textsubscript{tlp}, 2) abundance, 3) basal area, and 4)
+abundance and basal area. The row vector \(\gamma_{k,1}\) represents the
+average effects of each individual-level predictor (e.g., \emph{ConS})
+across species, whereas \(\gamma_{k, l}\) (\(l \ne 1\)), represents the
+effects of the \emph{l}-th individual-level predictor (e.g., SLA) on the
+variation in the strength of each individual-level predictor (e.g.,
+variation in the strength of \emph{ConS} among species). To allow
+comparisons among parameter estimates, the individual-level predictors
 (\(\boldsymbol{x_i}\)) and the species-level predictors
 (\(\boldsymbol{u_j}\)) were scaled to a mean of 0 and standard deviation
 of 1 within each season and across species, respectively.
@@ -297,19 +297,72 @@ https://github.com/mattocci27/trait-ndd and XXXX, respectively.
 \hypertarget{references}{%
 \section{References}\label{references}}
 
-\hypertarget{tables}{%
-\section{Tables}\label{tables}}
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
+Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
+Betancourt, M., \emph{et al.} (2017).
+\href{https://doi.org/10.18637/jss.v076.i01}{Stan : {A Probabilistic
+Programming Language}}. \emph{Journal of Statistical Software}, 76,
+1--32.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Detto2019}{}}%
+Detto, M., Visser, M.D., Wright, S.J. \& Pacala, S.W. (2019).
+\href{https://doi.org/10.1111/ele.13372}{Bias in the detection of
+negative density dependence in plant communities}. \emph{Ecology
+Letters}, 22, 1923--1939.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
+Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. \&
+Rubin, D.B. (2013).
+\emph{\href{https://books.google.com.pa/books?id=eSHSBQAAQBAJ}{Bayesian
+{Data Analysis}, {Third Edition}}}. {Chapman \& Hall/CRC}, {Boca Raton,
+FL, USA.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman2008}{}}%
+Gelman, A., Jakulin, A., Pittau, M.G. \& Su, Y.S. (2008).
+\href{https://doi.org/10.1214/08-AOAS191}{A weakly informative default
+prior distribution for logistic and other regression models}.
+\emph{Annals of Applied Statistics}, 2, 1360--1383.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Landau2021}{}}%
+Landau, W.M. (2021). \href{https://doi.org/10.21105/joss.02959}{The
+targets {R} package: A dynamic {Make-like} function-oriented pipeline
+toolkit for reproducibility and high-performance computing}.
+\emph{Journal of Open Source Software}, 6, 2959.
+
+\leavevmode\vadjust pre{\hypertarget{ref-RCoreTeam2022}{}}%
+R Core Team. (2022). \emph{\href{https://www.R-project.org/}{R: {A}
+language and environment for statistical computing}}. manual. {R
+Foundation for Statistical Computing}, {Vienna, Austria}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-StanDevelopmentTeam2021}{}}%
+Stan Development Team. (2021). \emph{Stan user's guide v2.28 ({Accesed
+December} 16 2021)}. Available at:
+\href{https://mc-stan.org/docs/2_28/reference-manual/index.html}{https://mc-stan.org/docs/2\_28/reference-manual/index.html.}
+Last accessed.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Vehtari2021}{}}%
+Vehtari, A., Gelman, A., Simpson, D., Carpenter, B. \& Bürkner, P.-C.
+(2021). \href{https://doi.org/10.1214/20-BA1221}{Rank-{Normalization},
+{Folding}, and {Localization}: {An Improved Rˆ} for {Assessing
+Convergence} of {MCMC} (with {Discussion})}. \emph{Bayesian Analysis},
+16, 667--718.
+
+\end{CSLReferences}
+
+\newpage
 
 \hypertarget{table-1}{%
 \section{Table 1}\label{table-1}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (traits) on individual-level predictors
-(\(\gamma\)) in the dry seasons. Only effects of those with 95\% CIs
-that did not overlap with zero are shown. The full results are available
-in Table S5. ConS/HetS: conspecific/heterospecific seedling density,
-ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27),
-LDMC: leaf dry matter content, SDMC: stem dry matter content,
+(\(\gamma\)) in the dry seasons. Only variables with credible intervals
+not overlapping 0 are shown. The full results are available in Table S5.
+ConS/HetS: conspecific/heterospecific seedling density, ConT/HetT:
+conspecific/heterospecific tree density (scaled by 0.27), LDMC: leaf dry
+matter content, SDMC: stem dry matter content,
 \(\delta\)C\textsubscript{13}: stable carbon isotope composition, LT:
 leaf thickness.
 
@@ -398,68 +451,47 @@ Species-level predictor
 
 \newpage
 
-\hypertarget{figures}{%
-\section{Figures}\label{figures}}
+\hypertarget{fig.-1}{%
+\section{Fig. 1}\label{fig.-1}}
+
+Standardized regression coefficients common to all species
+(\(\gamma_{k,1}\)) modeling the effects of log of individual height (ln
+Height), conspecific seedling density (ConS), conspecific tree density
+(ConT), heterospecific seedling density (HetS), phylogenetic seedling
+density (PhyS), heterospecific tree density (HetT), phylogenetic tree
+density (PhyT), rainfall, and interactions between densities and
+rainfall for dry and rainy seasons. Thick and thin lines indicate 90\%
+and 95\% credible intervals, respectively. Circles show posterior means
+of coefficients. Filled circles indicate significant effects and open
+circles indicate non-significance effects. Positive \(\gamma_{k,1}\)
+values indicate higher survival rates with increasing values of the
+predictors, while negative \(\gamma_{k,1}\) values indicate lower
+survival rates with increasing values of the predictors. Note that
+predictors are scaled to a mean of 0 and standard deviation of 1 within
+each season.
 
 \includegraphics{/home/mattocci/seedling-stan/figs/coef_trait.pdf}
 
 \newpage
 
+\hypertarget{fig.-2}{%
+\section{Fig. 2}\label{fig.-2}}
+
+Contour plots illustrating interactions between conspecific seedling
+densities and rainfall on seedling survival rates in the dry seasons and
+their association with functional traits: (a) leaf dry matter content
+(LDMC), (b) stem dry matter content (SDMC), (c) leaf thickness (LT), and
+(d) stable carbon isotope composition (\(\delta\)C\textsubscript{13}).
+Colour scales show marginal estimated median predictions for each
+response variable across the full range of rainfall and upper 90\%
+quantiles of conspecific seedling density (the distributions of
+conspecific seedling densities are positively skewed). All other
+variables were set at their mean value for marginal predictions. Low and
+high trait values indicate 25\% and 75\% quantiles of the trait
+distribution in the observed dataset, respectively. Only variables with
+credible intervals not overlapping 0 are plotted.
+
 \includegraphics{/home/mattocci/seedling-stan/figs/dry_het_intrain2_trait_suv_contour.pdf}
-
-\hypertarget{refs}{}
-\begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-Carpenter2017}{}}%
-Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
-Betancourt, M., \emph{et al.} (2017).
-\href{https://doi.org/10.18637/jss.v076.i01}{Stan : {A Probabilistic
-Programming Language}}. \emph{Journal of Statistical Software}, 76,
-1--32.
-
-\leavevmode\vadjust pre{\hypertarget{ref-Detto2019}{}}%
-Detto, M., Visser, M.D., Wright, S.J. \& Pacala, S.W. (2019).
-\href{https://doi.org/10.1111/ele.13372}{Bias in the detection of
-negative density dependence in plant communities}. \emph{Ecology
-Letters}, 22, 1923--1939.
-
-\leavevmode\vadjust pre{\hypertarget{ref-Gelman2013}{}}%
-Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. \&
-Rubin, D.B. (2013).
-\emph{\href{https://books.google.com.pa/books?id=eSHSBQAAQBAJ}{Bayesian
-{Data Analysis}, {Third Edition}}}. {Chapman \& Hall/CRC}, {Boca Raton,
-FL, USA.}
-
-\leavevmode\vadjust pre{\hypertarget{ref-Gelman2008}{}}%
-Gelman, A., Jakulin, A., Pittau, M.G. \& Su, Y.S. (2008).
-\href{https://doi.org/10.1214/08-AOAS191}{A weakly informative default
-prior distribution for logistic and other regression models}.
-\emph{Annals of Applied Statistics}, 2, 1360--1383.
-
-\leavevmode\vadjust pre{\hypertarget{ref-Landau2021}{}}%
-Landau, W.M. (2021). \href{https://doi.org/10.21105/joss.02959}{The
-targets {R} package: A dynamic {Make-like} function-oriented pipeline
-toolkit for reproducibility and high-performance computing}.
-\emph{Journal of Open Source Software}, 6, 2959.
-
-\leavevmode\vadjust pre{\hypertarget{ref-RCoreTeam2022}{}}%
-R Core Team. (2022). \emph{\href{https://www.R-project.org/}{R: {A}
-language and environment for statistical computing}}. manual. {R
-Foundation for Statistical Computing}, {Vienna, Austria}.
-
-\leavevmode\vadjust pre{\hypertarget{ref-StanDevelopmentTeam2021}{}}%
-Stan Development Team. (2021). \emph{Stan user's guide v2.28 ({Accesed
-December} 16 2021)}. Available at:
-\href{https://mc-stan.org/docs/2_28/reference-manual/index.html}{https://mc-stan.org/docs/2\_28/reference-manual/index.html.}
-Last accessed.
-
-\leavevmode\vadjust pre{\hypertarget{ref-Vehtari2021}{}}%
-Vehtari, A., Gelman, A., Simpson, D., Carpenter, B. \& Bürkner, P.-C.
-(2021). \href{https://doi.org/10.1214/20-BA1221}{Rank-{Normalization},
-{Folding}, and {Localization}: {An Improved Rˆ} for {Assessing
-Convergence} of {MCMC} (with {Discussion})}. \emph{Bayesian Analysis},
-16, 667--718.
-
-\end{CSLReferences}
 
 
 

@@ -601,5 +601,5 @@ cc_line <- function(wet, dry) {
 
   p1 + p2 + p3 + p4 +
     plot_layout(ncol = 2, heights = c(1, 1)) +
-    plot_annotation(tag_levels = "A")
+    plot_annotation(tag_levels = "a")
 }

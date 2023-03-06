@@ -570,6 +570,14 @@ tar_map(
   #   bayes_check_html,
   #   "docs/bayes_check.qmd",
   # ),
+  tar_quarto(
+    si_pdf,
+    "ms/SI.qmd"
+  ),
+  tar_quarto(
+    main_docx,
+    "ms/main.qmd"
+  ),
 
   NULL
  )
