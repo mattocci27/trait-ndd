@@ -183,39 +183,41 @@ Stan code for the multilevel logistic regression in the main text.
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_list))
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_tbl))
 
-generate_loo_tbl2 <- function(loo_list)  {
-  loo_list_ori <- loo_list
-  loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
-  loo_list <- loo_list[str_detect(names(loo_list), "simple")]
-  loo_list <- loo_list[!str_detect(names(loo_list),
-    "fit_mcmc_logistic_simple_stan_data_wet_het_norain_nlog")]
-  loo_list <- loo_list[!str_detect(names(loo_list),
-    "fit_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog")]
-  loo_list <- loo_list[!str_detect(names(loo_list),
-    "fit_mcmc_logistic_simple_stan_data_wet_phy_rain_nlog")]
-  loo_names <- names(loo_list)
+# generate_loo_tbl2 <- function(loo_list)  {
+#   loo_list_ori <- loo_list
+#   loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
+#   loo_list <- loo_list[str_detect(names(loo_list), "simple")]
+#   loo_list <- loo_list[!str_detect(names(loo_list),
+#     "fit_mcmc_logistic_simple_stan_data_wet_het_norain_nlog")]
+#   loo_list <- loo_list[!str_detect(names(loo_list),
+#     "fit_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog")]
+#   loo_list <- loo_list[!str_detect(names(loo_list),
+#     "fit_mcmc_logistic_simple_stan_data_wet_phy_rain_nlog")]
+#   loo_names <- names(loo_list)
 
-  loo_names_split <- str_split_fixed(loo_names, "_", 11)
+#   loo_names_split <- str_split_fixed(loo_names, "_", 11)
 
-  loo_tbl <- tibble(model = names(loo_list)) |>
-    mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
-    mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
-    mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
-    mutate(season = loo_names_split[, 8]) |>
-    mutate(phy = loo_names_split[, 9]) |>
-    mutate(rain = loo_names_split[, 10]) |>
-    mutate(traits = loo_names_split[, 11])
-  loo_tbl
-}
+#   loo_tbl <- tibble(model = names(loo_list)) |>
+#     mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
+#     mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
+#     mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
+#     mutate(season = loo_names_split[, 8]) |>
+#     mutate(phy = loo_names_split[, 9]) |>
+#     mutate(rain = loo_names_split[, 10]) |>
+#     mutate(traits = loo_names_split[, 11])
+#   loo_tbl
+# }
 
-loo_tbl <- generate_loo_tbl2(loo_list)
+# loo_tbl <- generate_loo_tbl2(loo_list)
 
 loo_names <- names(loo_list)
 tmp <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_summary")
-tmp <- str_replace_all(tmp, "loo_fit2_mcmc", "fit2_summary")
+# tmp <- str_replace_all(tmp, "loo_fit2_mcmc", "fit2_summary")
 tmp2 <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_diagnostics")
-tmp2 <- str_replace_all(tmp2, "loo_fit2_mcmc", "fit2_diagnostics")
+# tmp2 <- str_replace_all(tmp2, "loo_fit2_mcmc", "fit2_diagnostics")
 
 n_ess <- NULL
 n_div <- NULL
@@ -309,7 +311,6 @@ ELPD: expected log pointwise predictive density (larger values indicate better a
 LOOIC: leave-one-out deviance information criterion (smaller values indicate a better model fit),
 N_ESS: number of variables that showed effective sample size less than 400,
 N_Div: number of divergent transitions,
-Models that did not converge well are shown in gray (N_ESS > 0 or N_Div $\geq$ 4).
 
 
 ```{r}
@@ -451,7 +452,7 @@ gen_si_tab(dry_traits_gamma)
 # `r s_table("wet_traits_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
-Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
@@ -466,6 +467,7 @@ wet_traits_gamma |>
 gen_si_tab(wet_traits_gamma)
 ```
 
+
 \newpage
 
 # `r s_table("dry_abund_gamma")`
@@ -475,7 +477,7 @@ Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_abund_gamma <- read_csv(here("data", "dry_phy_intrain_abund_gamma.csv"))
+dry_abund_gamma <- read_csv(here("data", "dry_het_intrain_abund_gamma.csv"))
 dry_abund_gamma |>
   filter(q2.5 * q97.5 > 0)
 dry_abund_gamma |>
@@ -491,11 +493,11 @@ gen_si_tab(dry_abund_gamma)
 # `r s_table("wet_abund_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
-Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_abund_gamma")`.
 
 ```{r, include=FALSE}
-wet_abund_gamma <- read_csv(here("data", "wet_phy_intrain_abund_gamma.csv"))
+wet_abund_gamma <- read_csv(here("data", "wet_phy_rain_abund_gamma.csv"))
 wet_abund_gamma |>
   filter(q2.5 * q97.5 > 0)
 wet_abund_gamma |>
@@ -509,3 +511,7 @@ gen_si_tab(wet_abund_gamma)
 \newpage
 
 # References
+
+```{r}
+knitr::knit_exit()
+```
