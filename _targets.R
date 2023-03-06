@@ -24,7 +24,8 @@ tar_option_set(packages = c(
   "httpgd",
   "multcompView",
   "RColorBrewer",
-  "ggridges"
+  "ggridges",
+  "bayesplot"
 ))
 
 tar_option_set(
@@ -202,6 +203,14 @@ main_ <- list(
     wet_trait,
     load_mcmc_summary(loo_tbl, season = "wet", trait = "n")
   ),
+  tar_target(
+    dry_abund,
+    load_mcmc_summary(loo_tbl, season = "dry", trait = "ab")
+  ),
+  tar_target(
+    wet_abund,
+    load_mcmc_summary(loo_tbl, season = "wet", trait = "ab")
+  ),
 
   # best models
   tar_target(
@@ -233,6 +242,15 @@ main_ <- list(
       stan_data_wet_phy_rain_ab)
   ),
 
+  # not best
+  tar_target(
+    wet_phy_intrain2_trait,
+    generate_mcmc_summary(
+      fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog,
+      fit_mcmc_logistic_simple_stan_data_wet_phy_intrain2_nlog,
+      stan_data_wet_phy_intrain2_nlog)
+  ),
+
   tar_target(
     dry_het_intrain2_trait_suv_contour_plot, {
       p <- dry_trait_suv_contour(dry_het_intrain2_trait, alpha = 0.05)
@@ -247,21 +265,48 @@ main_ <- list(
     },
     format = "file"
   ),
-  # tar_target(
-  #   wet_phy_norain_trait_suv_contour_plot, {
-  #     p <- wet_trait_suv_contour(wet_phy_norain_trait, alpha = 0.05)
-  #     my_ggsave(
-  #       "figs/wet_phy_norain_trait_suv_contour",
-  #       p,
-  #       dpi = 300,
-  #       width = 173,
-  #       height = 180,
-  #       units = "mm"
-  #     )
-  #   },
-  #   format = "file"
-  # ),
-
+  tar_target(
+    wet_phy_intrain2_trait_suv_contour_plot, {
+      p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/wet_phy_intrain2_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 180,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    wet_phy_intrain2_trait_suv_contour_plot_cons, {
+      p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05, keep_cons = TRUE)
+      my_ggsave(
+        "figs/wet_phy_intrain2_trait_suv_contour_cons",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 180,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    coef_trait_plot, {
+      p <- coef_pointrange(dry_het_intrain2_trait, wet_phy_norain_trait, comb = FALSE)
+      my_ggsave(
+        "figs/coef_trait",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 86,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
 
 #   tar_target(
 #     beta_wet_rain_n,

@@ -470,6 +470,29 @@ gen_si_tab(wet_traits_gamma)
 
 \newpage
 
+# `r s_table("wet_traits_gamma2")`
+
+hoge
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+wet_traits_gamma2 <- read_csv(here("data", "wet_phy_intrain2_traits_gamma.csv"))
+wet_traits_gamma2 |>
+  filter(q2.5 * q97.5 > 0)
+wet_traits_gamma2 |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab(wet_traits_gamma2)
+```
+
+
+\newpage
+
 # `r s_table("dry_abund_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.

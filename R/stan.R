@@ -228,14 +228,18 @@ generate_coef_data <- function(draws, data, season = "Dry") {
           "logh_s",
           "scon_s",
           "shet_s",
+          "sphy_s",
           "acon_s_c",
           "ahet_s_c",
+          "aphy_s_c",
           "rain_s",
           "logh_s:rain_s",
           "scon_s:rain_s",
           "shet_s:rain_s",
+          "sphy_s:rain_s",
           "acon_s_c:rain_s",
-          "ahet_s_c:rain_s"
+          "ahet_s_c:rain_s",
+          "aphy_s_c:rain_s"
         ) |> rev()))
 }
 

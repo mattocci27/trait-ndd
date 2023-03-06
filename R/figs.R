@@ -52,65 +52,58 @@ create_stan_tab <- function(draws) {
 }
 
 #' @title Coef plot
-#' @param fit_gamma_dry summary data of gamma for dry season (e.g., fit1_gamma)
-#' @param fit_gamma_wet summary data of gamma for wet season (e.g., fit2_gamma)
-#' @param stan_data_dry data for stan model for dry season (e.g., dry_each+int)
-#' @param stan_data_wet data for stan model for wet season (e.g., wet_each+int)
-coef_pointrange <- function(fit_gamma_dry, fit_gamma_wet, int = TRUE) {
+coef_pointrange <- function(dry_trait, wet_trait, comb = TRUE) {
+    if (comb) {
+      data <- bind_rows(
+        generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry"),
+        generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy"))
+      coef_pointrange_wrapper(data)
+    } else {
+      dry_data <- generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry")
+      wet_data <- generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy")
+      p1 <- coef_pointrange_wrapper(dry_data)
+      p2 <- coef_pointrange_wrapper(wet_data)
+      p1 + p2 +
+        plot_annotation(tag_levels = "a") &
+        theme(
+          text = element_text(size = 8),
+          plot.tag = element_text(face = "bold")
+        )
+    }
+}
+
+coef_pointrange_wrapper <- function(data) {
   gamma_lab <- c(
-      "gamma_1_1" = expression(Intercept~(gamma["1,1"])),
-      "gamma_2_1" = expression(ln~Height~(gamma["2,1"])),
-      "gamma_3_1" = expression(ConS~(gamma["3,1"])),
-      "gamma_4_1" = expression(ConT~(gamma["4,1"])),
-      "gamma_5_1" = expression(HetS~(gamma["5,1"])),
-      "gamma_6_1" = expression(HetT~(gamma["6,1"])),
-      "gamma_7_1" = expression(Rainfall~(gamma["7,1"])),
-      "gamma_8_1" = expression(ConS%*%Rainfall~(gamma["8,1"])),
-      "gamma_9_1" = expression(ConT%*%Rainfall~(gamma["9,1"])),
-      "gamma_10_1" = expression(HetS%*%Rainfall~(gamma["10,1"])),
-      "gamma_11_1" = expression(HetT%*%Rainfall~(gamma["11,1"])))
+    # "(Intercept)" = expression(Intercept~(gamma["1,1"])),
+    "logh_s" = expression(ln~Height~(gamma["2,1"])),
+    "scon_s" = expression(ConS~(gamma["3,1"])),
+    "shet_s" = expression(HetS~(gamma["4,1"])),
+    "sphy_s" = expression(PhyS~(gamma["4,1"])),
+    "acon_s_c" = expression(ConT~(gamma["5,1"])),
+    "ahet_s_c" = expression(HetT~(gamma["6,1"])),
+    "aphy_s_c" = expression(PhyT~(gamma["6,1"])),
+    "rain_s" = expression(Rainfall~(gamma["7,1"])),
+    "logh_s:rain_s" = expression(ln~Height%*%Rainfall~(gamma["8,1"])),
+    "scon_s:rain_s" = expression(ConS%*%Rainfall~(gamma["9,1"])),
+    "shet_s:rain_s" = expression(HetS%*%Rainfall~(gamma["10,1"])),
+    "acon_s_c:rain_s" = expression(ConT%*%Rainfall~(gamma["11,1"])),
+    "ahet_s_c:rain_s" = expression(HetT%*%Rainfall~(gamma["12,1"])))
 
-  if (!int) {
-   gamma_lab <- gamma_lab[1:7]
-  }
+  my_col <- RColorBrewer::brewer.pal(5, "RdBu")
 
-  fit_gamma_dry <- fit_gamma_dry |>
-    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns")) |>
-    mutate(season = "Dry") |>
-    filter(trait_name == "intercept") |>
-    mutate(para = factor(para, levels = paste0("gamma_", 1:nrow(fit_gamma_dry), "_1") |> rev()))
-
-  fit_gamma_wet <- fit_gamma_wet |>
-    mutate(sig = ifelse(q2_5 * q97_5 > 0, "sig", "ns")) |>
-    mutate(season = "Rainy") |>
-    filter(trait_name == "intercept") |>
-    mutate(para = factor(para, levels = paste0("gamma_", 1:nrow(fit_gamma_wet), "_1") |> rev()))
-
-  my_col <- brewer.pal(5, "RdBu")
-
-  bind_rows(fit_gamma_dry, fit_gamma_wet) |>
-    mutate(sig_season = paste0(season, "_", sig)) |>
-    ggplot(aes(y = para)) +
-    facet_grid(~season) +
-    geom_vline(xintercept = 0, lty = 2, col = "grey40") +
-    geom_linerange(
-      aes(xmin = q2_5, xmax = q97_5, col = season),
-    ) +
-    geom_linerange(
-      aes(xmin = q5, xmax = q95, col = season),
-      size = 1.5,
-    ) +
-    geom_point(
-      aes(x = mean_, fill = sig_season, col = season),
-      shape = 21,
-      size = 3) +
-    scale_y_discrete(labels = gamma_lab) +
+  ggplot(data, aes(y = para)) +
+    geom_vline(xintercept = 0, lty = 2, col = "grey60") +
+    geom_linerange(aes(xmin = ll, xmax = hh, col = season),
+      position = position_dodge(width = 0.5)) +
+    geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
+      position = position_dodge(width = 0.5)) +
+    geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 2.5,
+      position = position_dodge(width = 0.5)) +
     scale_colour_manual(
       values = c(
         "Dry" = my_col[1],
         "Rainy" = my_col[5]
-      )
-    ) +
+      )) +
     scale_fill_manual(
       values = c(
         "Dry_sig" = my_col[2],
@@ -119,12 +112,14 @@ coef_pointrange <- function(fit_gamma_dry, fit_gamma_wet, int = TRUE) {
         "Rainy_ns" = my_col[3]
       )
     ) +
+    scale_y_discrete(labels = gamma_lab) +
     ylab("") +
     xlab("Standardized coefficients") +
     theme_bw() +
     theme(
       legend.position = "none")
 }
+
 
 #' @title Coef ridghe plot
 #' @param fit_tab summary data (e.g., fit1_tab)
@@ -348,14 +343,19 @@ prepare_suv_pred <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01,
     mutate(sp_pred = gamma_col[gamma_col_num]) |>
     dplyr::select(variable, ind_pred, sp_pred, q50, sig)
 }
-
 # summary <- wet_trait$summary
 # data <- wet_trait$data
 # alpha <- 0.05
 # trait_no <- 3
-generate_suv_pred <- function(summary, data, alpha, trait_no) {
+generate_suv_pred <- function(summary, data, alpha, trait_no, keep_cons = FALSE) {
+  if (keep_cons) {
   tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
+    mutate(sig = ifelse(ind_pred == "scon_s", "sig", sig)) |>
     mutate(q50 = ifelse(sig != "sig", 0, q50))
+  } else {
+    tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
+      mutate(q50 = ifelse(sig != "sig", 0, q50))
+  }
   l <- ncol(data$x)
   gamma <- matrix(tmp$q50, nrow = l)
   trait_m <- matrix(c(1, rep(0, l)))
@@ -461,24 +461,24 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
       plot.tag = element_text(face = "bold"))
 }
 
-wet_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
-  p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
+wet_trait_suv_contour <- function(wet_trait, alpha = 0.05, keep_cons = FALSE) {
+  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 5, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low SLA species")
-  p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
+  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 5, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle("High SLA species")
 
-  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
+  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 8, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low N species")
-  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 8) |>
+  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 8, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle("High N species")
-  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
+  p5 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~pi[tlp]~species))
-  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 9) |>
+  p6 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~pi[tlp]~species))
 
