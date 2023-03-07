@@ -228,28 +228,24 @@ generate_coef_data <- function(draws, data, season = "Dry") {
           "logh_s",
           "scon_s",
           "shet_s",
+          "sphy_s",
           "acon_s_c",
           "ahet_s_c",
+          "aphy_s_c",
           "rain_s",
           "logh_s:rain_s",
           "scon_s:rain_s",
           "shet_s:rain_s",
+          "sphy_s:rain_s",
           "acon_s_c:rain_s",
-          "ahet_s_c:rain_s"
+          "ahet_s_c:rain_s",
+          "aphy_s_c:rain_s"
         ) |> rev()))
 }
 
 generate_loo_tbl <- function(loo_list)  {
-  loo_list_ori <- loo_list
-  loo_list <- loo_list_ori[str_detect(names(loo_list_ori), "het")]
-  loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
-  loo_list <- loo_list[str_detect(names(loo_list), "simple")]
-  loo_list <- loo_list[!str_detect(names(loo_list), "wet_het_rain_nlog")]
-  loo_list <- loo_list[!str_detect(names(loo_list), "wet_het_norain_nlog")]
   loo_names <- names(loo_list)
-
   loo_names_split <- str_split_fixed(loo_names, "_", 11)
-
   loo_tbl <- tibble(model = names(loo_list)) |>
     mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
     mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>

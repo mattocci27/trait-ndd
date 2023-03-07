@@ -9,20 +9,6 @@ crossref:
   fig-prefix: Fig.
   eq-prefix: Eq.
 format:
-  html:
-    theme: spacelab #readable #sandstone #spacelab #flatly
-    toc: true
-    toc-depth: 2
-    toc-title: Contents
-    self-contained: true
-    smooth-scroll: true
-    highlight-style: github
-    embed-resources: true
-  docx:
-    toc: false
-    number-sections: false
-    highlight-style: github
-    html-math-method: katex
   pdf:
     toc: false
     keep-tex: true
@@ -39,12 +25,25 @@ format:
         \renewcommand{\headrulewidth}{0pt}
         \fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist?-- Appendix X}
         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+    embed-resources: true
+  docx:
+    toc: false
+    number-sections: false
+    highlight-style: github
+    html-math-method: katex
 ---
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
-
 
 
 ```{r}
@@ -77,6 +76,15 @@ Seasonal rainfall pattern in this area (data from November 2007- November 2017),
 
 \newpage
 
+# `r s_fig("cc_line")`
+
+The grid-search for the scaling parameter *c* that maximized the likelihood of the following survival model:
+$\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c$,
+where $p_i$ is the individual survival probability, $Z_1$ and $Z_2$ are distance-weighted sums of basal area of conspecifics and heterospecifics (phylogeneteically weighted or non-weigted) respectively,
+
+![](`r here::here("figs/cc_line.pdf")`)
+
+\newpage
 
 # `r s_append("method")` - Extended model description
 
@@ -88,7 +96,7 @@ $$
 $$
 
 where $p_i$ is the individual survival probability in the *i*th census interval, and $Z_1$ and $Z_2$ are distance-weighted sums of basal areas of conspecifics and heterospecifics respectively.
-We found that $c$ = 0.27 for the dry season and $c$ = 0.24 for the rainy season were the best estimates for our dataset.
+We found that $c$ = 0.27 for the dry season and $c$ = 0.24 for the rainy season were the best estimates for our dataset (`r s_fig("cc_line")`).
 
 We built Bayesian hierarchical models that include variation among species in the effects of conspecific and heterospecific neighbours, and rainfall on survival.
 Survival ($s$) of seedling record *i* of individual *m* for species *j* in census *t* in plot *p* was modeled using the Bernoulli distribution ($\mathcal{B}$):
@@ -105,10 +113,10 @@ where $\boldsymbol{\beta_{j}} = \left[\beta_{1,j}, \beta_{2,j}, \ldots, \beta_{K
 *K* is the number of predictors for an individual seedling,
 $\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]$ is the vector of predictors of size *K* for an individual seedling,
 $\phi_p$ is the random effect for seedling plots, and
-$\omega_t$ is the random effect for different census
+$\omega_t$ is the random effect for different censuses
 (note that $\cdot$ denotes dot product).
 The set of predictor variables ($\boldsymbol{x_i}$) includes
-intercept,
+intercepts,
 log of seedling heights,
 rainfall,
 densities of conspecific (*ConS*) and heterospecific (*HetS*) seedlings,
@@ -146,21 +154,21 @@ $\pi$~tlp~,
 3) basal area,
 4) abundance and basal area, and
 5) abundance, basal area and their interactions.
-The row vector $\gamma_{k,1}$ represents average effects of the each individual-level predictor (e.g., *ConS*) across species,
-whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th individual-level predictor (e.g., SLA) on the variation in the strength of the each individual-level predictor (e.g., variation in the strength of *ConS* among species).
+The row vector $\gamma_{k,1}$ represents the average effects of each individual-level predictor (e.g., *ConS*) across species,
+whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th individual-level predictor (e.g., SLA) on the variation in the strength of each individual-level predictor (e.g., variation in the strength of *ConS* among species).
 To allow comparisons among parameter estimates, the individual-level predictors ($\boldsymbol{x_i}$) and the species-level predictors ($\boldsymbol{u_j}$) were scaled to a mean of 0 and standard deviation of 1 within each season and across species, respectively.
 
 Posterior distributions of all parameters were estimated using the
 No-U-Turn Sampler (NUTS), an adaptive variant of the Hamiltonian Monte Carlo (HMC), algorithm implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
 The HMC algorithm uses gradient information to propose new states in the Markov chain, leading to a more efficient exploration of the target distribution than traditional Markov chain Monte Carlo (MCMC) methods that rely on random proposals [@Carpenter2017].
-The NUTS algorithm automatically determines the number of Hamiltonian dynamics simulation steps needed to propose a new state in the Markov chain without requiring the user to manually set a fixed number of steps [@Hoffman2014].
+The NUTS algorithm automatically determines the number of Hamiltonian dynamics simulation steps needed to propose a new state in the Markov chain without requiring the user to set a fixed number of steps manually [@Hoffman2014].
 Prior distributions for the species-level predictors ($\boldsymbol{\gamma_k}$) were independent normal distributions with a mean of 0 and standard deviation of 2.5;
 prior distributions for the latent Gaussian variables ($\boldsymbol{z}$) were independent standard normal distributions.
 A prior distribution for the Cholesky factor of the correlation matrix ($\boldsymbol{\Omega_L}$) was the Cholesky LKJ correlation distribution with a parameter of 2 (which indicates matrices with smaller correlations).
-Four independent chains were run for 1,000 iterations for each model with a warm-up of 1,000 - 2,000 iterations.
+Four independent chains were run for 1,000 iterations for each model with a warm-up of 2,000 iterations.
 Convergence of the posterior distribution was assessed with the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013] and effective sample sizes > 400 [@Vehtari2021] for all parameters.
 Divergent transitions were also monitored.
-The existence of divergent transitions suggest that estimates are based on the incomplete exploration of the simulated Hamiltonian trajectory and are not trusted [@Betancourt2016].
+The existence of divergent transitions suggests that estimates are based on the incomplete exploration of the simulated Hamiltonian trajectory and are not trusted [@Betancourt2016].
 
 All statistical analyses were conducted in R version 4.2.1 [@RCoreTeam2022] using the R package *targets* version 0.13.5 for workflow management [@Landau2021].
 Codes and datasets are available at
@@ -175,7 +183,7 @@ respectively.
 
 Stan code for the multilevel logistic regression in the main text.
 
-```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+```{stan, file="stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```
 
 \newpage
@@ -183,39 +191,14 @@ Stan code for the multilevel logistic regression in the main text.
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(loo_list))
-
-generate_loo_tbl2 <- function(loo_list)  {
-  loo_list_ori <- loo_list
-  loo_list <- loo_list[!str_detect(names(loo_list), "_n$")]
-  loo_list <- loo_list[str_detect(names(loo_list), "simple")]
-  loo_list <- loo_list[!str_detect(names(loo_list),
-    "fit_mcmc_logistic_simple_stan_data_wet_het_norain_nlog")]
-  loo_list <- loo_list[!str_detect(names(loo_list),
-    "fit_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog")]
-  loo_list <- loo_list[!str_detect(names(loo_list),
-    "fit_mcmc_logistic_simple_stan_data_wet_phy_rain_nlog")]
-  loo_names <- names(loo_list)
-
-  loo_names_split <- str_split_fixed(loo_names, "_", 11)
-
-  loo_tbl <- tibble(model = names(loo_list)) |>
-    mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
-    mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
-    mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
-    mutate(season = loo_names_split[, 8]) |>
-    mutate(phy = loo_names_split[, 9]) |>
-    mutate(rain = loo_names_split[, 10]) |>
-    mutate(traits = loo_names_split[, 11])
-  loo_tbl
-}
-
-loo_tbl <- generate_loo_tbl2(loo_list)
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(loo_tbl))
 
 loo_names <- names(loo_list)
 tmp <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_summary")
-tmp <- str_replace_all(tmp, "loo_fit2_mcmc", "fit2_summary")
+# tmp <- str_replace_all(tmp, "loo_fit2_mcmc", "fit2_summary")
 tmp2 <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_diagnostics")
-tmp2 <- str_replace_all(tmp2, "loo_fit2_mcmc", "fit2_diagnostics")
+# tmp2 <- str_replace_all(tmp2, "loo_fit2_mcmc", "fit2_diagnostics")
 
 n_ess <- NULL
 n_div <- NULL
@@ -309,7 +292,6 @@ ELPD: expected log pointwise predictive density (larger values indicate better a
 LOOIC: leave-one-out deviance information criterion (smaller values indicate a better model fit),
 N_ESS: number of variables that showed effective sample size less than 400,
 N_Div: number of divergent transitions,
-Models that did not converge well are shown in gray (N_ESS > 0 or N_Div $\geq$ 4).
 
 
 ```{r}
@@ -451,7 +433,7 @@ gen_si_tab(dry_traits_gamma)
 # `r s_table("wet_traits_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
-Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
@@ -466,6 +448,33 @@ wet_traits_gamma |>
 gen_si_tab(wet_traits_gamma)
 ```
 
+
+\newpage
+
+# `r s_table("wet_traits_gamma2")`
+
+**Note:
+I used this table to draw the contour plot for the rainy season,
+but this is the 4th best model in `r s_table("wet_traits_diagnostics")`.
+We should remove this table if we don't need the contour plot for the rainy season.**
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+wet_traits_gamma2 <- read_csv(here("data", "wet_phy_intrain2_traits_gamma.csv"))
+wet_traits_gamma2 |>
+  filter(q2.5 * q97.5 > 0)
+wet_traits_gamma2 |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab(wet_traits_gamma2)
+```
+
+
 \newpage
 
 # `r s_table("dry_abund_gamma")`
@@ -475,7 +484,7 @@ Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_abund_gamma <- read_csv(here("data", "dry_phy_intrain_abund_gamma.csv"))
+dry_abund_gamma <- read_csv(here("data", "dry_het_intrain_abund_gamma.csv"))
 dry_abund_gamma |>
   filter(q2.5 * q97.5 > 0)
 dry_abund_gamma |>
@@ -491,11 +500,11 @@ gen_si_tab(dry_abund_gamma)
 # `r s_table("wet_abund_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
-Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.24.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_abund_gamma")`.
 
 ```{r, include=FALSE}
-wet_abund_gamma <- read_csv(here("data", "wet_phy_intrain_abund_gamma.csv"))
+wet_abund_gamma <- read_csv(here("data", "wet_phy_rain_abund_gamma.csv"))
 wet_abund_gamma |>
   filter(q2.5 * q97.5 > 0)
 wet_abund_gamma |>
@@ -509,3 +518,7 @@ gen_si_tab(wet_abund_gamma)
 \newpage
 
 # References
+
+```{r}
+knitr::knit_exit()
+```

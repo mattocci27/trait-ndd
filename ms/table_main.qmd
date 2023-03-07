@@ -1,0 +1,175 @@
+---
+fontsize: 12pt
+geometry: margin=1in
+link-citations: yes
+csl: templates/ecology-letters.csl
+bibliography: templates/seedling.bib
+crossref:
+  fig-title: Fig.
+  fig-prefix: Fig.
+  eq-prefix: Eq.
+format:
+  docx:
+    toc: false
+    number-sections: false
+    highlight-style: github
+    html-math-method: katex
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+    embed-resources: true
+  pdf:
+    toc: false
+    keep-tex: true
+    pdf-engine: pdflatex
+    include-in-header:
+      text: |
+        \usepackage{xr}
+        \usepackage[default]{sourcesanspro}
+        \usepackage{sourcecodepro}
+        \usepackage{fancyhdr}
+        \usepackage{fvextra}
+        \pagestyle{fancy}
+        \fancypagestyle{plain}{\pagestyle{fancy}}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist?-- Appendix X}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(here)
+library(kableExtra)
+library(flextable)
+```
+
+```{r}
+source(here("R", "stan.R"))
+source(here("R", "render.R"))
+```
+
+```{r, include=FALSE}
+s_table("dry_traits_diagnostics")
+s_table("wet_traits_diagnostics")
+s_table("dry_abund_diagnostics")
+s_table("wet_abund_diagnostics")
+```
+
+```{r, include=FALSE}
+dry_traits_gamma <- read_csv(here("data", "dry_het_intrain2_traits_gamma.csv"))
+dry_traits_gamma |>
+  filter(q2.5 * q97.5 > 0)
+dry_traits_gamma |>
+  filter(trait_name == "intercept")
+```
+
+```{r, include=FALSE}
+gen_si_tab2 <- function(data) {
+  data2 <- data |>
+    mutate(pred_name = case_when(
+      pred_name == "(Intercept)" ~ "Intercept",
+      pred_name == "logh_s" ~ "ln Height",
+      pred_name == "scon_s" ~ "ConS",
+      pred_name == "acon_s_c" ~ "ConT",
+      pred_name == "shet_s" ~ "HetS",
+      pred_name == "ahet_s_c" ~ "HetT",
+      pred_name == "sphy_s" ~ "PhyS",
+      pred_name == "aphy_s_c" ~ "PhyT",
+      pred_name == "rain_s" ~ "Rainfall",
+      pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
+      pred_name == "acon_s_c:rain_s" ~ "ConT $\\times$ Rainfall",
+      pred_name == "shet_s:rain_s" ~ "HetS $\\times$ Rainfall",
+      pred_name == "ahet_s_c:rain_s" ~ "HetT $\\times$ Rainfall",
+      pred_name == "sphy_s:rain_s" ~ "PhyS $\\times$ Rainfall",
+      pred_name == "aphy_s_c:rain_s" ~ "PhyT $\\times$ Rainfall",
+      pred_name == "scon_s:rain_s" ~ "ConS $\\times$ Rainfall",
+      pred_name == "logh_s:rain_s" ~ "ln Height $\\times$ Rainfall",
+    )) |>
+    mutate(trait_name = case_when(
+      trait_name == "intercept" ~ "Intercept",
+      trait_name == "ldmc" ~ "LDMC",
+      trait_name == "sdmc" ~ "SDMC",
+      trait_name == "chl" ~ "Chl",
+      trait_name == "c13" ~ "$\\delta \\mathrm{C_{13}}$",
+      trait_name == "log_n" ~ "ln N",
+      trait_name == "tlp" ~ "$\\pi_\\mathrm{{tlp}}$",
+      trait_name == "log_la" ~ "ln LA",
+      trait_name == "log_sla" ~ "ln SLA",
+      trait_name == "log_lt" ~ "ln LT",
+      trait_name == "log_ab" ~ "ln Abundance",
+      )) |>
+    mutate_if(is.numeric, round, 3) |>
+    filter(q2.5 * q97.5 > 0) #|>
+  data2 |>
+    mutate(`90\\% CI` = paste0("[", q5, ", ", q95, "]")) |>
+    mutate(`95\\% CI` = paste0("[", q2.5, ", ", q97.5, "]")) |>
+    mutate(variable = paste0(
+      "$\\gamma_{",
+      str_split_fixed(data2$variable, ",|\\[|\\]" ,4)[,2],
+      ",",
+      str_split_fixed(data2$variable, ",|\\[|\\]" ,4)[,3],
+      "}$")) |>
+    rename(Parameter = variable) |>
+    rename(Median = q50) |>
+    rename(`Lower 2.5\\% CI` = q2.5) |>
+    rename(`Lower 5\\% CI` = q5) |>
+    rename(`Upper 95\\% CI` = q95) |>
+    rename(`Upper 97.5\\% CI` = q97.5) |>
+    rename(`Individual-level predictor` = pred_name) |>
+    rename(`Species-level predictor` = trait_name) |>
+    dplyr::select(Parameter, Median,
+    `95\\% CI`,
+    `Individual-level predictor`,
+    `Species-level predictor`
+    ) |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "pipe", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
+}
+```
+
+# `r table("dry_traits_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons.
+Only effects of those with 95% CIs that did not overlap with zero are shown.
+The full results are available in `r s_table("dry_traits_gamma")`.
+ConS/HetS: conspecific/heterospecific seedling density,
+ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27),
+LDMC: leaf dry matter content,
+SDMC: stem dry matter content,
+$\delta$C~13~: stable carbon isotope composition,
+LT: leaf thickness.
+
+```{r}
+gen_si_tab2(dry_traits_gamma)
+```
+
+# `r table("wet_traits_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
+The full results are available in `r s_table("wet_traits_gamma")`.
+$\delta$C~13~: stable carbon isotope composition,
+Other details as for `r table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+wet_traits_gamma <- read_csv(here("data", "wet_phy_norain_traits_gamma.csv"))
+wet_traits_gamma |>
+  filter(q2.5 * q97.5 > 0)
+wet_traits_gamma |>
+  filter(trait_name == "intercept")
+```
+
+```{r}
+gen_si_tab2(wet_traits_gamma)
+```
