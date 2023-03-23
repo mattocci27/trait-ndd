@@ -28,10 +28,10 @@ tar_option_set(packages = c(
   "bayesplot"
 ))
 
-tar_option_set(
-  garbage_collection = TRUE,
-  memory = "transient"
-)
+# tar_option_set(
+#   garbage_collection = TRUE,
+#   memory = "transient"
+# )
 
 # check if it's inside a container
 if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
@@ -44,7 +44,7 @@ cmdstan_version()
 values <- expand_grid(
   season = c("dry", "wet"),
   het = c("phy", "het"),
-  rain = c("norain", "rain", "intrain", "intrain2"),
+  rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
   sp_pred = c("nlog", "ab", "ba", "ab1ba")
   )
 
@@ -570,14 +570,14 @@ tar_map(
   #   bayes_check_html,
   #   "docs/bayes_check.qmd",
   # ),
-  tar_quarto(
-    si_pdf,
-    "ms/SI.qmd"
-  ),
-  tar_quarto(
-    main_docx,
-    "ms/main.qmd"
-  ),
+  # tar_quarto(
+  #   si_pdf,
+  #   "ms/SI.qmd"
+  # ),
+  # tar_quarto(
+  #   main_docx,
+  #   "ms/main.qmd"
+  # ),
 
   NULL
  )

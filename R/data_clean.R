@@ -108,7 +108,7 @@ generate_stan_data <- function(
   seedling, traits, scale_cc,
   season = c("dry", "wet"),
   het = c("phy", "het"),
-  rain = c("norain", "rain", "intrain", "intrain2"),
+  rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
   sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")) {
 
   # targets::tar_load(scale_wet)
@@ -235,6 +235,26 @@ generate_stan_data <- function(
       Xd <- model.matrix(surv ~ logh_s +
         scon_s + sphy_s +
         acon_s_c + aphy_s_c + rain_s + scon_s:rain_s, data = seedling_data)
+    }
+   } else if (rain == "intrain3") {
+    if (het == "het") {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + shet_s +
+        acon_s_c + ahet_s_c + rain_s + acon_s_c:rain_s, data = seedling_data)
+    } else {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + sphy_s +
+        acon_s_c + aphy_s_c + rain_s + acon_s_c:rain_s, data = seedling_data)
+    }
+   } else if (rain == "intrain4") {
+    if (het == "het") {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + shet_s +
+        acon_s_c + ahet_s_c + rain_s + scon_s:rain_s + acon_s_c:rain_s, data = seedling_data)
+    } else {
+      Xd <- model.matrix(surv ~ logh_s +
+        scon_s + sphy_s +
+        acon_s_c + aphy_s_c + rain_s + scon_s:rain_s + acon_s_c:rain_s, data = seedling_data)
     }
    } else if (rain == "rain") {
     if (het == "het") {
