@@ -23,7 +23,7 @@ format:
         \pagestyle{fancy}
         \fancypagestyle{plain}{\pagestyle{fancy}}
         \renewcommand{\headrulewidth}{0pt}
-        \fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist?-- Appendix X}
+        \fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist-- Appendix}
         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
   html:
     theme: spacelab #readable #sandstone #spacelab #flatly
@@ -73,6 +73,30 @@ Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C)
 Seasonal rainfall pattern in this area (data from November 2007- November 2017), November to April is the dry season (red bars), and May to October is the rainy season (blue bars).
 
 ![](`r here::here("data-raw/rainfall.jpg")`)
+
+\newpage
+
+# `r s_fig("pairs")`
+
+A pairwise plot matrix of functional traits used in this study.
+The diagonal displays density plots of each variable,
+the upper diagonal shows the Pearson correlation coefficients between pairs of variables, and
+the lower diagonal presents scatter plots of the variable pairs.
+LDMC: leaf dry matter content,
+SD: stem density,
+SDMC: stem dry matter content,
+Chl: chlorophyll content,
+C13: stable carbon isotope composition,
+C: carbon concentration,
+N: nitrogen concentration,
+CN: carbon nitrogen ratio,
+tlp: leaf turgor loss point,
+LA: leaf area,
+SLA: specific leaf area,
+LT: leaf thickness.
+N, LA, SLA, and LT are natural log-transformed.
+
+![](`r here::here("figs/pairs.pdf")`)
 
 \newpage
 
@@ -183,7 +207,10 @@ respectively.
 
 Stan code for the multilevel logistic regression in the main text.
 
-```{stan, file="stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+<!-- ```{stan, file="stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+``` -->
+
+```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```
 
 \newpage
@@ -252,6 +279,8 @@ write_diagnostic_tables <- function(loo_tbl, diagnostics_tbl, season, abund = FA
       rain == "rain" ~ "Rain without interactions",
       rain == "intrain" ~ "Rain with all the interactions",
       rain == "intrain2" ~ "Rain with an interaction of conspecific densities",
+      rain == "intrain3" ~ "Rain with an interaction of cona",
+      rain == "intrain4" ~ "Rain with an interaction of cons cona",
     )) |>
     mutate(
       across(1:10,
@@ -447,33 +476,6 @@ wet_traits_gamma |>
 ```{r}
 gen_si_tab(wet_traits_gamma)
 ```
-
-
-\newpage
-
-# `r s_table("wet_traits_gamma2")`
-
-**Note:
-I used this table to draw the contour plot for the rainy season,
-but this is the 4th best model in `r s_table("wet_traits_diagnostics")`.
-We should remove this table if we don't need the contour plot for the rainy season.**
-
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
-Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
-Other details as for `r s_table("dry_traits_gamma")`.
-
-```{r, include=FALSE}
-wet_traits_gamma2 <- read_csv(here("data", "wet_phy_intrain2_traits_gamma.csv"))
-wet_traits_gamma2 |>
-  filter(q2.5 * q97.5 > 0)
-wet_traits_gamma2 |>
-  filter(trait_name == "intercept")
-```
-
-```{r}
-gen_si_tab(wet_traits_gamma2)
-```
-
 
 \newpage
 

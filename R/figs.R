@@ -603,3 +603,82 @@ cc_line <- function(wet, dry) {
     plot_layout(ncol = 2, heights = c(1, 1)) +
     plot_annotation(tag_levels = "a")
 }
+
+
+# library(tidyverse)
+# library(here)
+# library(GGally)
+# library(tictoc)
+# library(targets)
+
+# tar_load(trait_csv)
+
+my_ggpairs <- function(trait_csv) {
+  trait <- read_csv(trait_csv) #|>
+
+  trait2 <- trait |>
+    mutate(log_LA = log(LA)) |>
+    mutate(log_SLA = log(SLA)) |>
+    mutate(log_LT = log(LT)) |>
+    mutate(log_N = log(N)) |>
+    rename(SD = WD) |>
+    dplyr::select(
+      LDMC,
+      SD,
+      SDMC,
+      Chl,
+      C13,
+      C,
+      log_N,
+      CN,
+      tlp,
+      log_LA,
+      log_SLA,
+      log_LT)
+
+# Custom function to remove axes lines
+  my_lower <- function(data, mapping, ...){
+    p <- ggplot(data = data, mapping = mapping) +
+      geom_point() +
+      theme_bw()  # removes axes lines, labels, and background
+      # theme(plot.margin = margin(0, 0, 0, 0)) # removes margins
+    return(p)
+  }
+
+#Custom function to modify 'cor' plots
+  custom_cor <- function(data, mapping, ...){
+    # Create the default 'cor' plot
+    p <- ggally_cor(data, mapping, size = 3, ...)
+
+    # Modify the theme to remove axes lines, labels, and background
+    p <- p +
+      theme_void() + # removes axes lines, labels, and background
+      theme(plot.margin = margin(0, 0, 0, 0))
+
+    return(p)
+  }
+
+  custom_density <- function(data, mapping, ...){
+    # Create the default 'density' plot
+    p <- ggally_densityDiag(data, mapping, ...)
+
+    # Modify the theme for the diagonal elements
+    p <- p +
+      theme_bw() + # example theme
+      theme(plot.margin = margin(0, 0, 0, 0)) # removes margins
+
+    return(p)
+  }
+
+  trait2 |>
+    ggpairs(
+     upper = list(continuous = custom_cor),
+     diag = list(continuous = custom_density),
+     lower = list(continuous = my_lower)) +
+    theme(
+      strip.background = element_blank(),
+      axis.text.y = element_text(size = 6),
+      axis.text.x = element_text(size = 6, angle = 45, hjust = 0.8)
+    )
+}
+

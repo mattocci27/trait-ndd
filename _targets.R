@@ -307,6 +307,20 @@ main_ <- list(
     },
     format = "file"
   ),
+  tar_target(
+    ggpairs_plot, {
+      p <- my_ggpairs(trait_csv)
+      my_ggsave(
+        "figs/pairs",
+        p,
+        dpi = 300,
+        width = 210,
+        height = 210,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
 
 #   tar_target(
 #     beta_wet_rain_n,
