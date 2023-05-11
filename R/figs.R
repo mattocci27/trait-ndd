@@ -356,9 +356,10 @@ generate_suv_pred <- function(summary, data, alpha, trait_no, keep_cons = FALSE)
     tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
       mutate(q50 = ifelse(sig != "sig", 0, q50))
   }
-  l <- ncol(data$x)
-  gamma <- matrix(tmp$q50, nrow = l)
-  trait_m <- matrix(c(1, rep(0, l)))
+  k <- ncol(data$x)
+  l <- nrow(data$u)
+  gamma <- matrix(tmp$q50, nrow = k)
+  trait_m <- matrix(c(1, rep(0, l - 1)))
   trait_l <- trait_m
   trait_h <- trait_m
   trait_l[trait_no, 1] <- qnorm(0.25)
@@ -427,6 +428,65 @@ subplot_fun <- function(data, low = TRUE) {
     my_theme() #+
 #    theme(legend.position = "none")
 }
+
+generate_suv_pred2 <- function(summary, data, alpha, trait_no, keep_cons = FALSE) {
+  if (keep_cons) {
+  tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
+    mutate(sig = ifelse(ind_pred == "scon_s", "sig", sig)) |>
+    mutate(q50 = ifelse(sig != "sig", 0, q50))
+  } else {
+    tmp <- prepare_suv_pred(summary, data, alpha = alpha) |>
+      mutate(q50 = ifelse(sig != "sig", 0, q50))
+  }
+  k <- ncol(data$x)
+  l <- nrow(data$u)
+  gamma <- matrix(tmp$q50, nrow = k)
+  trait_m <- matrix(c(1, rep(0, l - 1)))
+  trait_l <- trait_m
+  trait_h <- trait_m
+  trait_l[trait_no, 1] <- qnorm(0.025)
+  trait_h[trait_no, 1] <- qnorm(0.975)
+#  dry_trait$data$x %>% str()
+
+  scon_tmp <- data$x[, 5]
+  rain_tmp <- data$x[, 7]
+  median(scon_tmp)
+  quantile(scon_tmp, 0.75)
+  quantile(scon_tmp, 0.9)
+  quantile(scon_tmp, 0.99)
+  # max(scon_tmp)
+  scon <- seq(min(scon_tmp), quantile(scon_tmp, 0.9), length = 20)
+  rain <- seq(min(rain_tmp), max(rain_tmp), length = 20)
+
+  h <- 0
+  shet <- 0
+  acon <- 0
+  ahet <- 0
+  grid_data <- expand_grid(scon, rain)
+
+  beta_l <- gamma %*% trait_l
+  beta_m <- gamma %*% trait_m
+  beta_h <- gamma %*% trait_h
+
+  grid_data2 <- grid_data |>
+    mutate(suv_z_l = beta_l[1] +
+      beta_l[5] * scon +
+      beta_l[7] * rain +
+      beta_l[11] * rain * scon) |>
+    mutate(suv_z_m = beta_m[1] +
+      beta_m[5] * scon +
+      beta_m[7] * rain +
+      beta_m[11] * rain * scon) |>
+    mutate(suv_z_h = beta_h[1] +
+      beta_h[5] * scon +
+      beta_h[7] * rain +
+      beta_h[11] * rain * scon) |>
+    mutate(suv_p_l = logit(suv_z_l)) |>
+    mutate(suv_p_m = logit(suv_z_m)) |>
+    mutate(suv_p_h = logit(suv_z_h))
+  grid_data2
+}
+
 
 dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
   p1 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>

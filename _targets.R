@@ -321,6 +321,33 @@ main_ <- list(
     },
     format = "file"
   ),
+  tar_target(
+    abund, {
+      p1 <- generate_suv_pred2(dry_het_intrain_abund$summary,
+        dry_het_intrain_abund$data, alpha = 0.05, 2) |>
+        subplot_fun(low = FALSE) +
+        ggtitle("Abundant species") +
+        xlab("Conspecific adult density")
+
+      p2 <- generate_suv_pred2(dry_het_intrain_abund$summary,
+        dry_het_intrain_abund$data, alpha = 0.05, 2) |>
+        subplot_fun(low = TRUE) +
+        ggtitle("Rare species") +
+        xlab("Conspecific adult density")
+
+      p <- p1 + p2
+
+      my_ggsave(
+        "figs/abund",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 65,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
 
 #   tar_target(
 #     beta_wet_rain_n,
