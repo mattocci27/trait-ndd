@@ -6,7 +6,7 @@ Research project code for seedling survival analyses using Stan.
 
 ## Data
 
-Data files need to be download from <https://doi.org/10.57760/sciencedb.02276>.
+Data files required for this project can be downloaded from <https://doi.org/10.57760/sciencedb.02276>.
 
 ## Reproduce the results
 
