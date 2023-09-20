@@ -1,0 +1,90 @@
+---
+title: "Check"
+author: "Masatoshi Katabuchi"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+link-citations: true
+format:
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+library(targets)
+library(tarchetypes)
+library(tidyverse)
+library(factoextra)
+library(FactoMineR)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.show = "holdgit remote set-url origin"
+)
+```
+
+
+# PCA
+
+```{r}
+trait <- targets::tar_read(trait_csv) |>
+  read_csv() |>
+  janitor::clean_names()
+
+trait_long <- pivot_longer(trait, ldmc:tlp, names_to = "trait", values_to = "value")
+
+ggplot(trait_long, aes(value)) +
+  geom_histogram() +
+  facet_wrap(~trait, scales = "free")
+
+trait2 <- trait |>
+  mutate(la = log(la)) |>
+  mutate(lt = log(lt)) |>
+  mutate(n = log(n)) |>
+  mutate(sla = log(sla)) |>
+  rename(log_la = la) |>
+  rename(log_lt = lt) |>
+  rename(log_n = n) |>
+  rename(log_sla = sla)
+
+trait_long2 <- pivot_longer(trait2, ldmc:tlp, names_to = "trait", values_to = "value")
+
+ggplot(trait_long2, aes(value)) +
+  geom_histogram() +
+  facet_wrap(~trait, scales = "free")
+
+pca <- prcomp(trait[, 3:14], scale = TRUE)
+pca2 <- prcomp(trait2[, 3:14], scale = TRUE)
+pca <- PCA(trait[, 3:14])
+
+summary(pca)
+summary(pca2)
+```
+
+```{r}
+fviz_pca_biplot(pca,
+                repel = TRUE, # Avoid text overlapping
+                # col.var = "#2E9FDF", # Color for arrows
+                # col.ind = iris$Species, # Color by species
+                # palette = c("#FC4E07", "#00AFBB", "#E7B800"), # Palette for species
+                legend.title = "Species")
+```
+
+```{r}
+fviz_pca_biplot(pca2,
+                repel = TRUE, # Avoid text overlapping
+                # col.var = "#2E9FDF", # Color for arrows
+                # col.ind = iris$Species, # Color by species
+                # palette = c("#FC4E07", "#00AFBB", "#E7B800"), # Palette for species
+                legend.title = "Species")
+```

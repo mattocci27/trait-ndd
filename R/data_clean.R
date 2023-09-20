@@ -37,25 +37,17 @@ clean_data <- function(rda, write_trait = FALSE) {
   }
 }
 
-calc_scale_cc <- function(seedling_csv, wet = TRUE) {
-  seedling <- read_csv(seedling_csv) |>
-    janitor::clean_names()
-  if (wet) {
-    seedling <- seedling |>
-      filter(season == "rainy")
-  } else {
-    seedling <- seedling |>
-      filter(season == "dry")
-  }
+calculate_lik <- function(seedling_csv) {
+  seedling <- read_csv(seedling_csv) |> janitor::clean_names()
   x1 <- seedling$acon
   x2 <- seedling$ahet
   z1 <- seedling$aphy
   y <- seedling$surv
-
   n_len <- 100
 
   lik <- numeric(n_len)
   lik2 <- numeric(n_len)
+
   for (i in 1:n_len) {
     d1 <- x1^(i / n_len)
     d2 <- x2^(i / n_len)
@@ -65,40 +57,28 @@ calc_scale_cc <- function(seedling_csv, wet = TRUE) {
     lik[i] <- logLik(fm1)
     lik2[i] <- logLik(fm2)
   }
-  cc <- which(lik == max(lik)) / n_len
-  cc2 <- which(lik2 == max(lik2)) / n_len
+
+  return(list(lik = lik, lik2 = lik2))
+}
+
+trait <- tar_read(trait_csv) |>
+  read_csv() |>
+  janitor::clean_names()
+
+pca <- prcomp(trait[, 3:14], scale = TRUE)
+
+
+calc_scale_cc <- function(seedling_csv) {
+  results <- calculate_lik(seedling_csv)
+  cc <- which(results$lik == max(results$lik)) / 100
+  cc2 <- which(results$lik2 == max(results$lik2)) / 100
+
   c(het = cc, phy = cc2)
 }
 
-generate_cc_data <- function(seedling_csv, wet = TRUE) {
-  seedling <- read_csv(seedling_csv) |>
-    janitor::clean_names()
-  if (wet) {
-    seedling <- seedling |>
-      filter(season == "rainy")
-  } else {
-    seedling <- seedling |>
-      filter(season == "dry")
-  }
-  x1 <- seedling$acon
-  x2 <- seedling$ahet
-  z1 <- seedling$aphy
-  y <- seedling$surv
-
-  n_len <- 100
-
-  lik <- numeric(n_len)
-  lik2 <- numeric(n_len)
-  for (i in 1:n_len) {
-    d1 <- x1^(i / n_len)
-    d2 <- x2^(i / n_len)
-    d3 <- z1^(i / n_len)
-    fm1 <- glm(y ~ d1 + d2, family = binomial)
-    fm2 <- glm(y ~ d1 + d3, family = binomial)
-    lik[i] <- logLik(fm1)
-    lik2[i] <- logLik(fm2)
-  }
-  tibble(cc = (1:n_len) / n_len, het = lik, phy = lik2)
+generate_cc_data <- function(seedling_csv) {
+  results <- calculate_lik(seedling_csv)
+  tibble(cc = (1:100) / 100, het = results$lik, phy = results$lik2)
 }
 
 #targets::tar_load(data_list)
@@ -106,15 +86,14 @@ generate_cc_data <- function(seedling_csv, wet = TRUE) {
 #' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
 generate_stan_data <- function(
   seedling, traits, scale_cc,
-  season = c("dry", "wet"),
   het = c("phy", "het"),
   rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")) {
+  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba")) {
 
   # targets::tar_load(scale_wet)
   # targets::tar_load(scale_dry)
   # targets::tar_load(seedling)
-  # targets::tar_load(traits)
+  targets::tar_load(trait_csv)
   # scale_cc <- list(wet = scale_wet, dry = scale_dry)
   # season <- "dry"
   # het <- "phy"
@@ -123,20 +102,11 @@ generate_stan_data <- function(
 
   seedling <- read_csv(seedling) |>
     janitor::clean_names()
-  traits <- read_csv(traits) |>
+  traits <- read_csv(trait_csv) |>
     janitor::clean_names()
 
-  if (season == "wet") {
-    seedling <- seedling |>
-      filter(season == "rainy")
-      cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
-      cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
-  } else {
-    seedling <- seedling |>
-      filter(season == "dry")
-      cc <- scale_cc$dry[names(scale_cc$dry) == "het"]
-      cc2 <- scale_cc$dry[names(scale_cc$dry) == "phy"]
-  }
+  cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
+  cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
 
   traits2 <- traits |>
     mutate(log_la = log(la)) |>
