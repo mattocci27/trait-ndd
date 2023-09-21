@@ -44,27 +44,28 @@ if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
 cmdstan_version()
 
 values <- expand_grid(
-  season = c("dry", "wet"),
-  het = c("phy", "het"),
-  rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "ab", "ba", "ab1ba")
-  )
+  # het = c("het"),
+  # rain = c("norain", "rain"),
+  # sp_pred = c("pc12", "pc15", "ab", "ba", "ab1ba"))
+  het = c("het")
+  rain = c("norain"),
+  sp_pred = c("pc12"))
 
-data_names <- values |>
-  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
-  pull(data_names)
+# data_names <- values |>
+#   mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
+#   pull(data_names)
 
-mcmc_names <- values |>
-  mutate(mcmc_names = str_c("fit_mcmc_logistic_simple_stan_data_", data_names)) |>
-  pull(mcmc_names)
+# mcmc_names <- values |>
+#   mutate(mcmc_names = str_c("fit_mcmc_logistic_simple_stan_data_", data_names)) |>
+#   pull(mcmc_names)
 
-loo_map <- tar_map(
-    values = list(mcmc = rlang::syms(mcmc_names)),
-    tar_target(
-      loo,
-      my_loo(mcmc)
-    )
-)
+# loo_map <- tar_map(
+#     values = list(mcmc = rlang::syms(mcmc_names)),
+#     tar_target(
+#       loo,
+#       my_loo(mcmc)
+#     )
+# )
 
 # data cleaning ----------------------------------
 data_ <- list(
@@ -79,6 +80,11 @@ data_ <- list(
     format = "file"
   ),
   tar_target(
+    trait_pca_csv,
+    generate_pca_data(trait_csv),
+    format = "file"
+  ),
+  tar_target(
     seedling_csv,
     clean_data("data-raw/dataCNDD.Rdata", write_trait = FALSE),
     format = "file"
@@ -89,80 +95,115 @@ data_ <- list(
 
 main_ <- list(
   tar_target(
-    scale_wet,
-    calc_scale_cc(seedling_csv, wet = TRUE),
+    scale_cc,
+    calc_scale_cc(seedling_csv),
   ),
   tar_target(
-    scale_dry,
-    calc_scale_cc(seedling_csv, wet = FALSE),
+    cc_data,
+    generate_cc_data(seedling_csv),
   ),
-  tar_target(
-    wet_cc_data,
-    generate_cc_data(seedling_csv, wet = TRUE),
-  ),
-  tar_target(
-    dry_cc_data,
-    generate_cc_data(seedling_csv, wet = FALSE),
-  ),
-
-  tar_target(
-    cc_line_plot, {
-      p <- cc_line(wet = wet_cc_data, dry = dry_cc_data)
-      my_ggsave(
-        "figs/cc_line",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 173,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-
   tar_map(
     values = values,
-    tar_target(stan_data,
+    tar_target(
+      stan_data,
       generate_stan_data(
-        seedling_csv, trait_csv,
-        scale_cc = list(wet = scale_wet, dry = scale_dry),
-        season, het, rain, sp_pred))
-  ),
-
-  tar_map(
-    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
+        seedling_csv, trait_pca_csv,
+        scale_cc = scale_cc,
+        het, rain, sp_pred)),
     tar_stan_mcmc(
       fit,
       "stan/logistic_simple.stan",
       data = stan_data,
-      refresh = 0,
+      refresh = 1,
       chains = 4,
       parallel_chains = getOption("mc.cores", 4),
       iter_warmup = 1000,
-      iter_sampling = 2000,
+      iter_sampling = 1000,
       adapt_delta = 0.95,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
         mad = ~mad(.x),
         ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
         posterior::default_convergence_measures()
-      )
-    )
+      ))
+    ),
+  NULL
+)
+
+tmp <- list(
+  tar_target(
+    scale_cc,
+    calc_scale_cc(seedling_csv),
+  ),
+  tar_target(
+    cc_data,
+    generate_cc_data(seedling_csv),
   ),
 
+  # tar_target(
+  #   cc_line_plot, {
+  #     p <- cc_line(wet = wet_cc_data, dry = dry_cc_data)
+  #     my_ggsave(
+  #       "figs/cc_line",
+  #       p,
+  #       dpi = 300,
+  #       width = 173,
+  #       height = 173,
+  #       units = "mm"
+  #     )
+  #   },
+  #   format = "file"
+  # ),
 
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
+  # tar_map(
+  #   values = values,
+  #   tar_target(stan_data,
+  #     generate_stan_data(
+  #       seedling_csv, trait_csv,
+  #       scale_cc = list(wet = scale_wet, dry = scale_dry),
+  #       season, het, rain, sp_pred))
+  # ),
+
+  # tar_map(
+  #   values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
+  #   tar_stan_mcmc(
+  #     fit,
+  #     "stan/logistic_simple.stan",
+  #     data = stan_data,
+  #     refresh = 0,
+  #     chains = 4,
+  #     parallel_chains = getOption("mc.cores", 4),
+  #     iter_warmup = 1000,
+  #     iter_sampling = 2000,
+  #     adapt_delta = 0.95,
+  #     max_treedepth = 15,
+  #     seed = 123,
+  #     return_draws = FALSE,
+  #     return_diagnostics = TRUE,
+  #     return_summary = TRUE,
+  #     summaries = list(
+  #       mean = ~mean(.x),
+  #       sd = ~sd(.x),
+  #       mad = ~mad(.x),
+  #       ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+  #       posterior::default_convergence_measures()
+  #     )
+  #   )
+  # ),
+
+
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
 
   # tar_quarto(
   #   bayes_check_html,

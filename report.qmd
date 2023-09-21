@@ -65,7 +65,6 @@ ggplot(trait_long2, aes(value)) +
 
 pca <- prcomp(trait[, 3:14], scale = TRUE)
 pca2 <- prcomp(trait2[, 3:14], scale = TRUE)
-pca <- PCA(trait[, 3:14])
 
 summary(pca)
 summary(pca2)
@@ -87,4 +86,10 @@ fviz_pca_biplot(pca2,
                 # col.ind = iris$Species, # Color by species
                 # palette = c("#FC4E07", "#00AFBB", "#E7B800"), # Palette for species
                 legend.title = "Species")
+```
+
+# Stan
+
+```{r}
+tar_read(stan_data_het_norain_pc12) |> str()
 ```

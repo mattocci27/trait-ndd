@@ -37,6 +37,25 @@ clean_data <- function(rda, write_trait = FALSE) {
   }
 }
 
+generate_pca_data <- function(trait_csv) {
+  targets::tar_load(trait_csv)
+  trait <- read_csv(trait_csv) |>
+    janitor::clean_names() |>
+    mutate(la = log(la)) |>
+    mutate(lt = log(lt)) |>
+    mutate(n = log(n)) |>
+    mutate(sla = log(sla)) |>
+    rename(log_la = la) |>
+    rename(log_lt = lt) |>
+    rename(log_n = n) |>
+    rename(log_sla = sla)
+  pca <- prcomp(trait[, 3:14], scale = TRUE)
+
+  bind_cols(trait, pca$x[, 1:5]) |>
+    janitor::clean_names() |>
+    my_write_csv("data/trait_pca.csv")
+}
+
 calculate_lik <- function(seedling_csv) {
   seedling <- read_csv(seedling_csv) |> janitor::clean_names()
   x1 <- seedling$acon
@@ -85,75 +104,61 @@ generate_cc_data <- function(seedling_csv) {
 #' @title Create data list for stan
 #' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
 generate_stan_data <- function(
-  seedling, traits, scale_cc,
+  seedling_csv, trait_pca_csv, scale_cc,
   het = c("phy", "het"),
-  rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba")) {
+  rain = c("norain", "rain"),
+  sp_pred = c("pc12", "pc15", "ab", "ba", "ab1ba")) {
 
-  # targets::tar_load(scale_wet)
-  # targets::tar_load(scale_dry)
-  # targets::tar_load(seedling)
-  targets::tar_load(trait_csv)
+  # targets::tar_load(scale_cc)
+  # targets::tar_load(seedling_csv)
+  # targets::tar_load(trait_pca_csv)
   # scale_cc <- list(wet = scale_wet, dry = scale_dry)
   # season <- "dry"
   # het <- "phy"
   # sp_pred <- "ab1ba"
   # rain <- "intrain"
 
-  seedling <- read_csv(seedling) |>
+  seedling <- read_csv(seedling_csv) |>
     janitor::clean_names()
-  traits <- read_csv(trait_csv) |>
-    janitor::clean_names()
-
-  cc <- scale_cc$wet[names(scale_cc$wet) == "het"]
-  cc2 <- scale_cc$wet[names(scale_cc$wet) == "phy"]
-
-  traits2 <- traits |>
-    mutate(log_la = log(la)) |>
-    mutate(log_sla = log(sla)) |>
-    mutate(log_lt = log(lt)) |>
+  traits <- read_csv(trait_pca_csv) |>
+    janitor::clean_names() |>
     mutate(log_ab = log(ab)) |>
-    mutate(log_ba = log(ba)) |>
-    # mutate(log_chl = log(chl)) |>
-    # mutate(log_c = log(c)) |>
-    mutate(log_n = log(n)) |>
-    dplyr::select(-la, -sla, -lt, -ab, -ba) |>
-    dplyr::select(latin, ldmc, sdmc, log_la, log_sla, log_lt, c13, log_n, n, tlp, log_ab, log_ba)
+    mutate(log_ba = log(ba))
 
-  if (sp_pred == "nlog") {
-    traits2 <- traits2 |>
-      dplyr::select(-n, -log_ab, -log_ba)
-  } else if (sp_pred == "n") {
-    traits2 <- traits2 |>
-      dplyr::select(-log_n, -log_ab, -log_ba)
+  cc <- scale_cc[names(scale_cc) == "het"]
+  cc2 <- scale_cc[names(scale_cc) == "phy"]
+
+  if (sp_pred == "pc12") {
+    traits2 <- traits |>
+      dplyr::select(latin, pc1, pc2)
+  } else if (sp_pred == "pc15") {
+    traits2 <- traits |>
+      dplyr::select(latin, pc1, pc2, pc3, pc4, pc5)
   } else if (sp_pred == "ab") {
-    traits2 <- traits2 |>
+    traits2 <- traits |>
       dplyr::select(latin, log_ab)
   } else if (sp_pred == "ba") {
-    traits2 <- traits2 |>
+    traits2 <- traits |>
       dplyr::select(latin, log_ba)
   } else if (sp_pred == "ab1ba") {
-    traits2 <- traits2 |>
+    traits2 <- traits |>
       dplyr::select(latin, log_ab, log_ba)
-  } else if (sp_pred == "ab2ba") {
-    traits2 <- traits2 |>
-      dplyr::select(latin, log_ab, log_ba) |>
-      mutate(ab2ba = log_ab * log_ba)
   }
 
-  # dry and wet season have the same sp number
-  # so we can scale the trait data here
-  traits3 <- traits2 |>
-    summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
-    mutate(latin = traits2$latin)
+  # scale abundance
+  if (sp_pred != "pc12" | sp_pred != "pc15") {
+    traits2 <- traits2 |>
+      summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
+      mutate(latin = traits2$latin)
+  }
 
   # tweak sp list for trait and seedling data
-  trait_sp <- traits3$latin |> unique()
+  trait_sp <- traits2$latin |> unique()
   seedling_sp <- seedling$latin |> unique()
   sp_c0 <- c(trait_sp, seedling_sp)
   sp_c <- sp_c0[duplicated(sp_c0)] |> unique()
 
-  trait_data <- traits3 |>
+  trait_data <- traits2 |>
     filter(latin %in% sp_c)
 
   seedling_data <- seedling |>
@@ -178,63 +183,23 @@ generate_stan_data <- function(
 
   if (rain == "norain") {
     if (het == "het") {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + shet_s +
-        acon_s_c + ahet_s_c, data = seedling_data)
-    } else {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + sphy_s +
-        acon_s_c + aphy_s_c, data = seedling_data)
-    }
-   } else if (rain == "intrain") {
-    if (het == "het") {
       Xd <- model.matrix(surv ~ (logh_s +
         scon_s + shet_s +
-        acon_s_c + ahet_s_c) * rain_s, data = seedling_data)
+        acon_s_c + ahet_s_c) * season, data = seedling_data)
     } else {
       Xd <- model.matrix(surv ~ (logh_s +
         scon_s + sphy_s +
-        acon_s_c + aphy_s_c) * rain_s, data = seedling_data)
-    }
-   } else if (rain == "intrain2") {
-    if (het == "het") {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + shet_s +
-        acon_s_c + ahet_s_c + rain_s + scon_s:rain_s, data = seedling_data)
-    } else {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + sphy_s +
-        acon_s_c + aphy_s_c + rain_s + scon_s:rain_s, data = seedling_data)
-    }
-   } else if (rain == "intrain3") {
-    if (het == "het") {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + shet_s +
-        acon_s_c + ahet_s_c + rain_s + acon_s_c:rain_s, data = seedling_data)
-    } else {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + sphy_s +
-        acon_s_c + aphy_s_c + rain_s + acon_s_c:rain_s, data = seedling_data)
-    }
-   } else if (rain == "intrain4") {
-    if (het == "het") {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + shet_s +
-        acon_s_c + ahet_s_c + rain_s + scon_s:rain_s + acon_s_c:rain_s, data = seedling_data)
-    } else {
-      Xd <- model.matrix(surv ~ logh_s +
-        scon_s + sphy_s +
-        acon_s_c + aphy_s_c + rain_s + scon_s:rain_s + acon_s_c:rain_s, data = seedling_data)
-    }
+        acon_s_c + aphy_s_c) * season, data = seedling_data)
+     }
    } else if (rain == "rain") {
     if (het == "het") {
-      Xd <- model.matrix(surv ~ logh_s +
+      Xd <- model.matrix(surv ~ (logh_s +
         scon_s + shet_s +
-        acon_s_c + ahet_s_c + rain_s, data = seedling_data)
+        acon_s_c + ahet_s_c) * season * rain_s, data = seedling_data)
     } else {
-      Xd <- model.matrix(surv ~ logh_s +
+      Xd <- model.matrix(surv ~ (logh_s +
         scon_s + sphy_s +
-        acon_s_c + aphy_s_c + rain_s, data = seedling_data)
+        acon_s_c + aphy_s_c) * season * rain_s, data = seedling_data)
     }
    }
 
