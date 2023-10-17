@@ -101,6 +101,24 @@ generate_cc_data <- function(seedling_csv, wet = TRUE) {
   tibble(cc = (1:n_len) / n_len, het = lik, phy = lik2)
 }
 
+generate_pca_data <- function(trait_csv) {
+  trait <- read_csv(trait_csv) |>
+    janitor::clean_names() |>
+    mutate(la = log(la)) |>
+    mutate(lt = log(lt)) |>
+    mutate(n = log(n)) |>
+    mutate(sla = log(sla)) |>
+    rename(log_la = la) |>
+    rename(log_lt = lt) |>
+    rename(log_n = n) |>
+    rename(log_sla = sla)
+  pca <- prcomp(trait[, 3:14], scale = TRUE)
+
+  bind_cols(trait, pca$x[, 1:5]) |>
+    janitor::clean_names() #|>
+    # my_write_csv("data/trait_pca.csv")
+}
+
 #targets::tar_load(data_list)
 #' @title Create data list for stan
 #' @para scaling_within_seasons Scaling within seasons or across seasons (default = FALSE)
@@ -109,7 +127,7 @@ generate_stan_data <- function(
   season = c("dry", "wet"),
   het = c("phy", "het"),
   rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba")) {
+  sp_pred = c("nlog", "n", "ab", "ba", "ab1ba", "ab2ba", "pc12", "pc15")) {
 
   # targets::tar_load(scale_wet)
   # targets::tar_load(scale_dry)
@@ -120,6 +138,7 @@ generate_stan_data <- function(
   # het <- "phy"
   # sp_pred <- "ab1ba"
   # rain <- "intrain"
+  pca_df <- generate_pca_data(traits)
 
   seedling <- read_csv(seedling) |>
     janitor::clean_names()
@@ -169,6 +188,12 @@ generate_stan_data <- function(
     traits2 <- traits2 |>
       dplyr::select(latin, log_ab, log_ba) |>
       mutate(ab2ba = log_ab * log_ba)
+  } else if (sp_pred == "pc12") {
+    traits2 <- pca_df |>
+      dplyr::select(latin, pc1:pc2)
+  } else if (sp_pred == "pc15") {
+    traits2 <- pca_df |>
+      dplyr::select(latin, pc1:pc5)
   }
 
   # dry and wet season have the same sp number

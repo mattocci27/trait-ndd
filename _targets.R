@@ -45,7 +45,7 @@ values <- expand_grid(
   season = c("dry", "wet"),
   het = c("phy", "het"),
   rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "ab", "ba", "ab1ba")
+  sp_pred = c("nlog", "ab", "ba", "ab1ba", "pc12", "pc15")
   )
 
 data_names <- values |>
