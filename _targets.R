@@ -28,10 +28,10 @@ tar_option_set(packages = c(
   "bayesplot"
 ))
 
-# tar_option_set(
-#   garbage_collection = TRUE,
-#   memory = "transient"
-# )
+tar_option_set(
+  garbage_collection = TRUE,
+  memory = "transient"
+)
 
 # check if it's inside a container
 if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
@@ -154,41 +154,12 @@ main_ <- list(
     )
   ),
 
-  # tar_stan_mcmc(
-  #   check_ess,
-  #   "stan/logistic.stan",
-  #   data = stan_data_dry_het_intrain_ab,
-  #   refresh = 0,
-  #   chains = 4,
-  #   parallel_chains = getOption("mc.cores", 4),
-  #   iter_warmup = 2000,
-  #   iter_sampling = 2000,
-  #   adapt_delta = 0.9,
-  #   max_treedepth = 15,
-  #   seed = 123,
-  #   return_draws = TRUE,
-  #   return_diagnostics = TRUE,
-  #   return_summary = TRUE,
-  #   summaries = list(
-  #     mean = ~mean(.x),
-  #     sd = ~sd(.x),
-  #     mad = ~mad(.x),
-  #     ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-  #     posterior::default_convergence_measures()
-  #   )
-  # ),
-
   loo_map,
   tar_combine(
     loo_list,
     loo_map,
     command = list(!!!.x)
   ),
-
-  # tar_quarto(
-  #   bayes_check_html,
-  #   "docs/bayes_check.qmd"
-  # ),
 
   tar_target(
     loo_tbl,
@@ -349,230 +320,6 @@ main_ <- list(
     format = "file"
   ),
 
-#   tar_target(
-#     beta_wet_rain_n,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = "N",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 8)
-#   ),
-#   tar_target(
-#     beta_wet_rain_tlp,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = expression(pi[tlp]),
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 9)
-#   ),
-
-#   tar_target(
-#     beta_wet_consrain_sla,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = "SLA",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 5)
-#   ),
-#   tar_target(
-#     beta_wet_consrain_n,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = "N",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 8)
-#   ),
-#   tar_target(
-#     beta_wet_consrain_tlp,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = expression(pi[tlp]),
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 9)
-#   ),
-
-#   tar_target(
-#     beta_dry_rain_ldmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LDMC",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 2)
-#   ),
-#   tar_target(
-#     beta_dry_consrain_ldmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LDMC",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 2)
-#   ),
-#   tar_target(
-#     beta_dry_rain_sdmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "SDMC",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 3)
-#   ),
-#   tar_target(
-#     beta_dry_cons_sdmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "SDMC",
-#       y_lab  = "ConS~effect",
-#       ind_pred = 3,
-#       sp_pred = 3)
-#   ),
-#   tar_target(
-#     beta_dry_rain_lt,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LT",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 6)
-#   ),
-#   tar_target(
-#     beta_dry_consrain_lt,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LT",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 6)
-#   ),
-#   tar_target(
-#     beta_dry_rain_c13,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = expression(delta*C[13]),
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 7)
-#   ),
-
-#   tar_target(
-#     beta_par_wet_traits, {
-#       p <- beta_plot(beta_wet_rain_n) +
-#         beta_plot(beta_wet_rain_tlp) +
-#         plot_spacer() +
-#         beta_plot(beta_wet_consrain_sla) +
-#         beta_plot(beta_wet_consrain_n) +
-#         beta_plot(beta_wet_consrain_tlp) +
-#         plot_layout(ncol = 3, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_par_wet_traits",
-#         p,
-#         dpi = 300,
-#         width = 110,
-#         height = 75,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
-#   tar_target(
-#     beta_raw_wet_traits, {
-#       p <- beta_plot(beta_wet_rain_n, partial = FALSE) +
-#         beta_plot(beta_wet_rain_tlp, partial = FALSE) +
-#         plot_spacer() +
-#         beta_plot(beta_wet_consrain_sla, partial = FALSE) +
-#         beta_plot(beta_wet_consrain_n, partial = FALSE) +
-#         beta_plot(beta_wet_consrain_tlp, partial = FALSE) +
-#         plot_layout(ncol = 3, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_raw_wet_traits",
-#         p,
-#         dpi = 300,
-#         width = 110,
-#         height = 75,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
-
-#   tar_target(
-#     beta_par_dry_traits, {
-#       p <- beta_plot(beta_dry_cons_sdmc) +
-#         beta_plot(beta_dry_rain_sdmc) +
-#         beta_plot(beta_dry_rain_ldmc) +
-#         beta_plot(beta_dry_rain_lt) +
-#         beta_plot(beta_dry_rain_c13) +
-#         beta_plot(beta_dry_consrain_ldmc) +
-#         beta_plot(beta_dry_consrain_lt) +
-#         plot_spacer() +
-#         plot_layout(ncol = 4, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_par_dry_traits",
-#         p,
-#         dpi = 300,
-#         width = 173,
-#         height = 85,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
-#   tar_target(
-#     beta_raw_dry_traits, {
-#       p <- beta_plot(beta_dry_cons_sdmc, partial = FALSE) +
-#         beta_plot(beta_dry_rain_sdmc, partial = FALSE) +
-#         beta_plot(beta_dry_rain_ldmc, partial = FALSE) +
-#         beta_plot(beta_dry_rain_lt, partial = FALSE) +
-#         beta_plot(beta_dry_rain_c13, partial = FALSE) +
-#         beta_plot(beta_dry_consrain_ldmc, partial = FALSE) +
-#         beta_plot(beta_dry_consrain_lt, partial = FALSE) +
-#         plot_spacer() +
-#         plot_layout(ncol = 4, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_raw_dry_traits",
-#         p,
-#         dpi = 300,
-#         width = 173,
-#         height = 85,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
 
 # best models
 tar_map(
