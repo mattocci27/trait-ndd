@@ -372,7 +372,7 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
       rain == "norain" ~ "No rain",
       rain == "rain" ~ "Rain without interactions",
       rain == "intrain" ~ "Rain with all the interactions",
-      rain == "intrain2" ~ "Rain with an interaction of conspecific densities",
+      rain == "intrain2" ~ "Rain with an interaction of cons",
       rain == "intrain3" ~ "Rain with an interaction of cona",
       rain == "intrain4" ~ "Rain with an interaction of cons and cona",
     )) |>

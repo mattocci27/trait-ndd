@@ -321,38 +321,38 @@ main_ <- list(
   ),
 
 
-# best models
-tar_map(
-  values = list(
-    x = rlang::syms(c(
-      "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
-      "fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog",
-      "fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog",
-      "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
-      "fit_summary_logistic_simple_stan_data_wet_phy_rain_ab")),
-    stan_data = rlang::syms(c(
-      "stan_data_dry_het_intrain2_nlog",
-      "stan_data_wet_phy_norain_nlog",
-      "stan_data_wet_phy_intrain2_nlog",
-      "stan_data_dry_het_intrain_ab",
-      "stan_data_wet_phy_rain_ab")),
-    path =
-      str_c(
-      "data/",
-       c("dry_het_intrain2_traits",
-        "wet_phy_norain_traits",
-        "wet_phy_intrain2_traits",
-        "dry_het_intrain_abund",
-        "wet_phy_rain_abund"),
-      "_gamma.csv")),
-  tar_target(
-    gamma_out_csv, {
-      create_gamma_tab(x, stan_data)  |>
-        my_write_csv(path)
-    },
-    format = "file"
-  )
-),
+# # best models
+# tar_map(
+#   values = list(
+#     x = rlang::syms(c(
+#       "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
+#       "fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog",
+#       "fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog",
+#       "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
+#       "fit_summary_logistic_simple_stan_data_wet_phy_rain_ab")),
+#     stan_data = rlang::syms(c(
+#       "stan_data_dry_het_intrain2_nlog",
+#       "stan_data_wet_phy_norain_nlog",
+#       "stan_data_wet_phy_intrain2_nlog",
+#       "stan_data_dry_het_intrain_ab",
+#       "stan_data_wet_phy_rain_ab")),
+#     path =
+#       str_c(
+#       "data/",
+#        c("dry_het_intrain2_traits",
+#         "wet_phy_norain_traits",
+#         "wet_phy_intrain2_traits",
+#         "dry_het_intrain_abund",
+#         "wet_phy_rain_abund"),
+#       "_gamma.csv")),
+#   tar_target(
+#     gamma_out_csv, {
+#       create_gamma_tab(x, stan_data)  |>
+#         my_write_csv(path)
+#     },
+#     format = "file"
+#   )
+# ),
 
   # tar_quarto(
   #   bayes_check_html,
@@ -396,6 +396,39 @@ tar_combined_summary_data <- tar_combine(
   command = dplyr::bind_rows(!!!.x)
 )
 
+# Define a list of model names
+models <- c(
+  "dry_het_intrain2_nlog",
+  "dry_het_intrain4_pc12",
+  "wet_phy_norain_nlog",
+  "wet_het_intrain_pc12",
+  "dry_phy_intrain_ab",
+  "wet_phy_intrain3_ab"
+)
+
+# Construct 'x' and 'stan_data' lists based on the model names
+x <- rlang::syms(str_c("fit_summary_logistic_simple_stan_data_", models))
+stan_data <- rlang::syms(str_c("stan_data_", models))
+
+# Define a helper function to map model names to paths
+get_path <- function(model_name) {
+  str_c("data/", model_name, "_gamma.csv")
+}
+
+# Construct the path list based on the model names
+path <- purrr::map_chr(models, get_path)
+
+# Use 'tar_map' function with the derived variables
+best_csv_mapped <- tar_map(
+  values = list(x = x, stan_data = stan_data, path = path),
+  tar_target(
+    gamma_out_csv, {
+      create_gamma_tab(x, stan_data)  |> my_write_csv(path)
+    },
+    format = "file"
+  )
+)
+
 util_list <- list(
   diagnostics_mapped,
   tar_combined_diagnostics_data,
@@ -405,7 +438,8 @@ util_list <- list(
     diagnostic_tables_csv,
     write_diagnostics_tables(combined_summary, combined_diagnostics, loo_tbl, "data/diagnostics_tables.csv"),
     format = "file"
-  )
+  ),
+  best_csv_mapped
 )
 
 
