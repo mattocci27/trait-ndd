@@ -322,3 +322,86 @@ generate_stan_data <- function(
        x = Xd,
        u = Ud)
 }
+
+write_diagnostics_tables <- function(combined_summary, combined_diagnostics, loo_tbl, out) {
+  tmp <- combined_diagnostics |>
+    group_by(model) |>
+    summarize(n_div = sum(divergent__)) |>
+    ungroup()
+
+  tmp2 <- combined_summary |>
+    mutate(check = ifelse(ess_tail < 400, 1, 0)) |>
+    group_by(model) |>
+    summarize(n_ess = sum(check, na.rm = TRUE)) |>
+    ungroup()
+
+  tmp3 <- full_join(tmp, tmp2)
+
+  pattern <- "loo_fit_mcmc_logistic_simple_stan_data_"
+  loo_tbl |>
+    mutate(model = str_remove(model, pattern)) |>
+    full_join(tmp3) |>
+    my_write_csv(out)
+}
+
+render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
+  if(abund) {
+    tmp <- diagnostics_tbl |>
+        filter(traits != "nlog" & traits != "pc12" & traits != "pc15")
+  } else {
+    tmp <- diagnostics_tbl |>
+        filter(traits %in% c("nlog", "pc12"))
+  }
+
+  tmp <- tmp  |>
+    filter(season == {{season}}) |>
+    arrange(desc(elpd)) |>
+    mutate(traits = case_when(
+      traits == "nlog" ~ "All traits",
+      traits == "pc12" ~ "PC1 and PC2",
+      traits == "ab" ~ "Abundance",
+      traits == "ba" ~ "Basal area",
+      traits == "ab1ba" ~ "Abundance + Basal area",
+      traits == "ab2ba" ~ "Abundance $\\times$ Basal area",
+    )) |>
+    mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
+    mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
+    mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
+    mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
+    mutate(rain = case_when(
+      rain == "norain" ~ "No rain",
+      rain == "rain" ~ "Rain without interactions",
+      rain == "intrain" ~ "Rain with all the interactions",
+      rain == "intrain2" ~ "Rain with an interaction of conspecific densities",
+      rain == "intrain3" ~ "Rain with an interaction of cona",
+      rain == "intrain4" ~ "Rain with an interaction of cons and cona",
+    )) |>
+    mutate(
+      across(1:10,
+      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div >= 4, "gray", "black"))
+    ))
+
+  if (abund)  {
+    tmp <- tmp |>
+      dplyr::select(`Seedling densities` = phy,
+        `Rainfall` = rain,
+        `Abundance` = traits,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  } else {
+    tmp <- tmp |>
+      dplyr::select(`Seedling densities` = phy,
+        `Rainfall` = rain,
+        `Traits` = traits,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  }
+
+  tmp  |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = FALSE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = FALSE) #k|>
+}

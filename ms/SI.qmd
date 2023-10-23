@@ -1,7 +1,7 @@
 ---
 fontsize: 12pt
 geometry: margin=1in
-link-citations: yes
+link-citations: true
 csl: templates/ecology-letters.csl
 bibliography: templates/seedling.bib
 crossref:
@@ -56,6 +56,7 @@ library(kableExtra)
 ```{r}
 source(here("R", "stan.R"))
 source(here("R", "render.R"))
+source(here("R", "data_clean.R"))
 ```
 
 # `r s_fig("site_info")`
@@ -64,7 +65,7 @@ Plot location in Xishuangbanna, China (A) and topography map (B) of the 20-ha pl
 The numbers in the contour map are elevation (m), and the squares represent the locations of the 150 seed traps (B).
 Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C).
 
-![](`r here::here("data-raw/site_info.jpg")`)
+<!-- ![](`r here::here("data-raw/site_info.jpg")`) -->
 
 \newpage
 
@@ -72,7 +73,7 @@ Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C)
 
 Seasonal rainfall pattern in this area (data from November 2007- November 2017), November to April is the dry season (red bars), and May to October is the rainy season (blue bars).
 
-![](`r here::here("data-raw/rainfall.jpg")`)
+<!-- ![](`r here::here("data-raw/rainfall.jpg")`) -->
 
 \newpage
 
@@ -215,101 +216,7 @@ Stan code for the multilevel logistic regression in the main text.
 \newpage
 
 ```{r}
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_load(loo_list))
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_load(loo_tbl))
-
-loo_names <- names(loo_list)
-tmp <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_summary")
-# tmp <- str_replace_all(tmp, "loo_fit2_mcmc", "fit2_summary")
-tmp2 <- str_replace_all(loo_names, "loo_fit_mcmc", "fit_diagnostics")
-# tmp2 <- str_replace_all(tmp2, "loo_fit2_mcmc", "fit2_diagnostics")
-
-n_ess <- NULL
-n_div <- NULL
-for (i in 1:length(tmp)) {
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp[i]))
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp2[i]))
-  assign(loo_names[i], tmp[i])
-  hoge <- get(tmp[i])
-
-  ess <- hoge |>
-    filter(ess_tail < 400 | ess_bulk < 400) |>
-    nrow()
-
-  n_ess[i] <- ess
-
-  hoge2 <- get(tmp2[i])
-  divergent <- hoge2 |>
-    filter(divergent__ != 0) |>
-    nrow()
-  n_div[i] <- divergent
-}
-
-diagnostics_tbl <- tibble(model = loo_names, n_ess, n_div)
-
-write_diagnostic_tables <- function(loo_tbl, diagnostics_tbl, season, abund = FALSE) {
-  if(abund) {
-    tmp <- left_join(loo_tbl, diagnostics_tbl) |>
-        filter(traits != "nlog")
-  } else {
-    tmp <- left_join(loo_tbl, diagnostics_tbl) |>
-        filter(traits == "nlog")
-  }
-
-  tmp <- tmp  |>
-    filter(season == {{season}}) |>
-    arrange(desc(elpd)) |>
-    mutate(traits = case_when(
-      traits == "ab" ~ "Abundance",
-      traits == "ba" ~ "Basal area",
-      traits == "ab1ba" ~ "Abundance + Basal area",
-      traits == "ab2ba" ~ "Abundance $\\times$ Basal area",
-    )) |>
-    mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
-    mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
-    mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
-    mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
-    mutate(rain = case_when(
-      rain == "norain" ~ "No rain",
-      rain == "rain" ~ "Rain without interactions",
-      rain == "intrain" ~ "Rain with all the interactions",
-      rain == "intrain2" ~ "Rain with an interaction of conspecific densities",
-      rain == "intrain3" ~ "Rain with an interaction of cona",
-      rain == "intrain4" ~ "Rain with an interaction of cons cona",
-    )) |>
-    mutate(
-      across(1:10,
-      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div >= 4, "gray", "black"))
-    ))
-
-  if (abund)  {
-    tmp <- tmp |>
-      dplyr::select(`Seedling densities` = phy,
-        `Rainfall` = rain,
-        `Abundance` = traits,
-        `ELPD` = elpd,
-        `LOOIC` = looic,
-        `N\\_ESS` = n_ess,
-        `N\\_Div` = n_div)
-  } else {
-    tmp <- tmp |>
-      dplyr::select(`Seedling densities` = phy,
-        `Rainfall` = rain,
-        `ELPD` = elpd,
-        `LOOIC` = looic,
-        `N\\_ESS` = n_ess,
-        `N\\_Div` = n_div)
-  }
-
-  tmp  |>
-    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = FALSE) |>
-    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = FALSE) #k|>
-}
-
+diagnostics_tbl <- read_csv(here("data/diagnostics_tables.csv"))
 ```
 
 
@@ -323,7 +230,7 @@ N_Div: number of divergent transitions,
 
 
 ```{r}
-write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "dry", abund = FALSE)
+render_diagnostics_tables(diagnostics_tbl, season = "dry", abund = FALSE)
 ```
 
 \newpage
@@ -334,7 +241,7 @@ Model selection and diagnostics for models with traits in the rainy season.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
-write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = FALSE)
+render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = FALSE)
 ```
 \newpage
 
@@ -344,7 +251,7 @@ Model selection and diagnostics for models with abundance in the dry season.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
-write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "dry", abund = TRUE)
+render_diagnostics_tables(diagnostics_tbl, season = "dry", abund = TRUE)
 ```
 
 \newpage
@@ -355,7 +262,7 @@ Model selection and diagnostics for models with abundance in the rainy season.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
-write_diagnostic_tables(loo_tbl, diagnostics_tbl, season = "wet", abund = TRUE)
+render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = TRUE)
 ```
 
 \newpage

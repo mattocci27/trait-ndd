@@ -370,5 +370,44 @@ tar_map(
   NULL
  )
 
+diagnostics_mapped <- tar_map(
+    values = list(value = rlang::syms(str_c("fit_diagnostics_logistic_simple_stan_data_", data_names)), data_names = data_names),
+    tar_target(
+      diagnostics,
+      value |> mutate(model = data_names)
+    )
+  )
+tar_combined_diagnostics_data <- tar_combine(
+  combined_diagnostics,
+  diagnostics_mapped[["diagnostics"]],
+  command = dplyr::bind_rows(!!!.x)
+)
 
-list(data_, main_)
+summary_mapped <- tar_map(
+    values = list(value = rlang::syms(str_c("fit_summary_logistic_simple_stan_data_", data_names)), data_names = data_names),
+    tar_target(
+      summary,
+      value |> mutate(model = data_names)
+    )
+  )
+tar_combined_summary_data <- tar_combine(
+  combined_summary,
+  summary_mapped[["summary"]],
+  command = dplyr::bind_rows(!!!.x)
+)
+
+util_list <- list(
+  diagnostics_mapped,
+  tar_combined_diagnostics_data,
+  summary_mapped,
+  tar_combined_summary_data,
+  tar_target(
+    diagnostic_tables_csv,
+    write_diagnostics_tables(combined_summary, combined_diagnostics, loo_tbl, "data/diagnostics_tables.csv"),
+    format = "file"
+  )
+)
+
+
+list(data_, main_) |>
+  append(util_list)
