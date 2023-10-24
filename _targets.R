@@ -48,7 +48,18 @@ values <- expand_grid(
   sp_pred = c("nlog", "ab", "ba", "ab1ba", "pc12", "pc15")
   )
 
+values2 <- values |>
+  filter(season != "wet" | sp_pred != "pc12")
+values3 <- values |>
+  filter(season == "wet" & sp_pred == "pc12")
+
 data_names <- values |>
+  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
+  pull(data_names)
+data_names2 <- values2 |>
+  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
+  pull(data_names)
+data_names3 <- values3 |>
   mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
   pull(data_names)
 
@@ -128,7 +139,7 @@ main_ <- list(
   ),
 
   tar_map(
-    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
+    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names2))),
     tar_stan_mcmc(
       fit,
       "stan/logistic_simple.stan",
@@ -141,6 +152,32 @@ main_ <- list(
       adapt_delta = 0.95,
       max_treedepth = 15,
       seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+  tar_map(
+    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names3))),
+    tar_stan_mcmc(
+      fit,
+      "stan/logistic_simple.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 2000,
+      iter_sampling = 2000,
+      adapt_delta = 0.95,
+      max_treedepth = 15,
+      seed = 1234,
       return_draws = FALSE,
       return_diagnostics = TRUE,
       return_summary = TRUE,
