@@ -269,11 +269,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = TRUE)
 
 
 ```{r, include=FALSE}
-dry_traits_gamma <- read_csv(here("data", "dry_het_intrain2_traits_gamma.csv"))
-dry_traits_gamma |>
-  filter(q2.5 * q97.5 > 0)
-dry_traits_gamma |>
-  filter(trait_name == "intercept")
+dry_traits_gamma <- read_csv(here("data", "dry_het_intrain2_nlog_gamma.csv"))
 ```
 
 # `r s_table("dry_traits_gamma")`
@@ -300,18 +296,30 @@ gen_si_tab(dry_traits_gamma)
 
 \newpage
 
-# `r s_table("wet_traits_gamma")`
+# `r s_table("dry_pca_gamma")`
 
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
-Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the rainy seasons.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_traits_gamma <- read_csv(here("data", "wet_phy_norain_traits_gamma.csv"))
-wet_traits_gamma |>
-  filter(q2.5 * q97.5 > 0)
-wet_traits_gamma |>
-  filter(trait_name == "intercept")
+dry_pca_gamma <- read_csv(here("data", "dry_het_intrain4_pc12_gamma.csv"))
+```
+
+```{r}
+gen_si_tab(dry_pca_gamma)
+```
+
+\newpage
+
+# `r s_table("wet_traits_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+wet_traits_gamma <- read_csv(here("data", "wet_phy_norain_nlog_gamma.csv"))
 ```
 
 ```{r}
@@ -320,18 +328,30 @@ gen_si_tab(wet_traits_gamma)
 
 \newpage
 
-# `r s_table("dry_abund_gamma")`
+# `r s_table("wet_pca_gamma")`
 
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
-Densities of conspecific (ConT) and heterospecific (HetT) trees are scaled by 0.27.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the rainy seasons.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_abund_gamma <- read_csv(here("data", "dry_het_intrain_abund_gamma.csv"))
-dry_abund_gamma |>
-  filter(q2.5 * q97.5 > 0)
-dry_abund_gamma |>
-  filter(trait_name == "intercept")
+wet_pca_gamma <- read_csv(here("data", "wet_het_rain_pc12_gamma.csv"))
+```
+
+```{r}
+gen_si_tab(wet_pca_gamma)
+```
+
+\newpage
+
+# `r s_table("dry_abund_gamma")`
+
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
+Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+dry_abund_gamma <- read_csv(here("data", "dry_phy_intrain3_ab_gamma.csv"))
 ```
 
 ```{r}
@@ -347,11 +367,7 @@ Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_abund_gamma")`.
 
 ```{r, include=FALSE}
-wet_abund_gamma <- read_csv(here("data", "wet_phy_rain_abund_gamma.csv"))
-wet_abund_gamma |>
-  filter(q2.5 * q97.5 > 0)
-wet_abund_gamma |>
-  filter(trait_name == "intercept")
+wet_abund_gamma <- read_csv(here("data", "wet_phy_intrain3_ab_gamma.csv"))
 ```
 
 ```{r}

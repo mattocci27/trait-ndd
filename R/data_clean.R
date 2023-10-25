@@ -438,7 +438,9 @@ gen_si_tab <- function(data) {
     "log_la" = "ln LA",
     "log_sla" = "ln SLA",
     "log_lt" = "ln LT",
-    "log_ab" = "ln Abundance"
+    "log_ab" = "ln Abundance",
+    "pc1" = "PC1",
+    "pc2" = "PC2"
   )
 
   data |>
@@ -458,9 +460,10 @@ gen_si_tab <- function(data) {
       `Upper 95\\% CI` = q95,
       `Upper 97.5\\% CI` = q97.5,
       `Individual-level predictor` = pred_name,
-      `Species-level predictor` = trait_name
+      `Species-level predictor` = trait_name,
+      Rhat = rhat
     ) |>
-    dplyr::select(Parameter, Median, `95\\% CI`, `Individual-level predictor`, `Species-level predictor`) |>
+    dplyr::select(Parameter, Median, `95\\% CI`, `Individual-level predictor`, `Species-level predictor`, Rhat) |>
     kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
     kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
 }
