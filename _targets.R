@@ -43,24 +43,12 @@ cmdstan_version()
 
 values <- expand_grid(
   season = c("dry", "wet"),
-  het = c("phy", "het"),
   rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "ab", "ba", "ab1ba", "pc12", "pc15")
+  sp_pred = c("nlog", "ab", "ba", "ab1ba", "pc12")
   )
 
-values2 <- values |>
-  filter(season != "wet" | sp_pred != "pc12")
-values3 <- values |>
-  filter(season == "wet" & sp_pred == "pc12")
-
 data_names <- values |>
-  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
-  pull(data_names)
-data_names2 <- values2 |>
-  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
-  pull(data_names)
-data_names3 <- values3 |>
-  mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
+  mutate(data_names = str_c(season, rain, sp_pred, sep = "_")) |>
   pull(data_names)
 
 mcmc_names <- values |>
@@ -83,9 +71,17 @@ data_ <- list(
     format = "file"
   ),
   tar_target(
-    trait_csv,
+    traits_csv,
     clean_data("data-raw/dataCNDD.Rdata", write_trait = TRUE),
     format = "file"
+  ),
+  tar_target(
+    traits_df,
+    read_csv(traits_csv) |> janitor::clean_names() |> dplyr::select(-cname)
+  ),
+  tar_target(
+    seedling_df,
+    read_csv(seedling_csv) |> janitor::clean_names()
   ),
   tar_target(
     seedling_csv,
@@ -133,63 +129,39 @@ main_ <- list(
     values = values,
     tar_target(stan_data,
       generate_stan_data(
-        seedling_csv, trait_csv,
+        seedling_df, traits_df,
         scale_cc = list(wet = scale_wet, dry = scale_dry),
-        season, het, rain, sp_pred))
+        season, rain, sp_pred))
   ),
+  NULL)
 
-  tar_map(
-    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names2))),
-    tar_stan_mcmc(
-      fit,
-      "stan/logistic_simple.stan",
-      data = stan_data,
-      refresh = 0,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1000,
-      iter_sampling = 2000,
-      adapt_delta = 0.95,
-      max_treedepth = 15,
-      seed = 123,
-      return_draws = FALSE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
-      summaries = list(
-        mean = ~mean(.x),
-        sd = ~sd(.x),
-        mad = ~mad(.x),
-        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-        posterior::default_convergence_measures()
-      )
-    )
-  ),
-  tar_map(
-    values = list(stan_data = rlang::syms(str_c("stan_data_", data_names3))),
-    tar_stan_mcmc(
-      fit,
-      "stan/logistic_simple.stan",
-      data = stan_data,
-      refresh = 0,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 2000,
-      iter_sampling = 2000,
-      adapt_delta = 0.95,
-      max_treedepth = 15,
-      seed = 1234,
-      return_draws = FALSE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
-      summaries = list(
-        mean = ~mean(.x),
-        sd = ~sd(.x),
-        mad = ~mad(.x),
-        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-        posterior::default_convergence_measures()
-      )
-    )
-  ),
+hoge <- list(
+  # tar_map(
+  #   values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
+  #   tar_stan_mcmc(
+  #     fit,
+  #     "stan/logistic_simple.stan",
+  #     data = stan_data,
+  #     refresh = 0,
+  #     chains = 4,
+  #     parallel_chains = getOption("mc.cores", 4),
+  #     iter_warmup = 1000,
+  #     iter_sampling = 2000,
+  #     adapt_delta = 0.95,
+  #     max_treedepth = 15,
+  #     seed = 123,
+  #     return_draws = FALSE,
+  #     return_diagnostics = TRUE,
+  #     return_summary = TRUE,
+  #     summaries = list(
+  #       mean = ~mean(.x),
+  #       sd = ~sd(.x),
+  #       mad = ~mad(.x),
+  #       ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+  #       posterior::default_convergence_measures()
+  #     )
+  #   )
+  # ),
 
   loo_map,
   tar_combine(
@@ -317,7 +289,7 @@ main_ <- list(
   ),
   tar_target(
     ggpairs_plot, {
-      p <- my_ggpairs(trait_csv)
+      p <- my_ggpairs(traits_csv)
       my_ggsave(
         "figs/pairs",
         p,
@@ -480,5 +452,5 @@ util_list <- list(
 )
 
 
-list(data_, main_) |>
-  append(util_list)
+list(data_, main_) #|>
+  # append(util_list)
