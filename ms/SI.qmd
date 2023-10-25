@@ -20,6 +20,7 @@ format:
         \usepackage{sourcecodepro}
         \usepackage{fancyhdr}
         \usepackage{fvextra}
+        \usepackage{dcolumn}
         \pagestyle{fancy}
         \fancypagestyle{plain}{\pagestyle{fancy}}
         \renewcommand{\headrulewidth}{0pt}
@@ -58,6 +59,8 @@ source(here("R", "stan.R"))
 source(here("R", "render.R"))
 source(here("R", "data_clean.R"))
 ```
+
+
 
 # `r s_fig("site_info")`
 

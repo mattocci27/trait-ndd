@@ -162,6 +162,7 @@
 \usepackage{sourcecodepro}
 \usepackage{fancyhdr}
 \usepackage{fvextra}
+\usepackage{dcolumn}
 \pagestyle{fancy}
 \fancypagestyle{plain}{\pagestyle{fancy}}
 \renewcommand{\headrulewidth}{0pt}
@@ -220,7 +221,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, boxrule=0pt, interior hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, enhanced, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -516,6 +517,45 @@ Stan code for the multilevel logistic regression in the main text.
 \hypertarget{table-s1}{%
 \section{Table S1}\label{table-s1}}
 
+I'll clean up this.
+
+\begin{verbatim}
+
+Call:
+glm(formula = surv ~ (logh_s + scon_s + shet_s + acon_s_c + ahet_s_c) * 
+    season, family = binomial, data = seedling_data)
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)           2.237230   0.024095  92.852  < 2e-16 ***
+logh_s                0.945068   0.025425  37.171  < 2e-16 ***
+scon_s                0.019037   0.020983   0.907  0.36427    
+shet_s                0.249236   0.023334  10.681  < 2e-16 ***
+acon_s_c             -0.505006   0.025440 -19.851  < 2e-16 ***
+ahet_s_c             -0.416286   0.021540 -19.327  < 2e-16 ***
+seasonrainy          -0.007613   0.034207  -0.223  0.82388    
+logh_s:seasonrainy   -0.046107   0.037031  -1.245  0.21310    
+scon_s:seasonrainy    0.133877   0.028279   4.734  2.2e-06 ***
+shet_s:seasonrainy   -0.062985   0.034955  -1.802  0.07156 .  
+acon_s_c:seasonrainy -0.032091   0.037238  -0.862  0.38882    
+ahet_s_c:seasonrainy  0.082599   0.031986   2.582  0.00981 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 43023  on 54279  degrees of freedom
+Residual deviance: 37947  on 54268  degrees of freedom
+AIC: 37971
+
+Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\newpage
+
+\hypertarget{table-s2}{%
+\section{Table S2}\label{table-s2}}
+
 Model selection and diagnostics for models with traits in the dry
 season. ELPD: expected log pointwise predictive density (larger values
 indicate better a model fit), LOOIC: leave-one-out deviance information
@@ -564,11 +604,11 @@ Seedling densities & Rainfall & Traits & ELPD & LOOIC & N\_ESS & N\_Div\\
 
 \newpage
 
-\hypertarget{table-s2}{%
-\section{Table S2}\label{table-s2}}
+\hypertarget{table-s3}{%
+\section{Table S3}\label{table-s3}}
 
 Model selection and diagnostics for models with traits in the rainy
-season. Details as for Table S1.
+season. Details as for Table S2.
 
 \begin{table}[H]
 \centering
@@ -611,11 +651,11 @@ Seedling densities & Rainfall & Traits & ELPD & LOOIC & N\_ESS & N\_Div\\
 
 \newpage
 
-\hypertarget{table-s3}{%
-\section{Table S3}\label{table-s3}}
+\hypertarget{table-s4}{%
+\section{Table S4}\label{table-s4}}
 
 Model selection and diagnostics for models with abundance in the dry
-season. Details as for Table S1.
+season. Details as for Table S2.
 
 \begin{table}[H]
 \centering
@@ -673,11 +713,11 @@ Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
 
 \newpage
 
-\hypertarget{table-s4}{%
-\section{Table S4}\label{table-s4}}
+\hypertarget{table-s5}{%
+\section{Table S5}\label{table-s5}}
 
 Model selection and diagnostics for models with abundance in the rainy
-season. Details as for Table S1.
+season. Details as for Table S2.
 
 \begin{table}[H]
 \centering
@@ -735,8 +775,8 @@ Seedling densities & Rainfall & Abundance & ELPD & LOOIC & N\_ESS & N\_Div\\
 
 \newpage
 
-\hypertarget{table-s5}{%
-\section{Table S5}\label{table-s5}}
+\hypertarget{table-s6}{%
+\section{Table S6}\label{table-s6}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (traits) on individual-level predictors
@@ -854,13 +894,13 @@ $\gamma_{8,9}$ & 0.396 & {}[-0.509, 1.335] & ConS $\times$ Rainfall & $\pi_\math
 
 \newpage
 
-\hypertarget{table-s6}{%
-\section{Table S6}\label{table-s6}}
+\hypertarget{table-s7}{%
+\section{Table S7}\label{table-s7}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (PC) on individual-level predictors
 (\(\gamma\)) in the rainy seasons. Conspecific (ConT) and heterospecific
-(HetT) tree densities are scaled by 0.24. Other details as for Table S5.
+(HetT) tree densities are scaled by 0.24. Other details as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -912,13 +952,13 @@ $\gamma_{8,3}$ & -0.183 & {}[-0.401, 0.013] & ConS $\times$ Rainfall & PC2 & 1.0
 
 \newpage
 
-\hypertarget{table-s7}{%
-\section{Table S7}\label{table-s7}}
+\hypertarget{table-s8}{%
+\section{Table S8}\label{table-s8}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (traits) on individual-level predictors
 (\(\gamma\)) in the rainy seasons. Conspecific (ConT) and phylogenetic
-(PhyT) tree densities are scaled by 0.27. Other details as for Table S5.
+(PhyT) tree densities are scaled by 0.27. Other details as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -1002,13 +1042,13 @@ $\gamma_{6,9}$ & 0.191 & {}[-0.012, 0.394] & PhyT & $\pi_\mathrm{{tlp}}$ & 1.000
 
 \newpage
 
-\hypertarget{table-s8}{%
-\section{Table S8}\label{table-s8}}
+\hypertarget{table-s9}{%
+\section{Table S9}\label{table-s9}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (PC) on individual-level predictors
 (\(\gamma\)) in the rainy seasons. Conspecific (ConT) and heterospecific
-(HetT) tree densities are scaled by 0.27. Other details as for Table S5.
+(HetT) tree densities are scaled by 0.27. Other details as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -1053,13 +1093,13 @@ $\gamma_{6,3}$ & -0.008 & {}[-0.123, 0.12] & HetT & PC2 & 1.000\\
 
 \newpage
 
-\hypertarget{table-s9}{%
-\section{Table S9}\label{table-s9}}
+\hypertarget{table-s10}{%
+\section{Table S10}\label{table-s10}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (abundance) on individual-level predictors
 (\(\gamma\)) in the dry seasons. Conspecific (ConT) and phylogenetic
-(PhyT) tree densities are scaled by 0.27. Other details as for Table S5.
+(PhyT) tree densities are scaled by 0.27. Other details as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -1098,13 +1138,14 @@ $\gamma_{8,2}$ & \textbf{-0.17} & \textbf{[-0.259, -0.078]} & ConT $\times$ Rain
 
 \newpage
 
-\hypertarget{table-s10}{%
-\section{Table S10}\label{table-s10}}
+\hypertarget{table-s11}{%
+\section{Table S11}\label{table-s11}}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (abundance) on individual-level predictors
 (\(\gamma\)) in the dry seasons. Conspecific (ConT) and phylogenetic
-(PhyT) tree densities are scaled by 0.24. Other details as for Table S9.
+(PhyT) tree densities are scaled by 0.24. Other details as for Table
+S10.
 
 \begin{longtable*}[t]{lllllr}
 \toprule

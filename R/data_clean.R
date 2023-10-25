@@ -468,3 +468,22 @@ gen_si_tab <- function(data) {
     kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
 }
 
+pre_glm <- function(seedling_csv) {
+  seedling <- read_csv(seedling_csv) |>
+    janitor::clean_names()
+  cc <- 0.26
+  cc2 <- 0.26
+  seedling_data <- seedling |>
+    mutate(scon_s = scale(scon) |> as.numeric()) |>
+    mutate(shet_s = scale(shet) |> as.numeric()) |>
+    mutate(sphy_s = scale(sphy) |> as.numeric()) |>
+    mutate(acon_s_c = as.numeric(scale(acon^cc))) |>
+    mutate(ahet_s_c = as.numeric(scale(ahet^cc))) |>
+    mutate(aphy_s_c = as.numeric(scale(aphy^cc2))) |>
+    mutate(logh_s = log(h1) |> scale() |> as.numeric()) |>
+    mutate(rain_s = as.numeric(scale(rf)))
+  fit <- glm(surv ~ (logh_s +
+          scon_s + shet_s +
+          acon_s_c + ahet_s_c) * season, family = binomial, data = seedling_data)
+  fit
+}
