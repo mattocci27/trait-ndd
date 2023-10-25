@@ -44,8 +44,13 @@ cmdstan_version()
 values <- expand_grid(
   season = c("dry", "wet"),
   rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
-  sp_pred = c("nlog", "ab", "ba", "ab1ba", "pc12")
+  sp_pred = c("nlog", "ab", "ba", "pc12")
   )
+
+values <- expand_grid(
+  season = c("dry", "wet"),
+  rain = "norain",
+  sp_pred = "ab")
 
 data_names <- values |>
   mutate(data_names = str_c(season, rain, sp_pred, sep = "_")) |>
@@ -125,13 +130,75 @@ main_ <- list(
     format = "file"
   ),
 
+  tar_target(
+    test_stan_data,
+    generate_stan_data(
+      seedling_df, traits_df,
+      scale_cc = list(wet = scale_wet, dry = scale_dry),
+      season = "dry", rain = "intrain4", sp_pred = "pc12")
+  ),
+  tar_stan_mcmc(
+    test_fit,
+    c("stan/suv_ind.stan", "stan/suv.stan"),
+    data = test_stan_data,
+    refresh = 0,
+    chains = 3,
+    parallel_chains = getOption("mc.cores", 3),
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    adapt_delta = 0.95,
+    max_treedepth = 15,
+    seed = 123,
+    return_draws = FALSE,
+    return_diagnostics = TRUE,
+    return_summary = TRUE,
+    summaries = list(
+      mean = ~mean(.x),
+      sd = ~sd(.x),
+      mad = ~mad(.x),
+      ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+      posterior::default_convergence_measures()
+    )
+  ),
+  tar_target(
+    test_loo_suv,
+    my_loo(test_fit_mcmc_suv)
+  ),
+  tar_target(
+    test_loo_suv_ind,
+    my_loo(test_fit_mcmc_suv_ind)
+  ),
+
   tar_map(
     values = values,
     tar_target(stan_data,
       generate_stan_data(
         seedling_df, traits_df,
         scale_cc = list(wet = scale_wet, dry = scale_dry),
-        season, rain, sp_pred))
+        season, rain, sp_pred)),
+    tar_stan_mcmc(
+      fit,
+      "stan/suv_ind.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 1),
+      iter_warmup = 2000,
+      iter_sampling = 2000,
+      adapt_delta = 0.95,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
   ),
   NULL)
 
