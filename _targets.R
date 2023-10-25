@@ -435,11 +435,11 @@ tar_combined_summary_data <- tar_combine(
 
 # Define a list of model names
 models <- c(
-  "dry_het_intrain2_nlog",
   "dry_het_intrain4_pc12",
+  "dry_het_intrain2_nlog",
+  "wet_het_rain_pc12",
   "wet_phy_norain_nlog",
-  "wet_het_intrain_pc12",
-  "dry_phy_intrain_ab",
+  "dry_phy_intrain3_ab",
   "wet_phy_intrain3_ab"
 )
 

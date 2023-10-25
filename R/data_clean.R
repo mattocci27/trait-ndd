@@ -405,3 +405,63 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
     kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = FALSE) |>
     kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = FALSE) #k|>
 }
+
+gen_si_tab <- function(data) {
+
+  pred_name_map <- c(
+    "(Intercept)" = "Intercept",
+    "logh_s" = "ln Height",
+    "scon_s" = "ConS",
+    "acon_s_c" = "ConT",
+    "shet_s" = "HetS",
+    "ahet_s_c" = "HetT",
+    "sphy_s" = "PhyS",
+    "aphy_s_c" = "PhyT",
+    "rain_s" = "Rainfall",
+    "scon_s:rain_s" = "ConS $\\times$ Rainfall",
+    "acon_s_c:rain_s" = "ConT $\\times$ Rainfall",
+    "shet_s:rain_s" = "HetS $\\times$ Rainfall",
+    "ahet_s_c:rain_s" = "HetT $\\times$ Rainfall",
+    "sphy_s:rain_s" = "PhyS $\\times$ Rainfall",
+    "aphy_s_c:rain_s" = "PhyT $\\times$ Rainfall",
+    "logh_s:rain_s" = "ln Height $\\times$ Rainfall"
+  )
+
+  trait_name_map <- c(
+    "intercept" = "Intercept",
+    "ldmc" = "LDMC",
+    "sdmc" = "SDMC",
+    "chl" = "Chl",
+    "c13" = "$\\delta \\mathrm{C_{13}}$",
+    "log_n" = "ln N",
+    "tlp" = "$\\pi_\\mathrm{{tlp}}$",
+    "log_la" = "ln LA",
+    "log_sla" = "ln SLA",
+    "log_lt" = "ln LT",
+    "log_ab" = "ln Abundance"
+  )
+
+  data |>
+    mutate_if(is.numeric, round, 3) |>
+    mutate(
+      pred_name = coalesce(pred_name_map[pred_name], pred_name),
+      trait_name = coalesce(trait_name_map[trait_name], trait_name),
+      q50 = cell_spec(q50, bold = ifelse(q2.5 * q97.5 > 0, TRUE, FALSE)),
+      `95\\% CI` = paste0("[", q2.5, ", ", q97.5, "]"),
+      `95\\% CI` = cell_spec(`95\\% CI`, bold = ifelse(q2.5 * q97.5 > 0, TRUE, FALSE)),
+      Parameter = paste0("$\\gamma_{", str_split_fixed(variable, ",|\\[|\\]", 4)[, 2],
+                         ",", str_split_fixed(variable, ",|\\[|\\]", 4)[, 3], "}$")
+    ) |>
+    rename(
+      Median = q50,
+      `Lower 2.5\\% CI` = q2.5,
+      `Upper 95\\% CI` = q95,
+      `Upper 97.5\\% CI` = q97.5,
+      `Individual-level predictor` = pred_name,
+      `Species-level predictor` = trait_name
+    ) |>
+    dplyr::select(Parameter, Median, `95\\% CI`, `Individual-level predictor`, `Species-level predictor`) |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
+}
+
