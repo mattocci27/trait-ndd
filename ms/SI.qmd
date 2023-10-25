@@ -65,7 +65,7 @@ Plot location in Xishuangbanna, China (A) and topography map (B) of the 20-ha pl
 The numbers in the contour map are elevation (m), and the squares represent the locations of the 150 seed traps (B).
 Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C).
 
-<!-- ![](`r here::here("data-raw/site_info.jpg")`) -->
+![](`r here::here("data-raw/site_info.jpg")`)
 
 \newpage
 
@@ -73,7 +73,7 @@ Each of the three 1-m2 seedling plots is 2 m away from the central seed trap (C)
 
 Seasonal rainfall pattern in this area (data from November 2007- November 2017), November to April is the dry season (red bars), and May to October is the rainy season (blue bars).
 
-<!-- ![](`r here::here("data-raw/rainfall.jpg")`) -->
+![](`r here::here("data-raw/rainfall.jpg")`)
 
 \newpage
 
@@ -98,6 +98,12 @@ LT: leaf thickness.
 N, LA, SLA, and LT are natural log-transformed.
 
 ![](`r here::here("figs/pairs.pdf")`)
+
+\newpage
+
+# `r s_fig("pca")`
+
+I'll add PCA plot here.
 
 \newpage
 
