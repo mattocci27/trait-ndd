@@ -10,13 +10,13 @@
 #SBATCH --time=24:00:00
 
 #Example:
-# sbatch slurm/pca.slurm
+# sbatch slurm/simple.slurm
 
 date;hostname;pwd
 module purge
 module load singularity/3.7.3
 
 # Run the tar_make_clustermq() command with the specified number of clusters
-singularity exec --env RENV_PATHS_CACHE=${HOME}/renv --env RENV_PATHS_PREFIX_AUTO=TRUE radian.sif Rscript R/run_script.R $SLURM_CPUS_PER_TASK > log/simple.log
+singularity exec --env RENV_PATHS_CACHE=${HOME}/renv --env RENV_PATHS_PREFIX_AUTO=TRUE radian.sif Rscript R/run_script.R 18 > log/simple.log
 
 date
