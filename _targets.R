@@ -25,7 +25,13 @@ tar_option_set(packages = c(
   "multcompView",
   "RColorBrewer",
   "ggridges",
-  "bayesplot"
+  "bayesplot",
+  "quarto",
+  "lme4",
+  "here",
+  "kableExtra",
+  "tictoc",
+  "DT"
 ))
 
 # tar_option_set(
@@ -135,11 +141,11 @@ main_ <- list(
     generate_stan_data(
       seedling_df, traits_df,
       scale_cc = list(wet = scale_wet, dry = scale_dry),
-      season = "dry", rain = "intrain4", sp_pred = "pc12")
+      season = "dry", rain = "intrain2", sp_pred = "nlog")
   ),
   tar_stan_mcmc(
     test_fit,
-    c("stan/suv_ind.stan", "stan/suv.stan"),
+    c("stan/suv_ind.stan", "stan/suv.stan", "stan/suv_simple.stan"),
     data = test_stan_data,
     refresh = 0,
     chains = 3,
@@ -169,37 +175,38 @@ main_ <- list(
     my_loo(test_fit_mcmc_suv_ind)
   ),
 
-  tar_map(
-    values = values,
-    tar_target(stan_data,
-      generate_stan_data(
-        seedling_df, traits_df,
-        scale_cc = list(wet = scale_wet, dry = scale_dry),
-        season, rain, sp_pred)),
-    tar_stan_mcmc(
-      fit,
-      "stan/suv_ind.stan",
-      data = stan_data,
-      refresh = 0,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 1),
-      iter_warmup = 2000,
-      iter_sampling = 2000,
-      adapt_delta = 0.95,
-      max_treedepth = 15,
-      seed = 123,
-      return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
-      summaries = list(
-        mean = ~mean(.x),
-        sd = ~sd(.x),
-        mad = ~mad(.x),
-        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-        posterior::default_convergence_measures()
-      )
-    )
-  ),
+  # tar_map(
+  #   values = values,
+  #   tar_target(stan_data,
+  #     generate_stan_data(
+  #       seedling_df, traits_df,
+  #       scale_cc = list(wet = scale_wet, dry = scale_dry),
+  #       season, rain, sp_pred)),
+  #   tar_stan_mcmc(
+  #     fit,
+  #     "stan/suv_ind.stan",
+  #     data = stan_data,
+  #     refresh = 0,
+  #     chains = 4,
+  #     parallel_chains = getOption("mc.cores", 1),
+  #     iter_warmup = 2000,
+  #     iter_sampling = 2000,
+  #     adapt_delta = 0.95,
+  #     max_treedepth = 15,
+  #     seed = 123,
+  #     return_draws = FALSE,
+  #     return_diagnostics = FALSE,
+  #     return_summary = FALSE,
+  #     summaries = list(
+  #       mean = ~mean(.x),
+  #       sd = ~sd(.x),
+  #       mad = ~mad(.x),
+  #       ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+  #       posterior::default_convergence_measures()
+  #     )
+  #   )
+  # ),
+
   NULL)
 
 hoge <- list(
