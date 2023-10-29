@@ -34,15 +34,15 @@ tar_option_set(packages = c(
   "DT"
 ))
 
-# tar_option_set(
-#   garbage_collection = TRUE,
-#   memory = "transient"
-# )
+tar_option_set(
+  garbage_collection = TRUE,
+  memory = "transient"
+)
 
 # check if it's inside a container
 if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
-  Sys.setenv(CMDSTAN = "/opt/cmdstan/cmdstan-2.29.2")
-  set_cmdstan_path("/opt/cmdstan/cmdstan-2.29.2")
+  Sys.setenv(CMDSTAN = "/opt/cmdstan/cmdstan-2.33.1")
+  set_cmdstan_path("/opt/cmdstan/cmdstan-2.33.1")
 }
 
 cmdstan_version()
@@ -53,10 +53,10 @@ values <- expand_grid(
   sp_pred = c("nlog", "ab", "ba", "pc12")
   )
 
-values <- expand_grid(
-  season = c("dry", "wet"),
-  rain = "norain",
-  sp_pred = "ab")
+# values <- expand_grid(
+#   season = c("dry", "wet"),
+#   rain = "norain",
+#   sp_pred = "ab")
 
 data_names <- values |>
   mutate(data_names = str_c(season, rain, sp_pred, sep = "_")) |>
@@ -199,8 +199,8 @@ main_ <- list(
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
