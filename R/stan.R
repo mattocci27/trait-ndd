@@ -245,14 +245,13 @@ generate_coef_data <- function(draws, data, season = "Dry") {
 
 generate_loo_tbl <- function(loo_list)  {
   loo_names <- names(loo_list)
-  loo_names_split <- str_split_fixed(loo_names, "_", 11)
+  loo_names_split <- str_split_fixed(loo_names, "_", 8)
   loo_tbl <- tibble(model = names(loo_list)) |>
     mutate(elpd = map_dbl(loo_list, \(x)x$elpd_loo)) |>
     mutate(p_loo = map_dbl(loo_list, \(x)x$p_loo)) |>
     mutate(looic = map_dbl(loo_list, \(x)x$looic)) |>
-    mutate(season = loo_names_split[, 8]) |>
-    mutate(phy = loo_names_split[, 9]) |>
-    mutate(rain = loo_names_split[, 10]) |>
-    mutate(traits = loo_names_split[, 11])
+    mutate(season = loo_names_split[, 6]) |>
+    mutate(rain = loo_names_split[, 7]) |>
+    mutate(traits = loo_names_split[, 8])
   loo_tbl
 }

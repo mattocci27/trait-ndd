@@ -63,7 +63,7 @@ data_names <- values |>
   pull(data_names)
 
 mcmc_names <- values |>
-  mutate(mcmc_names = str_c("fit_mcmc_logistic_simple_stan_data_", data_names)) |>
+  mutate(mcmc_names = str_c("fit_mcmc_suv_ind_", data_names)) |>
   pull(mcmc_names)
 
 loo_map <- tar_map(
@@ -210,48 +210,20 @@ main_ <- list(
       )
     )
   ),
-
-  NULL)
-
-hoge <- list(
-  # tar_map(
-  #   values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
-  #   tar_stan_mcmc(
-  #     fit,
-  #     "stan/logistic_simple.stan",
-  #     data = stan_data,
-  #     refresh = 0,
-  #     chains = 4,
-  #     parallel_chains = getOption("mc.cores", 4),
-  #     iter_warmup = 1000,
-  #     iter_sampling = 2000,
-  #     adapt_delta = 0.95,
-  #     max_treedepth = 15,
-  #     seed = 123,
-  #     return_draws = FALSE,
-  #     return_diagnostics = TRUE,
-  #     return_summary = TRUE,
-  #     summaries = list(
-  #       mean = ~mean(.x),
-  #       sd = ~sd(.x),
-  #       mad = ~mad(.x),
-  #       ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-  #       posterior::default_convergence_measures()
-  #     )
-  #   )
-  # ),
-
   loo_map,
   tar_combine(
     loo_list,
     loo_map,
     command = list(!!!.x)
   ),
-
   tar_target(
     loo_tbl,
     generate_loo_tbl(loo_list)
   ),
+  NULL
+)
+
+hoge <- list(
   # best models
   tar_target(
     dry_trait,
@@ -458,7 +430,7 @@ hoge <- list(
  )
 
 diagnostics_mapped <- tar_map(
-    values = list(value = rlang::syms(str_c("fit_diagnostics_logistic_simple_stan_data_", data_names)), data_names = data_names),
+    values = list(value = rlang::syms(str_c("fit_diagnostics_suv_ind_", data_names)), data_names = data_names),
     tar_target(
       diagnostics,
       value |> mutate(model = data_names)
@@ -471,7 +443,7 @@ tar_combined_diagnostics_data <- tar_combine(
 )
 
 summary_mapped <- tar_map(
-    values = list(value = rlang::syms(str_c("fit_summary_logistic_simple_stan_data_", data_names)), data_names = data_names),
+    values = list(value = rlang::syms(str_c("fit_summary_suv_ind_", data_names)), data_names = data_names),
     tar_target(
       summary,
       value |> mutate(model = data_names)
@@ -526,9 +498,10 @@ util_list <- list(
     write_diagnostics_tables(combined_summary, combined_diagnostics, loo_tbl, "data/diagnostics_tables.csv"),
     format = "file"
   ),
-  best_csv_mapped
+  # best_csv_mapped,
+  NULL
 )
 
 
-list(data_, main_) #|>
-  # append(util_list)
+list(data_, main_) |>
+  append(util_list)

@@ -219,7 +219,7 @@ Stan code for the multilevel logistic regression in the main text.
 <!-- ```{stan, file="stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ``` -->
 
-```{stan, file="../stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+```{stan, file="../stan/suv_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```
 
 \newpage

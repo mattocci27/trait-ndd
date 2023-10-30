@@ -126,7 +126,7 @@ write_diagnostics_tables <- function(combined_summary, combined_diagnostics, loo
 
   tmp3 <- full_join(tmp, tmp2)
 
-  pattern <- "loo_fit_mcmc_logistic_simple_stan_data_"
+  pattern <- "loo_fit_mcmc_suv_ind_"
   loo_tbl |>
     mutate(model = str_remove(model, pattern)) |>
     full_join(tmp3) |>
@@ -156,7 +156,7 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
     mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
     mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
     mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
-    mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
+    # mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
     mutate(rain = case_when(
       rain == "norain" ~ "No rain",
       rain == "rain" ~ "Rain without interactions",
@@ -166,13 +166,13 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
       rain == "intrain4" ~ "Rain with an interaction of cons and cona",
     )) |>
     mutate(
-      across(1:10,
+      across(1:9,
       \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div >= 4, "gray", "black"))
     ))
 
   if (abund)  {
     tmp <- tmp |>
-      dplyr::select(`Seedling densities` = phy,
+      dplyr::select(
         `Rainfall` = rain,
         `Abundance` = traits,
         `ELPD` = elpd,
@@ -181,7 +181,7 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
         `N\\_Div` = n_div)
   } else {
     tmp <- tmp |>
-      dplyr::select(`Seedling densities` = phy,
+      dplyr::select(
         `Rainfall` = rain,
         `Traits` = traits,
         `ELPD` = elpd,
