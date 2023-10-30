@@ -141,7 +141,7 @@ main_ <- list(
     generate_stan_data(
       seedling_df, traits_df,
       scale_cc = list(wet = scale_wet, dry = scale_dry),
-      season = "dry", rain = "intrain2", sp_pred = "nlog")
+      season = "dry", rain = "intrain2", sp_pred = "pc12")
   ),
   tar_stan_mcmc(
     test_fit,
