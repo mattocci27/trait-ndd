@@ -148,10 +148,10 @@ main_ <- list(
     c("stan/suv_ind.stan", "stan/suv.stan", "stan/suv_simple.stan"),
     data = test_stan_data,
     refresh = 0,
-    chains = 3,
+    chains = 1,
     parallel_chains = getOption("mc.cores", 3),
-    iter_warmup = 1000,
-    iter_sampling = 1000,
+    iter_warmup = 1,
+    iter_sampling = 1,
     adapt_delta = 0.95,
     max_treedepth = 15,
     seed = 123,
@@ -166,18 +166,18 @@ main_ <- list(
       posterior::default_convergence_measures()
     )
   ),
-  tar_target(
-    test_loo_suv,
-    my_loo(test_fit_mcmc_suv)
-  ),
-  tar_target(
-    test_loo_suv_ind,
-    my_loo(test_fit_mcmc_suv_ind)
-  ),
-  tar_target(
-    test_loo_suv_simple,
-    my_loo(test_fit_mcmc_suv_simple)
-  ),
+  # tar_target(
+  #   test_loo_suv,
+  #   my_loo(test_fit_mcmc_suv)
+  # ),
+  # tar_target(
+  #   test_loo_suv_ind,
+  #   my_loo(test_fit_mcmc_suv_ind)
+  # ),
+  # tar_target(
+  #   test_loo_suv_simple,
+  #   my_loo(test_fit_mcmc_suv_simple)
+  # ),
 
   tar_map(
     values = values,
@@ -191,10 +191,10 @@ main_ <- list(
       "stan/suv_ind.stan",
       data = stan_data,
       refresh = 0,
-      chains = 4,
+      chains = 1,
       parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 2000,
-      iter_sampling = 2000,
+      iter_warmup = 1,
+      iter_sampling = 1,
       adapt_delta = 0.95,
       max_treedepth = 15,
       seed = 123,
@@ -210,16 +210,16 @@ main_ <- list(
       )
     )
   ),
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
-  tar_target(
-    loo_tbl,
-    generate_loo_tbl(loo_list)
-  ),
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
+  # tar_target(
+  #   loo_tbl,
+  #   generate_loo_tbl(loo_list)
+  # ),
   NULL
 )
 
@@ -457,16 +457,16 @@ tar_combined_summary_data <- tar_combine(
 
 # Define a list of model names
 models <- c(
-  "dry_het_intrain4_pc12",
-  "dry_het_intrain2_nlog",
-  "wet_het_rain_pc12",
-  "wet_phy_norain_nlog",
-  "dry_phy_intrain3_ab",
-  "wet_phy_intrain3_ab"
+  "dry_intrain2_pc12",
+  "dry_norain_nlog",
+  "wet_intrain2_pc12",
+  "wet_norain_nlog",
+  "dry_intrain_ab",
+  "wet_intrain_ab"
 )
 
 # Construct 'x' and 'stan_data' lists based on the model names
-x <- rlang::syms(str_c("fit_summary_logistic_simple_stan_data_", models))
+x <- rlang::syms(str_c("fit_summary_suv_ind_", models))
 stan_data <- rlang::syms(str_c("stan_data_", models))
 
 # Define a helper function to map model names to paths
@@ -503,5 +503,5 @@ util_list <- list(
 )
 
 
-list(data_, main_) |>
-  append(util_list)
+list(data_, main_) #|>
+  # append(util_list)

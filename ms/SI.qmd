@@ -24,7 +24,7 @@ format:
         \pagestyle{fancy}
         \fancypagestyle{plain}{\pagestyle{fancy}}
         \renewcommand{\headrulewidth}{0pt}
-        \fancyhead[RE,RO]{Song \textit{et al}. --New Phytologist-- Appendix}
+        \fancyhead[RE,RO]{Song \textit{et al}. --Ecology-- Appendix}
         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
   html:
     theme: spacelab #readable #sandstone #spacelab #flatly
@@ -278,7 +278,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = TRUE)
 
 
 ```{r, include=FALSE}
-dry_traits_gamma <- read_csv(here("data", "dry_het_intrain2_nlog_gamma.csv"))
+dry_traits_gamma <- read_csv(here("data", "dry_norain_nlog_gamma.csv"))
 ```
 
 # `r s_table("dry_traits_gamma")`
@@ -312,7 +312,7 @@ Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_pca_gamma <- read_csv(here("data", "dry_het_intrain4_pc12_gamma.csv"))
+dry_pca_gamma <- read_csv(here("data", "dry_intrain2_pc12_gamma.csv"))
 ```
 
 ```{r}
@@ -328,7 +328,7 @@ Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_traits_gamma <- read_csv(here("data", "wet_phy_norain_nlog_gamma.csv"))
+wet_traits_gamma <- read_csv(here("data", "wet_norain_nlog_gamma.csv"))
 ```
 
 ```{r}
@@ -344,7 +344,7 @@ Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_pca_gamma <- read_csv(here("data", "wet_het_rain_pc12_gamma.csv"))
+wet_pca_gamma <- read_csv(here("data", "wet_intrain2_pc12_gamma.csv"))
 ```
 
 ```{r}
@@ -360,7 +360,7 @@ Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_abund_gamma <- read_csv(here("data", "dry_phy_intrain3_ab_gamma.csv"))
+dry_abund_gamma <- read_csv(here("data", "dry_intrain_ab_gamma.csv"))
 ```
 
 ```{r}
@@ -376,7 +376,7 @@ Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_abund_gamma")`.
 
 ```{r, include=FALSE}
-wet_abund_gamma <- read_csv(here("data", "wet_phy_intrain3_ab_gamma.csv"))
+wet_abund_gamma <- read_csv(here("data", "wet_intrain_ab_gamma.csv"))
 ```
 
 ```{r}

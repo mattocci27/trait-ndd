@@ -280,7 +280,7 @@ pre_glm <- function(seedling_csv) {
 # Utility function for scaling traits
 scale_traits <- function(data) {
   data |>
-    mutate(across(c(la, sla, lt, ab, ba), ~log(.x), .names = "log_{.col}")) |>
+    mutate(across(c(la, sla, n, lt, ab, ba), ~log(.x), .names = "log_{.col}")) |>
     select(-la, -sla, -lt, -ab, -ba) |>
     summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
     mutate(latin = data$latin)
@@ -325,7 +325,7 @@ get_sp_pred_data <- function(data, pca_data, sp_pred) {
                ab2ba = c("latin", "log_ab", "log_ba", "ab2ba"))
     data |> select(all_of(cols))
   } else if (sp_pred %in% c("pc12", "pc15")) {
-    range <- as.integer(str_extract(sp_pred, "\\d+$"))
+    range <- as.integer(str_sub(sp_pred, -1, -1))
     range <- min(range, 5)
     cols_to_select <- paste0("pc", 1:range)
     pca_data |> select(latin, all_of(cols_to_select))
@@ -343,14 +343,17 @@ generate_stan_data <- function(seedling_df, traits_df, scale_cc, season = "dry",
     mutate(station = str_extract(quadrat, "\\d+"))
   traits <- traits_df
 
-  # Season-based filtering and scaling
+  # Season-based filtering and scalinu
   cc_season <- ifelse(season == "wet", "wet", "dry")
   seedling <- seedling |> filter(season == ifelse(season == "wet", "rainy", "dry"))
   cc <- scale_cc[[cc_season]]
 
   # Adjust traits and seedlings based on sp_pred and rain
   pca_df <- generate_pca_data(traits_df)
-  traits2 <- scale_traits(traits) |> get_sp_pred_data(pca_df, sp_pred)
+  traits2 <- traits |>
+    dplyr::select(-wd, -cn) |>
+    scale_traits() |>
+    get_sp_pred_data(pca_df, sp_pred)
   seedling <- scale_seedling(seedling, cc)
   Xd <- generate_model_matrix(seedling, rain)
 
