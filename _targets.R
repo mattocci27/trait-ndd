@@ -210,16 +210,16 @@ main_ <- list(
       )
     )
   ),
-  # loo_map,
-  # tar_combine(
-  #   loo_list,
-  #   loo_map,
-  #   command = list(!!!.x)
-  # ),
-  # tar_target(
-  #   loo_tbl,
-  #   generate_loo_tbl(loo_list)
-  # ),
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
+  tar_target(
+    loo_tbl,
+    generate_loo_tbl(loo_list)
+  ),
   NULL
 )
 
