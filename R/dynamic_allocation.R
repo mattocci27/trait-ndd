@@ -18,6 +18,10 @@ model_name <- values |>
 
 tar_name <- paste0("fit_mcmc_suv_ind_", model_name[model_id])
 
+print(tar_name)
+
+Sys.sleep(model_id * 10 - 130)
+
 # Run the specific target corresponding to the model ID
 targets::tar_make(callr_function = NULL,
   names = tar_name)

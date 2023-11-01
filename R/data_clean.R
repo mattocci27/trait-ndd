@@ -1,4 +1,3 @@
-
 #' @inheritParams readr::write_csv
 my_write_csv <- function(x, path, append = FALSE, col_names = !append) {
     write_csv(x, path, append = FALSE, col_names = !append)
@@ -280,10 +279,10 @@ pre_glm <- function(seedling_csv) {
 # Utility function for scaling traits
 scale_traits <- function(data) {
   data |>
-    mutate(across(c(la, sla, n, lt, ab, ba), ~log(.x), .names = "log_{.col}")) |>
+    mutate(across(c(la, sla, n, lt, ab, ba), ~log(.x), .names = "log_{.col}"),
+           latin = data$latin) |>
     select(-la, -sla, -lt, -ab, -ba) |>
-    summarise_if(is.numeric, \(x) scale(x) |> as.numeric()) |>
-    mutate(latin = data$latin)
+    mutate(across(where(is.numeric), ~scale(.x) %>% as.numeric()))
 }
 
 # Utility function for scaling seedling data
@@ -323,12 +322,12 @@ get_sp_pred_data <- function(data, pca_data, sp_pred) {
                ba = c("latin", "log_ba"),
                ab1ba = c("latin", "log_ab", "log_ba"),
                ab2ba = c("latin", "log_ab", "log_ba", "ab2ba"))
-    data |> select(all_of(cols))
+    data |> dplyr::select(all_of(cols))
   } else if (sp_pred %in% c("pc12", "pc15")) {
     range <- as.integer(str_sub(sp_pred, -1, -1))
     range <- min(range, 5)
     cols_to_select <- paste0("pc", 1:range)
-    pca_data |> select(latin, all_of(cols_to_select))
+    pca_data |> dplyr::select(latin, all_of(cols_to_select))
   } else {
     data
   }
