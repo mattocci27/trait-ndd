@@ -457,9 +457,9 @@ tar_combined_summary_data <- tar_combine(
 
 # Define a list of model names
 models <- c(
-  "dry_intrain2_pc12",
-  "dry_norain_nlog",
-  "wet_intrain2_pc12",
+  "dry_intrain_pc12",
+  "dry_intrain2_nlog",
+  "wet_intrain4_pc12",
   "wet_norain_nlog",
   "dry_intrain_ab",
   "wet_intrain_ab"
@@ -498,10 +498,10 @@ util_list <- list(
     write_diagnostics_tables(combined_summary, combined_diagnostics, loo_tbl, "data/diagnostics_tables.csv"),
     format = "file"
   ),
-  # best_csv_mapped,
+  best_csv_mapped,
   NULL
 )
 
 
-list(data_, main_) #|>
-  # append(util_list)
+list(data_, main_) |>
+  append(util_list)

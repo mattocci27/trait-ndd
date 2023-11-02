@@ -110,6 +110,12 @@ I'll add PCA plot here.
 
 \newpage
 
+# `r s_fig("phy")`
+
+I'll add phy plot here.
+
+\newpage
+
 # `r s_fig("cc_line")`
 
 The grid-search for the scaling parameter *c* that maximized the likelihood of the following survival model:
@@ -278,7 +284,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = TRUE)
 
 
 ```{r, include=FALSE}
-dry_traits_gamma <- read_csv(here("data", "dry_norain_nlog_gamma.csv"))
+dry_traits_gamma <- read_csv(here("data", "dry_intrain2_nlog_gamma.csv"))
 ```
 
 # `r s_table("dry_traits_gamma")`
@@ -312,7 +318,7 @@ Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-dry_pca_gamma <- read_csv(here("data", "dry_intrain2_pc12_gamma.csv"))
+dry_pca_gamma <- read_csv(here("data", "dry_intrain_pc12_gamma.csv"))
 ```
 
 ```{r}
@@ -344,7 +350,7 @@ Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_pca_gamma <- read_csv(here("data", "wet_intrain2_pc12_gamma.csv"))
+wet_pca_gamma <- read_csv(here("data", "wet_intrain4_pc12_gamma.csv"))
 ```
 
 ```{r}
@@ -390,3 +396,134 @@ gen_si_tab(wet_abund_gamma)
 ```{r}
 knitr::knit_exit()
 ```
+
+gen_si_tab renders "ConS $\\times$ Rainfall" as expected but render_diagnostics_tables does not. I don't know why.
+
+```{r}
+render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
+  if(abund) {
+    tmp <- diagnostics_tbl |>
+        filter(traits != "nlog" & traits != "pc12" & traits != "pc15")
+  } else {
+    tmp <- diagnostics_tbl |>
+        filter(traits %in% c("nlog", "pc12"))
+  }
+
+  tmp <- tmp  |>
+    filter(season == {{season}}) |>
+    arrange(desc(elpd)) |>
+    mutate(traits = case_when(
+      traits == "nlog" ~ "All traits",
+      traits == "pc12" ~ "PC1 and PC2",
+      traits == "ab" ~ "Abundance",
+      traits == "ba" ~ "Basal area",
+      traits == "ab1ba" ~ "Abundance + Basal area",
+      traits == "ab2ba" ~ "Abundance $\\times$ Basal area",
+    )) |>
+    mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
+    mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
+    mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
+    # mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
+    mutate(rain = case_when(
+      rain == "norain" ~ "No rain",
+      rain == "rain" ~ "Rain without interactions",
+      rain == "intrain" ~ "Rain with all the interactions",
+      # rain == "intrain2" ~ "Rain with an interaction of cons",
+      rain == "intrain2" ~ "ConS $\\times$ Rainfall",
+      rain == "intrain3" ~ "Rain with an interaction of cona",
+      rain == "intrain4" ~ "Rain with an interaction of cons and cona",
+    )) |>
+    mutate(
+      across(1:9,
+      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div >= 4, "gray", "black"))
+    ))
+
+  if (abund)  {
+    tmp <- tmp |>
+      dplyr::select(
+        `Rainfall` = rain,
+        `Abundance` = traits,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  } else {
+    tmp <- tmp |>
+      dplyr::select(
+        `Rainfall` = rain,
+        `Traits` = traits,
+        `ELPD` = elpd,
+        `LOOIC` = looic,
+        `N\\_ESS` = n_ess,
+        `N\\_Div` = n_div)
+  }
+
+  tmp  |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"),
+      full_width = FALSE)
+}
+
+gen_si_tab <- function(data) {
+
+  pred_name_map <- c(
+    "(Intercept)" = "Intercept",
+    "logh_s" = "ln Height",
+    "scon_s" = "ConS",
+    "acon_s_c" = "ConT",
+    "shet_s" = "HetS",
+    "ahet_s_c" = "HetT",
+    "sphy_s" = "PhyS",
+    "aphy_s_c" = "PhyT",
+    "rain_s" = "Rainfall",
+    "scon_s:rain_s" = "ConS $\\times$ Rainfall",
+    "acon_s_c:rain_s" = "ConT $\\times$ Rainfall",
+    "shet_s:rain_s" = "HetS $\\times$ Rainfall",
+    "ahet_s_c:rain_s" = "HetT $\\times$ Rainfall",
+    "sphy_s:rain_s" = "PhyS $\\times$ Rainfall",
+    "aphy_s_c:rain_s" = "PhyT $\\times$ Rainfall",
+    "logh_s:rain_s" = "ln Height $\\times$ Rainfall"
+  )
+
+  trait_name_map <- c(
+    "intercept" = "Intercept",
+    "ldmc" = "LDMC",
+    "sdmc" = "SDMC",
+    "chl" = "Chl",
+    "c" = "C",
+    "c13" = "$\\delta \\mathrm{C_{13}}$",
+    "log_n" = "ln N",
+    "tlp" = "$\\pi_\\mathrm{{tlp}}$",
+    "log_la" = "ln LA",
+    "log_sla" = "ln SLA",
+    "log_lt" = "ln LT",
+    "log_ab" = "ln Abundance",
+    "pc1" = "PC1",
+    "pc2" = "PC2"
+  )
+
+  data |>
+    mutate_if(is.numeric, round, 3) |>
+    mutate(
+      pred_name = coalesce(pred_name_map[pred_name], pred_name),
+      trait_name = coalesce(trait_name_map[trait_name], trait_name),
+      q50 = cell_spec(q50, bold = ifelse(q2.5 * q97.5 > 0, TRUE, FALSE)),
+      `95\\% CI` = paste0("[", q2.5, ", ", q97.5, "]"),
+      `95\\% CI` = cell_spec(`95\\% CI`, bold = ifelse(q2.5 * q97.5 > 0, TRUE, FALSE)),
+      Parameter = paste0("$\\gamma_{", str_split_fixed(variable, ",|\\[|\\]", 4)[, 2],
+                         ",", str_split_fixed(variable, ",|\\[|\\]", 4)[, 3], "}$")
+    ) |>
+    rename(
+      Median = q50,
+      `Lower 2.5\\% CI` = q2.5,
+      `Upper 95\\% CI` = q95,
+      `Upper 97.5\\% CI` = q97.5,
+      `Individual-level predictor` = pred_name,
+      `Species-level predictor` = trait_name,
+      Rhat = rhat
+    ) |>
+    dplyr::select(Parameter, `Individual-level predictor`, `Species-level predictor`, Median, `95\\% CI`, Rhat) |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"),
+      full_width = FALSE)
+}

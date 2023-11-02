@@ -155,24 +155,29 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
     mutate_if(is.numeric, \(x) round(x, digits = 1)) |>
     mutate(elpd = format(elpd, nsmall = 1, trim = TRUE)) |>
     mutate(looic = format(looic, nsmall = 1, trim = TRUE)) |>
-    # mutate(phy = ifelse(phy == "phy", "Phylogenetic", "Non-phylogenetic")) |>
     mutate(rain = case_when(
-      rain == "norain" ~ "No rain",
-      rain == "rain" ~ "Rain without interactions",
-      rain == "intrain" ~ "Rain with all the interactions",
-      rain == "intrain2" ~ "Rain with an interaction of cons",
-      rain == "intrain3" ~ "Rain with an interaction of cona",
-      rain == "intrain4" ~ "Rain with an interaction of cons and cona",
-    )) |>
-    mutate(
-      across(1:9,
-      \(x) cell_spec(x, color = ifelse(n_ess > 0 | n_div >= 4, "gray", "black"))
-    ))
+      rain == "norain" ~ "No Rainfall",
+      rain == "rain" ~ "Rainfall",
+      # rain == "intrain" ~ "Rain with all the interactions",
+      rain == "intrain" ~ "All predictors $\\times$ Rainfall",
+      # rain == "intrain2" ~ "Rain with an interaction of cons",
+      rain == "intrain2" ~ "ConS $\\times$ Rainfall",
+      rain == "intrain3" ~ "ConT $\\times$ Rainfall",
+      rain == "intrain4" ~ "(ConS + ConT) $\\times$ Rainfall",
+      # rain == "intrain3" ~ "Rain with an interaction of cona",
+      # rain == "intrain4" ~ "Rain with an interaction of cons and cona",
+    )) #|>
+    # mutate(
+    #   across(1:9,
+    #   \(x) cell_spec(x,
+    #                  format = "latex",
+    #   color = ifelse(`n_ess` > 0 | `n_div` >= 4, "gray", "black"))
+    # ))
 
   if (abund)  {
     tmp <- tmp |>
       dplyr::select(
-        `Rainfall` = rain,
+        `Rainfall model` = rain,
         `Abundance` = traits,
         `ELPD` = elpd,
         `LOOIC` = looic,
@@ -181,7 +186,7 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
   } else {
     tmp <- tmp |>
       dplyr::select(
-        `Rainfall` = rain,
+        `Rainfall model` = rain,
         `Traits` = traits,
         `ELPD` = elpd,
         `LOOIC` = looic,
@@ -189,9 +194,18 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
         `N\\_Div` = n_div)
   }
 
-  tmp  |>
-    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = FALSE) |>
-    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = FALSE) #k|>
+  kable_output <- tmp  |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"),
+      full_width = FALSE)
+
+   for (i in 1:nrow(tmp)) {
+    if (tmp$`N\\_ESS`[i] > 0 | tmp$`N\\_Div`[i] >= 4) {
+      kable_output <- kable_output %>%
+        row_spec(i, color = "gray")
+     }
+   }
+   kable_output
 }
 
 gen_si_tab <- function(data) {
@@ -220,6 +234,7 @@ gen_si_tab <- function(data) {
     "ldmc" = "LDMC",
     "sdmc" = "SDMC",
     "chl" = "Chl",
+    "c" = "C",
     "c13" = "$\\delta \\mathrm{C_{13}}$",
     "log_n" = "ln N",
     "tlp" = "$\\pi_\\mathrm{{tlp}}$",
@@ -251,9 +266,10 @@ gen_si_tab <- function(data) {
       `Species-level predictor` = trait_name,
       Rhat = rhat
     ) |>
-    dplyr::select(Parameter, Median, `95\\% CI`, `Individual-level predictor`, `Species-level predictor`, Rhat) |>
+    dplyr::select(Parameter, `Individual-level predictor`, `Species-level predictor`, Median, `95\\% CI`, Rhat) |>
     kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
-    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"))
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"),
+      full_width = FALSE)
 }
 
 pre_glm <- function(seedling_csv) {
