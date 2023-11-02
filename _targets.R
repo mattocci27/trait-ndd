@@ -34,7 +34,9 @@ tar_option_set(packages = c(
   "DT",
   "ggrepel",
   "factoextra",
-  "FactoMineR"
+  "FactoMineR",
+  "ggpointdensity",
+  "ggpmisc"
 ))
 
 tar_option_set(
@@ -147,6 +149,20 @@ main_ <- list(
         dpi = 300,
         width = 173,
         height = 85,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    phy_het_plot, {
+      p <- phy_het_points(seedling_df)
+      my_ggsave(
+        "figs/phy_het",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 173,
         units = "mm"
       )
     },

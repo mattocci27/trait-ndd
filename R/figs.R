@@ -783,3 +783,41 @@ pca_panel <- function(traits_df) {
     plot_annotation(tag_levels = "a")
 
 }
+
+
+phy_het_points <- function(seedling_df) {
+  formula <- y ~ x  # Define the formula for the regression line
+
+  seedling_df <- seedling_df |>
+    mutate(season = if_else(season == "dry", "Dry", "Wet"))
+
+  p1 <- ggplot(seedling_df, aes(x = shet, y = sphy)) +
+    geom_pointdensity() +
+    scale_color_viridis_c() +
+    stat_smooth(method = "lm", formula = formula, se = FALSE, size = 0.5) +
+    stat_poly_eq(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+                 formula = formula, parse = TRUE) +
+    facet_grid(~season) +
+    xlab("Heterospecific seedling density") +
+    ylab("Phylogenetic seedling density")
+
+  p2 <- ggplot(seedling_df, aes(x = ahet, y = aphy)) +
+    geom_pointdensity() +
+    scale_color_viridis_c() +
+    stat_smooth(method = "lm", formula = formula, se = FALSE, size = 0.5) +
+    stat_poly_eq(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+                 formula = formula, parse = TRUE) +
+    facet_grid(~season) +
+    xlab("Heterospecific tree density") +
+    ylab("Phylogenetic tree density")
+
+  p1 / p2 +
+    plot_annotation(tag_levels = "a") &
+    my_theme() &
+    theme(
+      legend.position = "none"
+    )
+
+}
+
+
