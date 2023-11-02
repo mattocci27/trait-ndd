@@ -226,9 +226,9 @@ main_ <- list(
       refresh = 0,
       chains = 4,
       parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 2000,
-      iter_sampling = 1000,
-      adapt_delta = 0.95,
+      iter_warmup = 1,
+      iter_sampling = 1,
+      adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
@@ -411,54 +411,6 @@ hoge <- list(
     },
     format = "file"
   ),
-
-
-# # best models
-# tar_map(
-#   values = list(
-#     x = rlang::syms(c(
-#       "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
-#       "fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog",
-#       "fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog",
-#       "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
-#       "fit_summary_logistic_simple_stan_data_wet_phy_rain_ab")),
-#     stan_data = rlang::syms(c(
-#       "stan_data_dry_het_intrain2_nlog",
-#       "stan_data_wet_phy_norain_nlog",
-#       "stan_data_wet_phy_intrain2_nlog",
-#       "stan_data_dry_het_intrain_ab",
-#       "stan_data_wet_phy_rain_ab")),
-#     path =
-#       str_c(
-#       "data/",
-#        c("dry_het_intrain2_traits",
-#         "wet_phy_norain_traits",
-#         "wet_phy_intrain2_traits",
-#         "dry_het_intrain_abund",
-#         "wet_phy_rain_abund"),
-#       "_gamma.csv")),
-#   tar_target(
-#     gamma_out_csv, {
-#       create_gamma_tab(x, stan_data)  |>
-#         my_write_csv(path)
-#     },
-#     format = "file"
-#   )
-# ),
-
-  # tar_quarto(
-  #   bayes_check_html,
-  #   "docs/bayes_check.qmd",
-  # ),
-  # tar_quarto(
-  #   si_pdf,
-  #   "ms/SI.qmd"
-  # ),
-  # tar_quarto(
-  #   main_docx,
-  #   "ms/main.qmd"
-  # ),
-
   NULL
  )
 

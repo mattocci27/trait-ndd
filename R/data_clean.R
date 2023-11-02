@@ -96,17 +96,20 @@ generate_cc_data <- function(seedling_csv, wet = TRUE) {
 
 generate_pca_data <- function(traits_df) {
   traits <- traits_df |>
-    mutate(la = log(la)) |>
-    mutate(lt = log(lt)) |>
-    mutate(n = log(n)) |>
-    mutate(sla = log(sla)) |>
-    rename(log_la = la) |>
-    rename(log_lt = lt) |>
-    rename(log_n = n) |>
-    rename(log_sla = sla)
-  pca <- prcomp(traits[, 3:14], scale = TRUE)
+    mutate(
+      log_la = log(la),
+      log_lt = log(lt),
+      log_n = log(n),
+      log_sla = log(sla)
+    ) |>
+    select(-la, -lt, -n, -sla)
 
-  bind_cols(traits, pca$x[, 1:5]) |>
+  # use FactoMineR
+  pca <- traits |>
+    dplyr::select(-ab, -ba, -latin) |>
+    PCA(graph = FALSE)
+
+  bind_cols(traits, pca$ind$coord) |>
     janitor::clean_names() #|>
     # my_write_csv("data/trait_pca.csv")
 }
@@ -158,21 +161,11 @@ render_diagnostics_tables <- function(diagnostics_tbl, season, abund = FALSE) {
     mutate(rain = case_when(
       rain == "norain" ~ "No Rainfall",
       rain == "rain" ~ "Rainfall",
-      # rain == "intrain" ~ "Rain with all the interactions",
       rain == "intrain" ~ "All predictors $\\times$ Rainfall",
-      # rain == "intrain2" ~ "Rain with an interaction of cons",
       rain == "intrain2" ~ "ConS $\\times$ Rainfall",
       rain == "intrain3" ~ "ConT $\\times$ Rainfall",
       rain == "intrain4" ~ "(ConS + ConT) $\\times$ Rainfall",
-      # rain == "intrain3" ~ "Rain with an interaction of cona",
-      # rain == "intrain4" ~ "Rain with an interaction of cons and cona",
-    )) #|>
-    # mutate(
-    #   across(1:9,
-    #   \(x) cell_spec(x,
-    #                  format = "latex",
-    #   color = ifelse(`n_ess` > 0 | `n_div` >= 4, "gray", "black"))
-    # ))
+    ))
 
   if (abund)  {
     tmp <- tmp |>
