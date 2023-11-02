@@ -742,3 +742,44 @@ my_ggpairs <- function(trait_csv) {
     )
 }
 
+
+pca_panel <- function(traits_df) {
+
+  traits <- traits_df |>
+    mutate(la = log(la)) |>
+    mutate(lt = log(lt)) |>
+    mutate(n = log(n)) |>
+    mutate(sla = log(sla)) |>
+    rename(log_la = la) |>
+    rename(log_lt = lt) |>
+    rename(log_n = n) |>
+    rename(log_sla = sla)
+
+  pca <- PCA(traits[, 2:13], graph = FALSE)
+
+  p_eig <- fviz_eig(pca)
+
+# Convert the variable coordinates to a data frame
+  var_coords <- as.data.frame(get_pca_var(pca)$coord)
+  rownames(var_coords) <- rownames(get_pca_var(pca)$coord)
+
+  p12 <- fviz_pca_var(pca, geom = "", arrows = TRUE) +
+    geom_segment(data = var_coords,
+      aes(x = 0, y = 0, xend = Dim.1, yend = Dim.2),
+      arrow = arrow(type = "closed", length = unit(0.05, "inches")),
+      linewidth = 0.5,
+      color = "black")  +
+    geom_text_repel(
+      data = var_coords,
+      aes(x = Dim.1, y = Dim.2, label = rownames(var_coords)),
+      size = 4,    # Adjust text size
+      # box.padding = unit(0.35, "lines"),   # Adjust box padding
+      # point.padding = unit(0.3, "lines"),  # Adjust point padding
+      segment.color = 'grey50',
+      seed = 123
+    )
+
+  p_eig + p12 +
+    plot_annotation(tag_levels = "a")
+
+}

@@ -106,7 +106,7 @@ N, LA, SLA, and LT are natural log-transformed.
 
 # `r s_fig("pca")`
 
-I'll add PCA plot here.
+![](`r here::here("figs/pca_panel.png")`)
 
 \newpage
 

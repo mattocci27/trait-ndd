@@ -31,7 +31,10 @@ tar_option_set(packages = c(
   "here",
   "kableExtra",
   "tictoc",
-  "DT"
+  "DT",
+  "ggrepel",
+  "factoextra",
+  "FactoMineR"
 ))
 
 tar_option_set(
@@ -130,6 +133,20 @@ main_ <- list(
         dpi = 300,
         width = 173,
         height = 173,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    pca_panel_plot, {
+      p <- pca_panel(traits_df)
+      my_ggsave(
+        "figs/pca_panel",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 85,
         units = "mm"
       )
     },
