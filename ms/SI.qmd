@@ -106,11 +106,15 @@ N, LA, SLA, and LT are natural log-transformed.
 
 # `r s_fig("pca")`
 
+I will add texts.
+
 ![](`r here::here("figs/pca_panel.png")`)
 
 \newpage
 
 # `r s_fig("phy")`
+
+I will add texts.
 
 ![](`r here::here("figs/phy_het.png")`)
 
@@ -127,6 +131,8 @@ where $p_i$ is the individual survival probability, $Z_1$ and $Z_2$ are distance
 \newpage
 
 # `r s_append("method")` - Extended model description
+
+<Should we remove this? But it's too much to explain about $\Omega_L$ in the main text.>
 
 We modeled the seedling survival for the dry and rainy seasons separately.
 Since the effect of tree neighbors on seedling survival is nonlinear on a logistic scale [@Detto2019], we performed a grid-search for the scaling parameter *c* between 0 and 1 in 0.01 increments that maximized the likelihood of the following survival model,
@@ -237,12 +243,24 @@ diagnostics_tbl <- read_csv(here("data/diagnostics_tables.csv"))
 
 # `r s_table("dry_traits_diagnostics")`
 
-Model selection and diagnostics for models with traits in the dry season.
-ELPD: expected log pointwise predictive density (larger values indicate better a model fit),
-LOOIC: leave-one-out deviance information criterion (smaller values indicate a better model fit),
-N_ESS: number of variables that showed effective sample size less than 400,
-N_Div: number of divergent transitions,
+Model selection and diagnostics for the dry season trait-based models.
+Each model considers different aspects of rainfall effects:
 
+- **No Rainfall**: Excludes rainfall effects.
+- **Rainfall**: Includes rainfall effects without interactions.
+- **All predictors × Rainfall**: Considers rainfall effects and all possible interactions.
+- **ConS × Rainfall**: Focuses on the interaction between rainfall effects and conspecific seedling density.
+- **ConT × Rainfall**: Focuses on the interaction between rainfall effects and conspecific tree density.
+- **(ConS + ConT) × Rainfall**: Combines the interactions of rainfall effects with both conspecific seedling and tree densities.
+
+Metrics Key:
+
+- **ELPD**: expected log pointwise predictive density (larger values indicate better a model fit).
+- **LOOIC**: leave-one-out deviance information criterion (smaller values indicate a better model fit).
+- **N_ESS**: number of variables that showed effective sample size less than 400.
+- **N_Div**: number of divergent transitions.
+
+Models shown in grey are those with suboptimal convergence.
 
 ```{r}
 render_diagnostics_tables(diagnostics_tbl, season = "dry", abund = FALSE)
@@ -252,7 +270,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "dry", abund = FALSE)
 
 # `r s_table("wet_traits_diagnostics")`
 
-Model selection and diagnostics for models with traits in the rainy season.
+Model selection and diagnostics for the rainy season trait-based models.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
@@ -262,7 +280,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = FALSE)
 
 # `r s_table("dry_abund_diagnostics")`
 
-Model selection and diagnostics for models with abundance in the dry season.
+Model selection and diagnostics for the dry season abundance-based models.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
@@ -273,7 +291,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "dry", abund = TRUE)
 
 # `r s_table("wet_abund_diagnostics")`
 
-Model selection and diagnostics for models with abundance in the rainy season.
+Model selection and diagnostics for the dry raniy abundance-based models.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
@@ -288,6 +306,8 @@ dry_traits_gamma <- read_csv(here("data", "dry_intrain2_nlog_gamma.csv"))
 ```
 
 # `r s_table("dry_traits_gamma")`
+
+<I will update the caption.>
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons.
 Bold values differ significantly from zero (the 95% CIs do not include zero).
@@ -344,6 +364,8 @@ gen_si_tab(wet_traits_gamma)
 \newpage
 
 # `r s_table("wet_pca_gamma")`
+
+<PCA result might change>
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the rainy seasons.
 Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.

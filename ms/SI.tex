@@ -221,7 +221,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, boxrule=0pt, breakable, frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, enhanced, interior hidden, boxrule=0pt, breakable, sharp corners, frame hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -288,12 +288,16 @@ log-transformed.
 \hypertarget{fig.-s4}{%
 \section{Fig. S4}\label{fig.-s4}}
 
+I will add texts.
+
 \includegraphics{/home/mattocci/trait-ndd-1st/figs/pca_panel.png}
 
 \newpage
 
 \hypertarget{fig.-s5}{%
 \section{Fig. S5}\label{fig.-s5}}
+
+I will add texts.
 
 \includegraphics{/home/mattocci/trait-ndd-1st/figs/phy_het.png}
 
@@ -316,6 +320,9 @@ densities.
 \hypertarget{appendix-s1---extended-model-description}{%
 \section{Appendix S1 - Extended model
 description}\label{appendix-s1---extended-model-description}}
+
+\textless Should we remove this? But it's too much to explain about
+\(\Omega_L\) in the main text.\textgreater{}
 
 We modeled the seedling survival for the dry and rainy seasons
 separately. Since the effect of tree neighbors on seedling survival is
@@ -536,12 +543,47 @@ Stan code for the multilevel logistic regression in the main text.
 \hypertarget{table-s1}{%
 \section{Table S1}\label{table-s1}}
 
-Model selection and diagnostics for models with traits in the dry
-season. ELPD: expected log pointwise predictive density (larger values
-indicate better a model fit), LOOIC: leave-one-out deviance information
-criterion (smaller values indicate a better model fit), N\_ESS: number
-of variables that showed effective sample size less than 400, N\_Div:
-number of divergent transitions,
+Model selection and diagnostics for the dry season trait-based models.
+Each model considers different aspects of rainfall effects:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{No Rainfall}: Excludes rainfall effects.
+\item
+  \textbf{Rainfall}: Includes rainfall effects without interactions.
+\item
+  \textbf{All predictors × Rainfall}: Considers rainfall effects and all
+  possible interactions.
+\item
+  \textbf{ConS × Rainfall}: Focuses on the interaction between rainfall
+  effects and conspecific seedling density.
+\item
+  \textbf{ConT × Rainfall}: Focuses on the interaction between rainfall
+  effects and conspecific tree density.
+\item
+  \textbf{(ConS + ConT) × Rainfall}: Combines the interactions of
+  rainfall effects with both conspecific seedling and tree densities.
+\end{itemize}
+
+Metrics Key:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{ELPD}: expected log pointwise predictive density (larger
+  values indicate better a model fit).
+\item
+  \textbf{LOOIC}: leave-one-out deviance information criterion (smaller
+  values indicate a better model fit).
+\item
+  \textbf{N\_ESS}: number of variables that showed effective sample size
+  less than 400.
+\item
+  \textbf{N\_Div}: number of divergent transitions.
+\end{itemize}
+
+Models shown in grey are those with suboptimal convergence.
 
 \begin{longtable*}[t]{llllrr}
 \toprule
@@ -578,8 +620,8 @@ All predictors $\times$ Rainfall & All traits & -9016.1 & 18032.2 & 0 & 0\\*
 \hypertarget{table-s2}{%
 \section{Table S2}\label{table-s2}}
 
-Model selection and diagnostics for models with traits in the rainy
-season. Details as for Table S1.
+Model selection and diagnostics for the rainy season trait-based models.
+Details as for Table S1.
 
 \begin{longtable*}[t]{llllrr}
 \toprule
@@ -616,8 +658,8 @@ All predictors $\times$ Rainfall & All traits & -9012.8 & 18025.5 & 0 & 0\\*
 \hypertarget{table-s3}{%
 \section{Table S3}\label{table-s3}}
 
-Model selection and diagnostics for models with abundance in the dry
-season. Details as for Table S1.
+Model selection and diagnostics for the dry season abundance-based
+models. Details as for Table S1.
 
 \begin{longtable*}[t]{llllrr}
 \toprule
@@ -654,8 +696,8 @@ No Rainfall & Basal area & -8974.1 & 17948.3 & 0 & 0\\
 \hypertarget{table-s4}{%
 \section{Table S4}\label{table-s4}}
 
-Model selection and diagnostics for models with abundance in the rainy
-season. Details as for Table S1.
+Model selection and diagnostics for the dry raniy abundance-based
+models. Details as for Table S1.
 
 \begin{longtable*}[t]{llllrr}
 \toprule
@@ -691,6 +733,8 @@ No Rainfall & Abundance & -8978.1 & 17956.3 & 0 & 0\\*
 
 \hypertarget{table-s5}{%
 \section{Table S5}\label{table-s5}}
+
+\textless I will update the caption.\textgreater{}
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (traits) on individual-level predictors
