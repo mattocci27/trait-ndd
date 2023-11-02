@@ -631,9 +631,7 @@ beta_plot <- function(beta_list, partial = TRUE ) {
 
 cc_line <- function(wet, dry) {
   wet_cc_het <- which(wet$het == max(wet$het)) / nrow(wet)
-  wet_cc_phy <- which(wet$phy == max(wet$phy)) / nrow(wet)
   dry_cc_het <- which(dry$het == max(dry$het)) / nrow(dry)
-  dry_cc_phy <- which(dry$phy == max(dry$phy)) / nrow(dry)
 
   plot_fun <- function(data) {
     ggplot(data, aes(x = cc, y = phy)) +
@@ -648,19 +646,12 @@ cc_line <- function(wet, dry) {
 
   p1 <- plot_fun(dry) +
     geom_vline(xintercept = dry_cc_het, linetype = "dashed") +
-    ggtitle("Dry season:\nheterospecific density")
-  p2 <- plot_fun(dry) +
-    geom_vline(xintercept = dry_cc_phy, linetype = "dashed") +
-    ggtitle("Dry season:\nphylogenetic density")
-  p3 <- plot_fun(wet) +
+    ggtitle("Dry season")
+  p2 <- plot_fun(wet) +
     geom_vline(xintercept = wet_cc_het, linetype = "dashed") +
-    ggtitle("Rainy season:\nheterospecific density")
-  p4 <- plot_fun(wet) +
-    geom_vline(xintercept = wet_cc_phy, linetype = "dashed") +
-    ggtitle("Rainy season:\nphylogenetic density")
+    ggtitle("Rainy season")
 
-  p1 + p2 + p3 + p4 +
-    plot_layout(ncol = 2, heights = c(1, 1)) +
+  p1 + p2 +
     plot_annotation(tag_levels = "a")
 }
 
@@ -789,7 +780,7 @@ phy_het_points <- function(seedling_df) {
   formula <- y ~ x  # Define the formula for the regression line
 
   seedling_df <- seedling_df |>
-    mutate(season = if_else(season == "dry", "Dry", "Wet"))
+    mutate(season = if_else(season == "dry", "Dry", "Rainy"))
 
   p1 <- ggplot(seedling_df, aes(x = shet, y = sphy)) +
     geom_pointdensity() +

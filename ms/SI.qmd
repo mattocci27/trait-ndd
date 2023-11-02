@@ -120,7 +120,7 @@ N, LA, SLA, and LT are natural log-transformed.
 
 The grid-search for the scaling parameter *c* that maximized the likelihood of the following survival model:
 $\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c$,
-where $p_i$ is the individual survival probability, $Z_1$ and $Z_2$ are distance-weighted sums of basal area of conspecifics and heterospecifics (phylogeneteically weighted or non-weighted) respectively,
+where $p_i$ is the individual survival probability, $Z_1$ and $Z_2$ are distance-weighted sums of basal area of conspecific and heterospecific densities.
 
 ![](`r here::here("figs/cc_line.pdf")`)
 
