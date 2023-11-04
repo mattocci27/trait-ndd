@@ -39,10 +39,10 @@ tar_option_set(packages = c(
   "ggpmisc"
 ))
 
-tar_option_set(
-  garbage_collection = TRUE,
-  memory = "transient"
-)
+# tar_option_set(
+#   garbage_collection = TRUE,
+#   memory = "transient"
+# )
 
 # check if it's inside a container
 if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
@@ -226,8 +226,8 @@ main_ <- list(
       refresh = 0,
       chains = 4,
       parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1,
-      iter_sampling = 1,
+      iter_warmup = 2000,
+      iter_sampling = 2000,
       adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,

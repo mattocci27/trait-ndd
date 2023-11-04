@@ -335,7 +335,7 @@ get_sp_pred_data <- function(data, pca_data, sp_pred) {
   } else if (sp_pred %in% c("pc12", "pc15")) {
     range <- as.integer(str_sub(sp_pred, -1, -1))
     range <- min(range, 5)
-    cols_to_select <- paste0("pc", 1:range)
+    cols_to_select <- paste0("dim_", 1:range)
     pca_data |> dplyr::select(latin, all_of(cols_to_select))
   } else {
     data

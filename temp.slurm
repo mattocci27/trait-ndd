@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem-per-cpu=3000mb
 #SBATCH --time=24:00:00
-#SBATCH --array=ARRAY_INDICES_PLACEHOLDER
+#SBATCH --array=37-48%18
 #SBATCH --output=log/model_%A_%a.out
 #SBATCH --error=log/model_%A_%a.err
 

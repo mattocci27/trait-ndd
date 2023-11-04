@@ -11,7 +11,6 @@ values <- expand_grid(
   sp_pred = c("nlog", "ab", "ba", "pc12")
   )
 
-
 model_name <- values |>
       mutate(model_name = paste(season, rain, sp_pred, sep = "_")) |>
       pull(model_name)
@@ -20,7 +19,10 @@ tar_name <- paste0("fit_mcmc_suv_ind_", model_name[model_id])
 
 print(tar_name)
 
-Sys.sleep(model_id * 10)
+model_id <- ifelse(model_id %% 9 == 0, 9, model_id %% 9)
+model_id <- model_id - 1
+
+Sys.sleep(model_id * 20)
 
 # Run the specific target corresponding to the model ID
 targets::tar_make(callr_function = NULL,
