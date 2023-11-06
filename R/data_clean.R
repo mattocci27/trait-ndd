@@ -235,8 +235,8 @@ gen_si_tab <- function(data) {
     "log_sla" = "ln SLA",
     "log_lt" = "ln LT",
     "log_ab" = "ln Abundance",
-    "pc1" = "PC1",
-    "pc2" = "PC2"
+    "dim_1" = "PC1",
+    "dim_2" = "PC2"
   )
 
   data |>
@@ -353,8 +353,9 @@ generate_stan_data <- function(seedling_df, traits_df, scale_cc, season = "dry",
 
   # Season-based filtering and scalinu
   cc_season <- ifelse(season == "wet", "wet", "dry")
-  seedling <- seedling |> filter(season == ifelse(season == "wet", "rainy", "dry"))
   cc <- scale_cc[[cc_season]]
+  season <- ifelse(season == "dry", "dry", "rainy")
+  seedling <- seedling |> filter(season == {{season}})
 
   # Adjust traits and seedlings based on sp_pred and rain
   pca_df <- generate_pca_data(traits_df)
