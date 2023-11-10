@@ -286,69 +286,45 @@ main_ <- list(
   NULL
 )
 
-hoge <- list(
+fig_list <- list(
   # best models
   tar_target(
     dry_trait,
-    load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
+    list(
+      data = stan_data_dry_intrain2_nlog,
+      summary = fit_summary_suv_ind_dry_intrain2_nlog,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_dry_intrain2_nlog)
+    )
   ),
   tar_target(
     wet_trait,
-    load_mcmc_summary(loo_tbl, season = "wet", trait = "n")
+    list(
+      data = stan_data_wet_intrain2_nlog,
+      summary = fit_summary_suv_ind_wet_intrain2_nlog,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_wet_intrain2_nlog)
+    )
   ),
   tar_target(
     dry_abund,
-    load_mcmc_summary(loo_tbl, season = "dry", trait = "ab")
+    list(
+      data = stan_data_dry_intrain_ab,
+      summary = fit_summary_suv_ind_dry_intrain_ab,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_dry_intrain_ab)
+    )
   ),
   tar_target(
     wet_abund,
-    load_mcmc_summary(loo_tbl, season = "wet", trait = "ab")
-  ),
-
-  # best models
-  tar_target(
-    dry_het_intrain2_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog,
-      fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog,
-      stan_data_dry_het_intrain2_nlog)
+    list(
+      data = stan_data_wet_intrain_ab,
+      summary = fit_summary_suv_ind_wet_intrain_ab,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_wet_intrain_ab)
+    )
   ),
   tar_target(
-    wet_phy_norain_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog,
-      stan_data_wet_phy_norain_nlog)
-  ),
-  tar_target(
-    dry_het_intrain_abund,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_dry_het_intrain_ab,
-      fit_mcmc_logistic_simple_stan_data_dry_het_intrain_ab,
-      stan_data_dry_het_intrain_ab)
-  ),
-  tar_target(
-    wet_phy_rain_abund,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_rain_ab,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_rain_ab,
-      stan_data_wet_phy_rain_ab)
-  ),
-
-  # not best
-  tar_target(
-    wet_phy_intrain2_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_intrain2_nlog,
-      stan_data_wet_phy_intrain2_nlog)
-  ),
-
-  tar_target(
-    dry_het_intrain2_trait_suv_contour_plot, {
-      p <- dry_trait_suv_contour(dry_het_intrain2_trait, alpha = 0.05)
+    dry_trait_suv_contour_plot, {
+      p <- dry_trait_suv_contour(dry_trait, alpha = 0.05)
       my_ggsave(
-        "figs/dry_het_intrain2_trait_suv_contour",
+        "figs/dry_trait_suv_contour",
         p,
         dpi = 300,
         width = 173,
@@ -358,6 +334,33 @@ hoge <- list(
     },
     format = "file"
   ),
+  tar_target(
+    wet_trait_suv_contour_plot, {
+      p <- wet_trait_suv_contour(wet_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/wet_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 130,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  NULL
+)
+
+hoge <- list(
+  # not best
+  tar_target(
+    wet_phy_intrain2_trait,
+    generate_mcmc_summary(
+      fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog,
+      fit_mcmc_logistic_simple_stan_data_wet_phy_intrain2_nlog,
+      stan_data_wet_phy_intrain2_nlog)
+  ),
+
   tar_target(
     wet_phy_intrain2_trait_suv_contour_plot, {
       p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05)
@@ -519,4 +522,5 @@ util_list <- list(
 
 
 list(data_, main_) |>
+  append(fig_list) |>
   append(util_list)

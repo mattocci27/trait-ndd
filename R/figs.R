@@ -495,24 +495,24 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
   p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LDMC species")
-  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = TRUE) +
-    ggtitle("Low SDMC species")
-  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
+    ggtitle("Low Chl species")
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = FALSE) +
-    ggtitle("High SDMC species")
-  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-    subplot_fun(low = TRUE) +
-    ggtitle("Low LT species")
-  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-    subplot_fun(low = FALSE) +
-    ggtitle("High LT species")
-  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+    ggtitle("High Chl species")
+  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~delta*C[13]~species))
-  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~delta*C[13]~species))
+  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 11) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low LT species")
+  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 1) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High LT species")
 
   (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
      plot_annotation(tag_levels = "a") &
@@ -522,27 +522,20 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
 }
 
 wet_trait_suv_contour <- function(wet_trait, alpha = 0.05, keep_cons = FALSE) {
-  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 5, keep_cons) |>
-    subplot_fun(low = TRUE) +
-    ggtitle("Low SLA species")
-  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 5, keep_cons) |>
-    subplot_fun(low = FALSE) +
-    ggtitle("High SLA species")
-
-  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 8, keep_cons) |>
+  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 10, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low N species")
-  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 8, keep_cons) |>
+  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 10, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle("High N species")
-  p5 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
+  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 7, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~pi[tlp]~species))
-  p6 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
+  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 7, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~pi[tlp]~species))
 
-  (p1 + p2) / (p3 + p4) / (p5 + p6) +
+  (p1 + p2) / (p3 + p4) +
      plot_annotation(tag_levels = "a") &
      theme(
       text = element_text(size = 8),

@@ -171,7 +171,7 @@ print_summary_tbl <- function(mcmc_summary, mcmc_stan_data, alpha = c(0.05, 0.01
     kable_styling(bootstrap_options = c("striped", "HOLD_position"))
 }
 
-load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
+get_conditions <- function(loo_tbl, season = "dry", trait = "ab") {
   tmp <- loo_tbl |>
     filter(season == {{season}})
   tmp
@@ -186,22 +186,42 @@ load_mcmc_summary <- function(loo_tbl, season = "dry", trait = "ab") {
     arrange(-elpd) |>
     pull(model)
   tmp_summary <- str_replace(tmp[1], "loo_fit_mcmc", "fit_summary")
-  tmp_data <- str_replace(tmp_summary, "fit_summary_logistic_simple_", "")
+  tmp_data <- str_replace(tmp_summary, "fit_summary_suv_ind_", "")
   tmp_mcmc <- str_replace(tmp[1], "loo_fit_mcmc", "fit_mcmc")
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_summary))
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_data))
-  withr::with_dir(rprojroot::find_root('_targets.R'),
-    targets::tar_load(tmp_mcmc))
-  mcmc <- get(tmp_mcmc)
   list(
-    name = tmp[1],
-    data = get(tmp_data),
-    summary = get(tmp_summary),
-    draws = posterior::as_draws_df(mcmc)
+    tmp_summary,
+    tmp_data,
+    tmp_mcmc
   )
 }
+
+# Function to create a tar_target for fig_list using conditions
+create_fig_list_target <- function(name, condition, trait, loo_tbl) {
+  conds <- get_conditions(loo_tbl, condition, trait)
+  tar_target(
+    !!rlang::sym(name),
+    list(
+      summary = !!rlang::sym(conds[[1]]),
+      data = !!rlang::sym(conds[[2]]),
+      mcmc = !!rlang::sym(conds[[3]])
+    )
+  )
+}
+
+  # withr::with_dir(rprojroot::find_root('_targets.R'),
+  #   targets::tar_load(tmp_summary))
+  # withr::with_dir(rprojroot::find_root('_targets.R'),
+  #   targets::tar_load(tmp_data))
+  # withr::with_dir(rprojroot::find_root('_targets.R'),
+  #   targets::tar_load(tmp_mcmc))
+  # mcmc <- get(tmp_mcmc)
+  # list(
+  #   name = tmp[1],
+  #   data = get(tmp_data),
+  #   summary = get(tmp_summary),
+  #   draws = posterior::as_draws_df(mcmc)
+  # )
+# }
 
 
 generate_coef_data <- function(draws, data, season = "Dry") {

@@ -1,5 +1,5 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|f41cb45f8517c14b|||||||||||||||
+.Random.seed|object|9e102847313732af|||||||||||||||
 args|object|fd6817dc570d1402|||||||||||||||
 best_csv_mapped|object|01a5b2f85aa5e9d5|||||||||||||||
 beta_dry_comb_plot|function|c5e84575944d288c|||||||||||||||
@@ -17,6 +17,7 @@ combined_diagnostics|stem|76b97e6d49c51a2b|4dbcbebd68c2e937|b6b7cf4c2c9630bb|156
 combined_summary|stem|1ab88e2af4aabdbf|69b0b51a0d2ac5ec|8f25cbdaac986588|1844947939||t19670.5776035255s|048a8c5596fccc7a|215689893|rds|local|vector|||0.09||
 compile_model|function|440cd3c27c638fb3|||||||||||||||
 create_beta_tab|function|60f1958aefa98b2b|||||||||||||||
+create_fig_list_target|function|b75117b604691014|||||||||||||||
 create_gamma_tab|function|6aaed892cb1ccfbd|||||||||||||||
 create_stan_tab|function|6c9f81b970c47bfe|||||||||||||||
 data_|object|fb4299335bc21870|||||||||||||||
@@ -73,8 +74,14 @@ diagnostics_fit_diagnostics_suv_ind_wet_rain_nlog_wet_rain_nlog|stem|bf6e5b048e0
 diagnostics_fit_diagnostics_suv_ind_wet_rain_pc12_wet_rain_pc12|stem|14f00bda80780d73|0d8e906cedc5f8e0|5d18940dda769031|1008730676||t19670.5762238247s|dc6b873663bd4ee6|48367|rds|local|vector|||0.001||
 diagnostics_mapped|object|974f9a33e1b2d088|||||||||||||||
 div_check|function|9913df743f96f3d8|||||||||||||||
+dry_abund|stem|caed3c65169d62c7|1042383b6af82c2e|ac990ccb6498b267|705141932||t19671.1584780627s|8a067016b2205576|2618639998|rds|local|vector|||5.635||
 dry_cc_data|stem|bfc296aca310dada|39acc32f8b20c8f1|6a44a39af8a2ba22|-388427912||t19670.0773506962s|6df21a2e437e33ac|2025|rds|local|vector|||60.774||
-dry_trait_suv_contour|function|13fd783b457e2f94|||||||||||||||
+dry_intrain2_trait_suv_contour_plot|stem||55d562c9cb6ce2bc|b9659e0b9ab985ac|1781514283||t19671.2835333605s||0|file|local|vector|||1.249||object dry_intrain2_trait not found
+dry_trait|stem|c309e05e9b106279|3679f15753d6bda5|e18b47c36fcc3289|1857450943||t19671.1572378544s|63e2925eb8c172b8|2584782852|rds|local|vector|||7.049||
+dry_trait_cond|stem|1a23844126782575|aa2f3d3ed3839994|dff548af8579621c|-598946589||t19671.14247767s|1254f8a9a0ffbd1f|107|rds|local|vector|||0.026||
+dry_trait_suv_contour|function|94fc9889c2ff298d|||||||||||||||
+dry_trait_suv_contour_plot|stem|1d0ca0944b00cce2|6e775d3af91e62ac|223ec0024bbff571|-1081961804|figs/dry_trait_suv_contour.png*figs/dry_trait_suv_contour.pdf|t19671.3002241176s|12d699647f7beea9|638488|file|local|vector|||3.74|The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in|
+fig_list|object|aae1e74d7465e000|||||||||||||||
 fit_data_dry_intrain_ab|stem|69d5ab6f3519bfa7|92bb6308f189b8f4|9bdda0e2ea5e1652|-1534784610||t19670.0775325978s|0be5398598dd6b29|1782284|qs|local|vector|||0.001||
 fit_data_dry_intrain_ba|stem|99dd22245c9bd305|c5c82b5254ea8430|54808f5964730331|70764942||t19670.0775488944s|58c3160846634bf0|1782281|qs|local|vector|||3.368||
 fit_data_dry_intrain_nlog|stem|8c3510db21bb919c|3b6bcf3b4ef4afdd|8ec0eedc25e52653|1034821641||t19670.0775657466s|7b8fd52a3281db60|1787266|qs|local|vector|||0.002||
@@ -337,10 +344,11 @@ generate_pca_data|function|0cc7c14ea8fe8ce3|||||||||||||||
 generate_stan_data|function|dee25d7b494dfc96|||||||||||||||
 generate_suv_pred|function|e5883326e55333ee|||||||||||||||
 generate_suv_pred2|function|a2a1a99771345990|||||||||||||||
+get_conditions|function|12ab3ce862bef788|||||||||||||||
 get_path|function|6037933059688cfc|||||||||||||||
 get_sp_pred_data|function|48122a9b5b04dd77|||||||||||||||
-hoge|object|36659857defa35ca|||||||||||||||
-load_mcmc_summary|function|217b7b35476c134c|||||||||||||||
+hoge|object|21a441b2e81b2f96|||||||||||||||
+load_mcmc_summary|function|b8db9e12d332171b|||||||||||||||
 logit|function|803bbf0205a605f8|||||||||||||||
 loo_fit_mcmc_suv_ind_dry_intrain_ab|stem|4e5d5d9cb4a4eeca|9df2ccb4184fdc28|2e5f4a6387e6640d|-1583344980||t19670.2477540203s|17c57533fcfce877|1466741|rds|local|vector|||79.265|Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.|
 loo_fit_mcmc_suv_ind_dry_intrain_ba|stem|3f770ccd6a10e876|90764bad428b7abf|47e9dd5df599e2ed|454272517||t19670.2477698077s|9bcb5b6131332f75|1466438|rds|local|vector|||59.552|Some Pareto k diagnostic values are too high. See helpparetokdiagnostic for details.|
@@ -393,7 +401,7 @@ loo_fit_mcmc_suv_ind_wet_rain_pc12|stem|f3fa24be0dd0f4c0|a5a705aca182e24d|fae830
 loo_list|stem|e4779cca3277912f|bb5f39be9c6b5265|b1106a092e880b1b|574726732||t19669.0700477582s|1664d16523c9012b|67485463|rds|local|vector|||0.003||
 loo_map|object|9ed74efe3e5b0b0b|||||||||||||||
 loo_tbl|stem|1bae356be8f1ae89|fe1b04a310fc1c9c|9cf747b1e101f858|407372657||t19669.0700549806s|f60def567b0e7afa|1578|rds|local|vector|||0.634|There were 48 warnings in mutate.The first warning wasℹ In argument elpd  map_dblloo_list, functionx xelpd_loo.Caused by warning Accessing elpd_loo using  is deprecated and will be removed in a future release. Please extract the elpd_loo estimate from the estimates component instead.ℹ Run dplyrlast_dplyr_warnings to see the 47 remaining warnings.. There were 48 warnings in mutate.The first warning wasℹ In argument p_loo  map_dblloo_list, functionx xp_loo.Caused by warning Accessing p_loo using  is deprecated and will be removed in a future release. Please extract the p_loo estimate from the estimates component instead.ℹ Run dplyrlast_dplyr_warnings to see the 47 remaining warnings.. There were 48 warnings in mutate.The first warning wasℹ In argument looic  map_dblloo_list, functionx xlooic.Caused by warning Accessing looic using  is deprecated and will be removed in a future release. Please extract the looic estimate from the estimates component instead.ℹ Run dplyrlast_dplyr_warnings to see the 47 remaining warnings.|
-main_|object|51e27b05aead9cb3|||||||||||||||
+main_|object|40f2570f169a8b26|||||||||||||||
 mcmc_names|object|f63a9f984838c247|||||||||||||||
 model_id|object|9c2f39c6f5fe964c|||||||||||||||
 model_name|object|3e1378399bb5864e|||||||||||||||
@@ -542,7 +550,10 @@ traits_csv|stem|df06d2c796b94b10|7706f60d01e5ef7b|ed0d7f1b65ac35ae|203682637|dat
 traits_df|stem|2563e4239e19420c|7842d3a2b953b2ca|71cc47e7e70f6e18|354591920||t19666.7070375422s|2059f441226b8b09|8786|rds|local|vector|||0.101||
 util_list|object|836463c529386a51|||||||||||||||
 values|object|390b80026dd62e0f|||||||||||||||
+wet_abund|stem|872b79a4e1f93fe1|c01e94a1aba2fb3e|511518e9a528d9e8|-591032824||t19671.1596184545s|8da195d1f0aa0aa6|1195343388|rds|local|vector|||1.58||
 wet_cc_data|stem|6b172f07faccab77|b136c9dce86cbbbb|6a44a39af8a2ba22|-1335850092||t19668.7362826646s|acc1070601728986|2015|rds|local|vector|||50.173||
-wet_trait_suv_contour|function|c3c1eff343145746|||||||||||||||
+wet_trait|stem|43c88cf3466669c6|58f51130c8b3e51d|8a4535ab2b33f7e4|-780777638||t19671.1590555272s|9bf21d7e2e50c285|1178209224|rds|local|vector|||1.846||
+wet_trait_suv_contour|function|371ba85e92df370a|||||||||||||||
+wet_trait_suv_contour_plot|stem|db7b522f765269e9|b13a911b8bc45f76|267012e66f4d2909|-1255627907|figs/wet_trait_suv_contour.png*figs/wet_trait_suv_contour.pdf|t19671.2947103175s|8bc27c9213a1c273|268418|file|local|vector|||2.647|The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in  the data.ℹ Did you forget to specify a group aesthetic or to convert a numerical  variable into a factor. The following aesthetics were dropped during statistical transformation fillℹ This can happen when ggplot fails to infer the correct grouping structure in|
 write_diagnostics_tables|function|5d6697a50f5a73b9|||||||||||||||
 x|object|dd9ff962b23bf1c1|||||||||||||||
