@@ -474,8 +474,8 @@ tar_combined_summary_data <- tar_combine(
 models <- c(
   "dry_intrain_pc12",
   "dry_intrain2_nlog",
-  "wet_intrain4_pc12",
-  "wet_norain_nlog",
+  "wet_intrain_pc12",
+  "wet_intrain2_nlog",
   "dry_intrain_ab",
   "wet_intrain_ab"
 )

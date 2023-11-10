@@ -333,7 +333,7 @@ gen_si_tab(dry_traits_gamma)
 
 # `r s_table("dry_pca_gamma")`
 
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the rainy seasons.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the dry seasons.
 Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
@@ -354,7 +354,7 @@ Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_traits_gamma <- read_csv(here("data", "wet_norain_nlog_gamma.csv"))
+wet_traits_gamma <- read_csv(here("data", "wet_intrain2_nlog_gamma.csv"))
 ```
 
 ```{r}
@@ -372,7 +372,7 @@ Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
-wet_pca_gamma <- read_csv(here("data", "wet_intrain4_pc12_gamma.csv"))
+wet_pca_gamma <- read_csv(here("data", "wet_intrain_pc12_gamma.csv"))
 ```
 
 ```{r}
