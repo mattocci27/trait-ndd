@@ -18,7 +18,8 @@ clean_data <- function(rda, write_trait = FALSE) {
     rename(LT = LTsp) |>
     rename(CN = CNratio) |>
     rename(ab = abundance) |>
-    rename(BA = basal)
+    rename(BA = basal) |>
+    dplyr::select(-Chl)
 
   trait2[trait2$latin == "Alchornea_tiliifolia", "SLA"] <- 189.5
 

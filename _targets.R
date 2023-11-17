@@ -212,7 +212,7 @@ main_ <- list(
   #   my_loo(test_fit_mcmc_suv_simple)
   # ),
   tar_map(
-    values = values |> filter(season == "dry"),
+    values = values |> filter(sp_pred %in% c("nlog", "pc12")),
     tar_target(stan_data,
       generate_stan_data(
         seedling_df, traits_df,
@@ -223,16 +223,16 @@ main_ <- list(
       "stan/suv_ind.stan",
       data = stan_data,
       refresh = 0,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 2000,
-      iter_sampling = 2000,
-      adapt_delta = 0.9,
+      chains = 1,
+      parallel_chains = getOption("mc.cores", 1),
+      iter_warmup = 1,
+      iter_sampling = 1,
+      adapt_delta = 0.95,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -243,7 +243,7 @@ main_ <- list(
     )
   ),
   tar_map(
-    values = values |> filter(season == "wet"),
+    values = values |> filter(sp_pred %in% c("ab", "ba")),
     tar_target(stan_data,
       generate_stan_data(
         seedling_df, traits_df,
@@ -254,16 +254,16 @@ main_ <- list(
       "stan/suv_ind.stan",
       data = stan_data,
       refresh = 0,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 2000,
-      iter_sampling = 1000,
+      chains = 1,
+      parallel_chains = getOption("mc.cores", 1),
+      iter_warmup = 1,
+      iter_sampling = 1,
       adapt_delta = 0.95,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = TRUE,
-      return_summary = TRUE,
+      return_diagnostics = FALSE,
+      return_summary = FALSE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -273,16 +273,16 @@ main_ <- list(
       )
     )
   ),
-  loo_map,
-  tar_combine(
-    loo_list,
-    loo_map,
-    command = list(!!!.x)
-  ),
-  tar_target(
-    loo_tbl,
-    generate_loo_tbl(loo_list)
-  ),
+  # loo_map,
+  # tar_combine(
+  #   loo_list,
+  #   loo_map,
+  #   command = list(!!!.x)
+  # ),
+  # tar_target(
+  #   loo_tbl,
+  #   generate_loo_tbl(loo_list)
+  # ),
   NULL
 )
 
@@ -521,6 +521,6 @@ util_list <- list(
 )
 
 
-list(data_, main_) |>
-  append(fig_list) |>
-  append(util_list)
+list(data_, main_) #|>
+  # append(fig_list) |>
+  # append(util_list)

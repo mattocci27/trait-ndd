@@ -24,7 +24,7 @@ menu() {
   4)
  		apptainer exec --env RENV_PATHS_CACHE=/home/${USER}/renv \
 		--env RENV_PATHS_PREFIX_AUTO=TRUE \
- 		radian.sif Rscript R/run_script.R 24
+ 		radian.sif Rscript R/run_script.R 5
     ;;
   5)
  		apptainer shell --env RENV_PATHS_CACHE=/home/${USER}/renv \
