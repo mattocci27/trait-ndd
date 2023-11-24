@@ -521,6 +521,6 @@ util_list <- list(
 )
 
 
-list(data_, main_) #|>
-  # append(fig_list) |>
-  # append(util_list)
+list(data_, main_) |>
+  append(fig_list) |>
+  append(util_list)
