@@ -223,16 +223,16 @@ main_ <- list(
       "stan/suv_ind.stan",
       data = stan_data,
       refresh = 0,
-      chains = 1,
-      parallel_chains = getOption("mc.cores", 1),
-      iter_warmup = 1,
-      iter_sampling = 1,
-      adapt_delta = 0.95,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -254,16 +254,16 @@ main_ <- list(
       "stan/suv_ind.stan",
       data = stan_data,
       refresh = 0,
-      chains = 1,
-      parallel_chains = getOption("mc.cores", 1),
-      iter_warmup = 1,
-      iter_sampling = 1,
-      adapt_delta = 0.95,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.9,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
       summaries = list(
         mean = ~mean(.x),
         sd = ~sd(.x),
@@ -273,16 +273,16 @@ main_ <- list(
       )
     )
   ),
-  # loo_map,
-  # tar_combine(
-  #   loo_list,
-  #   loo_map,
-  #   command = list(!!!.x)
-  # ),
-  # tar_target(
-  #   loo_tbl,
-  #   generate_loo_tbl(loo_list)
-  # ),
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
+  tar_target(
+    loo_tbl,
+    generate_loo_tbl(loo_list)
+  ),
   NULL
 )
 

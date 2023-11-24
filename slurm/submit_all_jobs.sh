@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define an array with your desired SLURM array ranges
-# declare -a ARRAY_RANGES=("1-9" "10-18" "19-27" "28-36" "37-48")
-declare -a ARRAY_RANGES=("25-32" "33-40" "41-48")
+declare -a ARRAY_RANGES=("1-9" "10-18" "19-27" "28-36" "37-48")
+# declare -a ARRAY_RANGES=("25-32" "33-40" "41-48")
 
 # Loop through the array ranges and submit each one as a job
 for RANGE in "${ARRAY_RANGES[@]}"
