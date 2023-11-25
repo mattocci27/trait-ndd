@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=loo
+#SBATCH --job-name=loo2
 #SBATCH --partition=xhacnormalb
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --output=log/loo.out
-#SBATCH --error=log/loo.err
+#SBATCH --output=log/loo2.out
+#SBATCH --error=log/loo2.err
 #SBATCH --cpus-per-task=72
 #SBATCH --mem-per-cpu=3000mb
 #SBATCH --time=12:00:00
