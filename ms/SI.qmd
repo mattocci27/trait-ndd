@@ -65,8 +65,6 @@ source(here("R", "data_clean.R"))
 withr::with_dir(rprojroot::find_root('_targets.R'),
   targets::tar_load(seedling_df))
 
-seedling_df
-
 seedling_df |>
   group_by(season) |>
   summarise(n = n(), surv = sum(surv)) |>

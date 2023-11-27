@@ -95,8 +95,8 @@ coef_pointrange_wrapper <- function(data) {
     geom_vline(xintercept = 0, lty = 2, col = "grey60") +
     geom_linerange(aes(xmin = ll, xmax = hh, col = season),
       position = position_dodge(width = 0.5)) +
-    # geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
-    #   position = position_dodge(width = 0.5)) +
+    geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
+      position = position_dodge(width = 0.5)) +
     geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 2.5,
       position = position_dodge(width = 0.5)) +
     scale_colour_manual(
@@ -513,8 +513,14 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
   p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LT species")
+  p9 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+    subplot_fun(low = TRUE) +
+    ggtitle(expression(Low~pi[tlp]))
+  p10 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+    subplot_fun(low = FALSE) +
+    ggtitle(expression(High~pi[tlp]))
 
-  (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
+  (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) / (p9 + p10) +
      plot_annotation(tag_levels = "a") &
      theme(
       text = element_text(size = 8),

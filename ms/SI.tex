@@ -221,7 +221,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden, frame hidden, sharp corners, breakable]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -245,24 +245,6 @@
 \begin{document}
 \hypertarget{note}{%
 \section{note}\label{note}}
-
-\begin{verbatim}
-# A tibble: 54,280 x 15
-   quadrat tag   latin    h1 census  year season  surv  scon   acon   ahet  shet
-   <chr>   <chr> <chr> <dbl> <chr>  <dbl> <chr>  <dbl> <dbl>  <dbl>  <dbl> <dbl>
- 1 5C      5-C-~ Para~    16 2008_~  2008 dry        0    39  9580. 3.23e5    10
- 2 5A      5-A-3 Para~    30 2014_~  2014 rainy      1     0  9580. 3.23e5     3
- 3 5A      5-A-~ Para~    20 2015_~  2015 rainy      0     6  9580. 3.23e5     3
- 4 5A      5-A-~ Pseu~    30 2014_~  2014 rainy      1     0  1429. 3.31e5     3
- 5 5C      5-C-~ Para~    19 2015_~  2015 rainy      0     1  9580. 3.23e5     5
- 6 5C      5-C-9 Para~    15 2008_~  2008 dry        1    39  9580. 3.23e5    10
- 7 5C      5-C-5 Para~    18 2008_~  2008 dry        0    39  9580. 3.23e5    10
- 8 5C      5-C-~ Dios~    14 2015_~  2015 rainy      1     1  5793. 3.27e5     5
- 9 5A      5-A-1 Orop~    44 2014_~  2014 rainy      1     0 19086. 3.13e5     3
-10 5B      5-B-~ Para~    19 2015_~  2015 rainy      0     9  9580. 3.23e5     1
-# i 54,270 more rows
-# i 3 more variables: aphy <dbl>, sphy <dbl>, rf <dbl>
-\end{verbatim}
 
 \begin{verbatim}
 # A tibble: 2 x 4
