@@ -260,7 +260,7 @@ main_ <- list(
       parallel_chains = getOption("mc.cores", 4),
       iter_warmup = 1000,
       iter_sampling = 2000,
-      adapt_delta = 0.95,
+      adapt_delta = 0.99,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
@@ -276,7 +276,7 @@ main_ <- list(
     )
   ),
   tar_map(
-    values = values |> filter(sp_pred %in% c("ab", "ba")),
+    values = values |> filter(sp_pred %in% c("ab", "ba")) |> filter(season == "dry"),
     tar_target(stan_data,
       generate_stan_data(
         seedling_df, traits_df,
@@ -292,6 +292,37 @@ main_ <- list(
       iter_warmup = 1000,
       iter_sampling = 2000,
       adapt_delta = 0.9,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+  tar_map(
+    values = values |> filter(sp_pred %in% c("ab", "ba")) |> filter(season == "wet"),
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_df, traits_df,
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
+        season, rain, sp_pred)),
+    tar_stan_mcmc(
+      fit,
+      "stan/suv_ind.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.99,
       max_treedepth = 15,
       seed = 123,
       return_draws = FALSE,
