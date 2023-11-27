@@ -95,8 +95,8 @@ coef_pointrange_wrapper <- function(data) {
     geom_vline(xintercept = 0, lty = 2, col = "grey60") +
     geom_linerange(aes(xmin = ll, xmax = hh, col = season),
       position = position_dodge(width = 0.5)) +
-    geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
-      position = position_dodge(width = 0.5)) +
+    # geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
+    #   position = position_dodge(width = 0.5)) +
     geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 2.5,
       position = position_dodge(width = 0.5)) +
     scale_colour_manual(

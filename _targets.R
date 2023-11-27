@@ -448,6 +448,20 @@ fig_list <- list(
     },
     format = "file"
   ),
+  tar_target(
+    coef_trait_plot, {
+      p <- coef_pointrange(dry_trait, wet_trait, comb = FALSE)
+      my_ggsave(
+        "figs/coef_trait",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 86,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
   NULL
 )
 
@@ -484,20 +498,6 @@ hoge <- list(
         dpi = 300,
         width = 173,
         height = 180,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  tar_target(
-    coef_trait_plot, {
-      p <- coef_pointrange(dry_het_intrain2_trait, wet_phy_norain_trait, comb = FALSE)
-      my_ggsave(
-        "figs/coef_trait",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 86,
         units = "mm"
       )
     },
