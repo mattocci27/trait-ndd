@@ -266,12 +266,10 @@ gen_si_tab <- function(data) {
       full_width = FALSE)
 }
 
-pre_glm <- function(seedling_csv) {
-  seedling <- read_csv(seedling_csv) |>
-    janitor::clean_names()
+pre_glm <- function(seedling_df, phy = "phy") {
   cc <- 0.26
   cc2 <- 0.26
-  seedling_data <- seedling |>
+  seedling_data <- seedling_df |>
     mutate(scon_s = scale(scon) |> as.numeric()) |>
     mutate(shet_s = scale(shet) |> as.numeric()) |>
     mutate(sphy_s = scale(sphy) |> as.numeric()) |>
@@ -280,9 +278,66 @@ pre_glm <- function(seedling_csv) {
     mutate(aphy_s_c = as.numeric(scale(aphy^cc2))) |>
     mutate(logh_s = log(h1) |> scale() |> as.numeric()) |>
     mutate(rain_s = as.numeric(scale(rf)))
-  fit <- glm(surv ~ (logh_s +
-          scon_s + shet_s +
-          acon_s_c + ahet_s_c) * season, family = binomial, data = seedling_data)
+  if (phy == "phy") {
+    fit <- glm(surv ~ (logh_s +
+            scon_s + sphy_s +
+            acon_s_c + aphy_s_c) * season, family = binomial, data = seedling_data)
+  } else {
+    fit <- glm(surv ~ (logh_s +
+            scon_s + shet_s +
+            acon_s_c + ahet_s_c) * season, family = binomial, data = seedling_data)
+  }
+  fit |> tidy()
+}
+
+pre_glmm <- function(seedling_df, wet = "wet", phy = "phy") {
+  if (wet == "wet") cc <- 0.24 else cc <- 0.27
+  seedling_data <- seedling_df |>
+    mutate(station = str_extract(quadrat, "\\d+")) |>
+    mutate(scon_s = scale(scon) |> as.numeric()) |>
+    mutate(shet_s = scale(shet) |> as.numeric()) |>
+    mutate(sphy_s = scale(sphy) |> as.numeric()) |>
+    mutate(acon_s_c = as.numeric(scale(acon^cc))) |>
+    mutate(ahet_s_c = as.numeric(scale(ahet^cc))) |>
+    mutate(aphy_s_c = as.numeric(scale(aphy^cc))) |>
+    mutate(logh_s = log(h1) |> scale() |> as.numeric()) |>
+    mutate(rain_s = as.numeric(scale(rf)))
+
+  if (phy == "phy") {
+    fit <- lme4::glmer(surv ~ logh_s +
+            scon_s + shet_s +
+            acon_s_c + ahet_s_c + (1 | station/quadrat) + (1 | tag) + (1 | latin), family = binomial, data = seedling_data)
+  } else {
+    fit <- lme4::glmer(surv ~ logh_s +
+            scon_s + sphy_s +
+            acon_s_c + aphy_s_c + (1 | station/quadrat) + (1 | tag) + (1 | latin), family = binomial, data = seedling_data)
+  }
+
+  fit
+}
+pre_glmm2 <- function(seedling_df, wet = "wet", phy = "phy") {
+  if (wet == "wet") cc <- 0.24 else cc <- 0.27
+  seedling_data <- seedling_df |>
+    mutate(station = str_extract(quadrat, "\\d+")) |>
+    mutate(scon_s = scale(scon) |> as.numeric()) |>
+    mutate(shet_s = scale(shet) |> as.numeric()) |>
+    mutate(sphy_s = scale(sphy) |> as.numeric()) |>
+    mutate(acon_s_c = as.numeric(scale(acon^cc))) |>
+    mutate(ahet_s_c = as.numeric(scale(ahet^cc))) |>
+    mutate(aphy_s_c = as.numeric(scale(aphy^cc))) |>
+    mutate(logh_s = log(h1) |> scale() |> as.numeric()) |>
+    mutate(rain_s = as.numeric(scale(rf)))
+
+  if (phy == "phy") {
+    fit <- lme4::glmer(surv ~ logh_s +
+            scon_s + shet_s +
+            acon_s_c + ahet_s_c + (1 | station/quadrat) + (1 | tag) + (1 + scon| latin), family = binomial, data = seedling_data)
+  } else {
+    fit <- lme4::glmer(surv ~ logh_s +
+            scon_s + sphy_s +
+            acon_s_c + aphy_s_c + (1 | station/quadrat) + (1 | tag) + (1 + scon| latin), family = binomial, data = seedling_data)
+  }
+
   fit
 }
 

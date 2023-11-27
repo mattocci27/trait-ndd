@@ -59,8 +59,10 @@ source(here("R", "stan.R"))
 source(here("R", "render.R"))
 source(here("R", "data_clean.R"))
 ```
+# note
 
 
+\newpage
 
 # `r s_fig("site_info")`
 
@@ -119,6 +121,7 @@ I will add texts.
 ![](`r here::here("figs/phy_het.png")`)
 
 \newpage
+
 
 # `r s_fig("cc_line")`
 
@@ -236,6 +239,27 @@ Stan code for the multilevel logistic regression in the main text.
 
 \newpage
 
+# `r s_table("pre_glm")`
+
+I will clean the table.
+
+```{r}
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(fit_glm_phy))
+withr::with_dir(rprojroot::find_root('_targets.R'),
+  targets::tar_load(fit_glm_het))
+
+bind_rows(fit_glm_het, fit_glm_phy ) |>
+    mutate(across(where(is.numeric), \(x)round(x, 3))) |>
+    kbl(booktabs = TRUE, escape = TRUE, format = "latex", longtable = TRUE) |>
+    kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"),
+      full_width = FALSE) |>
+    pack_rows("Heterospecific density", 1, 12) |>
+    pack_rows("Phylogenetic density", 13, 24)
+```
+
+\newpage
+
 ```{r}
 diagnostics_tbl <- read_csv(here("data/diagnostics_tables.csv"))
 ```
@@ -291,7 +315,7 @@ render_diagnostics_tables(diagnostics_tbl, season = "dry", abund = TRUE)
 
 # `r s_table("wet_abund_diagnostics")`
 
-Model selection and diagnostics for the dry raniy abundance-based models.
+Model selection and diagnostics for the rainy abundance-based models.
 Details as for `r s_table("dry_traits_diagnostics")`.
 
 ```{r}
@@ -418,12 +442,3 @@ gen_si_tab(wet_abund_gamma)
 ```{r}
 knitr::knit_exit()
 ```
-
-- ldm
-- chl
-- c13
-- lt
-
-
-- tlp
-- n

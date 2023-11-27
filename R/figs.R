@@ -495,22 +495,22 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
   p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LDMC species")
-  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
     subplot_fun(low = TRUE) +
-    ggtitle("Low Chl species")
-  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
+    ggtitle("Low SDMC species")
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
     subplot_fun(low = FALSE) +
-    ggtitle("High Chl species")
-  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
+    ggtitle("High SDMC species")
+  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~delta*C[13]~species))
-  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 5) |>
+  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~delta*C[13]~species))
-  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 11) |>
+  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low LT species")
-  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 1) |>
+  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LT species")
 
@@ -522,16 +522,16 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
 }
 
 wet_trait_suv_contour <- function(wet_trait, alpha = 0.05, keep_cons = FALSE) {
-  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 10, keep_cons) |>
+  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low N species")
-  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 10, keep_cons) |>
+  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle("High N species")
-  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 7, keep_cons) |>
+  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 6, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~pi[tlp]~species))
-  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 7, keep_cons) |>
+  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 6, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~pi[tlp]~species))
 
@@ -670,7 +670,6 @@ my_ggpairs <- function(trait_csv) {
       LDMC,
       SD,
       SDMC,
-      Chl,
       C13,
       C,
       log_N,

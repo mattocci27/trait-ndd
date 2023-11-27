@@ -36,7 +36,8 @@ tar_option_set(packages = c(
   "factoextra",
   "FactoMineR",
   "ggpointdensity",
-  "ggpmisc"
+  "ggpmisc",
+  "broom"
 ))
 
 tar_option_set(
@@ -155,6 +156,20 @@ main_ <- list(
     format = "file"
   ),
   tar_target(
+    ggpairs_plot, {
+      p <- my_ggpairs(traits_csv)
+      my_ggsave(
+        "figs/pairs",
+        p,
+        dpi = 300,
+        width = 210,
+        height = 210,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
     phy_het_plot, {
       p <- phy_het_points(seedling_df)
       my_ggsave(
@@ -211,6 +226,27 @@ main_ <- list(
   #   test_loo_suv_simple,
   #   my_loo(test_fit_mcmc_suv_simple)
   # ),
+  tar_map(
+    values = tibble(phy = c("phy", "het")),
+    tar_target(
+      fit_glm,
+      pre_glm(seedling_df, phy = phy)
+    )
+  ),
+  tar_map(
+    values = expand_grid(wet = c("wet", "dry"), phy = c("phy", "het")),
+    tar_target(
+      fit_glmer,
+      pre_glmm(seedling_df, wet = wet, phy = phy)
+    )
+  ),
+  tar_map(
+    values = expand_grid(wet = c("wet", "dry"), phy = c("phy", "het")),
+    tar_target(
+      fit2_glmer,
+      pre_glmm2(seedling_df, wet = wet, phy = phy)
+    )
+  ),
   tar_map(
     values = values |>
       filter((season == "dry" & sp_pred %in% c("nlog", "pc12")) | (season == "wet" & sp_pred == "nlog")),
@@ -384,34 +420,34 @@ fig_list <- list(
       draws =  posterior::as_draws_df(fit_mcmc_suv_ind_wet_intrain_ab)
     )
   ),
-  # tar_target(
-  #   dry_trait_suv_contour_plot, {
-  #     p <- dry_trait_suv_contour(dry_trait, alpha = 0.05)
-  #     my_ggsave(
-  #       "figs/dry_trait_suv_contour",
-  #       p,
-  #       dpi = 300,
-  #       width = 173,
-  #       height = 260,
-  #       units = "mm"
-  #     )
-  #   },
-  #   format = "file"
-  # ),
-  # tar_target(
-  #   wet_trait_suv_contour_plot, {
-  #     p <- wet_trait_suv_contour(wet_trait, alpha = 0.05)
-  #     my_ggsave(
-  #       "figs/wet_trait_suv_contour",
-  #       p,
-  #       dpi = 300,
-  #       width = 173,
-  #       height = 130,
-  #       units = "mm"
-  #     )
-  #   },
-  #   format = "file"
-  # ),
+  tar_target(
+    dry_trait_suv_contour_plot, {
+      p <- dry_trait_suv_contour(dry_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/dry_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 260,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    wet_trait_suv_contour_plot, {
+      p <- wet_trait_suv_contour(wet_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/wet_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 130,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
   NULL
 )
 
@@ -462,20 +498,6 @@ hoge <- list(
         dpi = 300,
         width = 173,
         height = 86,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  tar_target(
-    ggpairs_plot, {
-      p <- my_ggpairs(traits_csv)
-      my_ggsave(
-        "figs/pairs",
-        p,
-        dpi = 300,
-        width = 210,
-        height = 210,
         units = "mm"
       )
     },
