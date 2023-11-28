@@ -462,76 +462,44 @@ fig_list <- list(
     },
     format = "file"
   ),
+  tar_target(
+    sdmc_res_data,
+    generate_beta_list(dry_trait$draws, dry_trait$data, x_lab = "SDMC", y_lab = "ConS", ind_pred = 3, sp_pred = 3)
+  ),
+  tar_target(
+    sdmc_partial_plot, {
+      p <- beta_plot(sdmc_res_data)
+      my_ggsave(
+        "figs/sdmc_partial",
+        p,
+        dpi = 300,
+        width = 82,
+        height = 82,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    abund_res_data,
+    generate_beta_list(dry_abund$draws, dry_abund$data, x_lab = "ln Abundance", y_lab = "ConS", ind_pred = 3, sp_pred = 2)
+  ),
+  tar_target(
+    abund_partial_plot, {
+      p <- beta_plot(abund_res_data)
+      my_ggsave(
+        "figs/abund_partial",
+        p,
+        dpi = 300,
+        width = 82,
+        height = 82,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
   NULL
 )
-
-hoge <- list(
-  # not best
-  tar_target(
-    wet_phy_intrain2_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_intrain2_nlog,
-      stan_data_wet_phy_intrain2_nlog)
-  ),
-
-  tar_target(
-    wet_phy_intrain2_trait_suv_contour_plot, {
-      p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05)
-      my_ggsave(
-        "figs/wet_phy_intrain2_trait_suv_contour",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 180,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  tar_target(
-    wet_phy_intrain2_trait_suv_contour_plot_cons, {
-      p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05, keep_cons = TRUE)
-      my_ggsave(
-        "figs/wet_phy_intrain2_trait_suv_contour_cons",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 180,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  tar_target(
-    abund, {
-      p1 <- generate_suv_pred2(dry_het_intrain_abund$summary,
-        dry_het_intrain_abund$data, alpha = 0.05, 2) |>
-        subplot_fun(low = FALSE) +
-        ggtitle("Abundant species") +
-        xlab("Conspecific adult density")
-
-      p2 <- generate_suv_pred2(dry_het_intrain_abund$summary,
-        dry_het_intrain_abund$data, alpha = 0.05, 2) |>
-        subplot_fun(low = TRUE) +
-        ggtitle("Rare species") +
-        xlab("Conspecific adult density")
-
-      p <- p1 + p2
-
-      my_ggsave(
-        "figs/abund",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 65,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  NULL
- )
 
 diagnostics_mapped <- tar_map(
     values = list(value = rlang::syms(str_c("fit_diagnostics_suv_ind_", data_names)), data_names = data_names),

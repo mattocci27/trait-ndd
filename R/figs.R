@@ -95,8 +95,8 @@ coef_pointrange_wrapper <- function(data) {
     geom_vline(xintercept = 0, lty = 2, col = "grey60") +
     geom_linerange(aes(xmin = ll, xmax = hh, col = season),
       position = position_dodge(width = 0.5)) +
-    geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
-      position = position_dodge(width = 0.5)) +
+    # geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
+    #   position = position_dodge(width = 0.5)) +
     geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 2.5,
       position = position_dodge(width = 0.5)) +
     scale_colour_manual(
@@ -495,32 +495,26 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
   p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LDMC species")
-  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-    subplot_fun(low = TRUE) +
-    ggtitle("Low SDMC species")
-  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-    subplot_fun(low = FALSE) +
-    ggtitle("High SDMC species")
-  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~delta*C[13]~species))
-  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~delta*C[13]~species))
-  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
+  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low LT species")
-  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
+  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LT species")
-  p9 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~pi[tlp]))
-  p10 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~pi[tlp]))
 
-  (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) / (p9 + p10) +
+  (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
      plot_annotation(tag_levels = "a") &
      theme(
       text = element_text(size = 8),
@@ -564,7 +558,7 @@ generate_beta_list <- function(draws, stan_data, x_lab, y_lab, ind_pred, sp_pred
     as.matrix()
 
   par_res <- NULL
-  for (i in 1:4000) {
+  for (i in 1:8000) {
     res <- beta[i, ] - gamma[i, ] %*% stan_data$u
     res <- as.numeric(res)
     pred <- gamma[i, 1] + gamma[i, sp_pred] * trait
@@ -613,14 +607,14 @@ beta_plot <- function(beta_list, partial = TRUE ) {
   }
   ggplot(beta_list$pred_data, aes(x = trait))  +
     geom_line(aes(y = m))  +
-    geom_ribbon(aes(ymin = l, ymax = h), alpha = 0.5) +
-    geom_ribbon(aes(ymin = ll, ymax = hh), alpha = 0.4) +
-    geom_point(data = beta_list$res_data, aes(y = res_m), size = 0.5) +
+    # geom_ribbon(aes(ymin = l, ymax = h), alpha = 0.5) +
+    # geom_ribbon(aes(ymin = ll, ymax = hh), alpha = 0.4) +
+    geom_point(data = beta_list$res_data, aes(y = res_m)) +
     # geom_line(aes(y = m), col = my_col[1])  +
     # geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
     # geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
     # geom_point(data = beta_list$res_data, aes(y = res_m), col = my_col[1]) +
-    # geom_errorbar(data = beta_list$res_data, aes(ymin = res_l, ymax = res_h)) +
+    geom_errorbar(data = beta_list$res_data, aes(ymin = res_l, ymax = res_h), linewidth = 0.25) +
     ylab(eval(parse(text = beta_list$y_lab))) +
     xlab(beta_list$x_lab) +
     theme_bw()
