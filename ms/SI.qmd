@@ -59,23 +59,6 @@ source(here("R", "stan.R"))
 source(here("R", "render.R"))
 source(here("R", "data_clean.R"))
 ```
-# note
-
-```{r}
-withr::with_dir(rprojroot::find_root('_targets.R'),
-  targets::tar_load(seedling_df))
-
-seedling_df |>
-  group_by(season) |>
-  summarise(n = n(), surv = sum(surv)) |>
-  mutate(suv_rate = surv / n)
-
-seedling_df |>
-  group_by(season, year) |>
-  summarise(n = n(), surv = sum(surv)) |>
-  mutate(suv_rate = surv / n)
-```
-
 
 \newpage
 
@@ -106,7 +89,6 @@ the lower diagonal presents scatter plots of the variable pairs.
 LDMC: leaf dry matter content,
 SD: stem density,
 SDMC: stem dry matter content,
-Chl: chlorophyll content,
 C13: stable carbon isotope composition,
 C: carbon concentration,
 N: nitrogen concentration,
@@ -123,7 +105,23 @@ N, LA, SLA, and LT are natural log-transformed.
 
 # `r s_fig("pca")`
 
-I will add texts.
+Principal Component Analysis (PCA) of leaf and stem traits.
+**a**. Scree plot indicating the percentage of explained variances by each principal component.
+The eigenvalues are plotted against the corresponding principal components.
+**b**. Biplot of the first two principal components showing the contribution of each trait to the components.
+Arrows represent vectors of the traits, with their direction and length corresponding to the trait's correlation with the principal components.
+LDMC: leaf dry matter content,
+SD: stem density,
+SDMC: stem dry matter content,
+C13: stable carbon isotope composition,
+C: carbon concentration,
+N: nitrogen concentration,
+CN: carbon nitrogen ratio,
+tlp: leaf turgor loss point,
+LA: leaf area,
+SLA: specific leaf area,
+LT: leaf thickness.
+N, LA, SLA, and LT are natural log-transformed.
 
 ![](`r here::here("figs/pca_panel.png")`)
 
@@ -131,12 +129,14 @@ I will add texts.
 
 # `r s_fig("phy")`
 
-I will add texts.
+Relationship between heterospecific density and phylogenetic  density across different seasons.
+Scatter plots depicting the relationship between heterospecific and phylogenetic densities for (a) seedlings and (b) trees during dry and rainy seasons.
+Each point represents an individual seedling.
+The regression lines are fitted to the data with the equations in the panels, indicating a strong positive correlation with high coefficients of determination (*R^2^* values) both seedlings and trees in both seasons.
 
 ![](`r here::here("figs/phy_het.png")`)
 
 \newpage
-
 
 # `r s_fig("cc_line")`
 

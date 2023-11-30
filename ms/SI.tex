@@ -221,7 +221,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, interior hidden, breakable, sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, breakable, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt, sharp corners]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -243,44 +243,6 @@
 \date{}
 
 \begin{document}
-\hypertarget{note}{%
-\section{note}\label{note}}
-
-\begin{verbatim}
-# A tibble: 2 x 4
-  season     n  surv suv_rate
-  <chr>  <int> <dbl>    <dbl>
-1 dry    28314 24298    0.858
-2 rainy  25966 22639    0.872
-\end{verbatim}
-
-\begin{verbatim}
-# A tibble: 20 x 5
-# Groups:   season [2]
-   season  year     n  surv suv_rate
-   <chr>  <dbl> <int> <dbl>    <dbl>
- 1 dry     2008  5304  4044    0.762
- 2 dry     2009  3708  3152    0.850
- 3 dry     2010  2792  2439    0.874
- 4 dry     2011  2732  2352    0.861
- 5 dry     2012  2298  2107    0.917
- 6 dry     2013  2263  2071    0.915
- 7 dry     2014  2166  1999    0.923
- 8 dry     2015  2671  2226    0.833
- 9 dry     2016  2040  1864    0.914
-10 dry     2017  2340  2044    0.874
-11 rainy   2008  4218  3478    0.825
-12 rainy   2009  3118  2571    0.825
-13 rainy   2010  2572  2291    0.891
-14 rainy   2011  2410  2170    0.900
-15 rainy   2012  2168  1978    0.912
-16 rainy   2013  2143  1951    0.910
-17 rainy   2014  2094  1942    0.927
-18 rainy   2015  2313  1930    0.834
-19 rainy   2016  2311  2054    0.889
-20 rainy   2017  2619  2274    0.868
-\end{verbatim}
-
 \newpage
 
 \hypertarget{fig.-s1}{%
@@ -315,11 +277,10 @@ diagonal displays density plots of each variable, the upper diagonal
 shows the Pearson correlation coefficients between pairs of variables,
 and the lower diagonal presents scatter plots of the variable pairs.
 LDMC: leaf dry matter content, SD: stem density, SDMC: stem dry matter
-content, Chl: chlorophyll content, C13: stable carbon isotope
-composition, C: carbon concentration, N: nitrogen concentration, CN:
-carbon nitrogen ratio, tlp: leaf turgor loss point, LA: leaf area, SLA:
-specific leaf area, LT: leaf thickness. N, LA, SLA, and LT are natural
-log-transformed.
+content, C13: stable carbon isotope composition, C: carbon
+concentration, N: nitrogen concentration, CN: carbon nitrogen ratio,
+tlp: leaf turgor loss point, LA: leaf area, SLA: specific leaf area, LT:
+leaf thickness. N, LA, SLA, and LT are natural log-transformed.
 
 \includegraphics{/home/mattocci/trait-ndd-chl/figs/pairs.pdf}
 
@@ -328,7 +289,18 @@ log-transformed.
 \hypertarget{fig.-s4}{%
 \section{Fig. S4}\label{fig.-s4}}
 
-I will add texts.
+Principal Component Analysis (PCA) of leaf and stem traits. \textbf{a}.
+Scree plot indicating the percentage of explained variances by each
+principal component. The eigenvalues are plotted against the
+corresponding principal components. \textbf{b}. Biplot of the first two
+principal components showing the contribution of each trait to the
+components. Arrows represent vectors of the traits, with their direction
+and length corresponding to the trait's correlation with the principal
+components. LDMC: leaf dry matter content, SD: stem density, SDMC: stem
+dry matter content, C13: stable carbon isotope composition, C: carbon
+concentration, N: nitrogen concentration, CN: carbon nitrogen ratio,
+tlp: leaf turgor loss point, LA: leaf area, SLA: specific leaf area, LT:
+leaf thickness. N, LA, SLA, and LT are natural log-transformed.
 
 \includegraphics{/home/mattocci/trait-ndd-chl/figs/pca_panel.png}
 
@@ -337,7 +309,14 @@ I will add texts.
 \hypertarget{fig.-s5}{%
 \section{Fig. S5}\label{fig.-s5}}
 
-I will add texts.
+Relationship between heterospecific density and phylogenetic density
+across different seasons. Scatter plots depicting the relationship
+between heterospecific and phylogenetic densities for (a) seedlings and
+(b) trees during dry and rainy seasons. Each point represents an
+individual seedling. The regression lines are fitted to the data with
+the equations provided, indicating a strong positive correlation with
+high coefficients of determination (\emph{R\textsuperscript{2}} values)
+for both seasons.
 
 \includegraphics{/home/mattocci/trait-ndd-chl/figs/phy_het.png}
 
