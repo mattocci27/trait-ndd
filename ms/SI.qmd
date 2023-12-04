@@ -152,31 +152,29 @@ where $p_i$ is the individual survival probability, $Z_1$ and $Z_2$ are distance
 
 Contour plots illustrating interactions between conspecific seedling densities and rainfall on seedling survival rates in the rainy seasons and their association with functional traits:
 (a, b) leaf nitrogen content (N), (c, d) leaf turgor loss point ($\phi$~tlp~).
-Predicted result was generate from the best model in the dry season.
-Colour scales show marginal estimated median predictions for each response variable across the full range of rainfall and upper 90% quantiles of conspecific seedling density (the distributions of conspecific seedling densities are positively skewed).
+Predicted result was generated from the best model in the rainy season (Table S8).
+Color scales show marginal estimated median predictions for each response variable across the full range of rainfall and upper 90% quantiles of conspecific seedling density (the distributions of conspecific seedling densities are positively skewed).
 All other variables were set at their mean value for marginal predictions.
 Low and high trait values indicate 25% and 75% quantiles of the trait distribution in the observed dataset, respectively.
 Only variables with credible intervals not overlapping 0 are plotted.
 
 ![](`r here::here("figs/wet_trait_suv_contour.pdf")`)
 
-\newpage
-
-# `r s_append("code")` - Stan code
-
-Stan code for the multilevel logistic regression in the main text.
-
-<!-- ```{stan, file="stan/logistic_simple.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
-``` -->
-
-```{stan, file="../stan/suv_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
-```
 
 \newpage
 
 # `r s_table("pre_glm")`
 
-I will clean the table.
+Estimated coefficients from Generalized Linear Mixed Models (GLMM) with binomial distributions assessing the survival probability of seedlings.
+The models, fitted separately with heterospecific and phylogenetic density as covariates, include random intercepts for species, individual seedling tags, seedling stations, and seeding plots.
+
+Terms include:
+
+- ln Height: Natural logarithm of seedling height.
+- ConS/HetS/PhyS: conspecific/heterospecific/phylogenetic seedling density.
+- ConT/HetT/PhyT: conspecific/heterospecific/phylogenetic tree density (scaled by 0.26).
+- Rainy season: effect of the rainy season compared to the dry season.
+- Interactions with Rainfall
 
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
@@ -186,7 +184,35 @@ withr::with_dir(rprojroot::find_root('_targets.R'),
 
 bind_rows(fit_glm_het, fit_glm_phy ) |>
     mutate(across(where(is.numeric), \(x)round(x, 3))) |>
-    kbl(booktabs = TRUE, escape = TRUE, format = "latex", longtable = TRUE) |>
+    mutate(term = case_when(
+      term == "logh_s" ~ "ln Height",
+      term == "scon_s" ~ "ConS",
+      term == "shet_s" ~ "HetS",
+      term == "acon_s_c" ~ "ConT",
+      term == "ahet_s_c" ~ "HetT",
+      term == "sphy_s" ~ "PhyS",
+      term == "aphy_s_c" ~ "PhyT",
+      term == "seasonrainy" ~ "Rainy season",
+      term == "logh_s:seasonrainy" ~ "ln Height $\\times$ Rainy season",
+      term == "scon_s:seasonrainy" ~ "ConS $\\times$ Rainy season",
+      term == "shet_s:seasonrainy" ~ "HetS $\\times$ Rainy season",
+      term == "acon_s_c:seasonrainy" ~ "ConT $\\times$ Rainy season",
+      term == "ahet_s_c:seasonrainy" ~ "HetT $\\times$ Rainy season",
+      term == "sphy_s:seasonrainy" ~ "PhyS $\\times$ Rainy season",
+      term == "aphy_s_c:seasonrainy" ~ "PhyT $\\times$ Rainy season",
+      term == "(Intercept)" ~ "Intercept"
+    )) |>
+    mutate(
+      p.value = ifelse(p.value == "0.000", "< 0.001", p.value)
+    ) |>
+    dplyr::rename(
+       Term = term,
+       Estimate = estimate,
+       SE = std.error,
+      `z-value` = statistic,
+      `p-value` = p.value
+      ) |>
+    kbl(booktabs = TRUE, escape = FALSE, format = "latex", longtable = TRUE) |>
     kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"),
       full_width = FALSE) |>
     pack_rows("Heterospecific density", 1, 12) |>
@@ -266,23 +292,32 @@ dry_traits_gamma <- read_csv(here("data", "dry_intrain2_nlog_gamma.csv"))
 
 # `r s_table("dry_traits_gamma")`
 
-<I will update the caption.>
-
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons, with Rhat values.
 Bold values differ significantly from zero (the 95% CIs do not include zero).
-ConS/HetS: conspecific/heterospecific seedling density,
-ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27),
-LDMC: leaf dry matter content,
-SDMC: stem dry matter content,
-Chl: chlorophyll content,
-$\delta$C~13~: stable carbon isotope composition,
-C: carbon concentration,
-N: nitrogen concentration,
-$\pi$~tlp~: leaf turgor loss point,
-LA: leaf area,
-SLA: specific leaf area,
-LT: leaf thickness.
 
+Individual-level predictors include:
+
+- ln Height: Natural logarithm of seedling height.
+- ConS/HetS: conspecific/heterospecific seedling density.
+- ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27).
+- Rainfall
+- Interactions with Rainfall
+
+Species-level predictors include:
+
+ - Intercept: average effects across species (i.e., community-level effects).
+ - LDMC: leaf dry matter content.
+ - SDMC: stem dry matter content.
+ - $\delta$C~13~: stable carbon isotope composition.
+ - C: carbon concentration.
+ - N: nitrogen concentration.
+ - $\pi$~tlp~: leaf turgor loss point.
+ - LA: leaf area.
+ - SLA: specific leaf area.
+ - LT: leaf thickness.
+
+For example, the negative $\gamma_{3,1}$ (ConS at the individual-level and intercept at the species-level) reflects the negative conspecific density dependence (CNDD) of seedlings in the community-level.
+In another example, the positive $\gamma_{3,3}$ (ConS at the individual-level and SDMC at the species-level)) indicates the positive relationship between ConS and SDMC, suggesting that the strength of CNDD decreases with increasing SDMC.
 
 ```{r}
 gen_si_tab(dry_traits_gamma)
@@ -292,8 +327,9 @@ gen_si_tab(dry_traits_gamma)
 
 # `r s_table("dry_pca_gamma")`
 
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the dry seasons.
-Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the dry seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
+Species-level predictors include intercepts, PC1, and PC2.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
@@ -308,8 +344,8 @@ gen_si_tab(dry_pca_gamma)
 
 # `r s_table("wet_traits_gamma")`
 
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons.
-Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
@@ -324,11 +360,9 @@ gen_si_tab(wet_traits_gamma)
 
 # `r s_table("wet_pca_gamma")`
 
-<PCA result might change>
-
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the rainy seasons.
-Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
-Other details as for `r s_table("dry_traits_gamma")`.
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the rainy seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
+Other details as for `r s_table("dry_pca_gamma")`.
 
 ```{r, include=FALSE}
 wet_pca_gamma <- read_csv(here("data", "wet_intrain_pc12_gamma.csv"))
@@ -343,7 +377,8 @@ gen_si_tab(wet_pca_gamma)
 # `r s_table("dry_abund_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
-Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.27.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
+Species-level predictors include intercepts and log of species abundance.
 Other details as for `r s_table("dry_traits_gamma")`.
 
 ```{r, include=FALSE}
@@ -359,8 +394,8 @@ gen_si_tab(dry_abund_gamma)
 # `r s_table("wet_abund_gamma")`
 
 Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (abundance) on individual-level predictors ($\gamma$) in the dry seasons.
-Conspecific (ConT) and phylogenetic (PhyT) tree densities are scaled by 0.24.
-Other details as for `r s_table("dry_abund_gamma")`.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
+Other details as for `r s_table("wet_abund_gamma")`.
 
 ```{r, include=FALSE}
 wet_abund_gamma <- read_csv(here("data", "wet_intrain_ab_gamma.csv"))
@@ -372,8 +407,9 @@ gen_si_tab(wet_abund_gamma)
 
 \newpage
 
-# References
+# `r s_append("code")` - Stan code
 
-```{r}
-knitr::knit_exit()
+Stan code for the multilevel logistic regression in the main text.
+
+```{stan, file="../stan/suv_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```

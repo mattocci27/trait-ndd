@@ -198,7 +198,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, sharp corners, frame hidden, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, boxrule=0pt, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -320,117 +320,56 @@ Contour plots illustrating interactions between conspecific seedling
 densities and rainfall on seedling survival rates in the rainy seasons
 and their association with functional traits: (a, b) leaf nitrogen
 content (N), (c, d) leaf turgor loss point
-(\(\phi\)\textsubscript{tlp}). Predicted result was generate from the
-best model in the dry season. Colour scales show marginal estimated
-median predictions for each response variable across the full range of
-rainfall and upper 90\% quantiles of conspecific seedling density (the
-distributions of conspecific seedling densities are positively skewed).
-All other variables were set at their mean value for marginal
-predictions. Low and high trait values indicate 25\% and 75\% quantiles
-of the trait distribution in the observed dataset, respectively. Only
-variables with credible intervals not overlapping 0 are plotted.
+(\(\phi\)\textsubscript{tlp}). Predicted result was generated from the
+best model in the rainy season (Table S8). Color scales show marginal
+estimated median predictions for each response variable across the full
+range of rainfall and upper 90\% quantiles of conspecific seedling
+density (the distributions of conspecific seedling densities are
+positively skewed). All other variables were set at their mean value for
+marginal predictions. Low and high trait values indicate 25\% and 75\%
+quantiles of the trait distribution in the observed dataset,
+respectively. Only variables with credible intervals not overlapping 0
+are plotted.
 
 \includegraphics{/home/mattocci/trait-ndd-chl/figs/wet_trait_suv_contour.pdf}
-
-\newpage
-
-\hypertarget{appendix-s1---stan-code}{%
-\section{Appendix S1 - Stan code}\label{appendix-s1---stan-code}}
-
-Stan code for the multilevel logistic regression in the main text.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{data}\NormalTok{ \{}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} N; }\CommentTok{// number of samples}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} J; }\CommentTok{// number of sp}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} K; }\CommentTok{// number of tree{-}level preditors (i.e, CONS, HETS,...)}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} L; }\CommentTok{// number of sp{-}level predictors (i.e., interecept, SLA,...)}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} S; }\CommentTok{// number of sites}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} P; }\CommentTok{// number of stations}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} T; }\CommentTok{// number of censuses}
-  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} M; }\CommentTok{// number of seedling individuals (tag)}
-  \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
-  \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=P\textgreater{} station; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=M\textgreater{} tag; }\CommentTok{// integer}
-\NormalTok{\}}
-
-\KeywordTok{parameters}\NormalTok{ \{}
-  \DataTypeTok{matrix}\NormalTok{[K, L] gamma;}
-  \DataTypeTok{matrix}\NormalTok{[K, J] z;}
-  \DataTypeTok{vector}\NormalTok{[S] phi\_raw;}
-  \DataTypeTok{vector}\NormalTok{[P] psi\_raw;}
-  \DataTypeTok{vector}\NormalTok{[T] xi\_raw;}
-  \DataTypeTok{vector}\NormalTok{[M] eta\_raw;}
-  \DataTypeTok{cholesky\_factor\_corr}\NormalTok{[K] L\_Omega;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[K] tau\_unif;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[}\DecValTok{4}\NormalTok{] sig\_unif;}
-\NormalTok{\}}
-
-\KeywordTok{transformed parameters}\NormalTok{ \{}
-  \DataTypeTok{matrix}\NormalTok{[K, J] beta;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[K] tau;}
-  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[}\DecValTok{4}\NormalTok{] sig;}
-  \DataTypeTok{vector}\NormalTok{[S] phi;}
-  \DataTypeTok{vector}\NormalTok{[P] psi;}
-  \DataTypeTok{vector}\NormalTok{[T] xi;}
-  \DataTypeTok{vector}\NormalTok{[M] eta;}
-  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:K) tau[k] = }\FloatTok{2.5}\NormalTok{ * tan(tau\_unif[k]);}
-  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:}\DecValTok{4}\NormalTok{) sig[i] = }\FloatTok{2.5}\NormalTok{ * tan(sig\_unif[i]);}
-\NormalTok{  beta = gamma * u + diag\_pre\_multiply(tau, L\_Omega) * z;}
-\NormalTok{  phi = phi\_raw * sig[}\DecValTok{1}\NormalTok{];}
-\NormalTok{  psi = psi\_raw * sig[}\DecValTok{2}\NormalTok{];}
-\NormalTok{  xi = xi\_raw * sig[}\DecValTok{3}\NormalTok{];}
-\NormalTok{  eta = eta\_raw * sig[}\DecValTok{4}\NormalTok{];}
-\NormalTok{\}}
-
-\KeywordTok{model}\NormalTok{ \{}
-  \DataTypeTok{vector}\NormalTok{[N] mu;}
-\NormalTok{  to\_vector(z) \textasciitilde{} std\_normal();}
-\NormalTok{  to\_vector(phi\_raw) \textasciitilde{} std\_normal();}
-\NormalTok{  to\_vector(psi\_raw) \textasciitilde{} std\_normal();}
-\NormalTok{  to\_vector(xi\_raw) \textasciitilde{} std\_normal();}
-\NormalTok{  to\_vector(eta\_raw) \textasciitilde{} std\_normal();}
-\NormalTok{  L\_Omega \textasciitilde{} lkj\_corr\_cholesky(}\DecValTok{2}\NormalTok{);}
-\NormalTok{  to\_vector(gamma) \textasciitilde{} normal(}\DecValTok{0}\NormalTok{, }\FloatTok{2.5}\NormalTok{);}
-  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
-\NormalTok{    mu[n] = x[n, ] * beta[, sp[n]];}
-\NormalTok{  \}}
-\NormalTok{  suv \textasciitilde{} bernoulli\_logit(mu + phi[plot] + psi[station] + xi[census] + eta[tag]);}
-\NormalTok{\}}
-
-\KeywordTok{generated quantities}\NormalTok{ \{}
-  \DataTypeTok{vector}\NormalTok{[N] log\_lik;}
-  \DataTypeTok{corr\_matrix}\NormalTok{[K] Omega;}
-\NormalTok{  Omega = multiply\_lower\_tri\_self\_transpose(L\_Omega);}
-  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
-\NormalTok{    log\_lik[n] = bernoulli\_logit\_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +}
-\NormalTok{      phi[plot[n]] + psi[station[n]] + xi[census[n]] + eta[tag[n]]);}
-\NormalTok{  \}}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
 \newpage
 
 \hypertarget{table-s1}{%
 \section{Table S1}\label{table-s1}}
 
-I will clean the table.
+Estimated coefficients from Generalized Linear Mixed Models (GLMM) with
+binomial distributions assessing the survival probability of seedlings.
+The models, fitted separately with heterospecific and phylogenetic
+density as covariates, include random intercepts for species, individual
+seedling tags, seedling stations, and seeding plots.
+
+Terms include:
+
+\begin{itemize}
+\tightlist
+\item
+  ln Height: Natural logarithm of seedling height.
+\item
+  ConS/HetS/PhyS: conspecific/heterospecific/phylogenetic seedling
+  density.
+\item
+  ConT/HetT/PhyT: conspecific/heterospecific/phylogenetic tree density
+  (scaled by 0.26).
+\item
+  Rainy season: effect of the rainy season compared to the dry season.
+\item
+  Interactions with Rainfall
+\end{itemize}
 
 \begin{longtable*}[t]{lrrrr}
 \toprule
-term & estimate & std.error & statistic & p.value\\
+Term & Estimate & SE & z-value & p-value\\
 \midrule
 \endfirsthead
 \multicolumn{5}{@{}l}{\textit{(continued)}}\\
 \toprule
-term & estimate & std.error & statistic & p.value\\
+Term & Estimate & SE & z-value & p-value\\
 \midrule
 \endhead
 
@@ -439,32 +378,32 @@ term & estimate & std.error & statistic & p.value\\
 \endlastfoot
 \addlinespace[0.3em]
 \multicolumn{5}{l}{\textbf{Heterospecific density}}\\
-\hspace{1em}\cellcolor{gray!6}{(Intercept)} & \cellcolor{gray!6}{2.237} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.852} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}logh\_s & 0.945 & 0.025 & 37.171 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{scon\_s} & \cellcolor{gray!6}{0.019} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{0.907} & \cellcolor{gray!6}{0.364}\\
-\hspace{1em}shet\_s & 0.249 & 0.023 & 10.681 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{acon\_s\_c} & \cellcolor{gray!6}{-0.505} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.851} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}ahet\_s\_c & -0.416 & 0.022 & -19.327 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{seasonrainy} & \cellcolor{gray!6}{-0.008} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{-0.223} & \cellcolor{gray!6}{0.824}\\
-\hspace{1em}logh\_s:seasonrainy & -0.046 & 0.037 & -1.245 & 0.213\\
-\hspace{1em}\cellcolor{gray!6}{scon\_s:seasonrainy} & \cellcolor{gray!6}{0.134} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.734} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}shet\_s:seasonrainy & -0.063 & 0.035 & -1.802 & 0.072\\
-\hspace{1em}\cellcolor{gray!6}{acon\_s\_c:seasonrainy} & \cellcolor{gray!6}{-0.032} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{-0.862} & \cellcolor{gray!6}{0.389}\\
-\hspace{1em}ahet\_s\_c:seasonrainy & 0.083 & 0.032 & 2.582 & 0.010\\
+\hspace{1em}\cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{2.237} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.852} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}ln Height & 0.945 & 0.025 & 37.171 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{0.019} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{0.907} & \cellcolor{gray!6}{0.364}\\
+\hspace{1em}HetS & 0.249 & 0.023 & 10.681 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{-0.505} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.851} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}HetT & -0.416 & 0.022 & -19.327 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{Rainy season} & \cellcolor{gray!6}{-0.008} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{-0.223} & \cellcolor{gray!6}{0.824}\\
+\hspace{1em}ln Height $\times$ Rainy season & -0.046 & 0.037 & -1.245 & 0.213\\
+\hspace{1em}\cellcolor{gray!6}{ConS $\times$ Rainy season} & \cellcolor{gray!6}{0.134} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.734} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}HetS $\times$ Rainy season & -0.063 & 0.035 & -1.802 & 0.072\\
+\hspace{1em}\cellcolor{gray!6}{ConT $\times$ Rainy season} & \cellcolor{gray!6}{-0.032} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{-0.862} & \cellcolor{gray!6}{0.389}\\
+\hspace{1em}HetT $\times$ Rainy season & 0.083 & 0.032 & 2.582 & 0.010\\
 \addlinespace[0.3em]
 \multicolumn{5}{l}{\textbf{Phylogenetic density}}\\
-\hspace{1em}\cellcolor{gray!6}{(Intercept)} & \cellcolor{gray!6}{2.233} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.947} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}logh\_s & 0.944 & 0.025 & 37.236 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{scon\_s} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{1.199} & \cellcolor{gray!6}{0.230}\\
-\hspace{1em}sphy\_s & 0.258 & 0.023 & 11.012 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{acon\_s\_c} & \cellcolor{gray!6}{-0.492} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.408} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}aphy\_s\_c & -0.398 & 0.021 & -18.740 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{seasonrainy} & \cellcolor{gray!6}{-0.001} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{-0.024} & \cellcolor{gray!6}{0.981}\\
-\hspace{1em}logh\_s:seasonrainy & -0.043 & 0.037 & -1.154 & 0.249\\
-\hspace{1em}\cellcolor{gray!6}{scon\_s:seasonrainy} & \cellcolor{gray!6}{0.129} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.544} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}sphy\_s:seasonrainy & -0.060 & 0.035 & -1.703 & 0.089\\
-\hspace{1em}\cellcolor{gray!6}{acon\_s\_c:seasonrainy} & \cellcolor{gray!6}{-0.039} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{-1.062} & \cellcolor{gray!6}{0.288}\\
-\hspace{1em}aphy\_s\_c:seasonrainy & 0.064 & 0.032 & 2.021 & 0.043\\*
+\hspace{1em}\cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{2.233} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.947} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}ln Height & 0.944 & 0.025 & 37.236 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{1.199} & \cellcolor{gray!6}{0.230}\\
+\hspace{1em}PhyS & 0.258 & 0.023 & 11.012 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{-0.492} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.408} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}PhyT & -0.398 & 0.021 & -18.740 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{Rainy season} & \cellcolor{gray!6}{-0.001} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{-0.024} & \cellcolor{gray!6}{0.981}\\
+\hspace{1em}ln Height $\times$ Rainy season & -0.043 & 0.037 & -1.154 & 0.249\\
+\hspace{1em}\cellcolor{gray!6}{ConS $\times$ Rainy season} & \cellcolor{gray!6}{0.129} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.544} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}PhyS $\times$ Rainy season & -0.060 & 0.035 & -1.703 & 0.089\\
+\hspace{1em}\cellcolor{gray!6}{ConT $\times$ Rainy season} & \cellcolor{gray!6}{-0.039} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{-1.062} & \cellcolor{gray!6}{0.288}\\
+\hspace{1em}PhyT $\times$ Rainy season & 0.064 & 0.032 & 2.021 & 0.043\\*
 \end{longtable*}
 
 \newpage
@@ -663,19 +602,61 @@ No Rainfall & Basal area & -7846.5 & 15692.9 & 0 & 0\\*
 \hypertarget{table-s6}{%
 \section{Table S6}\label{table-s6}}
 
-\textless I will update the caption.\textgreater{}
-
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (traits) on individual-level predictors
-(\(\gamma\)) in the dry seasons. Bold values differ significantly from
-zero (the 95\% CIs do not include zero). ConS/HetS:
-conspecific/heterospecific seedling density, ConT/HetT:
-conspecific/heterospecific tree density (scaled by 0.27), LDMC: leaf dry
-matter content, SDMC: stem dry matter content, Chl: chlorophyll content,
-\(\delta\)C\textsubscript{13}: stable carbon isotope composition, C:
-carbon concentration, N: nitrogen concentration,
-\(\pi\)\textsubscript{tlp}: leaf turgor loss point, LA: leaf area, SLA:
-specific leaf area, LT: leaf thickness.
+(\(\gamma\)) in the dry seasons, with Rhat values. Bold values differ
+significantly from zero (the 95\% CIs do not include zero).
+
+Individual-level predictors include:
+
+\begin{itemize}
+\tightlist
+\item
+  ln Height: Natural logarithm of seedling height.
+\item
+  ConS/HetS: conspecific/heterospecific seedling density.
+\item
+  ConT/HetT: conspecific/heterospecific tree density (scaled by 0.27).
+\item
+  Rainfall
+\item
+  Interactions with Rainfall
+\end{itemize}
+
+Species-level predictors include:
+
+\begin{itemize}
+\tightlist
+\item
+  Intercept: average effects across species (i.e., community-level
+  effects).
+\item
+  LDMC: leaf dry matter content.
+\item
+  SDMC: stem dry matter content.
+\item
+  \(\delta\)C\textsubscript{13}: stable carbon isotope composition.
+\item
+  C: carbon concentration.
+\item
+  N: nitrogen concentration.
+\item
+  \(\pi\)\textsubscript{tlp}: leaf turgor loss point.
+\item
+  LA: leaf area.
+\item
+  SLA: specific leaf area.
+\item
+  LT: leaf thickness.
+\end{itemize}
+
+For example, the negative \(\gamma_{3,1}\) (ConS at the individual-level
+and intercept at the species-level) reflects the negative conspecific
+density dependence (CNDD) of seedlings in the community-level. In
+another example, the positive \(\gamma_{3,3}\) (ConS at the
+individual-level and SDMC at the species-level)) indicates the positive
+relationship between ConS and SDMC, suggesting that the strength of CNDD
+decreases with increasing SDMC.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -795,8 +776,10 @@ $\gamma_{8,10}$ & ConS $\times$ Rainfall & ln LT & \textbf{-0.772} & \textbf{[-1
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (PC) on individual-level predictors
-(\(\gamma\)) in the dry seasons. Conspecific (ConT) and heterospecific
-(HetT) tree densities are scaled by 0.24. Other details as for Table S6.
+(\(\gamma\)) in the dry seasons, with Rhat values. Conspecific (ConT)
+and heterospecific (HetT) tree densities are scaled by 0.27.
+Species-level predictors include intercepts, PC1, and PC2. Other details
+as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -864,8 +847,9 @@ $\gamma_{12,3}$ & HetT $\times$ Rainfall & PC2 & 0.01 & {}[-0.037, 0.057] & 1.00
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (traits) on individual-level predictors
-(\(\gamma\)) in the rainy seasons. Conspecific (ConT) and phylogenetic
-(PhyT) tree densities are scaled by 0.27. Other details as for Table S6.
+(\(\gamma\)) in the rainy seasons, with Rhat values. Conspecific (ConT)
+and heterospecific (HetT) tree densities are scaled by 0.24. Other
+details as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -985,8 +969,9 @@ $\gamma_{8,10}$ & ConS $\times$ Rainfall & ln LT & 0.646 & {}[-0.485, 1.806] & 1
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (PC) on individual-level predictors
-(\(\gamma\)) in the rainy seasons. Conspecific (ConT) and heterospecific
-(HetT) tree densities are scaled by 0.27. Other details as for Table S6.
+(\(\gamma\)) in the rainy seasons, with Rhat values. Conspecific (ConT)
+and heterospecific (HetT) tree densities are scaled by 0.24. Other
+details as for Table S7.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -1054,8 +1039,10 @@ $\gamma_{12,3}$ & HetT $\times$ Rainfall & PC2 & 0.015 & {}[-0.038, 0.077] & 1.0
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (abundance) on individual-level predictors
-(\(\gamma\)) in the dry seasons. Conspecific (ConT) and phylogenetic
-(PhyT) tree densities are scaled by 0.27. Other details as for Table S6.
+(\(\gamma\)) in the dry seasons. Conspecific (ConT) and heterospecific
+(HetT) tree densities are scaled by 0.27. Species-level predictors
+include intercepts and log of species abundance. Other details as for
+Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -1108,9 +1095,9 @@ $\gamma_{12,2}$ & HetT $\times$ Rainfall & ln Abundance & -0.018 & {}[-0.096, 0.
 
 Posterior medians and 95\% credible intervals (CIs) of the effects of
 species-level predictors (abundance) on individual-level predictors
-(\(\gamma\)) in the dry seasons. Conspecific (ConT) and phylogenetic
-(PhyT) tree densities are scaled by 0.24. Other details as for Table
-S10.
+(\(\gamma\)) in the dry seasons. Conspecific (ConT) and heterospecific
+(HetT) tree densities are scaled by 0.24. Other details as for Table
+S11.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -1158,8 +1145,88 @@ $\gamma_{12,2}$ & HetT $\times$ Rainfall & ln Abundance & 0.071 & {}[-0.03, 0.18
 
 \newpage
 
-\hypertarget{references}{%
-\section{References}\label{references}}
+\hypertarget{appendix-s1---stan-code}{%
+\section{Appendix S1 - Stan code}\label{appendix-s1---stan-code}}
+
+Stan code for the multilevel logistic regression in the main text.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{ \{}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} N; }\CommentTok{// number of samples}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} J; }\CommentTok{// number of sp}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} K; }\CommentTok{// number of tree{-}level preditors (i.e, CONS, HETS,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} L; }\CommentTok{// number of sp{-}level predictors (i.e., interecept, SLA,...)}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} S; }\CommentTok{// number of sites}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} P; }\CommentTok{// number of stations}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} T; }\CommentTok{// number of censuses}
+  \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} M; }\CommentTok{// number of seedling individuals (tag)}
+  \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
+  \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=P\textgreater{} station; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=M\textgreater{} tag; }\CommentTok{// integer}
+\NormalTok{\}}
+
+\KeywordTok{parameters}\NormalTok{ \{}
+  \DataTypeTok{matrix}\NormalTok{[K, L] gamma;}
+  \DataTypeTok{matrix}\NormalTok{[K, J] z;}
+  \DataTypeTok{vector}\NormalTok{[S] phi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[P] psi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[T] xi\_raw;}
+  \DataTypeTok{vector}\NormalTok{[M] eta\_raw;}
+  \DataTypeTok{cholesky\_factor\_corr}\NormalTok{[K] L\_Omega;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[K] tau\_unif;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=pi() / }\DecValTok{2}\NormalTok{\textgreater{}[}\DecValTok{4}\NormalTok{] sig\_unif;}
+\NormalTok{\}}
+
+\KeywordTok{transformed parameters}\NormalTok{ \{}
+  \DataTypeTok{matrix}\NormalTok{[K, J] beta;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[K] tau;}
+  \DataTypeTok{vector}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{\textgreater{}[}\DecValTok{4}\NormalTok{] sig;}
+  \DataTypeTok{vector}\NormalTok{[S] phi;}
+  \DataTypeTok{vector}\NormalTok{[P] psi;}
+  \DataTypeTok{vector}\NormalTok{[T] xi;}
+  \DataTypeTok{vector}\NormalTok{[M] eta;}
+  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:K) tau[k] = }\FloatTok{2.5}\NormalTok{ * tan(tau\_unif[k]);}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:}\DecValTok{4}\NormalTok{) sig[i] = }\FloatTok{2.5}\NormalTok{ * tan(sig\_unif[i]);}
+\NormalTok{  beta = gamma * u + diag\_pre\_multiply(tau, L\_Omega) * z;}
+\NormalTok{  phi = phi\_raw * sig[}\DecValTok{1}\NormalTok{];}
+\NormalTok{  psi = psi\_raw * sig[}\DecValTok{2}\NormalTok{];}
+\NormalTok{  xi = xi\_raw * sig[}\DecValTok{3}\NormalTok{];}
+\NormalTok{  eta = eta\_raw * sig[}\DecValTok{4}\NormalTok{];}
+\NormalTok{\}}
+
+\KeywordTok{model}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] mu;}
+\NormalTok{  to\_vector(z) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(phi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(psi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(xi\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  to\_vector(eta\_raw) \textasciitilde{} std\_normal();}
+\NormalTok{  L\_Omega \textasciitilde{} lkj\_corr\_cholesky(}\DecValTok{2}\NormalTok{);}
+\NormalTok{  to\_vector(gamma) \textasciitilde{} normal(}\DecValTok{0}\NormalTok{, }\FloatTok{2.5}\NormalTok{);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    mu[n] = x[n, ] * beta[, sp[n]];}
+\NormalTok{  \}}
+\NormalTok{  suv \textasciitilde{} bernoulli\_logit(mu + phi[plot] + psi[station] + xi[census] + eta[tag]);}
+\NormalTok{\}}
+
+\KeywordTok{generated quantities}\NormalTok{ \{}
+  \DataTypeTok{vector}\NormalTok{[N] log\_lik;}
+  \DataTypeTok{corr\_matrix}\NormalTok{[K] Omega;}
+\NormalTok{  Omega = multiply\_lower\_tri\_self\_transpose(L\_Omega);}
+  \ControlFlowTok{for}\NormalTok{ (n }\ControlFlowTok{in} \DecValTok{1}\NormalTok{:N) \{}
+\NormalTok{    log\_lik[n] = bernoulli\_logit\_lpmf(suv[n] | x[n, ] * beta[, sp[n]] +}
+\NormalTok{      phi[plot[n]] + psi[station[n]] + xi[census[n]] + eta[tag[n]]);}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 
 
 
