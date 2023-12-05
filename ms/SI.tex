@@ -197,7 +197,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, boxrule=0pt, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, breakable, interior hidden, frame hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, boxrule=0pt]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -292,12 +292,14 @@ seasons.
 
 \newpage
 
-\textbf{Fig. S6:} The grid-search for the scaling parameter \emph{c}
+\textbf{Fig. S6:} The grid search for the scaling parameter \emph{c}
 that maximized the likelihood of the following survival model:
 \(\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c\), where
-\(p_i\) is the individual survival probability, \(Z_1\) and \(Z_2\) are
-distance-weighted sums of basal area of conspecific and heterospecific
-densities.
+\(p_i\) is the individual survival probability, \(Z_1\) is the
+distance-weighted sum of basal area for conspecific densities, and
+\(Z_2\) for heterospecific or phylogenetic densities. The grid search
+was done for the dry season, the rainy season, and the both seasons
+combined (All).
 
 \includegraphics{/home/mattocci/trait-ndd-chl/figs/cc_line.pdf}
 
@@ -1054,7 +1056,7 @@ $\gamma_{12,2}$ & HetT $\times$ Rainfall & ln Abundance & -0.018 & {}[-0.096, 0.
 of the effects of species-level predictors (abundance) on
 individual-level predictors (\(\gamma\)) in the dry seasons. Conspecific
 (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
-Other details as for Table S11.
+Other details as for Table S10.
 
 \begin{longtable*}[t]{lllllr}
 \toprule

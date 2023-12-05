@@ -126,16 +126,20 @@ main_ <- list(
     dry_cc_data,
     generate_cc_data(seedling_csv, wet = FALSE),
   ),
+  tar_target(
+    all_cc_data,
+    generate_cc_all_data(seedling_csv),
+  ),
 
   tar_target(
     cc_line_plot, {
-      p <- cc_line(wet = wet_cc_data, dry = dry_cc_data)
+      p <- cc_line(wet = wet_cc_data, dry = dry_cc_data, all = all_cc_data)
       my_ggsave(
         "figs/cc_line",
         p,
         dpi = 300,
         width = 173,
-        height = 87,
+        height = 173,
         units = "mm"
       )
     },

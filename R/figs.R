@@ -622,30 +622,60 @@ beta_plot <- function(beta_list, partial = TRUE ) {
 }
 
 
-cc_line <- function(wet, dry) {
+cc_line <- function(wet, dry, all) {
+  wet <- wet |> mutate(season = "Wet")
+  dry <- dry |> mutate(season = "Dry")
+  all <- all |> mutate(season = "All")
+
   wet_cc_het <- which(wet$het == max(wet$het)) / nrow(wet)
   dry_cc_het <- which(dry$het == max(dry$het)) / nrow(dry)
+  wet_cc_phy <- which(wet$phy == max(wet$phy)) / nrow(wet)
+  dry_cc_phy <- which(dry$phy == max(dry$phy)) / nrow(dry)
+  all_cc_het <- which(all$het == max(all$het)) / nrow(all)
+  all_cc_phy <- which(all$phy == max(all$phy)) / nrow(all)
 
-  plot_fun <- function(data) {
-    ggplot(data, aes(x = cc, y = phy)) +
-      geom_line() +
-      xlab("c") +
-      ylab("Log-likelihood") +
-      my_theme() +
-      theme(
-        axis.title.x = element_text(face = "italic")
-      )
-  }
 
-  p1 <- plot_fun(dry) +
-    geom_vline(xintercept = dry_cc_het, linetype = "dashed") +
-    ggtitle("Dry season")
-  p2 <- plot_fun(wet) +
-    geom_vline(xintercept = wet_cc_het, linetype = "dashed") +
-    ggtitle("Rainy season")
+  fig_df <- bind_rows(all, wet, dry) |>
+    pivot_longer(het:phy) #|>
 
-  p1 + p2 +
-    plot_annotation(tag_levels = "a")
+
+  c_df <- fig_df |>
+    dplyr::select(season, name, value) |>
+    group_by(season, name) |>
+    summarize(lik = max(value)) |>
+    ungroup() |>
+    distinct() |>
+    mutate(xint = case_when(
+      season == "All" & name == "het" ~ all_cc_het,
+      season == "All" & name == "phy" ~ all_cc_phy,
+      season == "Wet" & name == "het" ~ wet_cc_het,
+      season == "Wet" & name == "phy" ~ wet_cc_phy,
+      season == "Dry" & name == "het" ~ dry_cc_het,
+      season == "Dry" & name == "phy" ~ dry_cc_phy,
+    )) |>
+    mutate(label = sprintf("Best~italic(c) == '%.2f'", xint)) |>
+    mutate(
+      name = ifelse(name == "het", "Conspecific/Heterospecific", "Conspecific/Phylogenetic")
+    )
+
+
+  fig_df2 <- fig_df |>
+    mutate(
+      name = ifelse(name == "het", "Conspecific/Heterospecific", "Conspecific/Phylogenetic")
+    )
+
+  ggplot() +
+    geom_line(data = fig_df2, aes(x = cc, y = value)) +
+    xlab("c") +
+    ylab("Log-likelihood") +
+    facet_grid(season ~ name, scales = "free_y") +
+    geom_vline(data = c_df, aes(xintercept = xint), linetype = "dashed") +
+    geom_text(data = c_df,
+      aes(x = 0.75, y = lik, label = label, vjust = 3), parse = TRUE) +
+    my_theme() +
+    theme(
+      axis.title.x = element_text(face = "italic")
+    )
 }
 
 

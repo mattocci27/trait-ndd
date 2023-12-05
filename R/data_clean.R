@@ -95,6 +95,30 @@ generate_cc_data <- function(seedling_csv, wet = TRUE) {
   tibble(cc = (1:n_len) / n_len, het = lik, phy = lik2)
 }
 
+generate_cc_all_data <- function(seedling_csv) {
+  seedling <- read_csv(seedling_csv) |>
+    janitor::clean_names()
+  x1 <- seedling$acon
+  x2 <- seedling$ahet
+  z1 <- seedling$aphy
+  y <- seedling$surv
+
+  n_len <- 100
+
+  lik <- numeric(n_len)
+  lik2 <- numeric(n_len)
+  for (i in 1:n_len) {
+    d1 <- x1^(i / n_len)
+    d2 <- x2^(i / n_len)
+    d3 <- z1^(i / n_len)
+    fm1 <- glm(y ~ d1 + d2, family = binomial)
+    fm2 <- glm(y ~ d1 + d3, family = binomial)
+    lik[i] <- logLik(fm1)
+    lik2[i] <- logLik(fm2)
+  }
+  tibble(cc = (1:n_len) / n_len, het = lik, phy = lik2)
+}
+
 generate_pca_data <- function(traits_df) {
   traits <- traits_df |>
     mutate(
