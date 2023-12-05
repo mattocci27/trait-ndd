@@ -733,12 +733,20 @@ pca_panel <- function(traits_df) {
     mutate(lt = log(lt)) |>
     mutate(n = log(n)) |>
     mutate(sla = log(sla)) |>
-    rename(log_la = la) |>
-    rename(log_lt = lt) |>
-    rename(log_n = n) |>
-    rename(log_sla = sla)
+    rename(
+      log_LA = la,
+      log_LT = lt,
+      log_N = n,
+      log_SLA = sla,
+      WD = wd,
+      SDMC = sdmc,
+      LDMC = ldmc,
+      CN = cn,
+      C = c,
+      C13 = c13) |>
+    dplyr::select(-ab, -ba, -latin)
 
-  pca <- PCA(traits[, 2:13], graph = FALSE)
+  pca <- PCA(traits, graph = FALSE)
 
   p_eig <- fviz_eig(pca)
 
