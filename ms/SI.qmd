@@ -24,6 +24,7 @@ format:
         \pagestyle{fancy}
         \fancypagestyle{plain}{\pagestyle{fancy}}
         \renewcommand{\headrulewidth}{0pt}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
   html:
     theme: spacelab #readable #sandstone #spacelab #flatly
     toc: true
@@ -172,7 +173,7 @@ Terms include:
 - ConS/HetS/PhyS: conspecific/heterospecific/phylogenetic seedling density.
 - ConT/HetT/PhyT: conspecific/heterospecific/phylogenetic tree density (scaled by 0.26).
 - Rainy season: effect of the rainy season compared to the dry season.
-- Interactions with Rainfall
+- Interactions with Rainy season
 
 ```{r}
 withr::with_dir(rprojroot::find_root('_targets.R'),
@@ -201,7 +202,7 @@ bind_rows(fit_glm_het, fit_glm_phy ) |>
       term == "(Intercept)" ~ "Intercept"
     )) |>
     mutate(
-      p.value = ifelse(p.value == "0.000", "< 0.001", p.value)
+      p.value = ifelse(p.value < 0.001, "< 0.001", p.value)
     ) |>
     dplyr::rename(
        Term = term,
@@ -310,7 +311,7 @@ Species-level predictors include:
  - LT: leaf thickness.
 
 For example, the negative $\gamma_{3,1}$ (ConS at the individual-level and intercept at the species-level) reflects the negative conspecific density dependence (CNDD) of seedlings in the community-level.
-In another example, the positive $\gamma_{3,3}$ (ConS at the individual-level and SDMC at the species-level)) indicates the positive relationship between ConS and SDMC, suggesting that the strength of CNDD decreases with increasing SDMC.
+In another example, the positive $\gamma_{3,3}$ (ConS at the individual-level and SDMC at the species-level) indicates the positive relationship between ConS and SDMC, suggesting that the strength of CNDD decreases with increasing SDMC.
 
 ```{r}
 gen_si_tab(dry_traits_gamma)
@@ -398,5 +399,5 @@ gen_si_tab(wet_abund_gamma)
 **`r s_append("code")`:**
 Stan code for the multilevel logistic regression in the main text.
 
-```{stan, file="../stan/suv_ind.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
+```{stan, size="small", file="../stan/suv_ind_si.stan", echo=TRUE, eval=FALSE, output.var="hoge"}
 ```

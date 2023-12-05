@@ -143,6 +143,7 @@
 \pagestyle{fancy}
 \fancypagestyle{plain}{\pagestyle{fancy}}
 \renewcommand{\headrulewidth}{0pt}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 \KOMAoption{captions}{tableheading}
 \makeatletter
 \makeatother
@@ -196,7 +197,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt, frame hidden, sharp corners, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, frame hidden, interior hidden, boxrule=0pt, enhanced, breakable, sharp corners]}{\end{tcolorbox}}\fi
 \makeatother
 \makeatletter
 \makeatother
@@ -343,10 +344,10 @@ Terms include:
 \item
   Rainy season: effect of the rainy season compared to the dry season.
 \item
-  Interactions with Rainfall
+  Interactions with Rainy season
 \end{itemize}
 
-\begin{longtable*}[t]{lrrrr}
+\begin{longtable*}[t]{lrrrl}
 \toprule
 Term & Estimate & SE & z-value & p-value\\
 \midrule
@@ -362,29 +363,29 @@ Term & Estimate & SE & z-value & p-value\\
 \endlastfoot
 \addlinespace[0.3em]
 \multicolumn{5}{l}{\textbf{Heterospecific density}}\\
-\hspace{1em}\cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{2.237} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.852} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}ln Height & 0.945 & 0.025 & 37.171 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{2.237} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.852} & \cellcolor{gray!6}{< 0.001}\\
+\hspace{1em}ln Height & 0.945 & 0.025 & 37.171 & < 0.001\\
 \hspace{1em}\cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{0.019} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{0.907} & \cellcolor{gray!6}{0.364}\\
-\hspace{1em}HetS & 0.249 & 0.023 & 10.681 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{-0.505} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.851} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}HetT & -0.416 & 0.022 & -19.327 & 0.000\\
+\hspace{1em}HetS & 0.249 & 0.023 & 10.681 & < 0.001\\
+\hspace{1em}\cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{-0.505} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.851} & \cellcolor{gray!6}{< 0.001}\\
+\hspace{1em}HetT & -0.416 & 0.022 & -19.327 & < 0.001\\
 \hspace{1em}\cellcolor{gray!6}{Rainy season} & \cellcolor{gray!6}{-0.008} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{-0.223} & \cellcolor{gray!6}{0.824}\\
 \hspace{1em}ln Height $\times$ Rainy season & -0.046 & 0.037 & -1.245 & 0.213\\
-\hspace{1em}\cellcolor{gray!6}{ConS $\times$ Rainy season} & \cellcolor{gray!6}{0.134} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.734} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}\cellcolor{gray!6}{ConS $\times$ Rainy season} & \cellcolor{gray!6}{0.134} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.734} & \cellcolor{gray!6}{< 0.001}\\
 \hspace{1em}HetS $\times$ Rainy season & -0.063 & 0.035 & -1.802 & 0.072\\
 \hspace{1em}\cellcolor{gray!6}{ConT $\times$ Rainy season} & \cellcolor{gray!6}{-0.032} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{-0.862} & \cellcolor{gray!6}{0.389}\\
-\hspace{1em}HetT $\times$ Rainy season & 0.083 & 0.032 & 2.582 & 0.010\\
+\hspace{1em}HetT $\times$ Rainy season & 0.083 & 0.032 & 2.582 & 0.01\\
 \addlinespace[0.3em]
 \multicolumn{5}{l}{\textbf{Phylogenetic density}}\\
-\hspace{1em}\cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{2.233} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.947} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}ln Height & 0.944 & 0.025 & 37.236 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{1.199} & \cellcolor{gray!6}{0.230}\\
-\hspace{1em}PhyS & 0.258 & 0.023 & 11.012 & 0.000\\
-\hspace{1em}\cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{-0.492} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.408} & \cellcolor{gray!6}{0.000}\\
-\hspace{1em}PhyT & -0.398 & 0.021 & -18.740 & 0.000\\
+\hspace{1em}\cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{2.233} & \cellcolor{gray!6}{0.024} & \cellcolor{gray!6}{92.947} & \cellcolor{gray!6}{< 0.001}\\
+\hspace{1em}ln Height & 0.944 & 0.025 & 37.236 & < 0.001\\
+\hspace{1em}\cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{1.199} & \cellcolor{gray!6}{0.23}\\
+\hspace{1em}PhyS & 0.258 & 0.023 & 11.012 & < 0.001\\
+\hspace{1em}\cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{-0.492} & \cellcolor{gray!6}{0.025} & \cellcolor{gray!6}{-19.408} & \cellcolor{gray!6}{< 0.001}\\
+\hspace{1em}PhyT & -0.398 & 0.021 & -18.740 & < 0.001\\
 \hspace{1em}\cellcolor{gray!6}{Rainy season} & \cellcolor{gray!6}{-0.001} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{-0.024} & \cellcolor{gray!6}{0.981}\\
 \hspace{1em}ln Height $\times$ Rainy season & -0.043 & 0.037 & -1.154 & 0.249\\
-\hspace{1em}\cellcolor{gray!6}{ConS $\times$ Rainy season} & \cellcolor{gray!6}{0.129} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.544} & \cellcolor{gray!6}{0.000}\\
+\hspace{1em}\cellcolor{gray!6}{ConS $\times$ Rainy season} & \cellcolor{gray!6}{0.129} & \cellcolor{gray!6}{0.028} & \cellcolor{gray!6}{4.544} & \cellcolor{gray!6}{< 0.001}\\
 \hspace{1em}PhyS $\times$ Rainy season & -0.060 & 0.035 & -1.703 & 0.089\\
 \hspace{1em}\cellcolor{gray!6}{ConT $\times$ Rainy season} & \cellcolor{gray!6}{-0.039} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{-1.062} & \cellcolor{gray!6}{0.288}\\
 \hspace{1em}PhyT $\times$ Rainy season & 0.064 & 0.032 & 2.021 & 0.043\\*
@@ -625,7 +626,7 @@ For example, the negative \(\gamma_{3,1}\) (ConS at the individual-level
 and intercept at the species-level) reflects the negative conspecific
 density dependence (CNDD) of seedlings in the community-level. In
 another example, the positive \(\gamma_{3,3}\) (ConS at the
-individual-level and SDMC at the species-level)) indicates the positive
+individual-level and SDMC at the species-level) indicates the positive
 relationship between ConS and SDMC, suggesting that the strength of CNDD
 decreases with increasing SDMC.
 
@@ -1117,12 +1118,12 @@ in the main text.
   \DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} M; }\CommentTok{// number of seedling individuals (tag)}
   \DataTypeTok{matrix}\NormalTok{[N, K] x; }\CommentTok{// tree{-}level predictor}
   \DataTypeTok{matrix}\NormalTok{[L, J] u; }\CommentTok{// sp{-}level predictor}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// 1 or 0}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=P\textgreater{} station; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// integer}
-  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=M\textgreater{} tag; }\CommentTok{// integer}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{0}\NormalTok{, }\KeywordTok{upper}\NormalTok{=}\DecValTok{1}\NormalTok{\textgreater{} suv; }\CommentTok{// binary outcome (1 or 0)}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=J\textgreater{} sp; }\CommentTok{// species identifier (integer)}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=S\textgreater{} plot; }\CommentTok{// plot identifier (integer)}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=P\textgreater{} station; }\CommentTok{// station identifier (integer)}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=T\textgreater{} census; }\CommentTok{// census identifier (integer)}
+  \DataTypeTok{array}\NormalTok{[N] }\DataTypeTok{int}\NormalTok{\textless{}}\KeywordTok{lower}\NormalTok{=}\DecValTok{1}\NormalTok{, }\KeywordTok{upper}\NormalTok{=M\textgreater{} tag; }\CommentTok{// individual seedling tag (integer)}
 \NormalTok{\}}
 
 \KeywordTok{parameters}\NormalTok{ \{}
