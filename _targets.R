@@ -26,14 +26,24 @@ tar_option_set(packages = c(
   "RColorBrewer",
   "ggridges",
   "bayesplot",
+  "quarto",
+  "lme4",
+  "here",
+  "kableExtra",
+  "tictoc",
+  "DT",
+  "ggrepel",
   "factoextra",
-  "FactoMineR"
+  "FactoMineR",
+  "ggpointdensity",
+  "ggpmisc",
+  "broom"
 ))
 
-# tar_option_set(
-#   garbage_collection = TRUE,
-#   memory = "transient"
-# )
+tar_option_set(
+  garbage_collection = TRUE,
+  memory = "transient"
+)
 
 # check if it's inside a container
 if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
@@ -44,28 +54,31 @@ if (file.exists("/.dockerenv") | file.exists("/.singularity.d/startscript")) {
 cmdstan_version()
 
 values <- expand_grid(
-  # het = c("het"),
-  # rain = c("norain", "rain"),
-  # sp_pred = c("pc12", "pc15", "ab", "ba", "ab1ba"))
-  het = c("het")
-  rain = c("norain"),
-  sp_pred = c("pc12"))
+  season = c("dry", "wet"),
+  rain = c("norain", "rain", "intrain", "intrain2", "intrain3", "intrain4"),
+  sp_pred = c("nlog", "ab", "ba", "pc12")
+  )
 
-# data_names <- values |>
-#   mutate(data_names = str_c(season, het, rain, sp_pred, sep = "_")) |>
-#   pull(data_names)
+# values <- expand_grid(
+#   season = c("dry", "wet"),
+#   rain = "norain",
+#   sp_pred = "ab")
 
-# mcmc_names <- values |>
-#   mutate(mcmc_names = str_c("fit_mcmc_logistic_simple_stan_data_", data_names)) |>
-#   pull(mcmc_names)
+data_names <- values |>
+  mutate(data_names = str_c(season, rain, sp_pred, sep = "_")) |>
+  pull(data_names)
 
-# loo_map <- tar_map(
-#     values = list(mcmc = rlang::syms(mcmc_names)),
-#     tar_target(
-#       loo,
-#       my_loo(mcmc)
-#     )
-# )
+mcmc_names <- values |>
+  mutate(mcmc_names = str_c("fit_mcmc_suv_ind_", data_names)) |>
+  pull(mcmc_names)
+
+loo_map <- tar_map(
+    values = list(mcmc = rlang::syms(mcmc_names)),
+    tar_target(
+      loo,
+      my_loo(mcmc)
+    )
+)
 
 # data cleaning ----------------------------------
 data_ <- list(
@@ -75,14 +88,17 @@ data_ <- list(
     format = "file"
   ),
   tar_target(
-    trait_csv,
+    traits_csv,
     clean_data("data-raw/dataCNDD.Rdata", write_trait = TRUE),
     format = "file"
   ),
   tar_target(
-    trait_pca_csv,
-    generate_pca_data(trait_csv),
-    format = "file"
+    traits_df,
+    read_csv(traits_csv) |> janitor::clean_names() |> dplyr::select(-cname)
+  ),
+  tar_target(
+    seedling_df,
+    read_csv(seedling_csv) |> janitor::clean_names()
   ),
   tar_target(
     seedling_csv,
@@ -95,233 +111,49 @@ data_ <- list(
 
 main_ <- list(
   tar_target(
-    scale_cc,
-    calc_scale_cc(seedling_csv),
+    scale_wet,
+    calc_scale_cc(seedling_csv, wet = TRUE),
   ),
   tar_target(
-    cc_data,
-    generate_cc_data(seedling_csv),
-  ),
-  tar_map(
-    values = values,
-    tar_target(
-      stan_data,
-      generate_stan_data(
-        seedling_csv, trait_pca_csv,
-        scale_cc = scale_cc,
-        het, rain, sp_pred)),
-    tar_stan_mcmc(
-      fit,
-      "stan/logistic_simple.stan",
-      data = stan_data,
-      refresh = 1,
-      chains = 4,
-      parallel_chains = getOption("mc.cores", 4),
-      iter_warmup = 1000,
-      iter_sampling = 1000,
-      adapt_delta = 0.95,
-      max_treedepth = 15,
-      seed = 123,
-      return_draws = FALSE,
-      return_diagnostics = FALSE,
-      return_summary = FALSE,
-      summaries = list(
-        mean = ~mean(.x),
-        sd = ~sd(.x),
-        mad = ~mad(.x),
-        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-        posterior::default_convergence_measures()
-      ))
-    ),
-  NULL
-)
-
-tmp <- list(
-  tar_target(
-    scale_cc,
-    calc_scale_cc(seedling_csv),
+    scale_dry,
+    calc_scale_cc(seedling_csv, wet = FALSE),
   ),
   tar_target(
-    cc_data,
-    generate_cc_data(seedling_csv),
-  ),
-
-  # tar_target(
-  #   cc_line_plot, {
-  #     p <- cc_line(wet = wet_cc_data, dry = dry_cc_data)
-  #     my_ggsave(
-  #       "figs/cc_line",
-  #       p,
-  #       dpi = 300,
-  #       width = 173,
-  #       height = 173,
-  #       units = "mm"
-  #     )
-  #   },
-  #   format = "file"
-  # ),
-
-  # tar_map(
-  #   values = values,
-  #   tar_target(stan_data,
-  #     generate_stan_data(
-  #       seedling_csv, trait_csv,
-  #       scale_cc = list(wet = scale_wet, dry = scale_dry),
-  #       season, het, rain, sp_pred))
-  # ),
-
-  # tar_map(
-  #   values = list(stan_data = rlang::syms(str_c("stan_data_", data_names))),
-  #   tar_stan_mcmc(
-  #     fit,
-  #     "stan/logistic_simple.stan",
-  #     data = stan_data,
-  #     refresh = 0,
-  #     chains = 4,
-  #     parallel_chains = getOption("mc.cores", 4),
-  #     iter_warmup = 1000,
-  #     iter_sampling = 2000,
-  #     adapt_delta = 0.95,
-  #     max_treedepth = 15,
-  #     seed = 123,
-  #     return_draws = FALSE,
-  #     return_diagnostics = TRUE,
-  #     return_summary = TRUE,
-  #     summaries = list(
-  #       mean = ~mean(.x),
-  #       sd = ~sd(.x),
-  #       mad = ~mad(.x),
-  #       ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
-  #       posterior::default_convergence_measures()
-  #     )
-  #   )
-  # ),
-
-
-  # loo_map,
-  # tar_combine(
-  #   loo_list,
-  #   loo_map,
-  #   command = list(!!!.x)
-  # ),
-
-  # tar_quarto(
-  #   bayes_check_html,
-  #   "docs/bayes_check.qmd"
-  # ),
-
-  tar_target(
-    loo_tbl,
-    generate_loo_tbl(loo_list)
-  ),
-  # best models
-  tar_target(
-    dry_trait,
-    load_mcmc_summary(loo_tbl, season = "dry", trait = "n")
+    wet_cc_data,
+    generate_cc_data(seedling_csv, wet = TRUE),
   ),
   tar_target(
-    wet_trait,
-    load_mcmc_summary(loo_tbl, season = "wet", trait = "n")
+    dry_cc_data,
+    generate_cc_data(seedling_csv, wet = FALSE),
   ),
   tar_target(
-    dry_abund,
-    load_mcmc_summary(loo_tbl, season = "dry", trait = "ab")
-  ),
-  tar_target(
-    wet_abund,
-    load_mcmc_summary(loo_tbl, season = "wet", trait = "ab")
-  ),
-
-  # best models
-  tar_target(
-    dry_het_intrain2_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog,
-      fit_mcmc_logistic_simple_stan_data_dry_het_intrain2_nlog,
-      stan_data_dry_het_intrain2_nlog)
-  ),
-  tar_target(
-    wet_phy_norain_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_norain_nlog,
-      stan_data_wet_phy_norain_nlog)
-  ),
-  tar_target(
-    dry_het_intrain_abund,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_dry_het_intrain_ab,
-      fit_mcmc_logistic_simple_stan_data_dry_het_intrain_ab,
-      stan_data_dry_het_intrain_ab)
-  ),
-  tar_target(
-    wet_phy_rain_abund,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_rain_ab,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_rain_ab,
-      stan_data_wet_phy_rain_ab)
-  ),
-
-  # not best
-  tar_target(
-    wet_phy_intrain2_trait,
-    generate_mcmc_summary(
-      fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog,
-      fit_mcmc_logistic_simple_stan_data_wet_phy_intrain2_nlog,
-      stan_data_wet_phy_intrain2_nlog)
+    all_cc_data,
+    generate_cc_all_data(seedling_csv),
   ),
 
   tar_target(
-    dry_het_intrain2_trait_suv_contour_plot, {
-      p <- dry_trait_suv_contour(dry_het_intrain2_trait, alpha = 0.05)
+    cc_line_plot, {
+      p <- cc_line(wet = wet_cc_data, dry = dry_cc_data, all = all_cc_data)
       my_ggsave(
-        "figs/dry_het_intrain2_trait_suv_contour",
+        "figs/cc_line",
         p,
         dpi = 300,
         width = 173,
-        height = 260,
+        height = 173,
         units = "mm"
       )
     },
     format = "file"
   ),
   tar_target(
-    wet_phy_intrain2_trait_suv_contour_plot, {
-      p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05)
+    pca_panel_plot, {
+      p <- pca_panel(traits_df)
       my_ggsave(
-        "figs/wet_phy_intrain2_trait_suv_contour",
+        "figs/pca_panel",
         p,
         dpi = 300,
         width = 173,
-        height = 180,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  tar_target(
-    wet_phy_intrain2_trait_suv_contour_plot_cons, {
-      p <- wet_trait_suv_contour(wet_phy_intrain2_trait, alpha = 0.05, keep_cons = TRUE)
-      my_ggsave(
-        "figs/wet_phy_intrain2_trait_suv_contour_cons",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 180,
-        units = "mm"
-      )
-    },
-    format = "file"
-  ),
-  tar_target(
-    coef_trait_plot, {
-      p <- coef_pointrange(dry_het_intrain2_trait, wet_phy_norain_trait, comb = FALSE)
-      my_ggsave(
-        "figs/coef_trait",
-        p,
-        dpi = 300,
-        width = 173,
-        height = 86,
+        height = 85,
         units = "mm"
       )
     },
@@ -329,7 +161,7 @@ tmp <- list(
   ),
   tar_target(
     ggpairs_plot, {
-      p <- my_ggpairs(trait_csv)
+      p <- my_ggpairs(traits_csv)
       my_ggsave(
         "figs/pairs",
         p,
@@ -342,306 +174,411 @@ tmp <- list(
     format = "file"
   ),
   tar_target(
-    abund, {
-      p1 <- generate_suv_pred2(dry_het_intrain_abund$summary,
-        dry_het_intrain_abund$data, alpha = 0.05, 2) |>
-        subplot_fun(low = FALSE) +
-        ggtitle("Abundant species") +
-        xlab("Conspecific adult density")
-
-      p2 <- generate_suv_pred2(dry_het_intrain_abund$summary,
-        dry_het_intrain_abund$data, alpha = 0.05, 2) |>
-        subplot_fun(low = TRUE) +
-        ggtitle("Rare species") +
-        xlab("Conspecific adult density")
-
-      p <- p1 + p2
-
+    phy_het_plot, {
+      p <- phy_het_points(seedling_df)
       my_ggsave(
-        "figs/abund",
+        "figs/phy_het",
         p,
         dpi = 300,
         width = 173,
-        height = 65,
+        height = 173,
         units = "mm"
       )
     },
     format = "file"
   ),
 
-#   tar_target(
-#     beta_wet_rain_n,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = "N",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 8)
-#   ),
-#   tar_target(
-#     beta_wet_rain_tlp,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = expression(pi[tlp]),
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 9)
-#   ),
+  tar_target(
+    test_stan_data,
+    generate_stan_data(
+      seedling_df, traits_df,
+      scale_cc = list(wet = scale_wet, dry = scale_dry),
+      season = "dry", rain = "intrain2", sp_pred = "pc12")
+  ),
+  tar_stan_mcmc(
+    test_fit,
+    c("stan/suv_ind.stan", "stan/suv.stan", "stan/suv_simple.stan"),
+    data = test_stan_data,
+    refresh = 0,
+    chains = 1,
+    parallel_chains = getOption("mc.cores", 3),
+    iter_warmup = 1,
+    iter_sampling = 1,
+    adapt_delta = 0.95,
+    max_treedepth = 15,
+    seed = 123,
+    return_draws = FALSE,
+    return_diagnostics = TRUE,
+    return_summary = TRUE,
+    summaries = list(
+      mean = ~mean(.x),
+      sd = ~sd(.x),
+      mad = ~mad(.x),
+      ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+      posterior::default_convergence_measures()
+    )
+  ),
+  # tar_target(
+  #   test_loo_suv,
+  #   my_loo(test_fit_mcmc_suv)
+  # ),
+  # tar_target(
+  #   test_loo_suv_ind,
+  #   my_loo(test_fit_mcmc_suv_ind)
+  # ),
+  # tar_target(
+  #   test_loo_suv_simple,
+  #   my_loo(test_fit_mcmc_suv_simple)
+  # ),
+  tar_map(
+    values = tibble(phy = c("phy", "het")),
+    tar_target(
+      fit_glm,
+      pre_glm(seedling_df, phy = phy)
+    )
+  ),
+  tar_map(
+    values = expand_grid(wet = c("wet", "dry"), phy = c("phy", "het")),
+    tar_target(
+      fit_glmer,
+      pre_glmm(seedling_df, wet = wet, phy = phy)
+    )
+  ),
+  tar_map(
+    values = expand_grid(wet = c("wet", "dry"), phy = c("phy", "het")),
+    tar_target(
+      fit2_glmer,
+      pre_glmm2(seedling_df, wet = wet, phy = phy)
+    )
+  ),
+  tar_map(
+    values = values |>
+      filter((season == "dry" & sp_pred %in% c("nlog", "pc12")) | (season == "wet" & sp_pred == "nlog")),
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_df, traits_df,
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
+        season, rain, sp_pred)),
+    tar_stan_mcmc(
+      fit,
+      "stan/suv_ind.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.9,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+  tar_map(
+    values = values |>
+      filter(season == "wet" & sp_pred == "pc12"),
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_df, traits_df,
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
+        season, rain, sp_pred)),
+    tar_stan_mcmc(
+      fit,
+      "stan/suv_ind.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.99,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+  tar_map(
+    values = values |> filter(sp_pred %in% c("ab", "ba")) |> filter(season == "dry"),
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_df, traits_df,
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
+        season, rain, sp_pred)),
+    tar_stan_mcmc(
+      fit,
+      "stan/suv_ind.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.9,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+  tar_map(
+    values = values |> filter(sp_pred %in% c("ab", "ba")) |> filter(season == "wet"),
+    tar_target(stan_data,
+      generate_stan_data(
+        seedling_df, traits_df,
+        scale_cc = list(wet = scale_wet, dry = scale_dry),
+        season, rain, sp_pred)),
+    tar_stan_mcmc(
+      fit,
+      "stan/suv_ind.stan",
+      data = stan_data,
+      refresh = 0,
+      chains = 4,
+      parallel_chains = getOption("mc.cores", 4),
+      iter_warmup = 1000,
+      iter_sampling = 2000,
+      adapt_delta = 0.99,
+      max_treedepth = 15,
+      seed = 123,
+      return_draws = FALSE,
+      return_diagnostics = TRUE,
+      return_summary = TRUE,
+      summaries = list(
+        mean = ~mean(.x),
+        sd = ~sd(.x),
+        mad = ~mad(.x),
+        ~posterior::quantile2(.x, probs = c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)),
+        posterior::default_convergence_measures()
+      )
+    )
+  ),
+  loo_map,
+  tar_combine(
+    loo_list,
+    loo_map,
+    command = list(!!!.x)
+  ),
+  tar_target(
+    loo_tbl,
+    generate_loo_tbl(loo_list)
+  ),
+  NULL
+)
 
-#   tar_target(
-#     beta_wet_consrain_sla,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = "SLA",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 5)
-#   ),
-#   tar_target(
-#     beta_wet_consrain_n,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = "N",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 8)
-#   ),
-#   tar_target(
-#     beta_wet_consrain_tlp,
-#     generate_beta_list(
-#       wet_trait$draws,
-#       wet_trait$data,
-#       x_lab = expression(pi[tlp]),
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 9)
-#   ),
+fig_list <- list(
+  # best models
+  tar_target(
+    dry_trait,
+    list(
+      data = stan_data_dry_intrain2_nlog,
+      summary = fit_summary_suv_ind_dry_intrain2_nlog,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_dry_intrain2_nlog)
+    )
+  ),
+  tar_target(
+    wet_trait,
+    list(
+      data = stan_data_wet_intrain2_nlog,
+      summary = fit_summary_suv_ind_wet_intrain2_nlog,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_wet_intrain2_nlog)
+    )
+  ),
+  tar_target(
+    dry_abund,
+    list(
+      data = stan_data_dry_intrain_ab,
+      summary = fit_summary_suv_ind_dry_intrain_ab,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_dry_intrain_ab)
+    )
+  ),
+  tar_target(
+    wet_abund,
+    list(
+      data = stan_data_wet_intrain_ab,
+      summary = fit_summary_suv_ind_wet_intrain_ab,
+      draws =  posterior::as_draws_df(fit_mcmc_suv_ind_wet_intrain_ab)
+    )
+  ),
+  tar_target(
+    dry_trait_suv_contour_plot, {
+      p <- dry_trait_suv_contour(dry_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/dry_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 260,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    wet_trait_suv_contour_plot, {
+      p <- wet_trait_suv_contour(wet_trait, alpha = 0.05)
+      my_ggsave(
+        "figs/wet_trait_suv_contour",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 130,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    coef_trait_plot, {
+      p <- coef_pointrange(dry_trait, wet_trait, comb = FALSE)
+      my_ggsave(
+        "figs/coef_trait",
+        p,
+        dpi = 300,
+        width = 173,
+        height = 86,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    sdmc_res_data,
+    generate_beta_list(dry_trait$draws, dry_trait$data, x_lab = "SDMC", y_lab = "ConS", ind_pred = 3, sp_pred = 3)
+  ),
+  tar_target(
+    sdmc_partial_plot, {
+      p <- beta_plot(sdmc_res_data)
+      my_ggsave(
+        "figs/sdmc_partial",
+        p,
+        dpi = 300,
+        width = 82,
+        height = 82,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    abund_res_data,
+    generate_beta_list(dry_abund$draws, dry_abund$data, x_lab = "ln Abundance", y_lab = "ConS", ind_pred = 3, sp_pred = 2)
+  ),
+  tar_target(
+    abund_partial_plot, {
+      p <- beta_plot(abund_res_data)
+      my_ggsave(
+        "figs/abund_partial",
+        p,
+        dpi = 300,
+        width = 82,
+        height = 82,
+        units = "mm"
+      )
+    },
+    format = "file"
+  ),
+  NULL
+)
 
-#   tar_target(
-#     beta_dry_rain_ldmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LDMC",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 2)
-#   ),
-#   tar_target(
-#     beta_dry_consrain_ldmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LDMC",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 2)
-#   ),
-#   tar_target(
-#     beta_dry_rain_sdmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "SDMC",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 3)
-#   ),
-#   tar_target(
-#     beta_dry_cons_sdmc,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "SDMC",
-#       y_lab  = "ConS~effect",
-#       ind_pred = 3,
-#       sp_pred = 3)
-#   ),
-#   tar_target(
-#     beta_dry_rain_lt,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LT",
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 6)
-#   ),
-#   tar_target(
-#     beta_dry_consrain_lt,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = "LT",
-#       y_lab  = "ConS%*%Rainfall~effect",
-#       ind_pred = 8,
-#       sp_pred = 6)
-#   ),
-#   tar_target(
-#     beta_dry_rain_c13,
-#     generate_beta_list(
-#       dry_trait$draws,
-#       dry_trait$data,
-#       x_lab = expression(delta*C[13]),
-#       y_lab = "Rain~effect",
-#       ind_pred = 7,
-#       sp_pred = 7)
-#   ),
+diagnostics_mapped <- tar_map(
+    values = list(value = rlang::syms(str_c("fit_diagnostics_suv_ind_", data_names)), data_names = data_names),
+    tar_target(
+      diagnostics,
+      value |> mutate(model = data_names)
+    )
+  )
+tar_combined_diagnostics_data <- tar_combine(
+  combined_diagnostics,
+  diagnostics_mapped[["diagnostics"]],
+  command = dplyr::bind_rows(!!!.x)
+)
 
-#   tar_target(
-#     beta_par_wet_traits, {
-#       p <- beta_plot(beta_wet_rain_n) +
-#         beta_plot(beta_wet_rain_tlp) +
-#         plot_spacer() +
-#         beta_plot(beta_wet_consrain_sla) +
-#         beta_plot(beta_wet_consrain_n) +
-#         beta_plot(beta_wet_consrain_tlp) +
-#         plot_layout(ncol = 3, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_par_wet_traits",
-#         p,
-#         dpi = 300,
-#         width = 110,
-#         height = 75,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
-#   tar_target(
-#     beta_raw_wet_traits, {
-#       p <- beta_plot(beta_wet_rain_n, partial = FALSE) +
-#         beta_plot(beta_wet_rain_tlp, partial = FALSE) +
-#         plot_spacer() +
-#         beta_plot(beta_wet_consrain_sla, partial = FALSE) +
-#         beta_plot(beta_wet_consrain_n, partial = FALSE) +
-#         beta_plot(beta_wet_consrain_tlp, partial = FALSE) +
-#         plot_layout(ncol = 3, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_raw_wet_traits",
-#         p,
-#         dpi = 300,
-#         width = 110,
-#         height = 75,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
+summary_mapped <- tar_map(
+    values = list(value = rlang::syms(str_c("fit_summary_suv_ind_", data_names)), data_names = data_names),
+    tar_target(
+      summary,
+      value |> mutate(model = data_names)
+    )
+  )
+tar_combined_summary_data <- tar_combine(
+  combined_summary,
+  summary_mapped[["summary"]],
+  command = dplyr::bind_rows(!!!.x)
+)
 
-#   tar_target(
-#     beta_par_dry_traits, {
-#       p <- beta_plot(beta_dry_cons_sdmc) +
-#         beta_plot(beta_dry_rain_sdmc) +
-#         beta_plot(beta_dry_rain_ldmc) +
-#         beta_plot(beta_dry_rain_lt) +
-#         beta_plot(beta_dry_rain_c13) +
-#         beta_plot(beta_dry_consrain_ldmc) +
-#         beta_plot(beta_dry_consrain_lt) +
-#         plot_spacer() +
-#         plot_layout(ncol = 4, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_par_dry_traits",
-#         p,
-#         dpi = 300,
-#         width = 173,
-#         height = 85,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
-#   tar_target(
-#     beta_raw_dry_traits, {
-#       p <- beta_plot(beta_dry_cons_sdmc, partial = FALSE) +
-#         beta_plot(beta_dry_rain_sdmc, partial = FALSE) +
-#         beta_plot(beta_dry_rain_ldmc, partial = FALSE) +
-#         beta_plot(beta_dry_rain_lt, partial = FALSE) +
-#         beta_plot(beta_dry_rain_c13, partial = FALSE) +
-#         beta_plot(beta_dry_consrain_ldmc, partial = FALSE) +
-#         beta_plot(beta_dry_consrain_lt, partial = FALSE) +
-#         plot_spacer() +
-#         plot_layout(ncol = 4, nrow = 2) +
-#         plot_annotation(tag_levels = "a") &
-#         theme(
-#           text = element_text(size = 8),
-#           plot.tag = element_text(face = "bold"))
-#       my_ggsave(
-#         "figs/beta_raw_dry_traits",
-#         p,
-#         dpi = 300,
-#         width = 173,
-#         height = 85,
-#         units = "mm"
-#       )
-#     },
-#     format = "file"
-#   ),
+# Define a list of model names
+models <- c(
+  "dry_intrain_pc12",
+  "dry_intrain2_nlog",
+  "wet_intrain_pc12",
+  "wet_intrain2_nlog",
+  "dry_intrain_ab",
+  "wet_intrain_ab"
+)
 
-# best models
-tar_map(
-  values = list(
-    x = rlang::syms(c(
-      "fit_summary_logistic_simple_stan_data_dry_het_intrain2_nlog",
-      "fit_summary_logistic_simple_stan_data_wet_phy_norain_nlog",
-      "fit_summary_logistic_simple_stan_data_wet_phy_intrain2_nlog",
-      "fit_summary_logistic_simple_stan_data_dry_het_intrain_ab",
-      "fit_summary_logistic_simple_stan_data_wet_phy_rain_ab")),
-    stan_data = rlang::syms(c(
-      "stan_data_dry_het_intrain2_nlog",
-      "stan_data_wet_phy_norain_nlog",
-      "stan_data_wet_phy_intrain2_nlog",
-      "stan_data_dry_het_intrain_ab",
-      "stan_data_wet_phy_rain_ab")),
-    path =
-      str_c(
-      "data/",
-       c("dry_het_intrain2_traits",
-        "wet_phy_norain_traits",
-        "wet_phy_intrain2_traits",
-        "dry_het_intrain_abund",
-        "wet_phy_rain_abund"),
-      "_gamma.csv")),
+# Construct 'x' and 'stan_data' lists based on the model names
+x <- rlang::syms(str_c("fit_summary_suv_ind_", models))
+stan_data <- rlang::syms(str_c("stan_data_", models))
+
+# Define a helper function to map model names to paths
+get_path <- function(model_name) {
+  str_c("data/", model_name, "_gamma.csv")
+}
+
+# Construct the path list based on the model names
+path <- purrr::map_chr(models, get_path)
+
+# Use 'tar_map' function with the derived variables
+best_csv_mapped <- tar_map(
+  values = list(x = x, stan_data = stan_data, path = path),
   tar_target(
     gamma_out_csv, {
-      create_gamma_tab(x, stan_data)  |>
-        my_write_csv(path)
+      create_gamma_tab(x, stan_data)  |> my_write_csv(path)
     },
     format = "file"
   )
-),
+)
 
-  # tar_quarto(
-  #   bayes_check_html,
-  #   "docs/bayes_check.qmd",
-  # ),
-  # tar_quarto(
-  #   si_pdf,
-  #   "ms/SI.qmd"
-  # ),
-  # tar_quarto(
-  #   main_docx,
-  #   "ms/main.qmd"
-  # ),
-
+util_list <- list(
+  diagnostics_mapped,
+  tar_combined_diagnostics_data,
+  summary_mapped,
+  tar_combined_summary_data,
+  tar_target(
+    diagnostic_tables_csv,
+    write_diagnostics_tables(combined_summary, combined_diagnostics, loo_tbl, "data/diagnostics_tables.csv"),
+    format = "file"
+  ),
+  best_csv_mapped,
   NULL
- )
+)
 
 
-list(data_, main_)
+list(data_, main_) |>
+  append(fig_list) |>
+  append(util_list)

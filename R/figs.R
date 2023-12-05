@@ -95,8 +95,8 @@ coef_pointrange_wrapper <- function(data) {
     geom_vline(xintercept = 0, lty = 2, col = "grey60") +
     geom_linerange(aes(xmin = ll, xmax = hh, col = season),
       position = position_dodge(width = 0.5)) +
-    geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
-      position = position_dodge(width = 0.5)) +
+    # geom_linerange(aes(xmin = l, xmax = h, col = season), size = 2,
+    #   position = position_dodge(width = 0.5)) +
     geom_point(aes(x = m, col = season, fill = season_sig), shape = 21, size = 2.5,
       position = position_dodge(width = 0.5)) +
     scale_colour_manual(
@@ -495,24 +495,24 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
   p2 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 2) |>
     subplot_fun(low = FALSE) +
     ggtitle("High LDMC species")
-  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-    subplot_fun(low = TRUE) +
-    ggtitle("Low SDMC species")
-  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 3) |>
-    subplot_fun(low = FALSE) +
-    ggtitle("High SDMC species")
-  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-    subplot_fun(low = TRUE) +
-    ggtitle("Low LT species")
-  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
-    subplot_fun(low = FALSE) +
-    ggtitle("High LT species")
-  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+  p3 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~delta*C[13]~species))
-  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 7) |>
+  p4 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 4) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~delta*C[13]~species))
+  p5 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
+    subplot_fun(low = TRUE) +
+    ggtitle("Low LT species")
+  p6 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 10) |>
+    subplot_fun(low = FALSE) +
+    ggtitle("High LT species")
+  p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+    subplot_fun(low = TRUE) +
+    ggtitle(expression(Low~pi[tlp]))
+  p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
+    subplot_fun(low = FALSE) +
+    ggtitle(expression(High~pi[tlp]))
 
   (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
      plot_annotation(tag_levels = "a") &
@@ -522,27 +522,20 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
 }
 
 wet_trait_suv_contour <- function(wet_trait, alpha = 0.05, keep_cons = FALSE) {
-  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 5, keep_cons) |>
-    subplot_fun(low = TRUE) +
-    ggtitle("Low SLA species")
-  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 5, keep_cons) |>
-    subplot_fun(low = FALSE) +
-    ggtitle("High SLA species")
-
-  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 8, keep_cons) |>
+  p1 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle("Low N species")
-  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 8, keep_cons) |>
+  p2 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle("High N species")
-  p5 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
+  p3 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 6, keep_cons) |>
     subplot_fun(low = TRUE) +
     ggtitle(expression(Low~pi[tlp]~species))
-  p6 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 9, keep_cons) |>
+  p4 <- generate_suv_pred(wet_trait$summary, wet_trait$data, alpha = 0.05, 6, keep_cons) |>
     subplot_fun(low = FALSE) +
     ggtitle(expression(High~pi[tlp]~species))
 
-  (p1 + p2) / (p3 + p4) / (p5 + p6) +
+  (p1 + p2) / (p3 + p4) +
      plot_annotation(tag_levels = "a") &
      theme(
       text = element_text(size = 8),
@@ -565,7 +558,7 @@ generate_beta_list <- function(draws, stan_data, x_lab, y_lab, ind_pred, sp_pred
     as.matrix()
 
   par_res <- NULL
-  for (i in 1:4000) {
+  for (i in 1:8000) {
     res <- beta[i, ] - gamma[i, ] %*% stan_data$u
     res <- as.numeric(res)
     pred <- gamma[i, 1] + gamma[i, sp_pred] * trait
@@ -614,14 +607,14 @@ beta_plot <- function(beta_list, partial = TRUE ) {
   }
   ggplot(beta_list$pred_data, aes(x = trait))  +
     geom_line(aes(y = m))  +
-    geom_ribbon(aes(ymin = l, ymax = h), alpha = 0.5) +
-    geom_ribbon(aes(ymin = ll, ymax = hh), alpha = 0.4) +
-    geom_point(data = beta_list$res_data, aes(y = res_m), size = 0.5) +
+    # geom_ribbon(aes(ymin = l, ymax = h), alpha = 0.5) +
+    # geom_ribbon(aes(ymin = ll, ymax = hh), alpha = 0.4) +
+    geom_point(data = beta_list$res_data, aes(y = res_m)) +
     # geom_line(aes(y = m), col = my_col[1])  +
     # geom_ribbon(aes(ymin = l, ymax = h), fill = my_col[2], alpha = 0.8) +
     # geom_ribbon(aes(ymin = ll, ymax = hh), fill = my_col[2], alpha = 0.5) +
     # geom_point(data = beta_list$res_data, aes(y = res_m), col = my_col[1]) +
-    # geom_errorbar(data = beta_list$res_data, aes(ymin = res_l, ymax = res_h)) +
+    geom_errorbar(data = beta_list$res_data, aes(ymin = res_l, ymax = res_h), linewidth = 0.25) +
     ylab(eval(parse(text = beta_list$y_lab))) +
     xlab(beta_list$x_lab) +
     theme_bw()
@@ -629,39 +622,60 @@ beta_plot <- function(beta_list, partial = TRUE ) {
 }
 
 
-cc_line <- function(wet, dry) {
+cc_line <- function(wet, dry, all) {
+  wet <- wet |> mutate(season = "Wet")
+  dry <- dry |> mutate(season = "Dry")
+  all <- all |> mutate(season = "All")
+
   wet_cc_het <- which(wet$het == max(wet$het)) / nrow(wet)
-  wet_cc_phy <- which(wet$phy == max(wet$phy)) / nrow(wet)
   dry_cc_het <- which(dry$het == max(dry$het)) / nrow(dry)
+  wet_cc_phy <- which(wet$phy == max(wet$phy)) / nrow(wet)
   dry_cc_phy <- which(dry$phy == max(dry$phy)) / nrow(dry)
+  all_cc_het <- which(all$het == max(all$het)) / nrow(all)
+  all_cc_phy <- which(all$phy == max(all$phy)) / nrow(all)
 
-  plot_fun <- function(data) {
-    ggplot(data, aes(x = cc, y = phy)) +
-      geom_line() +
-      xlab("c") +
-      ylab("Log-likelihood") +
-      my_theme() +
-      theme(
-        axis.title.x = element_text(face = "italic")
-      )
-  }
 
-  p1 <- plot_fun(dry) +
-    geom_vline(xintercept = dry_cc_het, linetype = "dashed") +
-    ggtitle("Dry season:\nheterospecific density")
-  p2 <- plot_fun(dry) +
-    geom_vline(xintercept = dry_cc_phy, linetype = "dashed") +
-    ggtitle("Dry season:\nphylogenetic density")
-  p3 <- plot_fun(wet) +
-    geom_vline(xintercept = wet_cc_het, linetype = "dashed") +
-    ggtitle("Rainy season:\nheterospecific density")
-  p4 <- plot_fun(wet) +
-    geom_vline(xintercept = wet_cc_phy, linetype = "dashed") +
-    ggtitle("Rainy season:\nphylogenetic density")
+  fig_df <- bind_rows(all, wet, dry) |>
+    pivot_longer(het:phy) #|>
 
-  p1 + p2 + p3 + p4 +
-    plot_layout(ncol = 2, heights = c(1, 1)) +
-    plot_annotation(tag_levels = "a")
+
+  c_df <- fig_df |>
+    dplyr::select(season, name, value) |>
+    group_by(season, name) |>
+    summarize(lik = max(value)) |>
+    ungroup() |>
+    distinct() |>
+    mutate(xint = case_when(
+      season == "All" & name == "het" ~ all_cc_het,
+      season == "All" & name == "phy" ~ all_cc_phy,
+      season == "Wet" & name == "het" ~ wet_cc_het,
+      season == "Wet" & name == "phy" ~ wet_cc_phy,
+      season == "Dry" & name == "het" ~ dry_cc_het,
+      season == "Dry" & name == "phy" ~ dry_cc_phy,
+    )) |>
+    mutate(label = sprintf("Best~italic(c) == '%.2f'", xint)) |>
+    mutate(
+      name = ifelse(name == "het", "Conspecific/Heterospecific", "Conspecific/Phylogenetic")
+    )
+
+
+  fig_df2 <- fig_df |>
+    mutate(
+      name = ifelse(name == "het", "Conspecific/Heterospecific", "Conspecific/Phylogenetic")
+    )
+
+  ggplot() +
+    geom_line(data = fig_df2, aes(x = cc, y = value)) +
+    xlab("c") +
+    ylab("Log-likelihood") +
+    facet_grid(season ~ name, scales = "free_y") +
+    geom_vline(data = c_df, aes(xintercept = xint), linetype = "dashed") +
+    geom_text(data = c_df,
+      aes(x = 0.75, y = lik, label = label, vjust = 3), parse = TRUE) +
+    my_theme() +
+    theme(
+      axis.title.x = element_text(face = "italic")
+    )
 }
 
 
@@ -686,7 +700,6 @@ my_ggpairs <- function(trait_csv) {
       LDMC,
       SD,
       SDMC,
-      Chl,
       C13,
       C,
       log_N,
@@ -741,4 +754,91 @@ my_ggpairs <- function(trait_csv) {
       axis.text.x = element_text(size = 6, angle = 45, hjust = 0.8)
     )
 }
+
+
+pca_panel <- function(traits_df) {
+
+  traits <- traits_df |>
+    mutate(la = log(la)) |>
+    mutate(lt = log(lt)) |>
+    mutate(n = log(n)) |>
+    mutate(sla = log(sla)) |>
+    rename(
+      log_LA = la,
+      log_LT = lt,
+      log_N = n,
+      log_SLA = sla,
+      WD = wd,
+      SDMC = sdmc,
+      LDMC = ldmc,
+      CN = cn,
+      C = c,
+      C13 = c13) |>
+    dplyr::select(-ab, -ba, -latin)
+
+  pca <- PCA(traits, graph = FALSE)
+
+  p_eig <- fviz_eig(pca)
+
+# Convert the variable coordinates to a data frame
+  var_coords <- as.data.frame(get_pca_var(pca)$coord)
+  rownames(var_coords) <- rownames(get_pca_var(pca)$coord)
+
+  p12 <- fviz_pca_var(pca, geom = "", arrows = TRUE) +
+    geom_segment(data = var_coords,
+      aes(x = 0, y = 0, xend = Dim.1, yend = Dim.2),
+      arrow = arrow(type = "closed", length = unit(0.05, "inches")),
+      linewidth = 0.5,
+      color = "black")  +
+    geom_text_repel(
+      data = var_coords,
+      aes(x = Dim.1, y = Dim.2, label = rownames(var_coords)),
+      size = 4,    # Adjust text size
+      # box.padding = unit(0.35, "lines"),   # Adjust box padding
+      # point.padding = unit(0.3, "lines"),  # Adjust point padding
+      segment.color = 'grey50',
+      seed = 123
+    )
+
+  p_eig + p12 +
+    plot_annotation(tag_levels = "a")
+
+}
+
+
+phy_het_points <- function(seedling_df) {
+  formula <- y ~ x  # Define the formula for the regression line
+
+  seedling_df <- seedling_df |>
+    mutate(season = if_else(season == "dry", "Dry", "Rainy"))
+
+  p1 <- ggplot(seedling_df, aes(x = shet, y = sphy)) +
+    geom_pointdensity() +
+    scale_color_viridis_c() +
+    stat_smooth(method = "lm", formula = formula, se = FALSE, size = 0.5) +
+    stat_poly_eq(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+                 formula = formula, parse = TRUE) +
+    facet_grid(~season) +
+    xlab("Heterospecific seedling density") +
+    ylab("Phylogenetic seedling density")
+
+  p2 <- ggplot(seedling_df, aes(x = ahet, y = aphy)) +
+    geom_pointdensity() +
+    scale_color_viridis_c() +
+    stat_smooth(method = "lm", formula = formula, se = FALSE, size = 0.5) +
+    stat_poly_eq(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+                 formula = formula, parse = TRUE) +
+    facet_grid(~season) +
+    xlab("Heterospecific tree density") +
+    ylab("Phylogenetic tree density")
+
+  p1 / p2 +
+    plot_annotation(tag_levels = "a") &
+    my_theme() &
+    theme(
+      legend.position = "none"
+    )
+
+}
+
 

@@ -1,0 +1,144 @@
+---
+fontsize: 12pt
+geometry: margin=1in
+link-citations: true
+csl: templates/ecology-letters.csl
+bibliography: templates/seedling.bib
+crossref:
+  fig-title: Fig.
+  fig-prefix: Fig.
+  eq-prefix: Eq.
+format:
+  docx:
+    toc: false
+    number-sections: false
+    highlight-style: github
+    html-math-method: katex
+  pdf:
+    toc: false
+    keep-tex: true
+    pdf-engine: pdflatex
+    include-in-header:
+      text: |
+        \usepackage{xr}
+        \usepackage[default]{sourcesanspro}
+        \usepackage{sourcecodepro}
+        \usepackage{lineno}
+        \linenumbers
+  html:
+    theme: spacelab #readable #sandstone #spacelab #flatly
+    toc: true
+    toc-depth: 2
+    toc-title: Contents
+    self-contained: true
+    smooth-scroll: true
+    highlight-style: github
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(here)
+library(kableExtra)
+```
+
+```{r}
+source(here("R", "stan.R"))
+source(here("R", "render.R"))
+```
+
+# Survival models
+
+We first modeled seedling survival at the individual level to assess whether neighbor densities have different effects between the dry and rainy seasons and whether phylogenetic-weighted neighbor densities affect seedling survival differently than the heterospecific neighbor densities.
+We found strong positive correlations between heterospecific neighbor densities and phylogenetic-weighted neighbor densities (Figure S5).
+Thus, the effects of phylogenetic-weighted neighbor densities and heterospecific neighbors on seedling survival were comparable (Table S1).
+We also detected seasonal interactions with neighbor densities (Table S1).
+We will focus on heterospecific neighbor density in our subsequent trait-mediated survival models for each season separately based on these findings.
+These preliminary models also incorporated a scaling parameter c to account for nonlinear effects on a logistic scale (see below).
+
+# Traits and abundance mediate survival models
+
+Since the effect of tree neighbors on seedling survival is nonlinear on a logistic scale [@Detto2019], we performed a grid search for the scaling parameter *c* between 0 and 1 in 0.01 increments that maximized the likelihood of the following survival model,
+
+$$
+\mathrm{logit}(p_i) = b_0 + b_1 Z_{1i}^c + b_2 Z_{2i}^c,
+$$
+
+where $p_i$ is the survival probability of the *i*th individual, and $Z_1$ and $Z_2$ are distance-weighted sums of basal areas of conspecifics and heterospecifics respectively.
+We found the best estimates of *c* to be 0.27 for the dry season, 0.24 for the rainy season, and 0.26 for the combined analysis of both seasons (`r s_fig("cc_line")`).
+
+We built Bayesian hierarchical models that include variation among species in the effects of conspecific and heterospecific neighbors and rainfall on survival.
+Survival ($s$) of seedling record *i* of individual *m* for species *j* in census *t* in plot *p* in seedling station *s* was modeled using the Bernoulli distribution ($\mathcal{B}$):
+
+$$
+s_{i,j,m,s,t,p} \sim \mathcal{B}(p_{i,j,m,s,t,p}),
+$$
+
+$$
+\mathrm{logit}(p_{i,j,m,s,t,p}) = \boldsymbol{x_{i}} \cdot \boldsymbol{\beta_{j}} + \eta_m + \phi_s + \psi_p + \xi_t,
+$$
+
+where $\boldsymbol{\beta_{j}} = \left[\beta_{1,j}, \beta_{2,j}, \ldots, \beta_{K,j} \right]$ is the coefficient row *K*-vector for species *j*,
+*K* is the number of predictors for an individual seedling,
+$\boldsymbol{x_i} = \left[x_{i,1},x _{i,2}, \ldots,x_{i,K} \right]$ is the vector of predictors of size *K* for an individual seedling,
+$\eta_m$ is the random effect for seedling individual,
+$\phi_s$ is the random effect for seedling plots,
+$\psi_p$ is the random effect for seedling stations, and
+$\xi_t$ is the random effect for different censuses
+(note that $\cdot$ denotes dot product).
+The set of predictor variables ($\boldsymbol{x_i}$) includes
+intercepts,
+log of seedling heights,
+rainfall,
+densities of conspecific (*ConS*) and heterospecific (*HetS*) seedlings,
+densities of conspecific (*ConA*) and heterospecific (*HetA*) trees that are scaled by 0.27 for the dry season or 0.24 for the rainy season,
+and the interactions of rains with *ConS*, with *HetS*, with *ConA* and with *HetA*.
+
+In the species-level regression, the coefficients ($\boldsymbol{\beta_{1-K}}$) of each species *j* were assumed to have a multivariate normal distribution,
+
+$$
+\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \Sigma,
+$$
+
+where $\boldsymbol{u_{j}} = \left[u_{1,j}, u_{2,j}, \ldots, u_{L,j} \right]$ is the row vector of predictors of size *L* for species *j*, with *L* indicaiting the number of predictors for each species, including an intercept,
+$\boldsymbol{\gamma_k} = \left[\gamma_{k,1}, \gamma_{k,2}, \ldots, \gamma_{k,L} \right]$ is the coefficient *L*-vector for *k*th predictor in the individual-level regression, and
+$\Sigma$ represents the covariance matrix of the coefficients.
+We modeled four different sets of species-level predictors separately.
+The set of species-level predictor variables ($\boldsymbol{u_j}$) includes
+1) leaf and stem traits (
+LDMC,
+SDMC,
+LA,
+SLA,
+LT,
+$\delta$C~13~,
+C,
+N, and
+$\pi$~tlp~),
+2) principal components of the traits (PC1 and PC2),
+3) abundance (number of individuals), and
+4) basal area.
+The row vector $\gamma_{k,1}$ represents the average effects of each individual-level predictor (e.g., *ConS*) across species,
+whereas $\gamma_{k, l}$ ($l \ne 1$), represents the effects of the *l*-th individual-level predictor (e.g., SLA) on the variation in the strength of each individual-level predictor (e.g., variation in the strength of *ConS* among species).
+To allow comparisons among parameter estimates, the individual-level predictors ($\boldsymbol{x_i}$) and the species-level predictors ($\boldsymbol{u_j}$) were scaled to a mean of 0 and a standard deviation of 1 within each season and across species, respectively.
+This scaling was applied separately for each season for $\boldsymbol{x_i}$ and across all species for $\boldsymbol{u_j}$.
+The complete model details, including the Cholesky factorization and prior information, are provided in Appendix S1.
+
+Posterior distributions of all parameters were estimated using the No-U-Turn Sampler (NUTS), an adaptive variant of the Hamiltonian Monte Carlo (HMC), algorithm implemented in Stan [@Carpenter2017] using the weakly-informative priors [@Gelman2008].
+The HMC algorithm uses gradient information to propose new states in the Markov chain, leading to a more efficient exploration of the target distribution than traditional Markov chain Monte Carlo (MCMC) methods that rely on random proposals [@Carpenter2017].
+This efficiency allows us to achieve convergence with fewer iterations than traditional MCMC methods.
+Four independent chains were run for 2,000 iterations for each model with a warm-up of 1,000 iterations.
+Convergence of the posterior distribution was assessed using the Gelman-Rubin statistic with a convergence threshold of 1.1 [@Gelman2013], ensuring effective sample sizes greater than 400 [@Vehtari2021], and by monitoring divergent transitions [@Betancourt2016] for all parameters.
+
+All statistical analyses were conducted in R version 4.3.1 [@RCoreTeam2022] using the R package *targets* version 1.3.2 for workflow management [@Landau2021].
+Codes and datasets are available at
+<https://github.com/mattocci27/trait-ndd>
+and
+<https://doi.org/10.57760/sciencedb.02276>,
+respectively.
+
+# References

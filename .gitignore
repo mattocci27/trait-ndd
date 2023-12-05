@@ -93,4 +93,5 @@ data-raw
 
 rsync.sh
 sftp.sh
+sftp2.sh
 test.R

@@ -24,4 +24,3 @@ From: mattocci/radian-verse:4.3.1
 
   mkdir -p  /opt/cmdstan \
     && Rscript -e "cmdstanr::install_cmdstan(dir = '/opt/cmdstan', release_url = 'https://ghproxy.com/https://github.com/stan-dev/cmdstan/releases/download/v2.33.1/cmdstan-2.33.1.tar.gz', cores = 8, timeout = 3600)"
-
