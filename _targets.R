@@ -166,8 +166,8 @@ main_ <- list(
         "figs/pairs",
         p,
         dpi = 300,
-        width = 210,
-        height = 210,
+        width = 180,
+        height = 180,
         units = "mm"
       )
     },
