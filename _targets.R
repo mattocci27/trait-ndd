@@ -466,7 +466,7 @@ fig_list <- list(
       my_ggsave(
         "figs/coef_trait",
         p,
-        dpi = 600,
+        dpi = 300,
         width = 173,
         height = 86,
         units = "mm"
