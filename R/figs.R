@@ -52,21 +52,18 @@ create_stan_tab <- function(draws) {
 }
 
 #' @title Coef plot
-coef_pointrange <- function(dry_trait, wet_trait, comb = TRUE) {
+coef_pointrange <- function(dry_data, wet_data, comb = TRUE) {
     if (comb) {
-      data <- bind_rows(
-        generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry"),
-        generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy"))
+      data <- bind_rows(dry_data, wet_data)
       coef_pointrange_wrapper(data)
     } else {
-      dry_data <- generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry")
-      wet_data <- generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy")
       p1 <- coef_pointrange_wrapper(dry_data)
       p2 <- coef_pointrange_wrapper(wet_data)
       p1 + p2 +
         plot_annotation(tag_levels = "a") &
         theme(
-          text = element_text(size = 8),
+          # text = element_text(size = 8),
+          axis.text = element_text(size = 8.5),
           plot.tag = element_text(face = "bold")
         )
     }

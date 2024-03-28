@@ -453,12 +453,20 @@ fig_list <- list(
     format = "file"
   ),
   tar_target(
+    dry_data_coef,
+    generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry")
+  ),
+  tar_target(
+    wet_data_coef,
+    generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy")
+  ),
+  tar_target(
     coef_trait_plot, {
-      p <- coef_pointrange(dry_trait, wet_trait, comb = FALSE)
+      p <- coef_pointrange(dry_data_coef, wet_data_coef, comb = FALSE)
       my_ggsave(
         "figs/coef_trait",
         p,
-        dpi = 300,
+        dpi = 600,
         width = 173,
         height = 86,
         units = "mm"
