@@ -47,10 +47,10 @@ The function `tar_make()` executes a pipeline using a single thread, while `tar_
 
 Requirements for Local Execution:
 
-- cmdstan 2.29.2
+- cmdstan 2.33.1
 - Quarto
 - latexdiff
-- R (4.2.1)
+- R (4.3.1)
 	- renv (`renv::restore()` will install all the R packages)
 
 Requirements for Execution within the Apptainer Container:
