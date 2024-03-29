@@ -510,6 +510,25 @@ fig_list <- list(
     },
     format = "file"
   ),
+  tar_target(
+    sdmc_abund_parital_plot, {
+      p1 <- beta_plot(sdmc_res_data)
+      p2 <- beta_plot(abund_res_data)
+      p <- p1 + p2 +
+        plot_annotation(tag_levels = "a") +
+        theme(
+          plot.tag = element_text(face = "bold")
+        )
+      my_ggsave(
+        "figs/sdmc_abund_partial",
+        p,
+        dpi = 300,
+        width = 110,
+        height = 55,
+        units = "mm"
+      )
+    }
+  ),
   NULL
 )
 
