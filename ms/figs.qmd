@@ -60,28 +60,14 @@ Note that predictors are scaled to a mean of 0 andstandard deviation of 1 within
 \newpage
 
 
-**Figure 2**
-Relatonships between species traits and individual-level predictors on survival rates in dry seasons.
-Points and bars indicate posteriors means and 95% credible intervals (CIs) of coefficients for each species ($\beta_{k,j}$), respectively.
-Slopes indicate the relative influence of functional traits on the response of species survival to each individual-level predictors ($\gamma_{k,l}$).
-The 95% CIs are presented as the shaded area.
-Note that the effecs of traits of not interest are controled for the slopes ($\gamma_{k,l}$) but not controlled for the points ($\beta_{k,j}$).
-A-C: the species-specific response to conspecific seedling density (ConS; $\beta_{3,j}$) and its relationship with functional
-(SDMC: stem dry matter content;
-C: carbon concertration;
-Chlorophyll: leaf chlorophyll content);
-D-F: the species-specific response to rainfall ($\beta_{7,j}$) and its relationship with functional traits
-(LDMC: leaf dry matter content,
-$\delta$C~13~: stable carbon isotope composition,
-$\pi$~tlp~: leaf turgor loss point);
-G-J: the species-specific response to the interaction between ConS and rainfall ($\beta_{8,j}$) and its relationship with functional traits
-(LDMC,
-$\pi$~tlp~,
-$\delta$C~13~,
-ln LT: log of leaf thickness).
+**Figure 2*
+Predicted relationships during the dry seasons between the effects of conspecific seedling density (ConS) on seedling survivals and:
+a) stem dry matter content (SDMC);
+b) logarithm of abundance.
+The strength of the CNDD effect caused by conspecific seedling density declined significantly with increased SDMC and abundance (with positive ConS values indicating weaker CNDD).
+The line represents the predicted median of the relationship, the points show coefficients, and the vertical bars indicate 95% confidence intervals (for detailed parameter estimates, see Appendix S1: Table S5).
 
-![](../figs/beta_dry.pdf)
-
+![](../figs/sdmc_abund_partial.pdf)
 
 \newpage
 

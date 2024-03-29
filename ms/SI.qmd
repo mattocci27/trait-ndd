@@ -90,6 +90,8 @@ A pairwise plot matrix of functional traits used in this study.
 The diagonal displays density plots of each variable,
 the upper diagonal shows the Pearson correlation coefficients between pairs of variables, and
 the lower diagonal presents scatter plots of the variable pairs.
+ab: abundance (i.e., number of individuals),
+ba: basal area,
 LDMC: leaf dry matter content,
 SD: stem density,
 SDMC: stem dry matter content,
@@ -101,7 +103,7 @@ tlp: leaf turgor loss point,
 LA: leaf area,
 SLA: specific leaf area,
 LT: leaf thickness.
-N, LA, SLA, and LT are natural log-transformed.
+Abundance, basal area, N, LA, SLA, and LT are natural log-transformed.
 
 ![](`r here::here("figs/pairs.pdf")`)
 

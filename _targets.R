@@ -166,8 +166,8 @@ main_ <- list(
         "figs/pairs",
         p,
         dpi = 300,
-        width = 210,
-        height = 210,
+        width = 180,
+        height = 180,
         units = "mm"
       )
     },
@@ -453,8 +453,16 @@ fig_list <- list(
     format = "file"
   ),
   tar_target(
+    dry_data_coef,
+    generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry")
+  ),
+  tar_target(
+    wet_data_coef,
+    generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy")
+  ),
+  tar_target(
     coef_trait_plot, {
-      p <- coef_pointrange(dry_trait, wet_trait, comb = FALSE)
+      p <- coef_pointrange(dry_data_coef, wet_data_coef, comb = FALSE)
       my_ggsave(
         "figs/coef_trait",
         p,
@@ -501,6 +509,25 @@ fig_list <- list(
       )
     },
     format = "file"
+  ),
+  tar_target(
+    sdmc_abund_parital_plot, {
+      p1 <- beta_plot(sdmc_res_data)
+      p2 <- beta_plot(abund_res_data)
+      p <- p1 + p2 +
+        plot_annotation(tag_levels = "a") +
+        theme(
+          plot.tag = element_text(face = "bold")
+        )
+      my_ggsave(
+        "figs/sdmc_abund_partial",
+        p,
+        dpi = 300,
+        width = 110,
+        height = 55,
+        units = "mm"
+      )
+    }
   ),
   NULL
 )

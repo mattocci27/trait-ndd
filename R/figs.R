@@ -52,21 +52,18 @@ create_stan_tab <- function(draws) {
 }
 
 #' @title Coef plot
-coef_pointrange <- function(dry_trait, wet_trait, comb = TRUE) {
+coef_pointrange <- function(dry_data, wet_data, comb = TRUE) {
     if (comb) {
-      data <- bind_rows(
-        generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry"),
-        generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy"))
+      data <- bind_rows(dry_data, wet_data)
       coef_pointrange_wrapper(data)
     } else {
-      dry_data <- generate_coef_data(dry_trait$draws, dry_trait$data, season = "Dry")
-      wet_data <- generate_coef_data(wet_trait$draws, wet_trait$data, season = "Rainy")
       p1 <- coef_pointrange_wrapper(dry_data)
       p2 <- coef_pointrange_wrapper(wet_data)
       p1 + p2 +
         plot_annotation(tag_levels = "a") &
         theme(
-          text = element_text(size = 8),
+          # text = element_text(size = 8),
+          axis.text = element_text(size = 8.5),
           plot.tag = element_text(face = "bold")
         )
     }
@@ -687,16 +684,20 @@ cc_line <- function(wet, dry, all) {
 
 # tar_load(trait_csv)
 
-my_ggpairs <- function(trait_csv) {
-  trait <- read_csv(trait_csv) #|>
+my_ggpairs <- function(traits_csv) {
+  trait <- read_csv(traits_csv)
 
   trait2 <- trait |>
     mutate(log_LA = log(LA)) |>
     mutate(log_SLA = log(SLA)) |>
     mutate(log_LT = log(LT)) |>
     mutate(log_N = log(N)) |>
+    mutate(log_ab = log(ab)) |>
+    mutate(log_ba = log(BA)) |>
     rename(SD = WD) |>
     dplyr::select(
+      log_ab,
+      log_ba,
       LDMC,
       SD,
       SDMC,
@@ -721,7 +722,7 @@ my_ggpairs <- function(trait_csv) {
 #Custom function to modify 'cor' plots
   custom_cor <- function(data, mapping, ...){
     # Create the default 'cor' plot
-    p <- ggally_cor(data, mapping, size = 3, ...)
+    p <- ggally_cor(data, mapping, size = 2.5, ...)
 
     # Modify the theme to remove axes lines, labels, and background
     p <- p +
@@ -750,6 +751,7 @@ my_ggpairs <- function(trait_csv) {
      lower = list(continuous = my_lower)) +
     theme(
       strip.background = element_blank(),
+      strip.text = element_text(size = 8),
       axis.text.y = element_text(size = 6),
       axis.text.x = element_text(size = 6, angle = 45, hjust = 0.8)
     )

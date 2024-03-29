@@ -1,0 +1,34 @@
+{
+	"name": "VSCode R",
+	"image": "mattocci/cmdstan-verse-zsh:4.3.1",
+	"containerEnv": {
+		"RENV_PATHS_CACHE": "/renv",
+		"INSIDE_CONTAINER": "true",
+		"INSIDE_DOCKER": "true",
+		"HOST_UID": "${env:HOST_UID}",
+		"HOST_GID": "${env:HOST_GID}"
+	},
+	"mounts": [
+		"source=${env:HOME}/renv,target=/renv,type=bind,consistency=cached",
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"reditorsupport.r",
+				"quarto.quarto",
+				"mhutchie.git-graph",
+				"donjayamanne.githistory",
+				"rlivings39.fzf-quick-open"
+			],
+			"settings": {
+				"r.rterm.linux": "/usr/local/bin/radian",
+				"r.rpath.linux": "/usr/local/bin/R",
+				"r.libPaths": [
+					"/home/rstudio/vscode-R/renv/library/R-4.3/x86_64-pc-linux-gnu",
+					"/home/rstudio/vscode-R/renv/library/R-4.3/aarch64-unknown-linux-gnu"
+				],
+				"quarto.path": "/usr/local/bin/quarto"
+			}
+		}
+	}
+}
