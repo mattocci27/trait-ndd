@@ -65,7 +65,7 @@ Predicted relationships during the dry seasons between the effects of conspecifi
 a) stem dry matter content (SDMC);
 b) logarithm of abundance.
 The strength of the CNDD effect caused by conspecific seedling density declined significantly with increased SDMC and abundance (with positive ConS values indicating weaker CNDD).
-The line represents the predicted median of the relationship, the points show coefficients, and the vertical bars indicate 95% confidence intervals (for detailed parameter estimates, see Appendix S1: Table S5).
+The line represents the predicted median of the relationship, the points show partial redisuals of ConS for each species, and the vertical bars indicate 95% confidence intervals (for detailed parameter estimates, see Appendix S1: Table S5).
 
 ![](../figs/sdmc_abund_partial.pdf)
 
