@@ -564,7 +564,7 @@ No Rainfall & Basal area & -7846.5 & 15692.9 & 0 & 0\\*
 \newpage
 
 \textbf{Table S6:} Posterior medians and 95\% credible intervals (CIs)
-of the effects of species-level predictors (traits) on individual-level
+of the effects of species-level predictors (PC) on individual-level
 predictors (\(\gamma\)) in the dry seasons, with Rhat values. Bold
 values differ significantly from zero (the 95\% CIs do not include
 zero).
@@ -584,6 +584,150 @@ Individual-level predictors include:
 \item
   Interactions with Rainfall
 \end{itemize}
+
+Species-level predictors include intercepts (i.e., community-level
+effects), PC1, and PC2.
+
+For example, the negative \(\gamma_{3,1}\) (ConS at the individual-level
+and intercept at the species-level) reflects the negative conspecific
+density dependence (CNDD) of seedlings in the community-level. In
+another example, the non-significant \(\gamma_{3,2}\) (ConS at the
+individual-level and PC1 at the species-level) suggests that the
+strength of CNDD is not significantly correlated with PC1.
+
+\begin{longtable*}[t]{lllllr}
+\toprule
+Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
+\midrule
+\endfirsthead
+\multicolumn{6}{@{}l}{\textit{(continued)}}\\
+\toprule
+Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{2.332}} & \cellcolor{gray!6}{\textbf{[1.65, 3.046]}} & \cellcolor{gray!6}{1.003}\\
+$\gamma_{2,1}$ & ln Height & Intercept & \textbf{1.06} & \textbf{[0.872, 1.267]} & 1.002\\
+\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-1.477}} & \cellcolor{gray!6}{\textbf{[-2.452, -0.581]}} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{4,1}$ & HetS & Intercept & \textbf{0.125} & \textbf{[0.017, 0.242]} & 1.000\\
+\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{-0.312} & \cellcolor{gray!6}{{}[-0.704, 0.062]} & \cellcolor{gray!6}{1.001}\\
+\addlinespace
+$\gamma_{6,1}$ & HetT & Intercept & -0.032 & {}[-0.211, 0.14] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.371}} & \cellcolor{gray!6}{\textbf{[-0.724, -0.008]}} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{8,1}$ & ln Height $\times$ Rainfall & Intercept & -0.065 & {}[-0.17, 0.04] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.355}} & \cellcolor{gray!6}{\textbf{[-0.7, -0.013]}} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{10,1}$ & HetS $\times$ Rainfall & Intercept & -0.014 & {}[-0.108, 0.076] & 1.001\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.166}} & \cellcolor{gray!6}{\textbf{[-0.306, -0.016]}} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{12,1}$ & HetT $\times$ Rainfall & Intercept & -0.005 & {}[-0.105, 0.096] & 1.002\\
+\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.074} & \cellcolor{gray!6}{{}[-0.243, 0.386]} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{2,2}$ & ln Height & PC1 & \textbf{0.105} & \textbf{[0.005, 0.206]} & 1.000\\
+\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.385} & \cellcolor{gray!6}{{}[-0.087, 0.861]} & \cellcolor{gray!6}{1.002}\\
+\addlinespace
+$\gamma_{4,2}$ & HetS & PC1 & 0.002 & {}[-0.057, 0.065] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{-0.03} & \cellcolor{gray!6}{{}[-0.231, 0.154]} & \cellcolor{gray!6}{1.000}\\
+$\gamma_{6,2}$ & HetT & PC1 & 0.003 & {}[-0.084, 0.087] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{\textbf{0.138}} & \cellcolor{gray!6}{\textbf{[0.03, 0.239]}} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{8,2}$ & ln Height $\times$ Rainfall & PC1 & -0.013 & {}[-0.064, 0.043] & 1.001\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{9,2}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.116} & \cellcolor{gray!6}{{}[-0.044, 0.261]} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{10,2}$ & HetS $\times$ Rainfall & PC1 & -0.006 & {}[-0.053, 0.046] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{11,2}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.015} & \cellcolor{gray!6}{{}[-0.057, 0.082]} & \cellcolor{gray!6}{1.000}\\
+$\gamma_{12,2}$ & HetT $\times$ Rainfall & PC1 & -0.012 & {}[-0.066, 0.042] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.427, 0.232]} & \cellcolor{gray!6}{1.000}\\
+\addlinespace
+$\gamma_{2,3}$ & ln Height & PC2 & -0.046 & {}[-0.156, 0.067] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.166} & \cellcolor{gray!6}{{}[-0.67, 0.297]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{4,3}$ & HetS & PC2 & -0.01 & {}[-0.056, 0.052] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.012} & \cellcolor{gray!6}{{}[-0.222, 0.186]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{6,3}$ & HetT & PC2 & 0.053 & {}[-0.016, 0.125] & 1.000\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.073} & \cellcolor{gray!6}{{}[-0.16, 0.03]} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{8,3}$ & ln Height $\times$ Rainfall & PC2 & -0.001 & {}[-0.056, 0.068] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{9,3}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.114} & \cellcolor{gray!6}{{}[-0.25, 0.012]} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{10,3}$ & HetS $\times$ Rainfall & PC2 & -0.025 & {}[-0.067, 0.016] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{11,3}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.007} & \cellcolor{gray!6}{{}[-0.072, 0.058]} & \cellcolor{gray!6}{1.001}\\
+\addlinespace
+$\gamma_{12,3}$ & HetT $\times$ Rainfall & PC2 & 0.01 & {}[-0.037, 0.057] & 1.001\\*
+\end{longtable*}
+
+\newpage
+
+\textbf{Table S7:} Posterior medians and 95\% credible intervals (CIs)
+of the effects of species-level predictors (PC) on individual-level
+predictors (\(\gamma\)) in the rainy seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled
+by 0.24. Other details as for Table S6.
+
+\begin{longtable*}[t]{lllllr}
+\toprule
+Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
+\midrule
+\endfirsthead
+\multicolumn{6}{@{}l}{\textit{(continued)}}\\
+\toprule
+Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{2.942}} & \cellcolor{gray!6}{\textbf{[2.301, 3.562]}} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{2,1}$ & ln Height & Intercept & \textbf{1.215} & \textbf{[1.011, 1.429]} & 1.000\\
+\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{-0.118} & \cellcolor{gray!6}{{}[-1.029, 0.606]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{4,1}$ & HetS & Intercept & 0.09 & {}[-0.024, 0.214] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.551}} & \cellcolor{gray!6}{\textbf{[-0.947, -0.175]}} & \cellcolor{gray!6}{1.001}\\
+\addlinespace
+$\gamma_{6,1}$ & HetT & Intercept & -0.006 & {}[-0.241, 0.225] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{0.101} & \cellcolor{gray!6}{{}[-0.322, 0.538]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{8,1}$ & ln Height $\times$ Rainfall & Intercept & \textbf{-0.172} & \textbf{[-0.334, -0.022]} & 1.000\\
+\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{0.163} & \cellcolor{gray!6}{{}[-0.394, 0.782]} & \cellcolor{gray!6}{1.000}\\
+$\gamma_{10,1}$ & HetS $\times$ Rainfall & Intercept & -0.025 & {}[-0.117, 0.061] & 1.000\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{-0.013} & \cellcolor{gray!6}{{}[-0.218, 0.17]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{12,1}$ & HetT $\times$ Rainfall & Intercept & 0.035 & {}[-0.094, 0.161] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.035} & \cellcolor{gray!6}{{}[-0.227, 0.297]} & \cellcolor{gray!6}{1.002}\\
+$\gamma_{2,2}$ & ln Height & PC1 & 0.087 & {}[-0.023, 0.202] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.124} & \cellcolor{gray!6}{{}[-0.224, 0.462]} & \cellcolor{gray!6}{1.000}\\
+\addlinespace
+$\gamma_{4,2}$ & HetS & PC1 & -0.004 & {}[-0.062, 0.056] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.001} & \cellcolor{gray!6}{{}[-0.2, 0.188]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{6,2}$ & HetT & PC1 & -0.068 & {}[-0.178, 0.033] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{-0.001} & \cellcolor{gray!6}{{}[-0.132, 0.126]} & \cellcolor{gray!6}{1.000}\\
+$\gamma_{8,2}$ & ln Height $\times$ Rainfall & PC1 & -0.034 & {}[-0.126, 0.046] & 1.001\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{9,2}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{-0.148} & \cellcolor{gray!6}{{}[-0.453, 0.094]} & \cellcolor{gray!6}{1.000}\\
+$\gamma_{10,2}$ & HetS $\times$ Rainfall & PC1 & -0.019 & {}[-0.068, 0.024] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{11,2}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.052} & \cellcolor{gray!6}{{}[-0.041, 0.14]} & \cellcolor{gray!6}{1.000}\\
+$\gamma_{12,2}$ & HetT $\times$ Rainfall & PC1 & -0.008 & {}[-0.072, 0.063] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.07} & \cellcolor{gray!6}{{}[-0.364, 0.23]} & \cellcolor{gray!6}{1.000}\\
+\addlinespace
+$\gamma_{2,3}$ & ln Height & PC2 & -0.089 & {}[-0.213, 0.033] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.096} & \cellcolor{gray!6}{{}[-0.391, 0.288]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{4,3}$ & HetS & PC2 & -0.035 & {}[-0.087, 0.021] & 1.000\\
+\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{{}[-0.186, 0.258]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{6,3}$ & HetT & PC2 & -0.008 & {}[-0.101, 0.1] & 1.001\\
+\addlinespace
+\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.055} & \cellcolor{gray!6}{{}[-0.182, 0.062]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{8,3}$ & ln Height $\times$ Rainfall & PC2 & -0.004 & {}[-0.097, 0.087] & 1.001\\
+\cellcolor{gray!6}{$\gamma_{9,3}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.005} & \cellcolor{gray!6}{{}[-0.272, 0.23]} & \cellcolor{gray!6}{1.001}\\
+$\gamma_{10,3}$ & HetS $\times$ Rainfall & PC2 & \textbf{0.047} & \textbf{[0.004, 0.094]} & 1.000\\
+\cellcolor{gray!6}{$\gamma_{11,3}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.021} & \cellcolor{gray!6}{{}[-0.108, 0.071]} & \cellcolor{gray!6}{1.000}\\
+\addlinespace
+$\gamma_{12,3}$ & HetT $\times$ Rainfall & PC2 & 0.015 & {}[-0.038, 0.077] & 1.000\\*
+\end{longtable*}
+
+\newpage
+
+\textbf{Table S8:} Posterior medians and 95\% credible intervals (CIs)
+of the effects of species-level predictors (traits) on individual-level
+predictors (\(\gamma\)) in the rainy seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled
+by 0.27.
 
 Species-level predictors include:
 
@@ -612,13 +756,10 @@ Species-level predictors include:
   LT: leaf thickness.
 \end{itemize}
 
-For example, the negative \(\gamma_{3,1}\) (ConS at the individual-level
-and intercept at the species-level) reflects the negative conspecific
-density dependence (CNDD) of seedlings in the community-level. In
-another example, the positive \(\gamma_{3,3}\) (ConS at the
-individual-level and SDMC at the species-level) indicates the positive
-relationship between ConS and SDMC, suggesting that the strength of CNDD
-decreases with increasing SDMC.
+For example, the positive \(\gamma_{3,3}\) (ConS at the individual-level
+and SDMC at the species-level) indicates the positive relationship
+between ConS and SDMC, suggesting that the strength of CNDD decreases
+with increasing SDMC. Other details as for Table S6.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -733,79 +874,11 @@ $\gamma_{8,10}$ & ConS $\times$ Rainfall & ln LT & \textbf{-0.772} & \textbf{[-1
 
 \newpage
 
-\textbf{Table S7:} Posterior medians and 95\% credible intervals (CIs)
-of the effects of species-level predictors (PC) on individual-level
-predictors (\(\gamma\)) in the dry seasons, with Rhat values.
-Conspecific (ConT) and heterospecific (HetT) tree densities are scaled
-by 0.27. Species-level predictors include intercepts, PC1, and PC2.
-Other details as for Table S6.
-
-\begin{longtable*}[t]{lllllr}
-\toprule
-Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
-\midrule
-\endfirsthead
-\multicolumn{6}{@{}l}{\textit{(continued)}}\\
-\toprule
-Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
-\midrule
-\endhead
-
-\endfoot
-\bottomrule
-\endlastfoot
-\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{2.332}} & \cellcolor{gray!6}{\textbf{[1.65, 3.046]}} & \cellcolor{gray!6}{1.003}\\
-$\gamma_{2,1}$ & ln Height & Intercept & \textbf{1.06} & \textbf{[0.872, 1.267]} & 1.002\\
-\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-1.477}} & \cellcolor{gray!6}{\textbf{[-2.452, -0.581]}} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{4,1}$ & HetS & Intercept & \textbf{0.125} & \textbf{[0.017, 0.242]} & 1.000\\
-\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{-0.312} & \cellcolor{gray!6}{{}[-0.704, 0.062]} & \cellcolor{gray!6}{1.001}\\
-\addlinespace
-$\gamma_{6,1}$ & HetT & Intercept & -0.032 & {}[-0.211, 0.14] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.371}} & \cellcolor{gray!6}{\textbf{[-0.724, -0.008]}} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{8,1}$ & ln Height $\times$ Rainfall & Intercept & -0.065 & {}[-0.17, 0.04] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.355}} & \cellcolor{gray!6}{\textbf{[-0.7, -0.013]}} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{10,1}$ & HetS $\times$ Rainfall & Intercept & -0.014 & {}[-0.108, 0.076] & 1.001\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.166}} & \cellcolor{gray!6}{\textbf{[-0.306, -0.016]}} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{12,1}$ & HetT $\times$ Rainfall & Intercept & -0.005 & {}[-0.105, 0.096] & 1.002\\
-\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.074} & \cellcolor{gray!6}{{}[-0.243, 0.386]} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{2,2}$ & ln Height & PC1 & \textbf{0.105} & \textbf{[0.005, 0.206]} & 1.000\\
-\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.385} & \cellcolor{gray!6}{{}[-0.087, 0.861]} & \cellcolor{gray!6}{1.002}\\
-\addlinespace
-$\gamma_{4,2}$ & HetS & PC1 & 0.002 & {}[-0.057, 0.065] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{-0.03} & \cellcolor{gray!6}{{}[-0.231, 0.154]} & \cellcolor{gray!6}{1.000}\\
-$\gamma_{6,2}$ & HetT & PC1 & 0.003 & {}[-0.084, 0.087] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{\textbf{0.138}} & \cellcolor{gray!6}{\textbf{[0.03, 0.239]}} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{8,2}$ & ln Height $\times$ Rainfall & PC1 & -0.013 & {}[-0.064, 0.043] & 1.001\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{9,2}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.116} & \cellcolor{gray!6}{{}[-0.044, 0.261]} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{10,2}$ & HetS $\times$ Rainfall & PC1 & -0.006 & {}[-0.053, 0.046] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{11,2}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.015} & \cellcolor{gray!6}{{}[-0.057, 0.082]} & \cellcolor{gray!6}{1.000}\\
-$\gamma_{12,2}$ & HetT $\times$ Rainfall & PC1 & -0.012 & {}[-0.066, 0.042] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.088} & \cellcolor{gray!6}{{}[-0.427, 0.232]} & \cellcolor{gray!6}{1.000}\\
-\addlinespace
-$\gamma_{2,3}$ & ln Height & PC2 & -0.046 & {}[-0.156, 0.067] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.166} & \cellcolor{gray!6}{{}[-0.67, 0.297]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{4,3}$ & HetS & PC2 & -0.01 & {}[-0.056, 0.052] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.012} & \cellcolor{gray!6}{{}[-0.222, 0.186]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{6,3}$ & HetT & PC2 & 0.053 & {}[-0.016, 0.125] & 1.000\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.073} & \cellcolor{gray!6}{{}[-0.16, 0.03]} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{8,3}$ & ln Height $\times$ Rainfall & PC2 & -0.001 & {}[-0.056, 0.068] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{9,3}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.114} & \cellcolor{gray!6}{{}[-0.25, 0.012]} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{10,3}$ & HetS $\times$ Rainfall & PC2 & -0.025 & {}[-0.067, 0.016] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{11,3}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.007} & \cellcolor{gray!6}{{}[-0.072, 0.058]} & \cellcolor{gray!6}{1.001}\\
-\addlinespace
-$\gamma_{12,3}$ & HetT $\times$ Rainfall & PC2 & 0.01 & {}[-0.037, 0.057] & 1.001\\*
-\end{longtable*}
-
-\newpage
-
-\textbf{Table S8:} Posterior medians and 95\% credible intervals (CIs)
+\textbf{Table S9:} Posterior medians and 95\% credible intervals (CIs)
 of the effects of species-level predictors (traits) on individual-level
 predictors (\(\gamma\)) in the rainy seasons, with Rhat values.
 Conspecific (ConT) and heterospecific (HetT) tree densities are scaled
-by 0.24. Other details as for Table S6.
+by 0.24. Other details as for Table S8.
 
 \begin{longtable*}[t]{lllllr}
 \toprule
@@ -920,79 +993,12 @@ $\gamma_{8,10}$ & ConS $\times$ Rainfall & ln LT & 0.646 & {}[-0.485, 1.806] & 1
 
 \newpage
 
-\textbf{Table S9:} Posterior medians and 95\% credible intervals (CIs)
-of the effects of species-level predictors (PC) on individual-level
-predictors (\(\gamma\)) in the rainy seasons, with Rhat values.
-Conspecific (ConT) and heterospecific (HetT) tree densities are scaled
-by 0.24. Other details as for Table S7.
-
-\begin{longtable*}[t]{lllllr}
-\toprule
-Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
-\midrule
-\endfirsthead
-\multicolumn{6}{@{}l}{\textit{(continued)}}\\
-\toprule
-Parameter & Individual-level predictor & Species-level predictor & Median & 95\% CI & Rhat\\
-\midrule
-\endhead
-
-\endfoot
-\bottomrule
-\endlastfoot
-\cellcolor{gray!6}{$\gamma_{1,1}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{2.942}} & \cellcolor{gray!6}{\textbf{[2.301, 3.562]}} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{2,1}$ & ln Height & Intercept & \textbf{1.215} & \textbf{[1.011, 1.429]} & 1.000\\
-\cellcolor{gray!6}{$\gamma_{3,1}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{-0.118} & \cellcolor{gray!6}{{}[-1.029, 0.606]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{4,1}$ & HetS & Intercept & 0.09 & {}[-0.024, 0.214] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{5,1}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{\textbf{-0.551}} & \cellcolor{gray!6}{\textbf{[-0.947, -0.175]}} & \cellcolor{gray!6}{1.001}\\
-\addlinespace
-$\gamma_{6,1}$ & HetT & Intercept & -0.006 & {}[-0.241, 0.225] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{7,1}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{0.101} & \cellcolor{gray!6}{{}[-0.322, 0.538]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{8,1}$ & ln Height $\times$ Rainfall & Intercept & \textbf{-0.172} & \textbf{[-0.334, -0.022]} & 1.000\\
-\cellcolor{gray!6}{$\gamma_{9,1}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{0.163} & \cellcolor{gray!6}{{}[-0.394, 0.782]} & \cellcolor{gray!6}{1.000}\\
-$\gamma_{10,1}$ & HetS $\times$ Rainfall & Intercept & -0.025 & {}[-0.117, 0.061] & 1.000\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{11,1}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{-0.013} & \cellcolor{gray!6}{{}[-0.218, 0.17]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{12,1}$ & HetT $\times$ Rainfall & Intercept & 0.035 & {}[-0.094, 0.161] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{1,2}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.035} & \cellcolor{gray!6}{{}[-0.227, 0.297]} & \cellcolor{gray!6}{1.002}\\
-$\gamma_{2,2}$ & ln Height & PC1 & 0.087 & {}[-0.023, 0.202] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{3,2}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.124} & \cellcolor{gray!6}{{}[-0.224, 0.462]} & \cellcolor{gray!6}{1.000}\\
-\addlinespace
-$\gamma_{4,2}$ & HetS & PC1 & -0.004 & {}[-0.062, 0.056] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{5,2}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.001} & \cellcolor{gray!6}{{}[-0.2, 0.188]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{6,2}$ & HetT & PC1 & -0.068 & {}[-0.178, 0.033] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{7,2}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{-0.001} & \cellcolor{gray!6}{{}[-0.132, 0.126]} & \cellcolor{gray!6}{1.000}\\
-$\gamma_{8,2}$ & ln Height $\times$ Rainfall & PC1 & -0.034 & {}[-0.126, 0.046] & 1.001\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{9,2}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{-0.148} & \cellcolor{gray!6}{{}[-0.453, 0.094]} & \cellcolor{gray!6}{1.000}\\
-$\gamma_{10,2}$ & HetS $\times$ Rainfall & PC1 & -0.019 & {}[-0.068, 0.024] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{11,2}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC1} & \cellcolor{gray!6}{0.052} & \cellcolor{gray!6}{{}[-0.041, 0.14]} & \cellcolor{gray!6}{1.000}\\
-$\gamma_{12,2}$ & HetT $\times$ Rainfall & PC1 & -0.008 & {}[-0.072, 0.063] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{1,3}$} & \cellcolor{gray!6}{Intercept} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.07} & \cellcolor{gray!6}{{}[-0.364, 0.23]} & \cellcolor{gray!6}{1.000}\\
-\addlinespace
-$\gamma_{2,3}$ & ln Height & PC2 & -0.089 & {}[-0.213, 0.033] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{3,3}$} & \cellcolor{gray!6}{ConS} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.096} & \cellcolor{gray!6}{{}[-0.391, 0.288]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{4,3}$ & HetS & PC2 & -0.035 & {}[-0.087, 0.021] & 1.000\\
-\cellcolor{gray!6}{$\gamma_{5,3}$} & \cellcolor{gray!6}{ConT} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{{}[-0.186, 0.258]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{6,3}$ & HetT & PC2 & -0.008 & {}[-0.101, 0.1] & 1.001\\
-\addlinespace
-\cellcolor{gray!6}{$\gamma_{7,3}$} & \cellcolor{gray!6}{Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.055} & \cellcolor{gray!6}{{}[-0.182, 0.062]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{8,3}$ & ln Height $\times$ Rainfall & PC2 & -0.004 & {}[-0.097, 0.087] & 1.001\\
-\cellcolor{gray!6}{$\gamma_{9,3}$} & \cellcolor{gray!6}{ConS $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.005} & \cellcolor{gray!6}{{}[-0.272, 0.23]} & \cellcolor{gray!6}{1.001}\\
-$\gamma_{10,3}$ & HetS $\times$ Rainfall & PC2 & \textbf{0.047} & \textbf{[0.004, 0.094]} & 1.000\\
-\cellcolor{gray!6}{$\gamma_{11,3}$} & \cellcolor{gray!6}{ConT $\times$ Rainfall} & \cellcolor{gray!6}{PC2} & \cellcolor{gray!6}{-0.021} & \cellcolor{gray!6}{{}[-0.108, 0.071]} & \cellcolor{gray!6}{1.000}\\
-\addlinespace
-$\gamma_{12,3}$ & HetT $\times$ Rainfall & PC2 & 0.015 & {}[-0.038, 0.077] & 1.000\\*
-\end{longtable*}
-
-\newpage
-
 \textbf{Table S10:} Posterior medians and 95\% credible intervals (CIs)
 of the effects of species-level predictors (abundance) on
 individual-level predictors (\(\gamma\)) in the dry seasons. Conspecific
 (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
 Species-level predictors include intercepts and log of species
-abundance. Other details as for Table S6.
+abundance. Other details as for Table S8.
 
 \begin{longtable*}[t]{lllllr}
 \toprule

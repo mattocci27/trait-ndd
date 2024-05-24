@@ -285,13 +285,8 @@ render_diagnostics_tables(diagnostics_tbl, season = "wet", abund = TRUE)
 
 \newpage
 
-
-```{r, include=FALSE}
-dry_traits_gamma <- read_csv(here("data", "dry_intrain2_nlog_gamma.csv"))
-```
-
-**`r s_table("dry_traits_gamma")`:**
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the dry seasons, with Rhat values.
+**`r s_table("dry_pca_gamma")`:**
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the dry seasons, with Rhat values.
 Bold values differ significantly from zero (the 95% CIs do not include zero).
 
 Individual-level predictors include:
@@ -302,33 +297,10 @@ Individual-level predictors include:
 - Rainfall
 - Interactions with Rainfall
 
-Species-level predictors include:
-
- - Intercept: average effects across species (i.e., community-level effects).
- - LDMC: leaf dry matter content.
- - SDMC: stem dry matter content.
- - $\delta$C~13~: stable carbon isotope composition.
- - C: carbon concentration.
- - N: nitrogen concentration.
- - $\pi$~tlp~: leaf turgor loss point.
- - LA: leaf area.
- - SLA: specific leaf area.
- - LT: leaf thickness.
+Species-level predictors include intercepts (i.e., community-level effects), PC1, and PC2.
 
 For example, the negative $\gamma_{3,1}$ (ConS at the individual-level and intercept at the species-level) reflects the negative conspecific density dependence (CNDD) of seedlings in the community-level.
-In another example, the positive $\gamma_{3,3}$ (ConS at the individual-level and SDMC at the species-level) indicates the positive relationship between ConS and SDMC, suggesting that the strength of CNDD decreases with increasing SDMC.
-
-```{r}
-gen_si_tab(dry_traits_gamma)
-```
-
-\newpage
-
-**`r s_table("dry_pca_gamma")`:**
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (PC) on individual-level predictors ($\gamma$) in the dry seasons, with Rhat values.
-Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
-Species-level predictors include intercepts, PC1, and PC2.
-Other details as for `r s_table("dry_traits_gamma")`.
+In another example, the non-significant $\gamma_{3,2}$ (ConS at the individual-level and PC1 at the species-level) suggests that the strength of CNDD is not significantly correlated with PC1.
 
 ```{r, include=FALSE}
 dry_pca_gamma <- read_csv(here("data", "dry_intrain_pc12_gamma.csv"))
@@ -336,21 +308,6 @@ dry_pca_gamma <- read_csv(here("data", "dry_intrain_pc12_gamma.csv"))
 
 ```{r}
 gen_si_tab(dry_pca_gamma)
-```
-
-\newpage
-
-**`r s_table("wet_traits_gamma")`:**
-Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons, with Rhat values.
-Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
-Other details as for `r s_table("dry_traits_gamma")`.
-
-```{r, include=FALSE}
-wet_traits_gamma <- read_csv(here("data", "wet_intrain2_nlog_gamma.csv"))
-```
-
-```{r}
-gen_si_tab(wet_traits_gamma)
 ```
 
 \newpage
@@ -366,6 +323,52 @@ wet_pca_gamma <- read_csv(here("data", "wet_intrain_pc12_gamma.csv"))
 
 ```{r}
 gen_si_tab(wet_pca_gamma)
+```
+
+\newpage
+
+
+```{r, include=FALSE}
+dry_traits_gamma <- read_csv(here("data", "dry_intrain2_nlog_gamma.csv"))
+```
+
+**`r s_table("dry_traits_gamma")`:**
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.27.
+
+Species-level predictors include:
+
+ - Intercept: average effects across species (i.e., community-level effects).
+ - LDMC: leaf dry matter content.
+ - SDMC: stem dry matter content.
+ - $\delta$C~13~: stable carbon isotope composition.
+ - C: carbon concentration.
+ - N: nitrogen concentration.
+ - $\pi$~tlp~: leaf turgor loss point.
+ - LA: leaf area.
+ - SLA: specific leaf area.
+ - LT: leaf thickness.
+
+For example, the positive $\gamma_{3,3}$ (ConS at the individual-level and SDMC at the species-level) indicates the positive relationship between ConS and SDMC, suggesting that the strength of CNDD decreases with increasing SDMC.
+Other details as for `r s_table("dry_pca_gamma")`.
+
+```{r}
+gen_si_tab(dry_traits_gamma)
+```
+
+\newpage
+
+**`r s_table("wet_traits_gamma")`:**
+Posterior medians and 95% credible intervals (CIs) of the effects of species-level predictors (traits) on individual-level predictors ($\gamma$) in the rainy seasons, with Rhat values.
+Conspecific (ConT) and heterospecific (HetT) tree densities are scaled by 0.24.
+Other details as for `r s_table("dry_traits_gamma")`.
+
+```{r, include=FALSE}
+wet_traits_gamma <- read_csv(here("data", "wet_intrain2_nlog_gamma.csv"))
+```
+
+```{r}
+gen_si_tab(wet_traits_gamma)
 ```
 
 \newpage
