@@ -430,7 +430,7 @@ fig_list <- list(
       my_ggsave(
         "figs/dry_trait_suv_contour",
         p,
-        dpi = 300,
+        dpi = 600,
         width = 173,
         height = 260,
         units = "mm"
@@ -444,7 +444,7 @@ fig_list <- list(
       my_ggsave(
         "figs/wet_trait_suv_contour",
         p,
-        dpi = 300,
+        dpi = 600,
         width = 173,
         height = 130,
         units = "mm"

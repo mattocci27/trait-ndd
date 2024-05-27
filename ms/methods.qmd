@@ -98,10 +98,10 @@ densities of conspecific (*ConS*) and heterospecific (*HetS*) seedlings,
 densities of conspecific (*ConA*) and heterospecific (*HetA*) trees that are scaled by 0.27 for the dry season or 0.24 for the rainy season,
 and the interactions of rains with *ConS*, with *HetS*, with *ConA* and with *HetA*.
 
-In the species-level regression, the coefficients ($\boldsymbol{\beta_{1-K}}$) of each species *j* were assumed to have a multivariate normal distribution,
+In the species-level regression, the coefficients ($\boldsymbol{\beta_{1-K}}$) of each species *j* were assumed to have a multivariate normal distribution (MVN),
 
 $$
-\boldsymbol{\beta_j} = \boldsymbol{\gamma_k} \cdot \boldsymbol{u_j} + \Sigma,
+\boldsymbol{\beta_j} \sim MVN(\boldsymbol{\gamma_k} \cdot \boldsymbol{u_j}, \Sigma),
 $$
 
 where $\boldsymbol{u_{j}} = \left[u_{1,j}, u_{2,j}, \ldots, u_{L,j} \right]$ is the row vector of predictors of size *L* for species *j*, with *L* indicaiting the number of predictors for each species, including an intercept,

@@ -2,7 +2,7 @@ my_ggsave <- function(filename, plot, units = c("in", "cm",
         "mm", "px"), height = NA, width = NA, dpi = 300, ...) {
 
   ggsave(
-    filename = paste0(filename, ".png"),
+    filename = paste0(filename, ".tiff"),
     plot = plot,
     height = height,
     width = width,
@@ -506,10 +506,10 @@ dry_trait_suv_contour <- function(dry_trait, alpha = 0.05) {
     ggtitle("High LT species")
   p7 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
     subplot_fun(low = TRUE) +
-    ggtitle(expression(Low~pi[tlp]))
+    ggtitle(expression(Low~pi[tlp]~speices))
   p8 <- generate_suv_pred(dry_trait$summary, dry_trait$data, alpha = 0.05, 6) |>
     subplot_fun(low = FALSE) +
-    ggtitle(expression(High~pi[tlp]))
+    ggtitle(expression(High~pi[tlp]~speices))
 
   (p1 + p2) / (p3 + p4) / (p5 + p6) / (p7 + p8) +
      plot_annotation(tag_levels = "a") &

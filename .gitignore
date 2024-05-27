@@ -76,6 +76,7 @@ test.Rda
 
 *.pdf
 *.png
+*.tiff
 *.eps
 
 *.docx
